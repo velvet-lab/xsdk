@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "xSdk",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,11 @@
+meta {
+  name: get all resourcenames for telemetry
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{url}}/variable/resource
+  body: none
+  auth: inherit
+}
