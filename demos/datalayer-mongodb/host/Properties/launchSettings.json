@@ -1,0 +1,13 @@
+{
+    "profiles": {
+        "Host": {
+            "commandName": "Project",
+            "commandLineArgs": "--demo",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "TESTCONTAINERS_RYUK_DISABLED": "true"
+            }
+        }
+    }
+}
+

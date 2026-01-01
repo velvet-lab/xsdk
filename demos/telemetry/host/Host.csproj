@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<!-- SonarQube needs this, do not change -->
+		<ProjectGuid>31310438-E3D0-4861-9996-D4B24A8FF3F1</ProjectGuid>
+	</PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NLog" />
+        <PackageReference Include="OpenTelemetry" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\libs\xSdk.Extensions.Telemetry\src\xSdk.Extensions.Telemetry.csproj" />
+      <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+</Project>

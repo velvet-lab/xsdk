@@ -1,27 +1,131 @@
 {
-  "name": "@global/xsdk",
-  "version": "1.0.0-next.14",
-  "description": "xbash is a bash function library for commonly used operations",
-  "repository": {
-    "type": "git",
-    "url": "git+https://git.x-breitschaft.de/global/xsdk.git"
-  },
-  "author": "github@danlor.simplelogin.com",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://git.x-breitschaft.de/global/xsdk/issues"
-  },
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "vap-sdk",
+  "version": "1.7.0",
+  "description": "VAP Workplace SDK for Datev ",
+  "private": true,
   "scripts": {
-    "lint": "mega-linter-runner --image registry.x-breitschaft.de/oxsecurity/megalinter:v8.4.2",
-    "lint:fix": "mega-linter-runner --image registry.x-breitschaft.de/oxsecurity/megalinter:v8.4.2 --fix",
+    "lint": "mega-linter-runner --image packages.repo.dvint.de/docker-internet-mirror/oxsecurity/megalinter:latest",
+    "lint:fix": "mega-linter-runner --image packages.repo.dvint.de/docker-internet-mirror/oxsecurity/megalinter:latest --fix",
     "release:version": "semantic-release"
   },
+  "vdk": {
+    "properties": {
+      "workflow": {
+        "dotnet": {
+          "build": {
+            "solutions": [
+              "vap-sdk.sln"
+            ]
+          }
+        }
+      },
+      "artifactory": {
+        "crz": {
+          "url": "https://packages.repo.dvint.de",
+          "publish": {
+            "default": {
+              "repository": "gen-datev-repo",
+              "location": "datev/vap/public"
+            }
+          }
+        },
+        "cnrz": {
+          "url": "https://artifactory.datev.de",
+          "registry": "artifactory.datev.de",
+          "runner": "cnrz-prod",
+          "auth": {
+            "username": "ARTIFACTORY_USERNAME",
+            "password": "ARTIFACTORY_TOKEN"
+          },
+          "publish": {
+            "default": {
+              "repository": "gen-datev-repo",
+              "location": "datev/vap/public"
+            },
+            "dotnet": {
+              "repository": "nuget-datev-repo",
+              "location": "datev/vap"
+            }
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "extension": [
+        "adam-bender.commit-message-editor",
+        "adrianwilczynski.toggle-hidden",
+        "codezombiech.gitignore",
+        "d-koppenhagen.vscode-code-review",
+        "davidwang.ini-for-vscode",
+        "editorconfig.editorconfig",
+        "github.copilot",
+        "github.copilot-chat",
+        "github.vscode-pull-request-github",
+        "ibm.output-colorizer",
+        "joshbolduc.commitlint",
+        "laktak.hjson",
+        "mhutchie.git-graph",
+        "mia-hall.vscode-git-branch-sidebar",
+        "ms-ceintl.vscode-language-pack-de",
+        "ms-vscode.powershell",
+        "pkief.material-icon-theme",
+        "pomber.git-file-history",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml",
+        "rhalaly.scope-to-this",
+        "tanh.hjson-formatter",
+        "task.vscode-task",
+        "tyriar.sort-lines",
+        "yzhang.markdown-all-in-one",
+        "zhaoqing.gitlabmrt",
+        "ms-azuretools.vscode-docker",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "csharpier.csharpier-vscode",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.remote-wsl",
+        "bat-snippets.bat-snippets",
+        "jetmartin.bats",
+        "foxundermoon.shell-format",
+        "rogalmic.bash-debug",
+        "mads-hartmann.bash-ide-vscode",
+        "adrianwilczynski.asp-net-core-switcher",
+        "DavidAnson.vscode-markdownlint",
+        "esbenp.prettier-vscode",
+        "jalescardoso.remove-break-lines",
+        "jasonnutter.vscode-codeowners",
+        "pflannery.vscode-versionlens",
+        "SonarSource.sonarlint-vscode",
+        "saber2pr.file-git-history",
+        "pomdtr.secrets"
+      ]
+    },
+    "excludes": [
+      ".nuke",
+      ".vdk",
+      ".vscode",
+      "coverage",
+      "dist",
+      "node_modules"
+    ],
+    "logging": {
+      "level": "info"
+    }
+  },
+  "workspaces": [],
   "devDependencies": {
-    "@saithodev/semantic-release-gitea": "^2.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "mega-linter-runner": "^8.4.2",
-    "semantic-release": "^24.2.3"
+    "@semantic-release/github": "^12.0.2",
+    "commit-and-tag-version": "^12.5.1",
+    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "mega-linter-runner": "^9.1.0",
+    "npm-check-updates": "^19.1.2",
+    "prettier": "~3.6.2",
+    "schemastore": "~0.2.2",
+    "semantic-release": "^25.0.2"
   }
 }

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>4d32f769-9038-4364-9396-8616b8e6fd47</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CloudNative.CloudEvents" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="CloudNative.CloudEvents.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+</Project>

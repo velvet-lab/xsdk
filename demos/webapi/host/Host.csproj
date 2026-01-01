@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>8FA01CA7-A2B0-4D46-8EFB-F251B2196BAD</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc" />
+        <PackageReference Include="Microsoft.OpenApi" />
+        <PackageReference Include="FluentValidation" />
+        <PackageReference Include="NLog" />
+        <PackageReference Include="AspNetCore.Authentication.ApiKey" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AspNetCore.Links\src\xSdk.Extensions.AspNetCore.Links.csproj" />
+        <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
+        <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+    </ItemGroup>
+
+</Project>

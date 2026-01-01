@@ -1,0 +1,17 @@
+{
+    "profiles": {
+        "Host": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "HO__CUSTOM__WITH_APP_PREFIX_WITH_SETUP_PREFIX": "HO__CUSTOM__WITH_APP_PREFIX_WITH_SETUP_PREFIX",
+                "HO__WITH_APP_PREFIX_NO_SETUP_PREFIX": "HO__WITH_APP_PREFIX_NO_SETUP_PREFIX",
+                "NO_APP_PREFIX_NO_SETUP_PREFIX": "NO_APP_PREFIX_NO_SETUP_PREFIX"
+            }
+        },
+        "Host (with logging)": {
+            "commandName": "Project",
+            "commandLineArgs": "--log-level Trace"
+        }
+    }
+}
+

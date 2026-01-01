@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <Configuration>Debug</Configuration>
+        <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>xSdk</RootNamespace>
+        <BaseOutputPath>$(SolutionDir)dist\$(MSBuildProjectName)</BaseOutputPath>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RunSettingsFilePath>$(SolutionDir)xsdk.runsettings</RunSettingsFilePath>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <IsTestProject Condition="'$(IsTestProject)' == ''">false</IsTestProject>
+        <IsGitHub Condition="'$(IsGitHub)' == ''" >false</IsGitHub>
+        <IsPluginProject Condition="'$(IsPluginProject)' == ''">false</IsPluginProject>
+        <IsApplicationProject Condition="'$(IsApplicationProject)' == ''">false</IsApplicationProject>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Authors>Roland Breitschaft &lt;danlorb@velvet-lab.net&gt;</Authors>
+        <Company>Velvet Lab</Company>
+        <Copyright>Copyright (c)2026 Velvet Lab</Copyright>
+        <PackageProjectUrl>https://github.com/velvet-lab/xsdk</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/velvet-lab/xsdk</RepositoryUrl>
+    </PropertyGroup>
+
+    <!-- see https://github.com/dotnet/sourcelink -->
+    <PropertyGroup Condition="'$(IsTestProject)' == 'false'">
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsTestProject)' == 'false'">
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+        </AssemblyAttribute>
+        <!-- https://sonarcloud.io/organizations/datevscm/rules?open=csharpsquid%3AS3992&rule_key=csharpsquid%3AS3992 -->
+        <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
+            <_Parameter1>false</_Parameter1>
+            <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+        </AssemblyAttribute>
+        <!-- https://sonarcloud.io/organizations/datevscm/rules?open=csharpsquid%3AS3990&rule_key=csharpsquid%3AS3990 -->
+        <AssemblyAttribute Include="System.CLSCompliantAttribute">
+            <_Parameter1>true</_Parameter1>
+            <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(GenerateEmbeddedFilesManifest)' == 'true'">
+        <!-- Add specific settings for angular projects -->
+        <EmbeddedResource Include="wwwroot/**/*" />
+        <EmbeddedResource Include="_files/**/*" />
+        <Content Remove="wwwroot/**/*" />
+        <Content Remove="_files/**/*" />
+        <None Remove="wwwroot/**/*" />
+        <None Remove="_files/**/*" />
+    </ItemGroup>
+</Project>
+

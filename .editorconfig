@@ -1,0 +1,34 @@
+﻿# Editor configuration, see http://editorconfig.org
+root = true
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+[*.html]
+max_line_length = off
+
+[*.{yaml,yml,payload,hjson}]
+indent_size = 2
+
+[*.{xml,targets}]
+max_line_length = off
+indent_size = 2
+
+[monorepo.config]
+indent_size = 2
+
+[*.ts]
+quote_type = single
+ij_typescript_use_double_quotes = false
+
+[*.cs]
+
+# CS3016: Arrays as attribute arguments is not CLS-compliant
+dotnet_diagnostic.CS3016.severity = silent
