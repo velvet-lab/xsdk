@@ -48,12 +48,10 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
         </AssemblyAttribute>
-        <!-- https://sonarcloud.io/organizations/datevscm/rules?open=csharpsquid%3AS3992&rule_key=csharpsquid%3AS3992 -->
         <AssemblyAttribute Include="System.Runtime.InteropServices.ComVisible">
             <_Parameter1>false</_Parameter1>
             <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
         </AssemblyAttribute>
-        <!-- https://sonarcloud.io/organizations/datevscm/rules?open=csharpsquid%3AS3990&rule_key=csharpsquid%3AS3990 -->
         <AssemblyAttribute Include="System.CLSCompliantAttribute">
             <_Parameter1>true</_Parameter1>
             <_Parameter1_TypeName>System.Boolean</_Parameter1_TypeName>
@@ -70,4 +68,3 @@
         <None Remove="_files/**/*" />
     </ItemGroup>
 </Project>
-
