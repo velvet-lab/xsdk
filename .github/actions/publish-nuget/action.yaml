@@ -1,0 +1,32 @@
+name: Publish NuGet package
+description: Publish the created NuGet packages to Artifactory
+inputs:
+  nuget_host_url:
+    description: Host of Nuget Artifactory
+    required: true
+  nuget_token:
+    description: Token to publish to Artifactory
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Publish artifacts
+      shell: pwsh
+      run: |
+        Remove-Item -Path "./dist/nuget" -Recurse -Force -ErrorAction SilentlyContinue
+        $version = $(Get-Content .\package.json | ConvertFrom-Json).version
+        $versionSuffix = ""
+        try {
+            $versionSuffix = $version.Split("-")[1]
+            $version = $version.Split("-")[0]
+            if ([string]::IsNullOrEmpty($versionSuffix) -eq $false) {
+                $versionSuffix = "--version-suffix=$versionSuffix"
+            }
+        }
+        catch {}
+
+        dotnet build --configuration RELEASE --nologo --no-restore
+        dotnet pack --configuration RELEASE --nologo --no-build --no-restore --output ./dist/nuget $versionSuffix
+        dotnet nuget push --skip-duplicate --api-key "${{ inputs.nuget_token }}" --source "${{ inputs.nuget_host_url }}" ./dist/nuget/*.nupkg
+

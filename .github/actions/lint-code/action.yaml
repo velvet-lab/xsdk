@@ -1,0 +1,43 @@
+name: Source code linter
+description: Lints source code with megalinter
+
+runs:
+  using: composite
+  steps:
+    # Lint the code with megalinter
+    - name: Lint Code
+      id: ml
+      env:
+        APPLY_FIXES: all
+        APPLY_FIXES_EVENT: push
+        APPLY_FIXES_MODE: commit
+        VALIDATE_ALL_CODEBASE: true
+      uses: oxsecurity/megalinter@v8
+
+    - name: Notify user for failing linter
+      if: failure()
+      uses: ./.github/actions/mattermost-notify
+      with:
+        message: Code linting was not successful
+        state: failure
+
+    - name: Notify user if code was fixed
+      if: success() && steps.ml.outputs.has_updated_sources == 1
+      uses: ./.github/actions/mattermost-notify
+      with:
+        message: Code was fixed after linting. Make a current pull to get the changes
+        state: warning
+
+    - name: Commit changes
+      if: success() && steps.ml.outputs.has_updated_sources == 1
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: 'style: Linting and formating code'
+
+    # Upload MegaLinter artifacts
+    - name: Archive production artifacts
+      if: success() || failure()
+      uses: ChristopherHX/gitea-upload-artifact@v4
+      with:
+        name: MegaLinter reports
+        path: megalinter-reports

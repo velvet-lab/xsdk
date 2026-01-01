@@ -1,0 +1,47 @@
+name: Send notification
+description: Calls n8n webhook to execute a notify to mattermost
+inputs:
+  message:
+    description: Message to send to mattermost
+    required: true
+  state:
+    description: State of the current job. Could be success, failure, skipped or cancelled
+    required: false
+    default: success
+  url:
+    description: Webhook URL to call
+    required: false
+    default: https://workflow.x-breitschaft.de/webhook/gitea/notify
+  meta:
+    description: Meta data to send to mattermost
+    required: false
+    default: >
+      "meta": {
+        "repository": "${{ github.repository }}",
+        "server_url": "${{ github.server_url }}",
+        "run_id": "${{ github.run_number }}",
+        "event_name": "${{ github.event_name }}",
+        "ref_name": "${{ github.ref_name }}",
+        "ref": "${{ github.ref }}",
+        "sha": "${{ github.sha }}",
+        "workflow": "${{ github.workflow }}"
+      }
+
+runs:
+  using: "composite"
+  steps:
+    - name: Call workflow
+      shell: bash
+      env:
+        payload: >
+          {
+            "message": "${{ inputs.message }}",
+            "state": "${{ inputs.state }}",
+            ${{ inputs.meta }}
+          }
+      run: |
+        curl \
+          --request POST \
+          --header "Content-Type: application/json" \
+          --data '${{ env.payload }}' \
+          ${{ inputs.url }}

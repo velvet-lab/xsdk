@@ -1,0 +1,23 @@
+name: Setup workflows
+description: Prepares the workflow for running
+
+runs:
+  using: composite
+  steps:
+    - name: Copy env vars to environment
+      shell: bash
+      run: |
+        echo "GITHUB_SERVER_URL=$GITHUB_SERVER_URL" >> $GITHUB_ENV
+        echo "GITEA_URL=$GITHUB_SERVER_URL" >> $GITHUB_ENV
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci --loglevel warn
+
+    - name: Install dotnet.tools
+      shell: bash
+      run: dotnet tool restore --verbosity minimal
+
+    - name: Restore nuget packages
+      shell: bash
+      run: dotnet restore --locked-mode

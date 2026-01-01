@@ -1,0 +1,44 @@
+name: Source code scanner
+description: Scans source code with Sonar Qube
+inputs:
+  sonar_host_url:
+    description: Host of Sonar Qube
+    required: true
+  sonar_token:
+    description: Token to login to SonarQube
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache SonarQube packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
+
+    - name: Build and analyze
+      shell: pwsh
+      run: |
+        $project_name="$(($env:GITHUB_REPOSITORY -split "/")[1])"
+        $project_key="$($env:GITHUB_REPOSITORY -replace "/", ":")"
+        $project_version=$(Get-Content .\package.json | ConvertFrom-Json).version
+
+        # Currently ignore Quality Gate
+        #  /d:sonar.qualitygate.wait=true
+
+        dotnet dotnet-sonarscanner begin /n:"${project_name}" /k:"${project_key}" /v:"${$project_version}" /d:sonar.token="${{ inputs.sonar_token}}" /d:sonar.host.url="${{ inputs.sonar_host_url }}" /d:sonar.scanner.skipJreProvisioning=true /d:sonar.dotnet.excludeTestProjects=true /d:sonar.verbose=false /d:sonar.scanner.scanAll=false /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+        dotnet build --configuration DEBUG --no-incremental --nologo --no-restore
+        dotnet dotnet-coverage collect "dotnet test --no-build --no-restore --nologo" --output-format xml --output "coverage.xml" --nologo
+        dotnet dotnet-sonarscanner end /d:sonar.token="${{ inputs.sonar_token }}"
+
+    - name: Notify user for failing code scan
+      if: failure()
+      uses: ./.github/actions/mattermost-notify
+      with:
+        message: Code Scan was not successful. See https://sonar.x-breitschaft.de/ for details.
+        state: failure
+
+
+

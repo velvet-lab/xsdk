@@ -1,0 +1,70 @@
+name: Sync branches
+description: Syncs local branches with github
+inputs:
+  repository_name:
+    description: Name of the repository on github
+    required: true
+  sync_token:
+    description: Github Token for syncing. Token must have the privileges to access and commit to the repository
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Remove possible existing github folder
+      shell: bash
+      run: rm -rf '../github_sync' || true
+
+    - name: Clone existing github repository
+      uses: sudosubin/git-clone-action@v1.0.1
+      with:
+        repository: ${{ inputs.repository_name }}
+        platform: 'github'
+        ref: ${{ github.ref_name }}
+        path: '../github_sync'
+
+    - name: Copy sources to cloned github folder
+      shell: pwsh
+      run: |
+        Get-ChildItem "../github_sync/*" -Exclude (".git", ".github") -Recurse | Remove-Item -Recurse -Force
+
+        @(
+            "*.runsettings"
+            "*.sln"
+            ".config/"
+            ".gitattributes"
+            ".gitignore"
+            "package.json"
+            "Directory.Build.props"
+            "Directory.Build.targets"
+            "Directory.Packages.props"
+            "LICENSE"
+            "README.md"
+            "CHANGELOG.md"
+            "demos/"
+            "global.json"
+            "libs/"
+        ) | ForEach-Object -Process {
+            $item = $_
+            $fullPath = Join-Path -Path "." -ChildPath $item -Resolve -ErrorAction SilentlyContinue
+            if ($null -ne $fullPath -and (Test-Path -Path $fullPath)) {
+                if ($item.EndsWith("/") -eq $true) {
+                    Copy-Item -Path $fullPath -Destination "../github_sync" -Recurse -Force
+                }
+                else {
+                    Copy-Item -Path $fullPath -Destination "../github_sync"-Force
+                }
+            }
+        }
+
+    - name: Commit changes to github
+      shell: bash
+      run: |
+        cd '../github_sync'
+        git config user.name "Git Sync Bot"
+        git config user.email "git@sync.bot"
+        git config url.https://${{ inputs.sync_token }}@github.com/.insteadOf https://github.com/
+        git add -A
+        git commit -m "Automatic Sync" || true
+        git push --all || true
+
