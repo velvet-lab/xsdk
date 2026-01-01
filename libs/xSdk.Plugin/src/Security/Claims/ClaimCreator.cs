@@ -27,7 +27,7 @@ namespace xSdk.Security.Claims
                 url = $"https://{url}";
 
             if (string.IsNullOrEmpty(context))
-                context = "workplace";
+                context = "xsdk";
 
             return $"{url}/{context}/claims/{claim}";
         }

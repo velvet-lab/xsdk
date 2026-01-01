@@ -8,6 +8,6 @@ namespace xSdk.Security.Claims
 {
     public static class Authority
     {
-        public const string Name = "Workplace SDK Authority";
+        public const string Name = "xSDK Authority";
     }
 }

@@ -18,7 +18,7 @@ namespace xSdk.Plugins.Documentation
     {
         private static readonly OpenApiInfo DefaultApiInfo = new OpenApiInfo
         {
-            Title = "VAP SDK API Documentation",
+            Title = "SDK API Documentation",
             Version = "v1",
             Description =
                 "Default API Documentation for xSDK. To replace the default Documentation use the IDocumentationPluginBuilder Interface while the plugin will enabled.",

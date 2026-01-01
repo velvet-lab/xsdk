@@ -8,8 +8,6 @@
                 "DV__LOG_LEVEL": "info",
                 "DV__DEMO": "false",
                 "DV__STAGE": "Development",
-                //"DV__CERTAUTH__CLIENT_CERT__FILE": "C:\\Users\\t04963a\\.vault\\vap_kms_prod.pem",
-                //"DV__CERTAUTH__CLIENT_KEY__FILE": "C:\\Users\\t04963a\\.vault\\vap_kms_prod.key",
                 "DV__VAULT__ENDPOINT": "http://myendpoint:8200",
                 "DV__APPROLEAUTH__ROLE_ID": "a_key",
                 "DV__APPROLEAUTH__ROLE_SECRET": "a_secret"

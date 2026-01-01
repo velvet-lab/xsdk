@@ -58,7 +58,7 @@ var host = xSdk.Hosting.Host
                     {
                         // _.Endpoint = $"http://localhost:{port}";
                         // _.TokenAuth = new() { Token = rootToken };
-                        _.Host = "https://vault-kms.prod.datev.de";
+                        _.Host = "https://vault.localhost";
                         // _.CertAuth = new() { Certificate = approleAuth?.CreateCertificate() };
                         _.AppRoleAuth = new()
                         {

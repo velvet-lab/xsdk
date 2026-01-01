@@ -12,7 +12,7 @@ namespace xSdk.Security
 
         private static object LockObject = new object();
 
-        public static void Encrypt<TData>(string file, TData data, string context = "vap")
+        public static void Encrypt<TData>(string file, TData data, string context = "xsdk")
         {
             try
             {
@@ -53,7 +53,7 @@ namespace xSdk.Security
             }
         }
 
-        public static TData Decrypt<TData>(string file, string context = "vap")
+        public static TData Decrypt<TData>(string file, string context = "xsdk")
         {
             TData result = default;
 

@@ -12,7 +12,7 @@ namespace xSdk.Demos.Hosting
 
             var repo = factory.CreateRepository<IReadOnlyVaultRepository>();
 
-            var secrets = await repo.GetSecretsAsync("kv", "groups/vap/{0}/portal/azure");
+            var secrets = await repo.GetSecretsAsync("kv", "groups/{0}/portal/azure");
             foreach (var kvp in secrets)
                 System.Console.WriteLine("Secret for Key '{0}' is '{1}'", kvp.Key, kvp.Value);
         }
