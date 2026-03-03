@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>xSdk.Extensions.Mermaid</RootNamespace>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>b5a9e084-7134-4405-adee-5ecfd0efde83</ProjectGuid>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+
+</Project>

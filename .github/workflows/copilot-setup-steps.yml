@@ -1,0 +1,53 @@
+name: "Copilot Setup Steps"
+
+# This workflow sets up the environment for GitHub Copilot's Coding Agent
+# to understand the project structure and tooling requirements.
+# The job name MUST be 'copilot-setup-steps' for Copilot to recognize it.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+permissions:
+  contents: read
+
+jobs:
+  # IMPORTANT: Job name must be 'copilot-setup-steps'
+  copilot-setup-steps:
+    name: Setup .NET Development Environment
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          global-json-file: global.json
+
+      - name: Restore dependencies
+        run: dotnet restore xsdk.sln
+
+      - name: Build solution
+        run: dotnet build xsdk.sln --configuration Release --no-restore
+
+      - name: Run unit tests
+        run: dotnet test xsdk.sln --configuration Release --no-build --verbosity normal
+
+      - name: Display project structure
+        run: |
+          echo "=== Project Structure ==="
+          dotnet sln xsdk.sln list
+          echo ""
+          echo "=== Key Directories ==="
+          ls -la libs/
+          echo ""
+          echo "=== NuGet Packages ==="
+          head -20 Directory.Packages.props

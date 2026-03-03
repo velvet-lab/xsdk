@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>        
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>79e60893-828d-40a5-b65a-fc8b282a334f</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Consul" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+
+</Project>

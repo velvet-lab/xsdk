@@ -1,0 +1,52 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{6C4D298B-81FB-2B6B-5AB6-46205EDDC72C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xSdk.Data.Consul", "xSdk.Data.Consul", "{96149656-50ED-112C-ADF6-044A2C9DB69A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.Consul", "libs\xSdk.Data.Consul\src\xSdk.Data.Consul.csproj", "{D46CEDD9-13C7-02B1-9EC1-21CA9025A701}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xSdk.Extensions.Mermaid", "xSdk.Extensions.Mermaid", "{503D605A-CB7D-3DA6-C24C-120E5819A627}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Mermaid", "libs\xSdk.Extensions.Mermaid\src\xSdk.Extensions.Mermaid.csproj", "{B8A6F4E4-87FD-65A5-AF1B-3A7F761FFFDC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xSdk.Extensions.Package", "xSdk.Extensions.Package", "{1E79D652-A5CC-A54B-6A8F-2A654C922147}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Package", "libs\xSdk.Extensions.Package\src\xSdk.Extensions.Package.csproj", "{EE58212C-BCC3-5B3A-6D1B-677F78849C0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D46CEDD9-13C7-02B1-9EC1-21CA9025A701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D46CEDD9-13C7-02B1-9EC1-21CA9025A701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D46CEDD9-13C7-02B1-9EC1-21CA9025A701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D46CEDD9-13C7-02B1-9EC1-21CA9025A701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8A6F4E4-87FD-65A5-AF1B-3A7F761FFFDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8A6F4E4-87FD-65A5-AF1B-3A7F761FFFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8A6F4E4-87FD-65A5-AF1B-3A7F761FFFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8A6F4E4-87FD-65A5-AF1B-3A7F761FFFDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE58212C-BCC3-5B3A-6D1B-677F78849C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE58212C-BCC3-5B3A-6D1B-677F78849C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE58212C-BCC3-5B3A-6D1B-677F78849C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE58212C-BCC3-5B3A-6D1B-677F78849C0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{96149656-50ED-112C-ADF6-044A2C9DB69A} = {6C4D298B-81FB-2B6B-5AB6-46205EDDC72C}
+		{D46CEDD9-13C7-02B1-9EC1-21CA9025A701} = {96149656-50ED-112C-ADF6-044A2C9DB69A}
+		{503D605A-CB7D-3DA6-C24C-120E5819A627} = {6C4D298B-81FB-2B6B-5AB6-46205EDDC72C}
+		{B8A6F4E4-87FD-65A5-AF1B-3A7F761FFFDC} = {503D605A-CB7D-3DA6-C24C-120E5819A627}
+		{1E79D652-A5CC-A54B-6A8F-2A654C922147} = {6C4D298B-81FB-2B6B-5AB6-46205EDDC72C}
+		{EE58212C-BCC3-5B3A-6D1B-677F78849C0F} = {1E79D652-A5CC-A54B-6A8F-2A654C922147}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D61A0FFC-220E-4438-8B4D-55978F5207E0}
+	EndGlobalSection
+EndGlobal
