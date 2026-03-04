@@ -1,7 +1,7 @@
 {
   "name": "@global/xsdk",
   "version": "1.0.0-next.14",
-  "description": "SDK for generic restful services",
+  "description": "Base SDK for generic services",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/velvet-lab/xsdk.git"
@@ -12,22 +12,9 @@
   "author": "danlorb@velvet-lab.net",
   "license": "MIT",
   "private": true,
-  "scripts": {
-    "lint": "mega-linter-runner --image oxsecurity/megalinter:latest",
-    "lint:fix": "mega-linter-runner --image oxsecurity/megalinter:latest --fix",
-    "release:version": "semantic-release"
-  },
   "devDependencies": {
-    "@commitlint/config-conventional": "^20.0.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.2",
-    "commit-and-tag-version": "^12.5.1",
-    "conventional-changelog-conventionalcommits": "^9.1.0",
     "mega-linter-runner": "^9.1.0",
     "npm-check-updates": "^19.1.2",
-    "prettier": "~3.6.2",
-    "schemastore": "~0.2.2",
-    "semantic-release": "^25.0.2"
+    "prettier": "~3.6.2"
   }
 }
