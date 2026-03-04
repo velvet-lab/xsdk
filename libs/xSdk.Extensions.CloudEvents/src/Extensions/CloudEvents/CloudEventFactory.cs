@@ -106,7 +106,7 @@ namespace xSdk.Extensions.CloudEvents
 
             type = type.Replace("/", ".");
 
-            var msgLength = 16; // From NsqMessage.MsgIdLength
+            var msgLength = 16; // Convert NsqMessage.MsgIdLength
             var cloudEvent = new CloudEvent(CloudEventsSpecVersion.V1_0)
             {
                 // Global Unique ID

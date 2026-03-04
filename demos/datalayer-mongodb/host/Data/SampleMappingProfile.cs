@@ -1,16 +1,17 @@
-using AutoMapper;
+using xSdk.Data;
 using xSdk.Data.Converters.Mapper;
 
 namespace xSdk.Demos.Data
 {
-    internal sealed class SampleMappingProfile : Profile
+    internal sealed class SampleMappingProfile : MappingProfile
     {
-        public SampleMappingProfile()
+        protected override void Configure()
         {
             CreateMap<SampleEntity, SampleModel>()
-                .ForMember(x => x.AdditionalData, opts => opts.ConvertUsing(new ExtensionDataConverter.ToModelProperty(), x => x.ExtensionData))
-                .ReverseMap()
-                .ForMember(x => x.ExtensionData, opts => opts.ConvertUsing(new ExtensionDataConverter.ToEntityProperty(), x => x.AdditionalData));
+                .Map(dest => dest.AdditionalData, src => ExtensionDataConverter.Convert(src.ExtensionData));
+                
+            CreateMap<SampleModel, SampleEntity>()
+                .Map(dest => dest.ExtensionData, src => ExtensionDataConverter.Convert(src.AdditionalData));
 
         }
     }

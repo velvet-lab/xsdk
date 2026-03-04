@@ -1,12 +1,15 @@
-using AutoMapper;
+using xSdk.Data;
 
 namespace xSdk.Demos.Data
 {
-    internal sealed class SampleMappingProfile : Profile
+    internal sealed class SampleMappingProfile : MappingProfile
     {
-        public SampleMappingProfile()
+        protected override void Configure()
         {
-            CreateMap<SampleEntity, SampleModel>().ReverseMap();
+            CreateMap<SampleEntity, SampleModel>();
+            CreateMap<SampleModel, SampleEntity>();
         }
     }
 }
+
+

@@ -1,56 +1,61 @@
-using AutoMapper;
+using Mapster;
 using NLog;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public abstract class MappingProfile
 {
-    public static class MappingProfile
+    private static Logger logger = LogManager.GetCurrentClassLogger();
+
+    protected static TypeAdapterSetter<TSource, TDestination> CreateMap<TSource, TDestination>()
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        public static IMapper CreateMapper<TProfile>()
-            where TProfile : Profile, new()
-        {
-            logger.Trace("Create Mapper for Profile '{0}'", typeof(TProfile));
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.Configure();
-                cfg.AddProfile<TProfile>();
-            });
-
-            return config.CreateMapper();
-        }
-
-        public static IMapper CreateMapper(Action<Profile> configure)
-        {
-            logger.Trace("Create Mapper from Template with Post Configure Options");
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.Configure();
-                var template = new TemplateProfile();
-                configure(template);
-                cfg.AddProfile(template);
-            });
-
-            return config.CreateMapper();
-        }
-
-        internal static void Configure(this IMapperConfigurationExpression cfg)
-        {
-            // don't map any fields
-            cfg.ShouldMapField = fi => false;
-
-            // map properties with a public or private getter
-            cfg.ShouldMapProperty = pi => pi.GetMethod != null && (pi.GetMethod.IsPublic);
-
-            // don't map methods
-            cfg.ShouldMapMethod = mi => false;
-
-            cfg.AllowNullCollections = false;
-        }
+        TypeAdapterConfig<TSource, TDestination>.Clear();
+        return TypeAdapterConfig<TSource, TDestination>.NewConfig();
     }
 
-    class TemplateProfile : Profile
+    internal TypeAdapterConfig CreateConfig(Action<TypeAdapterConfig>? configure = null)
     {
-        public TemplateProfile() { }
+        // default configuration
+        Action<TypeAdapterConfig> defaultConfig = config =>
+        {
+            config.Default.EnableNonPublicMembers(false);
+            config.Default.IgnoreNullValues(true);
+            config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
+            config.Default.PreserveReference(true);
+            config.Default.Settings.EnableNonPublicMembers = false;
+
+            config.RequireExplicitMapping = true;
+            config.RequireDestinationMemberSource = false;
+        };
+
+        logger.Debug("Creating TypeAdapterConfig for Profile '{0}'", GetType());
+        var globalConfig = TypeAdapterConfig.GlobalSettings;
+
+        if (configure == null)
+        {
+            logger.Debug("Using default configuration for Profile '{0}'", GetType());
+            configure = defaultConfig;
+        }
+
+        logger.Debug("Applying global configuration for Profile '{0}'", GetType());
+        configure(globalConfig);
+
+        logger.Debug("Applying profile configuration for Profile '{0}'", GetType());
+        Configure(globalConfig);
+
+        logger.Debug("Compiling TypeAdapterConfig for Profile '{0}'", GetType());
+        globalConfig.Compile();
+
+        return globalConfig;
+    }
+
+    protected virtual void Configure()
+    {
+
+    }
+
+    protected virtual void Configure(TypeAdapterConfig config)
+    {
+        Configure();
     }
 }

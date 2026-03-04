@@ -1,4 +1,4 @@
-﻿using xSdk.Security.Claims;
+using xSdk.Security.Claims;
 using System.Security.Claims;
 
 namespace xSdk.Data.Converters.Mapper
@@ -26,8 +26,7 @@ namespace xSdk.Data.Converters.Mapper
         [Fact]
         public void ConvertClaimsToString()
         {
-            var converter = new ClaimListConverter.ToModelProperty();
-            var actual = converter.Convert(Claims, default);
+            var actual = ClaimListConverter.Convert(Claims);
 
             Assert.NotNull(actual);
             Assert.IsType<List<ClaimModel>>(actual);
@@ -36,8 +35,7 @@ namespace xSdk.Data.Converters.Mapper
         [Fact]
         public void ConvertStringToClaims()
         {
-            var converter = new ClaimListConverter.ToEntityProperty();
-            var actual = converter.Convert(ClaimModels, default);
+            var actual = ClaimListConverter.Convert(ClaimModels);
 
             Assert.NotNull(actual);
             Assert.IsType<List<Claim>>(actual);

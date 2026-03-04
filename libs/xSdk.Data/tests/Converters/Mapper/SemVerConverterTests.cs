@@ -1,4 +1,4 @@
-﻿namespace xSdk.Data.Converters.Mapper
+namespace xSdk.Data.Converters.Mapper
 {
     public class SemVerConverterTests
     {
@@ -9,8 +9,7 @@
         [Fact]
         public void ConvertSemVerToString()
         {
-            var converter = new SemVerConverter.ToModelProperty();
-            var actual = converter.Convert(Version, default);
+            var actual = SemVerConverter.Convert(Version);
 
             Assert.NotNull(actual);
             Assert.IsType<string>(actual);
@@ -19,8 +18,7 @@
         [Fact]
         public void ConvertStringToSemVer()
         {
-            var converter = new SemVerConverter.ToEntityProperty();
-            var actual = converter.Convert(VersionString, default);
+            var actual = SemVerConverter.Convert(VersionString);
 
             Assert.NotNull(actual);
             Assert.IsType<SemVer>(actual);

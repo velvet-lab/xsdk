@@ -1,4 +1,3 @@
-using AutoMapper;
 using xSdk.Shared;
 using System.Text.Json;
 
@@ -6,27 +5,21 @@ namespace xSdk.Data.Converters.Mapper
 {
     public static class JsonElementConverter
     {
-        public sealed class ToModelProperty : IValueConverter<string, JsonElement>
+        public static JsonElement Convert(string sourceMember)
         {
-            public JsonElement Convert(string sourceMember, ResolutionContext context)
+            if (!string.IsNullOrEmpty(sourceMember))
             {
-                if (!string.IsNullOrEmpty(sourceMember))
-                {
-                    var json = Base64Helper.ConvertFromBase64(sourceMember.Trim());
-                    return JsonDocument.Parse(json).RootElement;
-                }
-
-                return JsonDocument.Parse("{}").RootElement;
+                var json = Base64Helper.ConvertFromBase64(sourceMember.Trim());
+                return JsonDocument.Parse(json).RootElement;
             }
+
+            return JsonDocument.Parse("{}").RootElement;
         }
 
-        public sealed class ToEntityProperty : IValueConverter<JsonElement, string>
+        public static string Convert(JsonElement sourceMember)
         {
-            public string Convert(JsonElement sourceMember, ResolutionContext context)
-            {
-                var json = sourceMember.GetRawText();
-                return Base64Helper.ConvertToBase64(json);
-            }
+            var json = sourceMember.GetRawText();
+            return Base64Helper.ConvertToBase64(json);
         }
     }
 }

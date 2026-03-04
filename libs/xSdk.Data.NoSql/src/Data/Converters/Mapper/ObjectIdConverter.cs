@@ -1,12 +1,21 @@
-using System.ComponentModel;
+using LiteDB;
 
 namespace xSdk.Data.Converters.Mapper
 {
-    public static class GuidConverter
+    public static class ObjectIdConverter
     {
-        public static Guid Convert(string value)
+        public static string Convert(ObjectId sourceMember)
         {
-            if (TryConvert(value, out Guid result))
+            if (TryConvert(sourceMember, out string result))
+            {
+                return result;
+            }
+            return default;
+        }
+
+        public static ObjectId Convert(string sourceMember)
+        {
+            if (TryConvert(sourceMember, out ObjectId result))
             {
                 return result;
             }
@@ -14,22 +23,12 @@ namespace xSdk.Data.Converters.Mapper
             return default;
         }
 
-        public static string Convert(Guid value)
-        {
-            if (TryConvert(value, out string result))
-            {
-                return result;
-            }
-
-            return default;
-        }
-
-        internal static bool TryConvert(object value, out Guid converted)
+        internal static bool TryConvert(object value, out ObjectId converted)
         {
             converted = default;
             if (value != null && value is string stringValue)
             {
-                converted = Guid.Parse(stringValue);
+                converted = new ObjectId(stringValue.Trim());
                 return true;
             }
             return false;
@@ -38,9 +37,9 @@ namespace xSdk.Data.Converters.Mapper
         internal static bool TryConvert(object value, out string converted)
         {
             converted = default;
-            if (value != null && value is Guid guidValue)
+            if (value != null && value is ObjectId objectIdValue)
             {
-                converted = guidValue.ToString();
+                converted = objectIdValue.ToString().Trim();
                 return true;
             }
             return false;

@@ -1,33 +1,24 @@
-using AutoMapper;
 using MongoDB.Bson;
 
 namespace xSdk.Data.Converters.Mapper
 {
     public static class ObjectIdConverter
     {
-        public sealed class ToModelProperty : IValueConverter<ObjectId, string>
+        public static string Convert(ObjectId sourceMember)
         {
-            public string Convert(ObjectId sourceMember, ResolutionContext context)
+            if (TryConvert(sourceMember, out string result))
             {
-                if (TryConvert(sourceMember, out string result))
-                {
-                    return result;
-                }
-                return default;
+                return result;
             }
+            return default;
         }
-
-        public sealed class ToEntityProperty : IValueConverter<string, ObjectId>
+        public static ObjectId Convert(string sourceMember)
         {
-            public ObjectId Convert(string sourceMember, ResolutionContext context)
+            if (TryConvert(sourceMember, out ObjectId result))
             {
-                if (TryConvert(sourceMember, out ObjectId result))
-                {
-                    return result;
-                }
-
-                return default;
+                return result;
             }
+            return default;
         }
 
         internal static bool TryConvert(object value, out string converted)

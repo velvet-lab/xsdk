@@ -9,7 +9,7 @@ namespace xSdk.Data
         public void Map2Model()
         {
             var fake = FakeGenerator.Generate<TestEntityFakes, TestEntity>();
-            var model = fake.ToModel<TestMapper, TestModel>();
+            var model = fake.ToModel<TestMappingProfile, TestModel>();
 
             Assert.NotNull(model);
             Assert.Equal(fake.Id.ToString(), model.Id);
@@ -28,7 +28,7 @@ namespace xSdk.Data
                 MyName = fake.Name,
                 MyAge = fake.Age,
             };
-            var entity = model.ToEntity<TestMapper, TestEntity>();
+            var entity = model.ToEntity<TestMappingProfile, TestEntity>();
 
             Assert.NotNull(entity);
             Assert.Equal(model.Id, entity.Id.ToString());

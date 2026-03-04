@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="Mapster" />
         <PackageReference Include="Bogus" />
         <PackageReference Include="LiteDB" />
         <PackageReference Include="TestContainers" />

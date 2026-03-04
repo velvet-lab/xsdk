@@ -20,7 +20,7 @@ namespace xSdk.Data
         {
             lock (syncObject)
             {
-                if (PKObjectIdToString.TryConvert(value, out string resultAsString))
+                if (ObjectIdConverter.TryConvert(value, out string resultAsString))
                 {
                     if (typeof(TType) == typeof(ObjectId))
                     {
@@ -31,7 +31,7 @@ namespace xSdk.Data
                         return (TType)(object)resultAsString;
                     }
                 }
-                else if (PKStringToObjectId.TryConvert(value, out ObjectId result))
+                else if (ObjectIdConverter.TryConvert(value, out ObjectId result))
                 {
                     if (typeof(TType) == typeof(ObjectId))
                     {

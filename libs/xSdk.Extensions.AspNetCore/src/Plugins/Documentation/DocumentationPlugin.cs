@@ -21,7 +21,7 @@ namespace xSdk.Plugins.Documentation
             Title = "SDK API Documentation",
             Version = "v1",
             Description =
-                "Default API Documentation for xSDK. To replace the default Documentation use the IDocumentationPluginBuilder Interface while the plugin will enabled.",
+                "Default API Documentation for xSDK. Convert replace the default Documentation use the IDocumentationPluginBuilder Interface while the plugin will enabled.",
             License = new OpenApiLicense { Name = "MIT" },
         };
 
@@ -29,7 +29,7 @@ namespace xSdk.Plugins.Documentation
         public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
         {
             // Hack: Retrieve currently configured ApiVersions from previously loaded ApiVersionProvider
-            // To do this, it is neccessary to build the service provider
+            // Convert do this, it is neccessary to build the service provider
             var descriptionProvider = services
                 .BuildServiceProvider()
                 .GetRequiredService<IApiVersionDescriptionProvider>();

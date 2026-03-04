@@ -11,7 +11,7 @@
         <PackageReference Include="Bogus" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" />
-        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="Mapster" />
         <PackageReference Include="Testcontainers.MongoDb" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="xunit" />

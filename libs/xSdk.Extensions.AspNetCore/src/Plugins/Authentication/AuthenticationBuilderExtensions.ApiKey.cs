@@ -65,7 +65,7 @@ namespace xSdk.Plugins.Authentication
                 OnAuthenticationSucceeded = context =>
                 {
                     // Will be invoked after a successful authentication.
-                    context.Response.Headers.Append("AuthenticationCustomHeader", "From OnAuthenticationSucceeded");
+                    context.Response.Headers.Append("AuthenticationCustomHeader", "Convert OnAuthenticationSucceeded");
                     return Task.CompletedTask;
                 },
             };

@@ -1,4 +1,3 @@
-using AutoMapper;
 using NLog;
 
 namespace xSdk.Data.Converters.Mapper
@@ -7,55 +6,52 @@ namespace xSdk.Data.Converters.Mapper
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public sealed class ToModelProperty : IValueConverter<SemVer, string>
+        public static string Convert(SemVer sourceMember)
         {
-            public string Convert(SemVer sourceMember, ResolutionContext context)
+            string result = default;
+            try
             {
-                string result = default;
-                try
+                if (sourceMember != null)
                 {
-                    if (sourceMember != null)
-                    {
-                        result = sourceMember.Version;
-                    }
+                    result = sourceMember.Version;
                 }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Version could not converted. See further Log for further Details");
-                    if (ex.InnerException != null)
-                        logger.Info(ex.InnerException.Message);
-
-                    throw;
-                }
-
-                return result;
             }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Version could not converted. See further Log for further Details");
+                if (ex.InnerException != null)
+                    logger.Info(ex.InnerException.Message);
+
+                throw;
+            }
+
+            return result;
         }
 
-        public sealed class ToEntityProperty : IValueConverter<string, SemVer>
+
+
+        public static SemVer Convert(string sourceMember)
         {
-            public SemVer Convert(string sourceMember, ResolutionContext context)
+            SemVer result = default;
+
+            try
             {
-                SemVer result = default;
-
-                try
+                if (!string.IsNullOrEmpty(sourceMember))
                 {
-                    if (!string.IsNullOrEmpty(sourceMember))
-                    {
-                        result = new SemVer(sourceMember);
-                    }
+                    result = new SemVer(sourceMember);
                 }
-                catch (Exception ex)
-                {
-                    logger.Error(ex, "Version could not converted. See further Log for further Details");
-                    if (ex.InnerException != null)
-                        logger.Info(ex.InnerException.Message);
-
-                    throw;
-                }
-
-                return result;
             }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Version could not converted. See further Log for further Details");
+                if (ex.InnerException != null)
+                    logger.Info(ex.InnerException.Message);
+
+                throw;
+            }
+
+            return result;
         }
+
     }
 }

@@ -1,9 +1,9 @@
-using AutoMapper.Configuration.Annotations;
-using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using Mapster;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace xSdk.Data
 {
@@ -15,7 +15,7 @@ namespace xSdk.Data
         [XmlIgnore]
         [SoapIgnore]
         [BsonIgnore]
-        [Ignore]
+        [AdaptIgnoreAttribute]
         public IPrimaryKey PrimaryKey { get; protected set; }
 
         [NotMapped]
@@ -24,7 +24,7 @@ namespace xSdk.Data
         [XmlIgnore]
         [SoapIgnore]
         [BsonIgnore]
-        [Ignore]
+        [AdaptIgnoreAttribute]
         public object Id
         {
             get => PrimaryKey.GetValue();

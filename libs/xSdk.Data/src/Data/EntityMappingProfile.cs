@@ -1,15 +1,15 @@
-using AutoMapper;
-
 namespace xSdk.Data
 {
-    internal class EntityMappingProfile<TEntity> : Profile
+    internal class EntityMappingProfile<TEntity> : MappingProfile
         where TEntity : IEntity
     {
         // Tricky: This Profile exists only to copy Entity to Entity without the ID
 
-        public EntityMappingProfile()
+        protected override void Configure()
         {
-            CreateMap<TEntity, TEntity>().ForMember(x => x.Id, opts => opts.Ignore()).ForMember(x => x.PrimaryKey, opts => opts.Ignore());
+            CreateMap<TEntity, TEntity>()
+                .Ignore(dest => dest.Id)
+                .Ignore(dest => dest.PrimaryKey);
         }
     }
 }

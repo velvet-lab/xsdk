@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>		
-        <PackageReference Include="AutoMapper" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Asp.Versioning.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
 		<PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
 		<PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />

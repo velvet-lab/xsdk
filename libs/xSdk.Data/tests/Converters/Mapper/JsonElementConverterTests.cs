@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace xSdk.Data.Converters.Mapper
 {
@@ -18,8 +18,7 @@ namespace xSdk.Data.Converters.Mapper
         [Fact]
         public void ConvertJsonElementToBase64String()
         {
-            var converter = new JsonElementConverter.ToEntityProperty();
-            var actual = converter.Convert(JsonEl, default);
+            var actual = JsonElementConverter.Convert(JsonEl);
 
             Assert.NotNull(actual);
             Assert.IsType<string>(actual);
@@ -28,8 +27,7 @@ namespace xSdk.Data.Converters.Mapper
         [Fact]
         public void ConvertBase64StringToJsonElement()
         {
-            var converter = new JsonElementConverter.ToModelProperty();
-            var actual = converter.Convert(JsonString, default);
+            var actual = JsonElementConverter.Convert(JsonString);
 
             Assert.NotNull(actual);
         }

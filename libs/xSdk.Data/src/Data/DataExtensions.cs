@@ -1,5 +1,6 @@
-using AutoMapper;
 using System.Text.Json;
+using Mapster;
+using MapsterMapper;
 
 namespace xSdk.Data
 {
@@ -7,114 +8,78 @@ namespace xSdk.Data
     {
         #region From Model to Entity
 
-        public static TEntity ToEntity<TProfile, TEntity>(this IModel model, Action<IMappingOperationOptions<IModel, TEntity>> opts = null)
-            where TProfile : Profile, new()
+        public static TEntity ToEntity<TProfile, TEntity>(this IModel model)
+            where TProfile : MappingProfile, new()
             where TEntity : IEntity
         {
-            var mapper = MappingProfile.CreateMapper<TProfile>();
-            if (opts == null)
-                return mapper.Map<IModel, TEntity>(model);
-            else
-                return mapper.Map(model, opts);
+            var mapper = MappingFactory.CreateMapper<TProfile>();
+
+            return mapper.Map<TEntity>(model);
         }
 
-        public static IEnumerable<TEntity> ToEntity<TProfile, TEntity>(
-            this IEnumerable<IModel> models,
-            Action<IMappingOperationOptions<IEnumerable<IModel>, IEnumerable<TEntity>>> opts = null
-        )
-            where TProfile : Profile, new()
+        public static IEnumerable<TEntity> ToEntity<TProfile, TEntity>(this IEnumerable<IModel> models)
+            where TProfile : MappingProfile, new()
             where TEntity : IEntity
         {
-            var mapper = MappingProfile.CreateMapper<TProfile>();
-            if (opts == null)
-                return mapper.Map<IEnumerable<IModel>, IEnumerable<TEntity>>(models);
-            else
-                return mapper.Map(models, opts);
+            var mapper = MappingFactory.CreateMapper<TProfile>();
+            return mapper.Map<IEnumerable<TEntity>>(models);
         }
 
         #endregion
 
         #region From Entity to Model
 
-        public static TModel ToModel<TProfile, TModel>(this IEntity entity, Action<IMappingOperationOptions<IEntity, TModel>> opts = null)
-            where TProfile : Profile, new()
+        public static TModel ToModel<TProfile, TModel>(this IEntity entity)
+            where TProfile : MappingProfile, new()
             where TModel : IModel
         {
-            var mapper = MappingProfile.CreateMapper<TProfile>();
-            if (opts == null)
-                return mapper.Map<IEntity, TModel>(entity);
-            else
-                return mapper.Map(entity, opts);
+            var mapper = MappingFactory.CreateMapper<TProfile>();
+            return mapper.Map<TModel>(entity);
         }
 
-        public static IEnumerable<TModel> ToModel<TProfile, TModel>(
-            this IEnumerable<IEntity> entities,
-            Action<IMappingOperationOptions<IEnumerable<IEntity>, IEnumerable<TModel>>> opts = null
-        )
-            where TProfile : Profile, new()
+        public static IEnumerable<TModel> ToModel<TProfile, TModel>(this IEnumerable<IEntity> entities)
+            where TProfile : MappingProfile, new()
             where TModel : IModel
         {
-            var mapper = MappingProfile.CreateMapper<TProfile>();
-            if (opts == null)
-                return mapper.Map<IEnumerable<IEntity>, IEnumerable<TModel>>(entities);
-            else
-                return mapper.Map(entities, opts);
+            var mapper = MappingFactory.CreateMapper<TProfile>();
+
+            return mapper.Map<IEnumerable<IEntity>, IEnumerable<TModel>>(entities);
         }
 
         #endregion
 
         #region Copy Entity to Entity
 
-        public static TEntity CopyToEntity<TEntity>(this TEntity entity, TEntity destination, Action<IMappingOperationOptions<TEntity, TEntity>> opts = null)
+        public static TEntity CopyToEntity<TEntity>(this TEntity entity, TEntity destination)
             where TEntity : IEntity
         {
-            var mapper = MappingProfile.CreateMapper<EntityMappingProfile<TEntity>>();
-            if (opts == null)
-                return mapper.Map(entity, destination);
-            else
-                return mapper.Map(entity, destination, opts);
+            var mapper = MappingFactory.CreateMapper<EntityMappingProfile<TEntity>>();
+            return mapper.Map(entity, destination);
         }
 
-        public static IEnumerable<TEntity> CopyToEntity<TEntity>(
-            this IEnumerable<TEntity> entity,
-            IEnumerable<TEntity> destination,
-            Action<IMappingOperationOptions<IEnumerable<TEntity>, IEnumerable<TEntity>>> opts = null
-        )
+        public static IEnumerable<TEntity> CopyToEntity<TEntity>(this IEnumerable<TEntity> entity, IEnumerable<TEntity> destination)
             where TEntity : IEntity
         {
-            var mapper = MappingProfile.CreateMapper<EntityMappingProfile<TEntity>>();
-            if (opts == null)
-                return mapper.Map(entity, destination);
-            else
-                return mapper.Map(entity, destination, opts);
+            var mapper = MappingFactory.CreateMapper<EntityMappingProfile<TEntity>>();
+            return mapper.Map(entity, destination);
         }
 
         #endregion
 
         #region Copy Model to Model
 
-        public static TModel CopyToModel<TModel>(this TModel model, TModel destination, Action<IMappingOperationOptions<TModel, TModel>> opts = null)
+        public static TModel CopyToModel<TModel>(this TModel model, TModel destination)
             where TModel : IModel
         {
-            var mapper = MappingProfile.CreateMapper<ModelMappingProfile<TModel>>();
-            if (opts == null)
-                return mapper.Map(model, destination);
-            else
-                return mapper.Map(model, destination, opts);
+            var mapper = MappingFactory.CreateMapper<ModelMappingProfile<TModel>>();
+            return mapper.Map(model, destination);
         }
 
-        public static IEnumerable<TModel> CopyToModel<TModel>(
-            this IEnumerable<TModel> entity,
-            IEnumerable<TModel> destination,
-            Action<IMappingOperationOptions<IEnumerable<TModel>, IEnumerable<TModel>>> opts = null
-        )
+        public static IEnumerable<TModel> CopyToModel<TModel>(this IEnumerable<TModel> entity, IEnumerable<TModel> destination)
             where TModel : IModel
         {
-            var mapper = MappingProfile.CreateMapper<ModelMappingProfile<TModel>>();
-            if (opts == null)
-                return mapper.Map(entity, destination);
-            else
-                return mapper.Map(entity, destination, opts);
+            var mapper = MappingFactory.CreateMapper<ModelMappingProfile<TModel>>();
+            return mapper.Map(entity, destination);
         }
 
         #endregion
@@ -125,13 +90,10 @@ namespace xSdk.Data
             return JsonSerializer.Serialize(model);
         }
 
-        public static TEntity EnrichEntity<TEntity>(this IMapper mapper, TEntity source, TEntity destination, Action<IMappingOperationOptions> opts = default)
+        public static TEntity EnrichEntity<TEntity>(this IMapper mapper, TEntity source, TEntity destination)
             where TEntity : IEntity
         {
-            if (opts != null)
-                return mapper.Map(source, destination, opts);
-            else
-                return mapper.Map(source, destination);
+            return mapper.Map(source, destination);
         }
     }
 }

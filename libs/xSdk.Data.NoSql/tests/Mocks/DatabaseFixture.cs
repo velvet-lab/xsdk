@@ -16,23 +16,11 @@ namespace xSdk.Data.Mocks
             {
                 services.AddDatalayer(builder =>
                 {
-                    var currentFolder = Path.Combine(FileSystemHelper.GetExecutingFolder(), "data", Guid.NewGuid().ToString("N"));
+                    var currentFolder = Path.Combine(Path.GetTempPath(), "data", Guid.NewGuid().ToString("N"));
                     if (!Directory.Exists(currentFolder))
                     {
                         Directory.CreateDirectory(currentFolder);
                     }
-
-                    var imageName = GetEnvironmentVariable("GENERIC_LINUX_IMAGE_NAME");
-                    container = new ContainerBuilder()
-                        .WithImage(imageName)
-                        .WithPortBinding(8080, true)
-                        .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080)))
-                        .WithAutoRemove(true)
-                        .WithBindMount(currentFolder, "/data/db")
-                        .WithImagePullPolicy(PullPolicy.Missing)
-                        .Build();
-
-                    container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
                     builder
                         // Enable FlatFile

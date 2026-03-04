@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="AutoMapper" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
     <ItemGroup>

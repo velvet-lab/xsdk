@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-		<PackageReference Include="AutoMapper" PrivateAssets="contentfiles;analyzers;build;compile" />
+		<PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
 		<PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
 		<PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
