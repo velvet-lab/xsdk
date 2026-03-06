@@ -5,28 +5,28 @@
 
 version: 2
 updates:
-  #  Überwachung für NuGet
+  # Monitoring for NuGet
   - package-ecosystem: "nuget"
-    directory: "/" # Scannt die gesamte Solution nach .csproj Files
+    directory: "/" # Scans the entire solution for .csproj files
     schedule:
       interval: "weekly"
       day: "monday"
       time: "08:00"
       timezone: "Europe/Berlin"
-    open-pull-requests-limit: 3 # Verhindert, dass du am Montag von PRs erschlagen wirst
+    open-pull-requests-limit: 3 # Prevents being overwhelmed by PRs on Monday
     groups:
       dotnet-dependencies:
         patterns:
-          - "*" # Fasst alle NuGet-Updates in einem einzigen PR zusammen
+          - "*" # Groups all NuGet updates into a single PR
 
-  # Überwachung für GitHub Actions
+  # Monitoring for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly" # Actions ändern sich seltener, einmal im Monat reicht
+      interval: "monthly" # Actions change less frequently; once a month is sufficient
     open-pull-requests-limit: 1
 
-  # Überwachung für semantic-release und andere Node-Tools
+  # Monitoring for semantic-release and other Node tools
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
