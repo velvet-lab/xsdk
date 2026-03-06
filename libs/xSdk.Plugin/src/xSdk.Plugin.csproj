@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>ce74def0-ac7a-40be-a072-9c27f1febfa9</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>		
+        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Asp.Versioning.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
+		<PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
+		<PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" PrivateAssets="contentfiles;analyzers;build" />
+        <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="MongoDB.Bson" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
+		<PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
+		<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="RestSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Weikio.PluginFramework.Abstractions" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>xSdk</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,13 @@
+{
+    "Globs": [
+        "**/.git/**",
+        "**/megalinter-reports/**",
+        "**/.vs/**",
+        "**/.config/**",
+        "**/.github/**",
+        "**/dist/**",
+        "**/node_modules/**",
+        "**/demos/**",
+        "**/tests/**"
+    ]
+}

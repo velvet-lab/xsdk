@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>xSdk.Data</RootNamespace>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>2160f6be-22ab-4072-ab46-b9c504caa305</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="JsonFlatFileDataStore" PrivateAssets="contentfiles;analyzers;build;compile"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+
+</Project>

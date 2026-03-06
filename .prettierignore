@@ -1,0 +1,11 @@
+# Add files here to ignore them from prettier formatting
+**/*.json
+**/*spec.ts
+**/jest*
+**/tsconfig*
+*.md
+.commitlintrc.js
+.prettierrc
+/coverage
+/dist
+/node_modules
