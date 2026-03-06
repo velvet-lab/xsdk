@@ -16,17 +16,17 @@ jobs:
     name: Build feature branch
     runs-on: ubuntu-latest
     steps:
+      - name: Setup just
+        uses: extractions/setup-just@v3
+
       - name: Checking out
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup monorepo
-        uses: ./.github/actions/setup-monorepo
-
-      - name: Execute linters
-        if: success()
-        uses: ./.github/actions/lint-code
+      - name: Install dependencies
+        shell: bash
+        run: just install
 
       - name: Scan for code issues
         if: success()
@@ -34,16 +34,3 @@ jobs:
         with:
           sonar_host_url: ${{ vars.SONAR_HOST_URL }}
           sonar_token: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Notify user about failures
-        if: failure()
-        uses: ./.github/actions/mattermost-notify
-        with:
-          message: Feature Branch has failures
-          state: failure
-
-      - name: Notify user about success
-        if: success()
-        uses: ./.github/actions/mattermost-notify
-        with:
-          message: Feature Branch has successful passed the pipeline

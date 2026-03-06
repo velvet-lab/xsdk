@@ -32,13 +32,3 @@ runs:
         dotnet build --configuration DEBUG --no-incremental --nologo --no-restore
         dotnet dotnet-coverage collect "dotnet test --no-build --no-restore --nologo" --output-format xml --output "coverage.xml" --nologo
         dotnet dotnet-sonarscanner end /d:sonar.token="${{ inputs.sonar_token }}"
-
-    - name: Notify user for failing code scan
-      if: failure()
-      uses: ./.github/actions/mattermost-notify
-      with:
-        message: Code Scan was not successful. See https://sonar.x-breitschaft.de/ for details.
-        state: failure
-
-
-
