@@ -52,12 +52,6 @@ test solution: (build solution)
     dotnet test "{{solution}}" --configuration Release
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."
 
-# Scan solution with SonarCloud, requires token as argument
-[no-cd]
-scan solution: (restore solution)
-    dotnet build "{{solution}}" --configuration DEBUG --no-incremental --nologo --no-restore
-    dotnet dotnet-coverage collect "dotnet test {{solution}} --no-build --no-restore --nologo" --output-format xml --output "coverage.xml" --nologo
-
 # Publish NuGet packages to registry, requires API key as argument
 [no-cd]
 publish solution token: (build solution)

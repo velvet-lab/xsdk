@@ -1,4 +1,4 @@
-name: Sonar Scan Check for Pull Requests
+name: 'Quality: SonarCloud Analysis'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -21,8 +21,8 @@ env:
   DOTNET_NOLOGO: true
 
 jobs:
-  sonar:
-    name: Sonar Code analysis
+  sonar-analysis:
+    name: SonarQube Quality Gate
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -32,9 +32,6 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
-
-      - name: Setup just
-        uses: extractions/setup-just@v3
 
       - name: Checking out
         uses: actions/checkout@v4
@@ -60,44 +57,46 @@ jobs:
             dotnet tool update dotnet-coverage --tool-path ./.coverage/scanner
           }
 
-      - name: Scan pull request
+      - name: Restore dependencies
+        shell: pwsh
+        run: dotnet restore xsdk.sln --nologo
+
+      - name: Sonar scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PR_NUMBER: ${{ github.event.pull_request.number }}
+          SONAR_PR_BRANCH: ${{ github.head_ref }}
+          SONAR_PR_BASE: ${{ github.base_ref }}
         shell: pwsh
         run: |
-          # 1. Daten sauber extrahieren
-          $repoFull = $env:GITHUB_REPOSITORY
-          $org = $repoFull.Split("/")[0]
-          $repo = $repoFull.Split("/")[1]
-          $projectKey = "${org}_${repo}"
-          
-          # Version aus package.json holen
-          $packageJson = Get-Content ./package.json | ConvertFrom-Json
-          $version = $packageJson.version
+          $org, $repo = $env:GITHUB_REPOSITORY -split '/', 2
+          $projectKey  = "${org}_${repo}"
+          $version     = (Get-Content ./package.json | ConvertFrom-Json).version
 
-          # 2. Basis-Kommando vorbereiten
-          $cmd = "./.sonar/scanner/dotnet-sonarscanner begin "
-          $cmd += "/o:`"$org`" /k:`"$projectKey`" /v:`"$version`" "
-          $cmd += "/d:sonar.token=`"$env:SONAR_TOKEN`" "
-          $cmd += "/d:sonar.qualitygate.wait=true "
-          $cmd += "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml "
-          $cmd += "/d:sonar.scanner.skipJreProvisioning=true "
+          $beginArgs = @(
+            "begin"
+            "/o:$org"
+            "/k:$projectKey"
+            "/v:$version"
+            "/d:sonar.token=$env:SONAR_TOKEN"
+            "/d:sonar.qualitygate.wait=false"
+            "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
+            "/d:sonar.scanner.skipJreProvisioning=true"
+          )
 
-          # 3. PR-Logik hinzufügen
-          if ("${{ github.event_name }}" -eq "pull_request") {
-              $cmd += "/d:sonar.pullrequest.key=`"${{ github.event.pull_request.number }}`" "
-              $cmd += "/d:sonar.pullrequest.branch=`"${{ github.head_ref }}`" "
-              $cmd += "/d:sonar.pullrequest.base=`"${{ github.base_ref }}`" "
-              $cmd += "/d:sonar.pullrequest.provider=GitHub "
+          if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
+            $beginArgs += @(
+              "/d:sonar.pullrequest.key=$env:SONAR_PR_NUMBER"
+              "/d:sonar.pullrequest.branch=$env:SONAR_PR_BRANCH"
+              "/d:sonar.pullrequest.base=$env:SONAR_PR_BASE"
+              "/d:sonar.pullrequest.provider=GitHub"
+            )
           } else {
-              $cmd += "/d:sonar.branch.name=`"${{ github.ref_name }}`" "
+            $beginArgs += "/d:sonar.branch.name=$env:GITHUB_REF_NAME"
           }
 
-          # 4. Ausführen (Invoke-Expression ist hier am sichersten für lange Parameterketten)
-          Write-Host "Starting Sonar Scanner with: $cmd"
-          Invoke-Expression $cmd
-
-          just dotnet::scan xsdk.sln
-
-          ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
+          & ./.sonar/scanner/dotnet-sonarscanner @beginArgs
+          dotnet build xsdk.sln --configuration Debug --no-incremental --nologo --no-restore
+          & ./.coverage/scanner/dotnet-coverage collect "dotnet test xsdk.sln --no-build --no-restore --nologo" --output-format xml --output coverage.xml --nologo
+          & ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
