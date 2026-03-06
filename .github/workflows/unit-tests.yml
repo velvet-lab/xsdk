@@ -42,6 +42,7 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+          global-json-file: global.json
 
       - name: Restore dependencies
         run: dotnet restore xsdk.sln
@@ -56,7 +57,7 @@ jobs:
         uses: dorny/test-reporter@3d76b34a4535afbd0600d347b09a6ee5deb3ed7f
         if: always()
         with:
-          name: .NET Unit Tests
+          name: 'Test Results Detail'
           path: "**/test-results.trx"
           reporter: dotnet-trx
 
