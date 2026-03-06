@@ -34,6 +34,8 @@ jobs:
         if: success()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Token is not needed because we do not publish to a npm registry
+          NPM_TOKEN: 'DUMMY_TOKEN'
         shell: bash
         run: just release
 
