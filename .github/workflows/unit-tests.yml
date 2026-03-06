@@ -37,7 +37,7 @@ jobs:
         run: dotnet test xsdk.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
       - name: Test Report
-        uses: dorny/test-reporter@358ec16417539515902f2323e206013444903348
+        uses: dorny/test-reporter@3d76b34a4535afbd0600d347b09a6ee5deb3ed7f
         if: always() # Läuft auch, wenn Tests fehlschlagen
         with:
           name: .NET Unit Tests
