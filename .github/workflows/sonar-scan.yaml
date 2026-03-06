@@ -66,36 +66,37 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: pwsh
         run: |
-          # Dynamische Projektdaten
-          $org = $env:GITHUB_REPOSITORY.Split("/")[0]
-          $repo = $env:GITHUB_REPOSITORY.Split("/")[1]
+          # 1. Daten sauber extrahieren
+          $repoFull = $env:GITHUB_REPOSITORY
+          $org = $repoFull.Split("/")[0]
+          $repo = $repoFull.Split("/")[1]
           $projectKey = "${org}_${repo}"
-          $version = (Get-Content ./package.json | ConvertFrom-Json).version
+          
+          # Version aus package.json holen
+          $packageJson = Get-Content ./package.json | ConvertFrom-Json
+          $version = $packageJson.version
 
-          # Basis-Argumente für Sonar
-          $sonarArgs = @(
-            "begin",
-            "/o:`"$org`"",
-            "/k:`"$projectKey`"",
-            "/v:`"$version`"",
-            "/d:sonar.token=`"$env:SONAR_TOKEN`"",
-            "/d:sonar.qualitygate.wait=true",
-            "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
-          )
+          # 2. Basis-Kommando vorbereiten
+          $cmd = "./.sonar/scanner/dotnet-sonarscanner begin "
+          $cmd += "/o:`"$org`" /k:`"$projectKey`" /v:`"$version`" "
+          $cmd += "/d:sonar.token=`"$env:SONAR_TOKEN`" "
+          $cmd += "/d:sonar.qualitygate.wait=true "
+          $cmd += "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml "
+          $cmd += "/d:sonar.scanner.skipJreProvisioning=true "
 
-          # PR-Spezifische Argumente NUR hinzufügen, wenn wir in einem PR sind
+          # 3. PR-Logik hinzufügen
           if ("${{ github.event_name }}" -eq "pull_request") {
-            $sonarArgs += "/d:sonar.pullrequest.key=`"${{ github.event.pull_request.number }}`""
-            $sonarArgs += "/d:sonar.pullrequest.branch=`"${{ github.head_ref }}`""
-            $sonarArgs += "/d:sonar.pullrequest.base=`"${{ github.base_ref }}`""
-            $sonarArgs += "/d:sonar.pullrequest.provider=GitHub"
+              $cmd += "/d:sonar.pullrequest.key=`"${{ github.event.pull_request.number }}`" "
+              $cmd += "/d:sonar.pullrequest.branch=`"${{ github.head_ref }}`" "
+              $cmd += "/d:sonar.pullrequest.base=`"${{ github.base_ref }}`" "
+              $cmd += "/d:sonar.pullrequest.provider=GitHub "
           } else {
-            # Wenn es kein PR ist (z.B. push auf main), scanne den aktuellen Branch
-            $sonarArgs += "/d:sonar.branch.name=`"${{ github.ref_name }}`""
+              $cmd += "/d:sonar.branch.name=`"${{ github.ref_name }}`" "
           }
 
-          # Den Scanner mit allen gesammelten Argumenten aufrufen
-          & ./.sonar/scanner/dotnet-sonarscanner @sonarArgs
+          # 4. Ausführen (Invoke-Expression ist hier am sichersten für lange Parameterketten)
+          Write-Host "Starting Sonar Scanner with: $cmd"
+          Invoke-Expression $cmd
 
           just dotnet::scan xsdk.sln
 
