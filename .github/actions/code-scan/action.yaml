@@ -28,9 +28,3 @@ runs:
         dotnet dotnet-sonarscanner begin /n:"${project_name}" /k:"${project_key}" /v:"${$project_version}" /d:sonar.token="${{ inputs.sonar_token}}" /d:sonar.scanner.skipJreProvisioning=true /d:sonar.dotnet.excludeTestProjects=true /d:sonar.verbose=false /d:sonar.scanner.scanAll=false /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
         just sonar-build
         dotnet dotnet-sonarscanner end /d:sonar.token="${{ inputs.sonar_token }}"
-
-        $ErrorActionPreference = "Stop"
-        $PSNativeCommandUseErrorActionPreference = $true
-        .\.sonar\scanner\dotnet-sonarscanner begin /k:"example" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-         dotnet build
-         .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
