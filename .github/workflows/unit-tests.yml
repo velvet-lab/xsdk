@@ -1,0 +1,41 @@
+name: 'Unit Tests'
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - next
+  pull_request:
+    branches:
+      - main
+      - next
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore xsdk.sln
+
+      - name: Build
+        run: dotnet build xsdk.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test xsdk.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always() # Läuft auch, wenn Tests fehlschlagen
+        with:
+          name: .NET Unit Tests
+          path: "**/test-results.trx"
+          reporter: dotnet-trx
