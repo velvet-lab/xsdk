@@ -4,6 +4,7 @@
 [![Build Status](https://github.com/velvet-lab/xsdk/actions/workflows/release.yml/badge.svg)](https://github.com/velvet-lab/xsdk/actions)
 [![Latest Release](https://img.shields.io/github/v/release/velvet-lab/xsdk?logo=github)](https://github.com/velvet-lab/xsdk/releases)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=velvet-lab_xsdk&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=velvet-lab_xsdk)
+![Unit Tests](https://github.com/velvet-lab/xsdk/actions/workflows/unit-tests.yml/badge.svg)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=velvet-lab_xsdk&metric=coverage)](https://sonarcloud.io/summary/new_code?id=velvet-lab_xsdk)
 
 ![Security Policy](https://img.shields.io/badge/Security-Policy_Available-success.svg)

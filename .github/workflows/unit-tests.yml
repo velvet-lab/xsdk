@@ -1,18 +1,34 @@
-name: 'Unit Tests'
+name: 'Quality Assurance'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
+  workflow_dispatch:
   push:
-    branches-ignore:
+    branches:
       - main
       - next
+    paths-ignore: &shared_ignore
+      - '**.md'
+      - '.github/**'
+      - '.gitignore'
+      - '.just/**'
+      - '.vscode/**'
+      - 'demos/**'
+      - 'docs/**'
+      - 'tools/**'
   pull_request:
     branches:
       - main
       - next
+    types: [opened, synchronize, reopened]
+    paths-ignore: *shared_ignore
 
 jobs:
-  test:
-    name: Run Unit Tests
+  unit-test:
+    name: Unit Tests
     runs-on: ubuntu-latest
     permissions:
       checks: write
