@@ -49,10 +49,20 @@ test: build
 
 # Lint whole solution
 [group('development')]
-lint:
-    @just repository::lint
+lint: repository::lint
 
 # Lint with auto-fix
 [group('development')]
-lint-fix:
-    @just repository::lint-fix
+lint-fix: repository::lint-fix
+
+# Format code in whole repository
+[group('development')]
+format:
+    @just repository::format
+    @just dotnet::format xsdk.sln
+
+# Check code formatting without fixing, useful for CI checks
+[group('development')]
+check-format:
+    @just repository::check-format
+    @just dotnet::check-format xsdk.sln

@@ -1,4 +1,4 @@
-name: "Copilot Setup Steps"
+name: 'Copilot Setup Steps'
 
 # This workflow sets up the environment for GitHub Copilot's Coding Agent
 # to understand the project structure and tooling requirements.

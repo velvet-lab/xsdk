@@ -26,7 +26,7 @@ UPDATED_SOURCES_REPORTER: false
 FILEIO_REPORTER: false
 TAP_REPORTER: false
 # Exclude Config
-FILTER_REGEX_INCLUDE: (apps/|libs/|plugins/)
+FILTER_REGEX_INCLUDE: (apps/|libs/|plugins/|demos/)
 EXCLUDED_DIRECTORIES:
   - .config
   - .devcontainer

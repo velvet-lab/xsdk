@@ -71,3 +71,15 @@ publish solution token: (build solution)
 
     dotnet pack "{{solution}}" --configuration RELEASE --nologo --no-build --no-restore --output "{{dist_dir}}/nuget" $versionSuffix
     dotnet nuget push --skip-duplicate --api-key "{{token}}" --source "${nuget_host_url}" "{{dist_dir}}/nuget/*.nupkg"
+
+[no-cd]
+format solution:
+    @just {{module_name}}::info "Formatting code in solution '{{solution}}'..."
+    dotnet format "{{solution}}" --verbosity diagnostic
+    @just {{module_name}}::success "Code formatting completed for solution '{{solution}}'."
+
+[no-cd]
+check-format solution:
+    @just {{module_name}}::info "Checking code formatting for solution '{{solution}}'..."
+    dotnet format "{{solution}}" --verify-no-changes --verbosity diagnostic
+    @just {{module_name}}::success "Code formatting check completed for solution '{{solution}}'."

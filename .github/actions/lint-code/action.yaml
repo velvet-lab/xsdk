@@ -26,7 +26,7 @@ runs:
             labels: ['bug', 'ci'],
             assignees: [context.actor]
           })
-   
+
     - name: Commit changes
       if: success() && steps.ml.outputs.has_updated_sources == 'true'
       uses: EndBug/add-and-commit@v9

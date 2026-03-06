@@ -10,7 +10,6 @@ _init-semantic-release:
         @semantic-release/changelog \
         @semantic-release/git \
         @semantic-release/github \
-        commit-and-tag-version \
         conventional-changelog-conventionalcommits \
         semantic-release
     @just {{module_name}}::success "Semantic Release initialized for repository '{{repo_name}}'."

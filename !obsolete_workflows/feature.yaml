@@ -23,7 +23,7 @@ jobs:
       - name: Create bug issue for failing CI
         uses: peter-evans/create-issue@v4
         with:
-          title: "CI: Build failed on feature branch ${{ github.ref_name }}"
+          title: 'CI: Build failed on feature branch ${{ github.ref_name }}'
           body: |
             Automated issue created because the CI failed in workflow ${{ github.workflow }} on run #${{ github.run_number }}.
 
