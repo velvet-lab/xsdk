@@ -22,7 +22,7 @@ env:
 
 jobs:
   sonar:
-    name: Sonar PR analysis
+    name: Sonar Code analysis
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -72,17 +72,30 @@ jobs:
           $projectKey = "${org}_${repo}"
           $version = (Get-Content ./package.json | ConvertFrom-Json).version
 
-          # Sonar Start
-          ./.sonar/scanner/dotnet-sonarscanner begin `
-            /o:"$org" `
-            /k:"$projectKey" `
-            /v:"$version" `
-            /d:sonar.token="$env:SONAR_TOKEN" `
-            /d:sonar.qualitygate.wait=true `
-            /d:sonar.pullrequest.key="${{ github.event.pull_request.number }}" `
-            /d:sonar.pullrequest.branch="${{ github.head_ref }}" `
-            /d:sonar.pullrequest.base="${{ github.base_ref }}" `
-            /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          # Basis-Argumente für Sonar
+          $sonarArgs = @(
+            "begin",
+            "/o:`"$org`"",
+            "/k:`"$projectKey`"",
+            "/v:`"$version`"",
+            "/d:sonar.token=`"$env:SONAR_TOKEN`"",
+            "/d:sonar.qualitygate.wait=true",
+            "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
+          )
+
+          # PR-Spezifische Argumente NUR hinzufügen, wenn wir in einem PR sind
+          if ("${{ github.event_name }}" -eq "pull_request") {
+            $sonarArgs += "/d:sonar.pullrequest.key=`"${{ github.event.pull_request.number }}`""
+            $sonarArgs += "/d:sonar.pullrequest.branch=`"${{ github.head_ref }}`""
+            $sonarArgs += "/d:sonar.pullrequest.base=`"${{ github.base_ref }}`""
+            $sonarArgs += "/d:sonar.pullrequest.provider=GitHub"
+          } else {
+            # Wenn es kein PR ist (z.B. push auf main), scanne den aktuellen Branch
+            $sonarArgs += "/d:sonar.branch.name=`"${{ github.ref_name }}`""
+          }
+
+          # Den Scanner mit allen gesammelten Argumenten aufrufen
+          & ./.sonar/scanner/dotnet-sonarscanner @sonarArgs
 
           just dotnet::scan xsdk.sln
 
