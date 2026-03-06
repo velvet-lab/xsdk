@@ -16,6 +16,7 @@ jobs:
   build:
     permissions:
       contents: write
+      id-token: write
 
     name: Build all projects
     runs-on: ubuntu-latest
