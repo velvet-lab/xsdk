@@ -25,12 +25,20 @@ clean solution:
 
     @just {{module_name}}::success "Solution '{{solution}}' cleaned successfully."
 
+# Build whole solution
 [no-cd]
 build solution:
     @just {{module_name}}::info "Building solution '{{solution}}'..."
     dotnet build "{{solution}}" --configuration Release
     @just {{module_name}}::success "Solution '{{solution}}' built successfully."
 
+# Build solution with code coverage for SonarCloud analysis
+[no-cd]
+sonar-build solution:
+    dotnet build "{{solution}}" --configuration DEBUG --no-incremental --nologo --no-restore
+    dotnet dotnet-coverage collect "dotnet test {{solution}} --no-build --no-restore --nologo" --output-format xml --output "coverage.xml" --nologo
+
+# Test whole solution
 [no-cd]
 test solution:
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."

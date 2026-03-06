@@ -29,6 +29,5 @@ runs:
         #  /d:sonar.qualitygate.wait=true
 
         dotnet dotnet-sonarscanner begin /n:"${project_name}" /k:"${project_key}" /v:"${$project_version}" /d:sonar.token="${{ inputs.sonar_token}}" /d:sonar.host.url="${{ inputs.sonar_host_url }}" /d:sonar.scanner.skipJreProvisioning=true /d:sonar.dotnet.excludeTestProjects=true /d:sonar.verbose=false /d:sonar.scanner.scanAll=false /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-        dotnet build --configuration DEBUG --no-incremental --nologo --no-restore
-        dotnet dotnet-coverage collect "dotnet test --no-build --no-restore --nologo" --output-format xml --output "coverage.xml" --nologo
+        just sonar-build xsdk.sln
         dotnet dotnet-sonarscanner end /d:sonar.token="${{ inputs.sonar_token }}"
