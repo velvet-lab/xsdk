@@ -12,6 +12,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.OpenApi" VersionOverride="3.4.0" />
+      <PackageReference Include="NLog" VersionOverride="6.1.1" />
+    <PackageReference Include="OpenTelemetry" VersionOverride="1.15.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" VersionOverride="10.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" VersionOverride="10.1.4" />
         <ProjectReference Include="..\..\..\libs\xSdk.Data\src\xSdk.Data.csproj" />
     </ItemGroup>
 </Project>
