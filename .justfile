@@ -37,6 +37,11 @@ clean:
 build: install
     @just dotnet::build xsdk.sln
 
+# Build solution with code coverage for SonarCloud analysis
+[group('development')]
+sonar-build: install
+    @just dotnet::sonar-build xsdk.sln
+
 # Tests whole solution
 [group('development')]
 test: build
