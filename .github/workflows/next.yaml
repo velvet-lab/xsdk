@@ -1,0 +1,42 @@
+name: Build next branch
+
+on:
+  push:
+    branches:
+      - next
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  RUNNER_TOOL_CACHE: /toolcache
+
+jobs:
+  build:
+    name: Build all projects
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checking out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
+
+      - name: Create release
+        if: success()
+        shell: bash
+        run: just release
+
+      - name: Publish artifacts
+        if: success()
+        uses: ./.github/actions/publish-nuget
+        with:
+          nuget_host_url: ${{ vars.NUGET_HOST_URL }}
+          nuget_token: ${{ secrets.NUGET_API_KEY }}
