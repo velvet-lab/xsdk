@@ -14,6 +14,13 @@ module_dir := clean(repo_root / ".just/modules" / module_name)
 # Dist directory for build outputs
 dist_dir := clean(repo_root / "dist")
 
+# Cross platform shebang
+shebang := if os() == 'windows' {
+  'powershell.exe'
+} else {
+  '/usr/bin/env pwsh'
+}
+
 # Private recipe to print colored messages
 [private]
 info message:

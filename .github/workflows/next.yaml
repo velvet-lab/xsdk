@@ -38,9 +38,13 @@ jobs:
         shell: bash
         run: just release
 
+      - name: Scan for code issues
+        if: success()
+        uses: ./.github/actions/code-scan
+        with:
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
+
       - name: Publish artifacts
         if: success()
-        uses: ./.github/actions/publish-nuget
-        with:
-          nuget_host_url: ${{ vars.NUGET_HOST_URL }}
-          nuget_token: ${{ secrets.NUGET_API_KEY }}
+        shell: pwsh
+        run: just dotnet::publish xsdk.sln ${{ secrets.NUGET_API_KEY }}

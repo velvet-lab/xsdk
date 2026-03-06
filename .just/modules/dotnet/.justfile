@@ -42,7 +42,7 @@ restore solution:
 [no-cd]
 build solution: (restore solution)
     @just {{module_name}}::info "Building solution '{{solution}}'..."
-    dotnet build "{{solution}}" --configuration Release
+    dotnet build "{{solution}}" --configuration Release --nologo --no-restore
     @just {{module_name}}::success "Solution '{{solution}}' built successfully."
 
 # Build solution with code coverage for SonarCloud analysis
@@ -57,3 +57,23 @@ test solution:
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."
     dotnet test "{{solution}}" --configuration Release
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."
+
+# Publish NuGet packages to registry, requires API key as argument
+[no-cd]
+publish solution token: (build solution)
+    #!{{shebang}}
+    $nuget_host_url=""
+    Remove-Item -Path "{{dist_dir}}/nuget" -Recurse -Force -ErrorAction SilentlyContinue
+    $version = $(Get-Content .\package.json | ConvertFrom-Json).version
+    $versionSuffix = ""
+    try {
+        $versionSuffix = $version.Split("-")[1]
+        $version = $version.Split("-")[0]
+        if ([string]::IsNullOrEmpty($versionSuffix) -eq $false) {
+            $versionSuffix = "--version-suffix=$versionSuffix"
+        }
+    }
+    catch {}
+
+    dotnet pack "{{solution}}" --configuration RELEASE --nologo --no-build --no-restore --output "{{dist_dir}}/nuget" $versionSuffix
+    dotnet nuget push --skip-duplicate --api-key "{{token}}" --source "${nuget_host_url}" "{{dist_dir}}/nuget/*.nupkg"
