@@ -1,0 +1,45 @@
+{
+    "[csharp]": {
+        "editor.defaultFormatter": "csharpier.csharpier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "diffEditor.hideUnchangedRegions.enabled": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 5000,
+    "files.trimTrailingWhitespace": true,
+    "git.autofetch": true,
+    "git.branchProtection": [
+        "main",
+        "next"
+    ],
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.settings.useSplitJSON": true,
+    "sonarlint.connectedMode.project": {
+        "connectionId": "sonar-x-breitschaft-de",
+        "projectKey": "global:xsdk"
+    },
+    "dotnet.unitTests.runSettingsPath": "./xsdk.runsettings"
+}

@@ -148,16 +148,6 @@ OpenCover/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# VS Code files for those working on multiple tools
-.vscode/*
-!.vscode/commit*.json
-!.vscode/launch.json
-!.vscode/settings.default.json
-!.vscode/settings.default.user.json
-!.vscode/tasks.json
-!.vscode/*.code-snippets
-*.code-workspace
-
 # Local History for Visual Studio Code
 .history/
 
@@ -240,15 +230,9 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,aspnetcore,csharp,git,gitbook
 
-# monorepo settings
-.cache/
-.commitlintrc.js
-.nx/
-Taskfile.yml
+# repo settings
 dist
-docs
 coverage
-Pester.config.ps1
 # end of monorepo settings
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
