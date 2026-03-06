@@ -15,11 +15,6 @@ runs:
     - name: Install pnpm
       uses: pnpm/action-setup@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-
     - name: Install dependencies
       shell: bash
       run: just install

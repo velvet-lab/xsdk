@@ -1,9 +1,7 @@
-name: Build feature branch
+name: Test
 
 on:
-  push:
-    branches:
-      - feature-*
+  workflow_call:
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -12,8 +10,8 @@ env:
   RUNNER_TOOL_CACHE: /toolcache
 
 jobs:
-  build:
-    name: Build feature branch
+  test:
+    name: Run unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checking out
@@ -24,8 +22,8 @@ jobs:
       - name: Setup repository
         uses: ./.github/actions/setup-repository
 
-      - name: Scan for code issues
-        if: success()
-        uses: ./.github/actions/code-scan
-        with:
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
+      - name: Test code
+        shell: bash
+        run: |
+          set -o pipefail
+          just test xsdk.sln

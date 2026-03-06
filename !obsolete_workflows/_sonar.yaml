@@ -1,0 +1,35 @@
+name: Sonar Scan
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  RUNNER_TOOL_CACHE: /toolcache
+
+jobs:
+  sonar:
+    name: Sonar code scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v1
+        with:
+          java-version: 21
+
+      - name: Scan for code issues
+        shell: pwsh
+        run: just dotnet::scan xsdk.sln ${{ secrets.SONAR_TOKEN }}

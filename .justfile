@@ -56,5 +56,3 @@ lint:
 [group('development')]
 lint-fix:
     @just repository::lint-fix
-
-release: repository::release
