@@ -19,12 +19,13 @@ runs:
       shell: pwsh
       run: |
         $project_name="$(($env:GITHUB_REPOSITORY -split "/")[1])"
+        $organization_name="$(($env:GITHUB_REPOSITORY -split "/")[0])"
         $project_key="$($env:GITHUB_REPOSITORY -replace "/", ":")"
         $project_version=$(Get-Content .\package.json | ConvertFrom-Json).version
 
         # Currently ignore Quality Gate
         #  /d:sonar.qualitygate.wait=true
 
-        dotnet dotnet-sonarscanner begin /n:"${project_name}" /k:"${project_key}" /v:"${$project_version}" /d:sonar.token="${{ inputs.sonar_token}}" /d:sonar.scanner.skipJreProvisioning=true /d:sonar.dotnet.excludeTestProjects=true /d:sonar.verbose=false /d:sonar.scanner.scanAll=false /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+        dotnet dotnet-sonarscanner begin /n:"${project_name}" /o:"${organization_name}" /k:"${project_key}" /v:"${$project_version}" /d:sonar.token="${{ inputs.sonar_token}}" /d:sonar.scanner.skipJreProvisioning=true /d:sonar.dotnet.excludeTestProjects=true /d:sonar.verbose=false /d:sonar.scanner.scanAll=false /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
         just sonar-build
         dotnet dotnet-sonarscanner end /d:sonar.token="${{ inputs.sonar_token }}"
