@@ -1,3 +1,4 @@
+# Creates a GitHub release using Semantic Release, based on commit messages and configured release rules.
 [no-cd]
 release:
   pnpm semantic-release

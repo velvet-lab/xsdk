@@ -1,5 +1,6 @@
 # Cleanup repository and delete garbage files and folders
 [no-cd]
+[group('maintenance')]
 clean: _clean
 
 [private]

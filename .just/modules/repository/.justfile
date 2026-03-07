@@ -13,6 +13,7 @@ import 'recipes/pnpm.just'
 import 'recipes/clean.just'
 import 'recipes/semantic-release.just'
 import 'recipes/lint.just'
+import 'recipes/format.just'
 
 # List available recipes
 [private]
