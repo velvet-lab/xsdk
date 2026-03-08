@@ -13,6 +13,7 @@ _clean solution:
 
     @just {{module_name}}::info "Removing all obj folders..."
     Get-ChildItem -Path "{{repo_root}}" -Filter "obj" -Recurse | Select-Object -ExpandProperty FullName | Remove-Item -Recurse -Force
+    Get-ChildItem -Path "{{repo_root}}" -Filter "TestResults" -Recurse | Select-Object -ExpandProperty FullName | Remove-Item -Recurse -Force
 
     @just {{module_name}}::success "Solution '{{solution}}' cleaned successfully."
 
@@ -26,5 +27,6 @@ _clean solution:
 
     @just {{module_name}}::info "Removing all obj folders..."
     find "{{repo_root}}" -type d -name "obj" -exec rm -rf {} +
+    find "{{repo_root}}" -type d -name "TestResults" -exec rm -rf {} +
 
     @just {{module_name}}::success "Solution '{{solution}}' cleaned successfully."

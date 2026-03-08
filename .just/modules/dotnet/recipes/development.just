@@ -19,5 +19,5 @@ build solution: (restore solution)
 [group('development')]
 test solution: (build solution)
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --configuration Release
+    dotnet test "{{solution}}" --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."

@@ -11,5 +11,5 @@ install:
 [group('maintenance')]
 update:
     @just {{module_name}}::info "Updating tools for repository '{{repo_name}}'..."
-    dotnet tool update --tool-manifest
+    dotnet tool update --tool-manifest --all
     @just {{module_name}}::success "Tools updated for repository '{{repo_name}}'"

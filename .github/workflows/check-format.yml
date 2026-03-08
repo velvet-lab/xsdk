@@ -35,8 +35,5 @@ jobs:
       - name: Setup just
         uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
 
-      - name: Install Dependencies
-        run: pnpm install
-
       - name: Run Format Check
         run: just check-format

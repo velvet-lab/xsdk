@@ -54,12 +54,12 @@ test:
 # Lint whole solution
 [group('linting')]
 check-lint:
-    @just dotnet::check-lint
+    @just repository::check-lint
 
 # Lint with auto-fix
 [group('linting')]
 lint:
-    @just dotnet::lint
+    @just repository::lint
 
 # Check code formatting without fixing, useful for CI checks
 [group('format')]

@@ -68,7 +68,7 @@ jobs:
 
       - name: Restore DotNet dependencies
         shell: pwsh
-        run: dotnet restore xsdk.sln --nologo
+        run: just dotnet::restore xsdk.sln
 
       - name: Sonar scan
         env:

@@ -38,17 +38,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'pnpm'
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
 
-      - name: Restore dependencies
-        run: dotnet restore xsdk.sln
-
-      - name: Build
-        run: dotnet build xsdk.sln --configuration Release --no-restore
+      - name: Setup just
+        uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
 
       - name: Test
-        run: dotnet test xsdk.sln --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+        run: just test
 
       - name: Test Report
         uses: dorny/test-reporter@3d76b34a4535afbd0600d347b09a6ee5deb3ed7f
