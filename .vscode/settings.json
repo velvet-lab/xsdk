@@ -1,45 +1,28 @@
 {
-    "[csharp]": {
-        "editor.defaultFormatter": "csharpier.csharpier-vscode"
-    },
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[markdown]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[xml]": {
-        "editor.defaultFormatter": "redhat.vscode-xml"
-    },
-    "[yaml]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "diffEditor.hideUnchangedRegions.enabled": true,
-    "diffEditor.ignoreTrimWhitespace": false,
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 5000,
-    "files.trimTrailingWhitespace": true,
-    "git.autofetch": true,
-    "git.branchProtection": [
-        "main",
-        "next"
-    ],
-    "git.confirmSync": false,
-    "git.enableSmartCommit": true,
-    "workbench.iconTheme": "material-icon-theme",
-    "workbench.settings.useSplitJSON": true,
-    "sonarlint.connectedMode.project": {
-        "connectionId": "sonar-x-breitschaft-de",
-        "projectKey": "global:xsdk"
-    },
-    "dotnet.unitTests.runSettingsPath": "./xsdk.runsettings"
+  "dotnet.unitTests.runSettingsPath": "./xsdk.runsettings",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "velvet-lab",
+    "projectKey": "velvet-lab_xsdk"
+  },
+  "githubPullRequests.allowFetch": true,
+  "githubPullRequests.notifications": "pullRequests",
+  "githubPullRequests.pullBranch": "always",
+  "githubPullRequests.pushBranch": "always",
+  "github.copilot.chat.codesearch.agent.enabled": true,
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": ".github/guidance/commit-message-instructions.md"
+    }
+  ],
+  "github.copilot.chat.reviewSelection.instructions": [
+    {
+      "file": ".github/guidance/review-instructions.md"
+    }
+  ],
+  "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
+    {
+      "file": ".github/guidance/pull-request-description-instructions.md"
+    }
+  ],
+
 }
