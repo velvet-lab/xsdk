@@ -35,6 +35,9 @@ jobs:
       pull-requests: write
       contents: read
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup repository
         uses: ./.github/actions/setup-repository
 

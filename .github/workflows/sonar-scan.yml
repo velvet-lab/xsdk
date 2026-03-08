@@ -40,6 +40,9 @@ jobs:
           java-version: 21
           distribution: temurin
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Setup repository
         uses: ./.github/actions/setup-repository
 

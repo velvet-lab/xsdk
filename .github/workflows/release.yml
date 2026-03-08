@@ -34,10 +34,13 @@ jobs:
       id-token: write
 
     steps:
-      - name: Setup repository
-        uses: ./.github/actions/setup-repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
 
       - name: Validate Release Config
         run: |
