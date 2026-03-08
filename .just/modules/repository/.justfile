@@ -8,10 +8,10 @@ set dotenv-load := false
 set quiet := true
 
 import 'recipes/module.just'
-import 'recipes/repository.just'
-import 'recipes/pnpm.just'
+import 'recipes/init.just'
+import 'recipes/maintenance.just'
 import 'recipes/clean.just'
-import 'recipes/semantic-release.just'
+import 'recipes/release.just'
 import 'recipes/lint.just'
 import 'recipes/format.just'
 
