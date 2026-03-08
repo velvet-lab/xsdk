@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - next
-    paths-ignore: &shared_ignore
+    paths-ignore:
       - '**.md'
       - '.github/**'
       - '.gitignore'
@@ -49,8 +49,11 @@ jobs:
           node-version: 'lts/*'
           cache: 'pnpm'
 
+      - name: Setup just
+        uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
+
       - name: Install Dependencies
-        run: pnpm install
+        run: just install
 
       - name: Validate Release Config
         run: |
@@ -63,5 +66,15 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: 'dummy'
-        run: pnpm exec semantic-release ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+        run: just release ${{ github.event.inputs.dry_run == 'true' || 'false' }}
+
+      - name: Publish
+        if: github.event.inputs.dry_run != 'true'
+        shell: pwsh
+        env:
+          token: ${{ secrets.NUGET_API_KEY }}
+          nuget_host_url: 'https://api.nuget.org/v3/index.json'
+          dist_dir: 'dist'
+        run: |
+          just dotnet::publish xsdk.sln
+          dotnet nuget push --skip-duplicate --api-key "${token}" --source "${nuget_host_url}" "dist/nuget/*.nupkg"

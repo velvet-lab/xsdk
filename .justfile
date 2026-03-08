@@ -29,6 +29,12 @@ install:
     @just repository::install
     @just dotnet::install
 
+# Update dependencies for all modules
+[group('maintenance')]
+update:
+    @just repository::update
+    @just dotnet::update
+
 # Clean whole repository by removing build artifacts, node_modules and other garbage files and folders
 [group('maintenance')]
 clean:
