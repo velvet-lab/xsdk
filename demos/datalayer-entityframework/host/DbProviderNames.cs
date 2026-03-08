@@ -1,14 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace xSdk.Demos
+namespace xSdk.Demos;
+
+internal class DbProviderNames
 {
-    internal class DbProviderNames
-    {
-        internal const string First = "First";
-        internal const string Second = "Second";
-    }
+    internal const string First = "First";
+    internal const string Second = "Second";
 }

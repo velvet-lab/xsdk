@@ -1,11 +1,10 @@
+using Microsoft.AspNetCore.DataProtection;
 using xSdk.Extensions.Plugin;
 using xSdk.Plugins.DataProtection;
-using Microsoft.AspNetCore.DataProtection;
 
-namespace xSdk.Demos.Builders
+namespace xSdk.Demos.Builders;
+
+internal class DataProtectionPluginBuilder : PluginBuilderBase, IDataProtectionPluginBuilder
 {
-    internal class DataProtectionPluginBuilder : PluginBuilderBase, IDataProtectionPluginBuilder
-    {
-        public void ConfigureDataProtection(IDataProtectionBuilder builder) { }
-    }
+    public void ConfigureDataProtection(IDataProtectionBuilder builder) { }
 }

@@ -1,13 +1,12 @@
 using xSdk.Data;
 
-namespace xSdk.Demos.Data
+namespace xSdk.Demos.Data;
+
+internal sealed class SampleMappingProfile : MappingProfile
 {
-    internal sealed class SampleMappingProfile : MappingProfile
+    protected override void Configure()
     {
-        protected override void Configure()
-        {
-            CreateMap<SampleEntity, SampleModel>();
-            CreateMap<SampleModel, SampleEntity>();
-        }
+        CreateMap<SampleEntity, SampleModel>();
+        CreateMap<SampleModel, SampleEntity>();
     }
 }

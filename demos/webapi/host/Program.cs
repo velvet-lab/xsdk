@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using NLog;
 using xSdk.Demos.Builders;
 using xSdk.Plugins.Authentication;
 using xSdk.Plugins.Compression;
@@ -6,10 +10,6 @@ using xSdk.Plugins.Documentation;
 using xSdk.Plugins.Links;
 using xSdk.Plugins.WebApi;
 using xSdk.Plugins.WebSecurity;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using NLog;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]

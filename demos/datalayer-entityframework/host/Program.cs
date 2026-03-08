@@ -1,12 +1,12 @@
-using xSdk.Data;
-using xSdk.Demos;
-using xSdk.Demos.Data;
-using xSdk.Demos.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using xSdk.Data;
+using xSdk.Demos;
+using xSdk.Demos.Data;
+using xSdk.Demos.Hosting;
 
 const string APP_NAME = "datalayer-entityframework";
 const string APP_COMPANY = "xdemos";

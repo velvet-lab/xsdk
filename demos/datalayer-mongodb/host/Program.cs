@@ -1,6 +1,3 @@
-using xSdk.Data;
-using xSdk.Demos.Data;
-using xSdk.Demos.Hosting;
 using DotNet.Testcontainers.Builders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +5,9 @@ using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
 using NLog;
 using Testcontainers.MongoDb;
+using xSdk.Data;
+using xSdk.Demos.Data;
+using xSdk.Demos.Hosting;
 
 const string APP_NAME = "datalayer-mongodb";
 const string APP_COMPANY = "xdemos";
