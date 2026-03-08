@@ -8,6 +8,7 @@ install:
 
 # Initialize repository with pnpm, write package.json and add needed dependencies
 [no-cd]
+[group('maintenance')]
 init: _init-pnpm && _init-semantic-release update
     @just {{module_name}}::info "Initializing repository '{{repo_name}}'..."
 
