@@ -129,6 +129,7 @@ xSDK follows a **modular, layered architecture** where each library is independe
 ### Prerequisites
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8) or [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9) (version `8.0.411` or later, see `global.json`)
+- [just](https://just.systems/) (command runner for development tasks)
 - [pnpm](https://pnpm.io/) 10.x (required for release tooling only)
 - [Git](https://git-scm.com/)
 
@@ -139,14 +140,13 @@ git clone https://github.com/velvet-lab/xsdk.git
 cd xsdk
 
 # Restore and build all libraries
-dotnet restore xsdk.sln
-dotnet build xsdk.sln --configuration Release
+just build
 ```
 
 ### Run Tests
 
 ```bash
-dotnet test xsdk.sln --configuration Release
+just test
 ```
 
 ### Run a Demo
@@ -414,7 +414,7 @@ public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
 
 ```bash
 # All tests
-dotnet test xsdk.sln
+just test
 
 # Specific project
 dotnet test libs/xSdk/tests/
@@ -433,7 +433,7 @@ Test projects are named `[ProjectName].Tests` and mirror the source project stru
 2. Follow the [C# development guidelines](.github/instructions/csharp.instructions.md).
 3. Write **unit tests** for all public APIs (mandatory).
 4. Ensure all XML documentation (`///`) is complete on public members.
-5. Run `dotnet build` and `dotnet test` locally before pushing.
+5. Run `just build` and `just test` locally before pushing.
 6. Use [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages.
 7. Open a pull request targeting the `next` branch.
 
