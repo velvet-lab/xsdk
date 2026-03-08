@@ -5,7 +5,7 @@ namespace xSdk.Data;
 
 public abstract class MappingProfile
 {
-    private static Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
     protected static TypeAdapterSetter<TSource, TDestination> CreateMap<TSource, TDestination>()
     {

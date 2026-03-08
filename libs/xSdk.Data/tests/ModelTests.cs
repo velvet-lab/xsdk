@@ -1,26 +1,25 @@
 using xSdk.Data.Mocks;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public class ModelTests
 {
-    public class ModelTests
+    [Fact]
+    public void ModelShouldCreated()
     {
-        [Fact]
-        public void ModelShouldCreated()
-        {
-            var model = new TestModel { Age = 42, Name = "John Doe" };
+        var model = new TestModel { Age = 42, Name = "John Doe" };
 
-            Assert.NotNull(model);
-            Assert.IsType<string>(model.PrimaryKey.GetValue());
-        }
+        Assert.NotNull(model);
+        Assert.IsType<string>(model.PrimaryKey.GetValue());
+    }
 
-        [Fact]
-        public void ModelShouldCreatedWithAutomaticGeneratedPK()
-        {
-            var model = new TestModel { Age = 42, Name = "John Doe" };
+    [Fact]
+    public void ModelShouldCreatedWithAutomaticGeneratedPK()
+    {
+        var model = new TestModel { Age = 42, Name = "John Doe" };
 
-            Assert.NotNull(model);
-            Assert.NotNull(model.Id);
-            Assert.IsType<string>(model.PrimaryKey.GetValue());
-        }
+        Assert.NotNull(model);
+        Assert.NotNull(model.Id);
+        Assert.IsType<string>(model.PrimaryKey.GetValue());
     }
 }

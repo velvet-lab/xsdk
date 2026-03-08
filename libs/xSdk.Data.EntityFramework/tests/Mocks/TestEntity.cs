@@ -1,9 +1,8 @@
-namespace xSdk.Data.Mocks
-{
-    internal class TestEntity : EFEntity
-    {
-        public string Name { get; set; }
+namespace xSdk.Data.Mocks;
 
-        public int Age { get; set; }
-    }
+internal class TestEntity : EFEntity
+{
+    public string Name { get; set; }
+
+    public int Age { get; set; }
 }

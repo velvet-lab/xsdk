@@ -1,27 +1,26 @@
-using xSdk.Hosting;
 using Microsoft.Extensions.Hosting;
+using xSdk.Hosting;
 
-namespace xSdk.Plugins.WebSecurity
+namespace xSdk.Plugins.WebSecurity;
+
+public static class HostBuilderExtensions
 {
-    public static class HostBuilderExtensions
+    public static IHostBuilder EnableWebSecurity(this IHostBuilder builder)
     {
-        public static IHostBuilder EnableWebSecurity(this IHostBuilder builder)
-        {
-            builder
-                .RegisterSetup<WebSecuritySetup>()
-                .EnablePlugin<WebSecurityPlugin>();
+        builder
+            .RegisterSetup<WebSecuritySetup>()
+            .EnablePlugin<WebSecurityPlugin>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        public static IHostBuilder EnableWebSecurity<TPluginBuilder>(this IHostBuilder builder)
-            where TPluginBuilder : IWebSecurityPluginBuilder
-        {
-            builder
-                .EnableWebSecurity()
-                .EnablePlugin<TPluginBuilder>();
+    public static IHostBuilder EnableWebSecurity<TPluginBuilder>(this IHostBuilder builder)
+        where TPluginBuilder : IWebSecurityPluginBuilder
+    {
+        builder
+            .EnableWebSecurity()
+            .EnablePlugin<TPluginBuilder>();
 
-            return builder;
-        }
+        return builder;
     }
 }

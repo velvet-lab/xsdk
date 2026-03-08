@@ -1,57 +1,56 @@
-using xSdk.Shared;
 using NLog;
+using xSdk.Shared;
 
-namespace xSdk.Extensions.Plugin
+namespace xSdk.Extensions.Plugin;
+
+internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin)
 {
-    internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin)
+    private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+    private object? concretePlugin;
+    public int Order { get; set; } = PluginDescription.DefaultOrder;
+
+    public IPluginDescription Description { get; private set; }
+
+    public string Key { get; private set; }
+
+    public object? Plugin
     {
-        private Logger Logger = LogManager.GetCurrentClassLogger();
-
-        private object? concretePlugin;
-        public int Order { get; set; } = PluginDescription.DefaultOrder;
-
-        public IPluginDescription Description { get; private set; }
-
-        public string Key { get; private set; }
-
-        public object? Plugin
+        get
         {
-            get
+            if (concretePlugin == null)
             {
-                if (concretePlugin == null)
-                {
-                    concretePlugin = Activator.CreateInstance(weikioPlugin);
-                    Initialize();
-                }
-                return concretePlugin;
+                concretePlugin = Activator.CreateInstance(weikioPlugin);
+                Initialize();
             }
+            return concretePlugin;
         }
-        public Weikio.PluginFramework.Abstractions.Plugin WeikioPlugin => weikioPlugin;
+    }
+    public Weikio.PluginFramework.Abstractions.Plugin WeikioPlugin => weikioPlugin;
 
-        public override string ToString()
+    public override string ToString()
+    {
+        return string.Format("{0} v{1}", Description.Name, Description.Version);
+    }
+
+    private void Initialize()
+    {
+        if (weikioPlugin != null && concretePlugin is PluginDescription description)
         {
-            return string.Format("{0} v{1}", Description.Name, Description.Version);
-        }
+            Logger.Info("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
 
-        private void Initialize()
-        {
-            if (weikioPlugin != null && concretePlugin is PluginDescription description)
-            {
-                Logger.Info("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
+            description.Name = weikioPlugin.Name;
+            description.Version = weikioPlugin.Version;
+            description.ProductVersion = weikioPlugin.ProductVersion;
+            description.Description = weikioPlugin.Description;
+            description.Tag = weikioPlugin.Tag;
+            description.Tags = weikioPlugin.Tags;
 
-                description.Name = weikioPlugin.Name;
-                description.Version = weikioPlugin.Version;
-                description.ProductVersion = weikioPlugin.ProductVersion;
-                description.Description = weikioPlugin.Description;
-                description.Tag = weikioPlugin.Tag;
-                description.Tags = weikioPlugin.Tags;
+            Order = description.Order;
 
-                Order = description.Order;
-
-                var key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
-                Key = HashTools.GetHashString(key);
-                this.Description = description;
-            }
+            var key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
+            Key = HashTools.GetHashString(key);
+            this.Description = description;
         }
     }
 }

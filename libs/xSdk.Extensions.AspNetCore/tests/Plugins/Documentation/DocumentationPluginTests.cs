@@ -1,51 +1,50 @@
+using Swashbuckle.AspNetCore.SwaggerGen;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;
 using xSdk.Plugins.WebApi;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace xSdk.Plugins.Documentation
+namespace xSdk.Plugins.Documentation;
+
+public class DocumentationPluginTests : IClassFixture<TestHostFixture>
 {
-    public class DocumentationPluginTests : IClassFixture<TestHostFixture>
+    private readonly IPluginService service;
+    private readonly TestHostFixture fixture;
+
+    public DocumentationPluginTests(TestHostFixture fixture)
     {
-        private readonly IPluginService service;
-        private readonly TestHostFixture fixture;
+        fixture
+            .EnablePlugin(builder => builder
+                .EnableWebApi()
+                .EnableDocumentation<DocumentationPluginBuilderMock>());
 
-        public DocumentationPluginTests(TestHostFixture fixture)
-        {
-            fixture
-                .EnablePlugin(builder => builder
-                    .EnableWebApi()
-                    .EnableDocumentation<DocumentationPluginBuilderMock>());
+        service = fixture.GetRequiredService<IPluginService>();
 
-            service = fixture.GetRequiredService<IPluginService>();
+        this.fixture = fixture;
+    }
 
-            this.fixture = fixture;
-        }
+    [Fact]
+    public void CreatePlugin()
+    {
+        var plugin = service.GetPlugin<DocumentationPlugin>();
 
-        [Fact]
-        public void CreatePlugin()
-        {
-            var plugin = service.GetPlugin<DocumentationPlugin>();
+        Assert.NotNull(plugin);
+    }
 
-            Assert.NotNull(plugin);
-        }
+    [Fact]
+    public void GetPluginConfigurations()
+    {
+        var plugins = service.GetPlugins<IDocumentationPluginBuilder>();
 
-        [Fact]
-        public void GetPluginConfigurations()
-        {
-            var plugins = service.GetPlugins<IDocumentationPluginBuilder>();
+        Assert.NotNull(plugins);
+        Assert.Single(plugins);
+    }
 
-            Assert.NotNull(plugins);
-            Assert.Single(plugins);
-        }
+    [Fact]
+    public void LoadSwaggerSchemaGenerator()
+    {
+        var schemaGenerator = this.fixture.GetRequiredService<ISchemaGenerator>();
 
-        [Fact]
-        public void LoadSwaggerSchemaGenerator()
-        {
-            var schemaGenerator = this.fixture.GetRequiredService<ISchemaGenerator>();
-
-            Assert.NotNull(schemaGenerator);
-        }
+        Assert.NotNull(schemaGenerator);
     }
 }

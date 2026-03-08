@@ -1,15 +1,14 @@
-namespace xSdk.Extensions.IO
+namespace xSdk.Extensions.IO;
+
+public interface IFileSystemService
 {
-    public interface IFileSystemService
-    {
-        IFileSystemResult RequestFileSystem(FileSystemContext context = FileSystemContext.None) => RequestFileSystemAsync(context).GetAwaiter().GetResult();
+    IFileSystemResult RequestFileSystem(FileSystemContext context = FileSystemContext.None) => RequestFileSystemAsync(context).GetAwaiter().GetResult();
 
-        Task<IFileSystemResult> RequestFileSystemAsync(FileSystemContext context = FileSystemContext.None, CancellationToken token = default);
+    Task<IFileSystemResult> RequestFileSystemAsync(FileSystemContext context = FileSystemContext.None, CancellationToken token = default);
 
-        IFileSystemResult Local { get; }
+    IFileSystemResult Local { get; }
 
-        IFileSystemResult User { get; }
+    IFileSystemResult User { get; }
 
-        IFileSystemResult Machine { get; }
-    }
+    IFileSystemResult Machine { get; }
 }

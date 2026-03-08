@@ -1,14 +1,13 @@
-﻿using xSdk.Data;
+using xSdk.Data;
 
-namespace xSdk.Hosting
+namespace xSdk.Hosting;
+
+public abstract class DatabaseHostFixture : TestHostFixture
 {
-    public abstract class DatabaseHostFixture : TestHostFixture
-    {
-        public DatabaseHostFixture() : base(true)
-        {}
+    public DatabaseHostFixture() : base(true)
+    { }
 
-        public IDatalayerFactory Factory => GetService<IDatalayerFactory>();
+    public IDatalayerFactory Factory => GetService<IDatalayerFactory>();
 
-        protected abstract override void Initialize();
-    }
+    protected abstract override void Initialize();
 }

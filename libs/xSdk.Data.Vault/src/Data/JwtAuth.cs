@@ -1,9 +1,8 @@
-namespace xSdk.Data
-{
-    public sealed class JwtAuth
-    {
-        public string Role { get; set; }
+namespace xSdk.Data;
 
-        public string Token { get; set; }
-    }
+public sealed class JwtAuth
+{
+    public string Role { get; set; }
+
+    public string Token { get; set; }
 }

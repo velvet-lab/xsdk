@@ -1,8 +1,7 @@
-namespace xSdk.Extensions.Variable.Attributes
+namespace xSdk.Extensions.Variable.Attributes;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public sealed class VariableNoPrefixAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public sealed class VariableNoPrefixAttribute : Attribute
-    {
-        public VariableNoPrefixAttribute() { }
-    }
+    public VariableNoPrefixAttribute() { }
 }

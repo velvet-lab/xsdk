@@ -1,22 +1,21 @@
+using System.Security.Claims;
 using AspNetCore.Authentication.ApiKey;
 using xSdk.Data;
-using System.Security.Claims;
 
-namespace xSdk.Extensions.Authentication
+namespace xSdk.Extensions.Authentication;
+
+public sealed class ConcreteApiKey : IApiKey
 {
-    public sealed class ConcreteApiKey : IApiKey
+    private readonly IReadOnlyCollection<Claim> _claims;
+
+    public ConcreteApiKey()
     {
-        private IReadOnlyCollection<Claim> _claims;
-
-        public ConcreteApiKey()
-        {
-            _claims = new List<Claim>();
-        }
-
-        public string Key { get; set; }
-
-        public string OwnerName { get; set; }
-
-        public IReadOnlyCollection<Claim> Claims { get; set; }
+        _claims = new List<Claim>();
     }
+
+    public string Key { get; set; }
+
+    public string OwnerName { get; set; }
+
+    public IReadOnlyCollection<Claim> Claims { get; set; }
 }

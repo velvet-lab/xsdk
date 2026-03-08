@@ -1,9 +1,8 @@
-namespace xSdk.Extensions.Commands
-{
-    public interface IReplBuilder
-    {
-        string Prompt { get; set; }
+namespace xSdk.Extensions.Commands;
 
-        Func<string> PromptFactory { get; set; }
-    }
+public interface IReplBuilder
+{
+    string Prompt { get; set; }
+
+    Func<string> PromptFactory { get; set; }
 }

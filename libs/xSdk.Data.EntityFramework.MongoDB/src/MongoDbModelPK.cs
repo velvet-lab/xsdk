@@ -1,49 +1,48 @@
-using xSdk.Data.Converters.Mapper;
 using MongoDB.Bson;
+using xSdk.Data.Converters.Mapper;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public sealed class MongoDbModelPK : PrimaryKey<string>
 {
-    public sealed class MongoDbModelPK : PrimaryKey<string>
+    private readonly object syncObject = new();
+
+    public MongoDbModelPK()
+        : base(ObjectId.GenerateNewId().ToString()) { }
+
+    public MongoDbModelPK(ObjectId initialValue)
+        : base(initialValue.ToString()) { }
+
+    public MongoDbModelPK(string intialValue)
+        : base(ObjectId.Parse(intialValue).ToString()) { }
+
+    protected override TType Convert<TType>(object value)
     {
-        private object syncObject = new();
-
-        public MongoDbModelPK()
-            : base(ObjectId.GenerateNewId().ToString()) { }
-
-        public MongoDbModelPK(ObjectId initialValue)
-            : base(initialValue.ToString()) { }
-
-        public MongoDbModelPK(string intialValue)
-            : base(ObjectId.Parse(intialValue).ToString()) { }
-
-        protected override TType Convert<TType>(object value)
+        lock (syncObject)
         {
-            lock (syncObject)
+            if (ObjectIdConverter.TryConvert(value, out string resultAsString))
             {
-                if (ObjectIdConverter.TryConvert(value, out string resultAsString))
+                if (typeof(TType) == typeof(ObjectId))
                 {
-                    if (typeof(TType) == typeof(ObjectId))
-                    {
-                        return (TType)(object)ObjectId.Parse(resultAsString);
-                    }
-                    else if (typeof(TType) == typeof(string))
-                    {
-                        return (TType)(object)resultAsString;
-                    }
+                    return (TType)(object)ObjectId.Parse(resultAsString);
                 }
-                else if (ObjectIdConverter.TryConvert(value, out ObjectId result))
+                else if (typeof(TType) == typeof(string))
                 {
-                    if (typeof(TType) == typeof(ObjectId))
-                    {
-                        return (TType)(object)result;
-                    }
-                    else if (typeof(TType) == typeof(string))
-                    {
-                        return (TType)(object)result.ToString();
-                    }
+                    return (TType)(object)resultAsString;
                 }
             }
-            return default;
+            else if (ObjectIdConverter.TryConvert(value, out ObjectId result))
+            {
+                if (typeof(TType) == typeof(ObjectId))
+                {
+                    return (TType)(object)result;
+                }
+                else if (typeof(TType) == typeof(string))
+                {
+                    return (TType)(object)result.ToString();
+                }
+            }
         }
+        return default;
     }
 }

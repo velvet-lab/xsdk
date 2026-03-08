@@ -1,9 +1,8 @@
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.Links
+namespace xSdk.Extensions.Links;
+
+public interface ILinksPluginBuilder : IPluginBuilder
 {
-    public interface ILinksPluginBuilder : IPluginBuilder
-    {
-        void ConfigureLinks(LinksOptions options);
-    }
+    void ConfigureLinks(LinksOptions options);
 }

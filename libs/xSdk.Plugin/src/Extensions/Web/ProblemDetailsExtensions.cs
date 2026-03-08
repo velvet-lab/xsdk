@@ -1,74 +1,73 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace xSdk.Extensions.Web
+namespace xSdk.Extensions.Web;
+
+[CLSCompliant(false)]
+public static class ProblemDetailsExtensions
 {
-    [CLSCompliant(false)]
-    public static class ProblemDetailsExtensions
+    public static ProblemDetails AsProblem(this Exception ex) => ex.AsProblem(StatusCodes.Status500InternalServerError, null);
+
+    public static ProblemDetails AsProblem(this Exception ex, int status) => ex.AsProblem(status, null);
+
+    public static ProblemDetails AsProblem(this Exception ex, int status, string? path)
     {
-        public static ProblemDetails AsProblem(this Exception ex) => ex.AsProblem(StatusCodes.Status500InternalServerError, null);
-
-        public static ProblemDetails AsProblem(this Exception ex, int status) => ex.AsProblem(status, null);
-
-        public static ProblemDetails AsProblem(this Exception ex, int status, string? path)
+        var result = new ProblemDetails
         {
-            var result = new ProblemDetails
-            {
-                Title = ex.Message,
-                Detail = ex.StackTrace,
-                Status = status,
-            };
+            Title = ex.Message,
+            Detail = ex.StackTrace,
+            Status = status,
+        };
 
-            if (ex.InnerException != null)
-            {
-                result.Title = ex.InnerException.Message;
-            }
-
-            if (!string.IsNullOrEmpty(path))
-                result.Instance = path;
-
-            return result;
+        if (ex.InnerException != null)
+        {
+            result.Title = ex.InnerException.Message;
         }
 
-        public static BadRequestObjectResult BadRequestAsProblem(this ControllerBase controller, Exception ex)
+        if (!string.IsNullOrEmpty(path))
+            result.Instance = path;
+
+        return result;
+    }
+
+    public static BadRequestObjectResult BadRequestAsProblem(this ControllerBase controller, Exception ex)
+    {
+        var problem = ex.AsProblem(StatusCodes.Status400BadRequest, controller.HttpContext.Request.Path);
+        return new BadRequestObjectResult(problem);
+    }
+
+    public static BadRequestObjectResult BadRequestAsProblem(this ControllerBase controller, string message) =>
+        controller.BadRequestAsProblem(message, null);
+
+    public static BadRequestObjectResult BadRequestAsProblem(this ControllerBase controller, string message, string? details)
+    {
+        var problem = new ProblemDetails
         {
-            var problem = ex.AsProblem(StatusCodes.Status400BadRequest, controller.HttpContext.Request.Path);
-            return new BadRequestObjectResult(problem);
-        }
+            Title = message,
+            Status = StatusCodes.Status400BadRequest,
+            Instance = controller.HttpContext.Request.Path,
+        };
 
-        public static BadRequestObjectResult BadRequestAsProblem(this ControllerBase controller, string message) =>
-            controller.BadRequestAsProblem(message, null);
+        if (!string.IsNullOrEmpty(details))
+            problem.Detail = details;
 
-        public static BadRequestObjectResult BadRequestAsProblem(this ControllerBase controller, string message, string? details)
+        return new BadRequestObjectResult(problem);
+    }
+
+    public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message) => controller.NotFoundAsProblem(message, null);
+
+    public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message, string details)
+    {
+        var problem = new ProblemDetails
         {
-            var problem = new ProblemDetails
-            {
-                Title = message,
-                Status = StatusCodes.Status400BadRequest,
-                Instance = controller.HttpContext.Request.Path,
-            };
+            Title = message,
+            Status = StatusCodes.Status404NotFound,
+            Instance = controller.HttpContext.Request.Path,
+        };
 
-            if (!string.IsNullOrEmpty(details))
-                problem.Detail = details;
+        if (!string.IsNullOrEmpty(details))
+            problem.Detail = details;
 
-            return new BadRequestObjectResult(problem);
-        }
-
-        public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message) => controller.NotFoundAsProblem(message, null);
-
-        public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message, string details)
-        {
-            var problem = new ProblemDetails
-            {
-                Title = message,
-                Status = StatusCodes.Status404NotFound,
-                Instance = controller.HttpContext.Request.Path,
-            };
-
-            if (!string.IsNullOrEmpty(details))
-                problem.Detail = details;
-
-            return new NotFoundObjectResult(problem);
-        }
+        return new NotFoundObjectResult(problem);
     }
 }

@@ -1,7 +1,6 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+internal sealed class EntityFrameworkConnectionBuilder : ConnectionBuilder
 {
-    internal sealed class EntityFrameworkConnectionBuilder : ConnectionBuilder
-    {
-        public override object Create(IDatabaseSetup setup) => setup;
-    }
+    public override object Create(IDatabaseSetup setup) => setup;
 }

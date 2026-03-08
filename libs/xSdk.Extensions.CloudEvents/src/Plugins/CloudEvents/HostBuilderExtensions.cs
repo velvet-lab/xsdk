@@ -1,15 +1,14 @@
-using xSdk.Hosting;
 using Microsoft.Extensions.Hosting;
+using xSdk.Hosting;
 
-namespace xSdk.Plugins.CloudEvents
+namespace xSdk.Plugins.CloudEvents;
+
+public static class HostBuilderExtensions
 {
-    public static class HostBuilderExtensions
+    public static IHostBuilder EnableCloudEvents(this IHostBuilder hostBuilder)
     {
-        public static IHostBuilder EnableCloudEvents(this IHostBuilder hostBuilder)
-        {
-            hostBuilder.EnablePlugin<CloudEventPlugin>();
+        hostBuilder.EnablePlugin<CloudEventPlugin>();
 
-            return hostBuilder;
-        }
+        return hostBuilder;
     }
 }

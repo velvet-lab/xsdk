@@ -1,12 +1,11 @@
-namespace xSdk.Data
-{
-    public class EntityFrameworkDatabaseSetup : DatabaseSetup
-    {
-        public EntityFrameworkDatabaseSetup()
-        {
-            TransactionsEnabled = true;
-        }
+namespace xSdk.Data;
 
-        public bool TransactionsEnabled { get; set; }
+public class EntityFrameworkDatabaseSetup : DatabaseSetup
+{
+    public EntityFrameworkDatabaseSetup()
+    {
+        TransactionsEnabled = true;
     }
+
+    public bool TransactionsEnabled { get; set; }
 }

@@ -1,12 +1,11 @@
 using Spectre.Console.Cli;
 
-namespace xSdk.Extensions.Commands
+namespace xSdk.Extensions.Commands;
+
+internal class DefaultCommand : Command<DefaultCommandSettings>
 {
-    internal class DefaultCommand : Command<DefaultCommandSettings>
+    public override int Execute(CommandContext context, DefaultCommandSettings settings, CancellationToken cancellationToken)
     {
-        public override int Execute(CommandContext context, DefaultCommandSettings settings, CancellationToken cancellationToken)
-        {
-            return 0;
-        }
+        return 0;
     }
 }

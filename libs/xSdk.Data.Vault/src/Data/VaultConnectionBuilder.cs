@@ -1,10 +1,9 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+internal sealed class VaultConnectionBuilder : ConnectionBuilder
 {
-    internal sealed class VaultConnectionBuilder : ConnectionBuilder
+    public override object Create(IDatabaseSetup setup)
     {
-        public override object Create(IDatabaseSetup setup)
-        {
-            return setup;
-        }
+        return setup;
     }
 }

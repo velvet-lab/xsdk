@@ -1,13 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace xSdk.Data
-{
-    public interface IRepository<TDbContext, TEntity> : IRepository<TEntity>
-        where TEntity : class, IEntity
-        where TDbContext : DbContext
-    {
-        TDbContext CreateDbContext();
+namespace xSdk.Data;
 
-        Task<TDbContext> CreateDbContextAsync(CancellationToken token = default);
-    }
+public interface IRepository<TDbContext, TEntity> : IRepository<TEntity>
+    where TEntity : class, IEntity
+    where TDbContext : DbContext
+{
+    TDbContext CreateDbContext();
+
+    Task<TDbContext> CreateDbContextAsync(CancellationToken token = default);
 }

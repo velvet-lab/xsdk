@@ -1,54 +1,53 @@
-using NLog;
 using System.Diagnostics;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using NLog;
 
-namespace xSdk.Shared
+namespace xSdk.Shared;
+
+public static class CertificateHelper
 {
-    public static class CertificateHelper
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+    public static IEnumerable<X509Certificate> ImportFromString(string certificates)
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        var certs = new List<X509Certificate>();
 
-        public static IEnumerable<X509Certificate> ImportFromString(string certificates)
+        var splittedCertStrings = certificates.Split("-----END CERTIFICATE-----", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        foreach (var certString in splittedCertStrings)
         {
-            var certs = new List<X509Certificate>();
+            var item = certString.Replace("-----BEGIN CERTIFICATE-----", null).Replace("-----END CERTIFICATE-----", null).Trim();
 
-            var splittedCertStrings = certificates.Split("-----END CERTIFICATE-----", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            foreach (var certString in splittedCertStrings)
-            {
-                var item = certString.Replace("-----BEGIN CERTIFICATE-----", null).Replace("-----END CERTIFICATE-----", null).Trim();
-
-                var cert = new X509Certificate2(Encoding.ASCII.GetBytes(item));
-                certs.Add(cert);
-            }
-
-            return certs;
+            var cert = new X509Certificate2(Encoding.ASCII.GetBytes(item));
+            certs.Add(cert);
         }
 
-        public static bool ValidateServerCallbacks(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
-        {
-            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
-            {
-                if (chain != null)
-                {
-                    foreach (var status in chain.ChainStatus)
-                    {
-                        //validation errors here
-                        logger.Error(status.StatusInformation);
-                    }
-                }
-            }
+        return certs;
+    }
 
-            if (Debugger.IsAttached)
+    public static bool ValidateServerCallbacks(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
+    {
+        if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
+        {
+            if (chain != null)
             {
-                if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateNameMismatch)
+                foreach (var status in chain.ChainStatus)
                 {
-                    // Server is running on localhost so external Certificate Server Names does not match
-                    return true;
+                    //validation errors here
+                    logger.Error(status.StatusInformation);
                 }
             }
-            return sslPolicyErrors == SslPolicyErrors.None;
         }
+
+        if (Debugger.IsAttached)
+        {
+            if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateNameMismatch)
+            {
+                // Server is running on localhost so external Certificate Server Names does not match
+                return true;
+            }
+        }
+        return sslPolicyErrors == SslPolicyErrors.None;
     }
 }

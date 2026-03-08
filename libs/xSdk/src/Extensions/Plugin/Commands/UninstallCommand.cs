@@ -1,4 +1,3 @@
-namespace xSdk.Extensions.Plugin.Commands
-{
-    internal class UninstallCommand { }
-}
+namespace xSdk.Extensions.Plugin.Commands;
+
+internal class UninstallCommand { }

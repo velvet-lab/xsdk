@@ -1,13 +1,12 @@
 using xSdk.Extensions.Variable;
 
-namespace xSdk.Plugins.DataProtection
+namespace xSdk.Plugins.DataProtection;
+
+public interface IDataProtectionSetup : ISetup
 {
-    public interface IDataProtectionSetup : ISetup
-    {
-        string ApplicationDiscriminator { get; set; }
+    string ApplicationDiscriminator { get; set; }
 
-        string ApplicationName { get; set; }
+    string ApplicationName { get; set; }
 
-        string KeyLifetime { get; set; }
-    }
+    string KeyLifetime { get; set; }
 }

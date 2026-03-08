@@ -1,11 +1,11 @@
 using System.Text.Json;
 
-namespace xSdk.Data.Converters.Mapper
-{
-    public class JsonElementConverterTests
-    {
+namespace xSdk.Data.Converters.Mapper;
 
-        private readonly JsonElement JsonEl = JsonSerializer.SerializeToElement(@"
+public class JsonElementConverterTests
+{
+
+    private readonly JsonElement JsonEl = JsonSerializer.SerializeToElement(@"
 {
     ""key1"": ""value1"",
     ""key2"": 123,
@@ -13,23 +13,20 @@ namespace xSdk.Data.Converters.Mapper
 }
 ");
 
-        private readonly static string JsonString = "IlxyXG57XHJcbiAgICBcdTAwMjJrZXkxXHUwMDIyOiBcdTAwMjJ2YWx1ZTFcdTAwMjIsXHJcbiAgICBcdTAwMjJrZXkyXHUwMDIyOiAxMjMsXHJcbiAgICBcdTAwMjJrZXkzXHUwMDIyOiB0cnVlXHJcbn1cclxuIg==";
+    private readonly static string JsonString = "IlxyXG57XHJcbiAgICBcdTAwMjJrZXkxXHUwMDIyOiBcdTAwMjJ2YWx1ZTFcdTAwMjIsXHJcbiAgICBcdTAwMjJrZXkyXHUwMDIyOiAxMjMsXHJcbiAgICBcdTAwMjJrZXkzXHUwMDIyOiB0cnVlXHJcbn1cclxuIg==";
 
-        [Fact]
-        public void ConvertJsonElementToBase64String()
-        {
-            var actual = JsonElementConverter.Convert(JsonEl);
+    [Fact]
+    public void ConvertJsonElementToBase64String()
+    {
+        var actual = JsonElementConverter.Convert(JsonEl);
 
-            Assert.NotNull(actual);
-            Assert.IsType<string>(actual);
-        }
+        Assert.NotNull(actual);
+        Assert.IsType<string>(actual);
+    }
 
-        [Fact]
-        public void ConvertBase64StringToJsonElement()
-        {
-            var actual = JsonElementConverter.Convert(JsonString);
-
-            Assert.NotNull(actual);
-        }
+    [Fact]
+    public void ConvertBase64StringToJsonElement()
+    {
+        var actual = JsonElementConverter.Convert(JsonString);
     }
 }

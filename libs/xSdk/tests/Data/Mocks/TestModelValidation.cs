@@ -1,12 +1,11 @@
 using FluentValidation;
 
-namespace xSdk.Data.Mocks
+namespace xSdk.Data.Mocks;
+
+public class TestModelValidation : AbstractValidator<TestModel>
 {
-    public class TestModelValidation : AbstractValidator<TestModel>
+    public TestModelValidation()
     {
-        public TestModelValidation()
-        {
-            RuleFor(x => x.Name).NotEmpty();
-        }
+        RuleFor(x => x.Name).NotEmpty();
     }
 }

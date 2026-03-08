@@ -1,15 +1,14 @@
+using Microsoft.AspNetCore.Mvc;
 using xSdk.Extensions.CloudEvents;
 using xSdk.Hosting;
-using Microsoft.AspNetCore.Mvc;
 
-namespace xSdk.Plugins.CloudEvents
+namespace xSdk.Plugins.CloudEvents;
+
+internal class CloudEventPlugin : WebHostPluginBase
 {
-    class CloudEventPlugin : WebHostPluginBase
+    public void ConfigureMvc(MvcOptions options)
     {
-        public void ConfigureMvc(MvcOptions options)
-        {
-            var formatter = CloudEventFactory.CreateFormatter();
-            options.InputFormatters.Insert(0, new CloudEventJsonInputFormatter(formatter));
-        }
+        var formatter = CloudEventFactory.CreateFormatter();
+        options.InputFormatters.Insert(0, new CloudEventJsonInputFormatter(formatter));
     }
 }

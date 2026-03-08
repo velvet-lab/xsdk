@@ -1,19 +1,18 @@
 using OpenTelemetry.Resources;
 
-namespace xSdk.Extensions.Telemetry
+namespace xSdk.Extensions.Telemetry;
+
+internal class VariableResourceDetector : IResourceDetector
 {
-    internal class VariableResourceDetector : IResourceDetector
+    private readonly IDictionary<string, object> _resources;
+
+    internal VariableResourceDetector(IDictionary<string, object> resources)
     {
-        private readonly IDictionary<string, object> _resources;
+        this._resources = resources ?? throw new System.ArgumentNullException(nameof(resources));
+    }
 
-        internal VariableResourceDetector(IDictionary<string, object> resources)
-        {
-            this._resources = resources ?? throw new System.ArgumentNullException(nameof(resources));
-        }
-
-        public Resource Detect()
-        {
-            return new Resource(_resources);
-        }
+    public Resource Detect()
+    {
+        return new Resource(_resources);
     }
 }

@@ -1,15 +1,14 @@
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public class MongoDbContext<TContext> : DbContext
+    where TContext : DbContext
 {
-    public class MongoDbContext<TContext> : DbContext
-        where TContext : DbContext
+    public MongoDbContext([NotNull] DbContextOptions<TContext> options)
+        : base(options)
     {
-        public MongoDbContext([NotNull] DbContextOptions<TContext> options)
-            : base(options)
-        {
-            Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
-        }
+        Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
     }
 }

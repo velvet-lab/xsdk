@@ -1,19 +1,18 @@
-﻿using CommunityToolkit.Diagnostics;
-using xSdk.Security.Claims;
 using System.Security.Claims;
+using CommunityToolkit.Diagnostics;
+using xSdk.Security.Claims;
 
-namespace xSdk.Extensions.Authentication
+namespace xSdk.Extensions.Authentication;
+
+public static class ClaimsPrincipalExtensions
 {
-    public static class ClaimsPrincipalExtensions
+    public static bool IsApiKeyPrincipal(this ClaimsPrincipal principal)
     {
-        public static bool IsApiKeyPrincipal(this ClaimsPrincipal principal)
-        {
-            Guard.IsNotNull(principal);
+        Guard.IsNotNull(principal);
 
-            return principal.HasClaim(c => c.Type == SdkClaimTypes.ApiKey.Name &&
-                                           c.Value == ApiKeySignature.Name) &&
-                   principal.HasClaim(c => c.Type == SdkClaimTypes.ApiKey.Identifier &&
-                                           c.Value == ApiKeySignature.Identifier);
-        }
+        return principal.HasClaim(c => c.Type == SdkClaimTypes.ApiKey.Name &&
+                                       c.Value == ApiKeySignature.Name) &&
+               principal.HasClaim(c => c.Type == SdkClaimTypes.ApiKey.Identifier &&
+                                       c.Value == ApiKeySignature.Identifier);
     }
 }

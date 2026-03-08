@@ -1,10 +1,9 @@
 using xSdk.Data;
 
-namespace xSdk.Extensions.Links
+namespace xSdk.Extensions.Links;
+
+public sealed class Policy<TModel> : IPolicy
+    where TModel : IModel
 {
-    public sealed class Policy<TModel> : IPolicy
-        where TModel : IModel
-    {
-        public List<RoutedLink> Links { get; } = new List<RoutedLink>();
-    }
+    public List<RoutedLink> Links { get; } = new List<RoutedLink>();
 }
