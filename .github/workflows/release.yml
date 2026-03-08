@@ -54,7 +54,7 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: just release ${{ github.event.inputs.dry_run == 'true' || 'false' }}
+        run: just release ${{ github.event.inputs.dry_run || 'false' }}
 
       - name: Publish
         if: github.event.inputs.dry_run != 'true'

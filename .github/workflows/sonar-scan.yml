@@ -32,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      contents: read
     steps:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -48,10 +49,6 @@ jobs:
           path: |
             ~/.sonar/cache
           key: ${{ runner.os }}-sonar-cache
-
-      - name: Install Repository Tools
-        shell: pwsh
-        run: just install
 
       - name: Restore DotNet dependencies
         shell: pwsh
