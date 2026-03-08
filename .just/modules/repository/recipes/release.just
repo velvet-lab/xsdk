@@ -12,7 +12,7 @@ _release dry-run:
     if("{{dry-run}}" -eq "true") { pnpm semantic-release --dry-run } else { pnpm semantic-release }
 
 [no-cd]
-[linux]
+[unix]
 _release dry-run:
     if [ "{{dry-run}}" = "true" ]; then pnpm semantic-release --dry-run; else pnpm semantic-release; fi
 

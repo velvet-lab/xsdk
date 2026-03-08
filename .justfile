@@ -55,11 +55,13 @@ test:
 [group('linting')]
 check-lint:
     @just repository::check-lint
+    @just dotnet::check-lint xsdk.sln
 
 # Lint with auto-fix
 [group('linting')]
 lint:
     @just repository::lint
+    @just dotnet::lint xsdk.sln
 
 # Check code formatting without fixing, useful for CI checks
 [group('format')]

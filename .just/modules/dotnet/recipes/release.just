@@ -1,7 +1,7 @@
 # Publish NuGet packages to registry, requires API key as argument
 [no-cd]
 [group('deployment')]
-publish solution token: (build solution)
+publish solution: (build solution)
     #!{{shebang}}
     Remove-Item -Path "{{dist_dir}}/nuget" -Recurse -Force -ErrorAction SilentlyContinue
     $version = $(Get-Content .\package.json | ConvertFrom-Json).version

@@ -16,7 +16,7 @@ _init-pnpm:
     if(-not (Test-Path -Path "package.json")) { just {{module_name}}::_execute-init-pnpm }
 
 [no-cd]
-[linux]
+[unix]
 _init-pnpm:
     if [ ! -f package.json ]; then just {{module_name}}::_execute-init-pnpm; fi
 

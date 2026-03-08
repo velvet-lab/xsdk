@@ -2,7 +2,7 @@
 [no-cd]
 [group('maintenance')]
 install:
-    @just {{module_name}}::info "Initializing repository '{{repo_name}}'..."
+    @just {{module_name}}::info "Restoring .NET tools for repository '{{repo_name}}'..."
     dotnet tool restore
     @just {{module_name}}::success "Tools restored for repository '{{repo_name}}'"
 
