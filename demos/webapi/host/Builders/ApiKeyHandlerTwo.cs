@@ -11,17 +11,17 @@ internal class ApiKeyHandlerTwo : IApiKeyHandler
 {
     public ApiKeyHandlerTwo(ILogger<ApiKeyHandlerTwo> logger)
     {
-        this.logger = logger;
+        _logger = logger;
     }
 
 
     public Task<IApiKey?> GetApiKeyAsync(string key)
     {
-        return Task.FromResult(ApiKeys.SingleOrDefault(x => string.Compare(x.Key, key) == 0));
+        return Task.FromResult(_apiKeys.SingleOrDefault(x => string.Compare(x.Key, key) == 0));
     }
 
     // List of ApiKeys only for Demo Purposes. Its highly recommended to host this in a external service
-    private readonly List<IApiKey> ApiKeys = new List<IApiKey>
+    private readonly List<IApiKey> _apiKeys = new List<IApiKey>
     {
         new ConcreteApiKey
         {
@@ -42,5 +42,5 @@ internal class ApiKeyHandlerTwo : IApiKeyHandler
             ),
         },
     };
-    private readonly ILogger<ApiKeyHandlerTwo> logger;
+    private readonly ILogger<ApiKeyHandlerTwo> _logger;
 }

@@ -4,28 +4,28 @@ namespace xSdk.Demos.Data;
 
 internal class SampleDatabase
 {
-    private List<SampleModel> database = new List<SampleModel>();
-    private static SampleDatabase singleton;
+    private List<SampleModel> _database = new List<SampleModel>();
+    private static SampleDatabase _singleton;
 
     public static List<SampleModel> Load()
     {
-        if (singleton == null)
+        if (_singleton == null)
         {
-            singleton = new SampleDatabase();
-            singleton.database = FakeGenerator.GenerateList<SampleModelExamples, SampleModel>(10).ToList();
+            _singleton = new SampleDatabase();
+            _singleton._database = FakeGenerator.GenerateList<SampleModelExamples, SampleModel>(10).ToList();
         }
 
-        return singleton.database;
+        return _singleton._database;
     }
 
     public static List<SampleModel> Save(SampleModel model)
     {
-        if (singleton == null)
+        if (_singleton == null)
         {
-            singleton = new SampleDatabase();
-            singleton.database.Add(model);
+            _singleton = new SampleDatabase();
+            _singleton._database.Add(model);
         }
 
-        return singleton.database;
+        return _singleton._database;
     }
 }
