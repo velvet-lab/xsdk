@@ -14,6 +14,15 @@ build solution: (restore solution)
     dotnet build "{{solution}}" --configuration Release --nologo --no-restore
     @just {{module_name}}::success "Solution '{{solution}}' built successfully."
 
+# Specific build for SonarQube analysis with code coverage collection
+[no-cd]
+[group('development')]
+sonar-build solution:
+    @just {{module_name}}::info "Building solution '{{solution}}' for SonarQube analysis..."
+    dotnet build "{{solution}}" --configuration Debug --no-incremental --nologo --no-restore
+    dotnet dotnet-coverage collect "dotnet test "{{solution}}" --no-build --no-restore --nologo" --output-format xml --output coverage.xml --nologo
+    @just {{module_name}}::success "Solution '{{solution}}' built successfully for SonarQube analysis."
+
 # Run tests for solution in Release configuration without building the solution
 [no-cd]
 [group('development')]
