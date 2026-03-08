@@ -1,15 +1,15 @@
-name: "setup-repository"
-description: "Composite action to prepare runner for xSDK development (checkout, .NET, Node, PNPM, Just, caching, tool restore)."
+name: 'setup-repository'
+description: 'Composite action to prepare runner for xSDK development (checkout, .NET, Node, PNPM, Just, caching, tool restore).'
 
 inputs:
   disable-dotnet:
     description: "If 'true', skip .NET setup"
     required: false
-    default: "false"
+    default: 'false'
   persist-credentials:
-    description: "Whether to persist credentials for git operations"
+    description: 'Whether to persist credentials for git operations'
     required: false
-    default: "true"
+    default: 'true'
 
 runs:
   using: composite
