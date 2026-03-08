@@ -61,4 +61,4 @@ jobs:
           dist_dir: 'dist'
         run: |
           just dotnet::publish xsdk.sln
-          dotnet nuget push --skip-duplicate --api-key "${token}" --source "${nuget_host_url}" "dist/nuget/*.nupkg"
+          dotnet nuget push --skip-duplicate --api-key "$env:token" --source "$env:nuget_host_url" "dist/nuget/*.nupkg"

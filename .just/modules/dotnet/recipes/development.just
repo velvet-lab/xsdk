@@ -18,6 +18,11 @@ build solution: (restore solution)
 [no-cd]
 [group('development')]
 sonar-build solution:
+    # REMARKS: Its ok, that dotnet restore is not run here. For clean results in sonar scan, we need to ensure
+    # that all dependencies are restored and the build is successful before running the scan. This is because
+    # Sonar Scanner analyzes the compiled code and needs all dependencies to be in place to provide accurate results.
+    # Restore will be triggered by GitHub workflow before sonar scan, so we can be sure that all dependencies are in place.
+    # Otherwise, if restore is not run, a error is ok
     @just {{module_name}}::info "Building solution '{{solution}}' for SonarQube analysis..."
     dotnet build "{{solution}}" --configuration Debug --no-incremental --nologo --no-restore
     dotnet dotnet-coverage collect "dotnet test "{{solution}}" --no-build --no-restore --nologo" --output-format xml --output coverage.xml --nologo

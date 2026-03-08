@@ -50,6 +50,9 @@ jobs:
             ~/.sonar/cache
           key: ${{ runner.os }}-sonar-cache
 
+      # TRICKY: To get clean results for sonar scan, we need to ensure that all dependencies are restored and
+      # the build is successful before running the scan. This is because Sonar Scanner analyzes the compiled
+      # code and needs all dependencies to be in place to provide accurate results.
       - name: Restore DotNet dependencies
         shell: pwsh
         run: just dotnet::restore xsdk.sln
