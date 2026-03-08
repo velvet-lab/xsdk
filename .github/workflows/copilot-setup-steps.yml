@@ -23,20 +23,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-
-      - name: Restore dependencies
-        run: dotnet restore xsdk.sln
-
-      - name: Build solution
-        run: dotnet build xsdk.sln --configuration Release --no-restore
-
-      - name: Run unit tests
-        run: dotnet test xsdk.sln --configuration Release --no-build --verbosity normal
+      - name: Build and test with just
+        run: just test
 
       - name: Display project structure
         run: |
