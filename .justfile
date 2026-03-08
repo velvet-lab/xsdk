@@ -67,10 +67,10 @@ lint:
 [group('format')]
 check-format:
     @just repository::check-format
-    @just dotnet::check-format xsdk.sln
+    @just dotnet::check-format xsdk-demos.sln
 
 # Format code in whole repository
 [group('format')]
 format:
     @just repository::format
-    @just dotnet::format xsdk.sln
+    @just dotnet::format xsdk-demos.sln
