@@ -23,24 +23,30 @@ Follow the [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/
 - The **header** (`type(scope): description`) must not exceed **72 characters**
 - The **description** is written in **imperative mood**, lowercase, no trailing period
 - Separate header from body, and body from footers, each with exactly **one blank line**
-- The **body** is a **single unbroken paragraph** — sentences follow each other directly, hard-wrapped at 100 characters, with **no blank lines and no trailing spaces** inside the body block
+- The **body** is written as a **single continuous line** — no line breaks, no hard wrapping, no trailing spaces within the body
 - The **body** explains *what* changed and *why*, not *how*
 
-**Wrong** (blank line inside body):
+**Wrong** (line breaks inside body):
 ```
 fix: correct null check in middleware
 
 The middleware threw on startup.
-
 Added a null guard before accessing the context.
 ```
 
-**Correct** (single block):
+**Wrong** (hard-wrapped body):
 ```
 fix: correct null check in middleware
 
 The middleware threw on startup. Added a null guard before accessing
 the context to prevent the NullReferenceException.
+```
+
+**Correct** (single line):
+```
+fix: correct null check in middleware
+
+The middleware threw on startup. Added a null guard before accessing the context to prevent the NullReferenceException.
 ```
 
 

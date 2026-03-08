@@ -4,14 +4,9 @@
     "connectionId": "velvet-lab",
     "projectKey": "velvet-lab_xsdk"
   },
-  "githubPullRequests.allowFetch": true,
-  "githubPullRequests.notifications": "pullRequests",
-  "githubPullRequests.pullBranch": "always",
-  "githubPullRequests.pushBranch": "always",
-  "github.copilot.chat.codesearch.agent.enabled": true,
   "github.copilot.chat.commitMessageGeneration.instructions": [
     {
-      "file": ".github/guidance/commit-message-instructions.md"
+      "file": ".github/guidance/commit-instructions.md"
     }
   ],
   "github.copilot.chat.reviewSelection.instructions": [
@@ -21,7 +16,7 @@
   ],
   "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [
     {
-      "file": ".github/guidance/pull-request-description-instructions.md"
+      "file": ".github/guidance/pull-request-instructions.md"
     }
   ],
 

@@ -28,8 +28,9 @@ This document provides project-wide coding standards and conventions for the xSD
 ## Project Structure
 
 - `libs/`: Contains all SDK libraries organized by functionality
-  - `xSdk/`: Core SDK functionality
-  - `xSdk.Data.*`: Data layer abstractions and providers
+  - `xSdk/`: Core SDK functionality (hosting, plugin extensions, IO, variables)
+  - `xSdk.Data/`: Base data layer abstractions (interfaces, base implementations)
+  - `xSdk.Data.*`: Concrete data provider implementations (EntityFramework, MongoDB, FlatFile, NoSql, Vault)
   - `xSdk.Extensions.*`: Extension libraries for specific scenarios
   - `xSdk.Plugin/`: Plugin infrastructure
 - `demos/`: Sample applications demonstrating SDK usage

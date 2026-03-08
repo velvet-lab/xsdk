@@ -8,8 +8,8 @@ applyTo: '**/*.cs'
 
 ## C# and .NET Version
 
-- Always use C# 12 features (latest for .NET 8)
-- Project targets .NET 8.0 (see `global.json`)
+- Project targets .NET 8.0 (see `global.json`, SDK pinned to 8.0.411)
+- `<LangVersion>latest</LangVersion>` is set in `Directory.Build.props` — use the latest C# features available for the target framework
 - Do not change the target framework or SDK version without explicit approval
 - Write clear and concise comments for public APIs and complex logic
 
@@ -137,7 +137,8 @@ public interface IDataStore<TEntity> where TEntity : class
 - Follow AAA pattern (Arrange-Act-Assert)
 - Test method naming: `MethodName_Scenario_ExpectedBehavior`
 - Don't add "Arrange", "Act", "Assert" comments
-- Use FluentAssertions if available
+- Use xUnit assertions (`Assert.*`) as the standard
+- Use Moq for mocking external dependencies
 - Mock external dependencies, not domain logic
 - Tests should be independent and runnable in any order
 

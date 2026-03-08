@@ -44,15 +44,12 @@ Follow the Arrange-Act-Assert (AAA) pattern without comments:
 [Fact]
 public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
 {
-    // Arrange
     var store = new InMemoryDataStore<User>();
     var user = new User { Id = "1", Name = "John" };
     await store.AddAsync(user);
 
-    // Act
     var result = await store.GetByIdAsync("1");
 
-    // Assert
     Assert.NotNull(result);
     Assert.Equal("John", result.Name);
 }
@@ -62,7 +59,8 @@ public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
 
 ## Assertions
 
-**Framework Assertions (xUnit):**
+This project uses **xUnit assertions** as the standard:
+
 ```csharp
 Assert.Equal(expected, actual);
 Assert.NotEqual(expected, actual);
@@ -77,16 +75,6 @@ Assert.Throws<TException>(() => method());
 await Assert.ThrowsAsync<TException>(() => methodAsync());
 ```
 
-**FluentAssertions** (if available in test project):
-```csharp
-result.Should().NotBeNull();
-result.Should().Be(expected);
-result.Should().BeEquivalentTo(expected);
-collection.Should().HaveCount(3);
-collection.Should().Contain(item);
-await action.Should().ThrowAsync<ArgumentNullException>();
-```
-
 ## Parameterized Tests
 
 Use `[Theory]` with `[InlineData]` for testing multiple scenarios:
@@ -99,8 +87,8 @@ Use `[Theory]` with `[InlineData]` for testing multiple scenarios:
 public void IsValid_WithVariousInputs_ReturnsExpectedResult(string input, bool expected)
 {
     var result = Validator.IsValid(input);
-    
-    result.Should().Be(expected);
+
+    Assert.Equal(expected, result);
 }
 ```
 
@@ -159,22 +147,24 @@ public class DatabaseTests : IClassFixture<DatabaseFixture>, IDisposable
 - Mock code that's part of the system under test
 - Over-mock - prefer real implementations when lightweight
 
-**Example using NSubstitute** (if available):
+**Example using Moq:**
 ```csharp
 [Fact]
 public async Task GetUserAsync_CallsRepository_ReturnsUser()
 {
-    var mockRepo = Substitute.For<IUserRepository>();
+    var mockRepo = new Mock<IUserRepository>();
     var expectedUser = new User { Id = "1", Name = "John" };
-    mockRepo.GetByIdAsync("1", Arg.Any<CancellationToken>())
-        .Returns(expectedUser);
-    
-    var service = new UserService(mockRepo);
-    
+    mockRepo
+        .Setup(r => r.GetByIdAsync("1", It.IsAny<CancellationToken>()))
+        .ReturnsAsync(expectedUser);
+
+    var service = new UserService(mockRepo.Object);
+
     var result = await service.GetUserAsync("1");
-    
-    result.Should().Be(expectedUser);
-    await mockRepo.Received(1).GetByIdAsync("1", Arg.Any<CancellationToken>());
+
+    Assert.NotNull(result);
+    Assert.Equal(expectedUser.Id, result.Id);
+    mockRepo.Verify(r => r.GetByIdAsync("1", It.IsAny<CancellationToken>()), Times.Once);
 }
 ```
 
@@ -191,9 +181,9 @@ public async Task GetDataAsync_WhenCancelled_ThrowsOperationCanceledException()
 {
     var cts = new CancellationTokenSource();
     var service = new DataService();
-    
+
     cts.Cancel();
-    
+
     await Assert.ThrowsAsync<OperationCanceledException>(
         () => service.GetDataAsync(cts.Token));
 }
@@ -219,7 +209,7 @@ Test edge cases and boundary conditions:
 public async Task CreateUserAsync_WithInvalidName_ThrowsArgumentException(string name)
 {
     var service = new UserService();
-    
+
     await Assert.ThrowsAsync<ArgumentException>(
         () => service.CreateUserAsync(name));
 }
