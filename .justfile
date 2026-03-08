@@ -20,11 +20,14 @@ default:
 
 # Initialize repository with pnpm, write package.json and add needed dependencies
 [group('maintenance')]
-init: repository::init
+init:
+    @just repository::init
 
 # Install dependencies for all modules
 [group('maintenance')]
-install: repository::install  dotnet::install
+install:
+    @just repository::install
+    @just dotnet::install
 
 # Clean whole repository by removing build artifacts, node_modules and other garbage files and folders
 [group('maintenance')]
@@ -34,35 +37,32 @@ clean:
 
 # Build whole solution
 [group('development')]
-build: install
+build:
     @just dotnet::build xsdk.sln
-
-# Build solution with code coverage for SonarCloud analysis
-[group('development')]
-sonar-build: install
-    @just dotnet::sonar-build xsdk.sln
 
 # Tests whole solution
 [group('development')]
-test: build
+test:
     @just dotnet::test xsdk.sln
 
 # Lint whole solution
-[group('development')]
-lint: repository::lint
+[group('linting')]
+check-lint:
+    @just dotnet::check-lint
 
 # Lint with auto-fix
-[group('development')]
-lint-fix: repository::lint-fix
-
-# Format code in whole repository
-[group('development')]
-format:
-    @just repository::format
-    @just dotnet::format xsdk.sln
+[group('linting')]
+lint:
+    @just dotnet::lint
 
 # Check code formatting without fixing, useful for CI checks
-[group('development')]
+[group('format')]
 check-format:
     @just repository::check-format
     @just dotnet::check-format xsdk.sln
+
+# Format code in whole repository
+[group('format')]
+format:
+    @just repository::format
+    @just dotnet::format xsdk.sln
