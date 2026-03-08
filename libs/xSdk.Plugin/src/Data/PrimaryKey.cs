@@ -4,26 +4,26 @@ namespace xSdk.Data;
 
 public abstract class PrimaryKey : IPrimaryKey
 {
-    private object primaryKey;
+    private object _primaryKey;
 
     public PrimaryKey() { }
 
     protected PrimaryKey(object initialValue)
     {
-        primaryKey = initialValue;
+        _primaryKey = initialValue;
     }
 
     public void SetValue(object value)
     {
         if (value != null)
         {
-            primaryKey = value;
+            _primaryKey = value;
         }
     }
 
-    public object GetValue() => primaryKey;
+    public object GetValue() => _primaryKey;
 
-    public TType GetValue<TType>() => Convert<TType>(primaryKey);
+    public TType GetValue<TType>() => Convert<TType>(_primaryKey);
 
     protected virtual TType Convert<TType>(object value)
     {
@@ -36,7 +36,7 @@ public abstract class PrimaryKey : IPrimaryKey
 
     public override string ToString()
     {
-        return primaryKey.ToString();
+        return _primaryKey.ToString();
     }
 }
 

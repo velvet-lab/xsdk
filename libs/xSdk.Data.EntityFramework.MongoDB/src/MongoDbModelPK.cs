@@ -5,7 +5,7 @@ namespace xSdk.Data;
 
 public sealed class MongoDbModelPK : PrimaryKey<string>
 {
-    private readonly object syncObject = new();
+    private readonly object _syncObject = new();
 
     public MongoDbModelPK()
         : base(ObjectId.GenerateNewId().ToString()) { }
@@ -18,7 +18,7 @@ public sealed class MongoDbModelPK : PrimaryKey<string>
 
     protected override TType Convert<TType>(object value)
     {
-        lock (syncObject)
+        lock (_syncObject)
         {
             if (ObjectIdConverter.TryConvert(value, out string resultAsString))
             {

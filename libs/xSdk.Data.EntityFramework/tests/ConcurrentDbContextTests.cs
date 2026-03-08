@@ -34,8 +34,8 @@ public class ConcurrentDbContextTests(DatabaseFixture fixture) : IClassFixture<D
 
         await Task.WhenAll(task1, task2);
 
-        var entities1 = task1.Result;
-        var entities2 = task2.Result;
+        var entities1 = await task1;
+        var entities2 = await task2;
 
         Assert.NotNull(entities1);
         Assert.Equal(Globals.ConcurrentEntitiesOne.Count(), entities1.Count());

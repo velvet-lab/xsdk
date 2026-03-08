@@ -7,7 +7,7 @@ namespace xSdk.Extensions.Variable;
 public class Variable : IVariable
 {
     private string _template;
-    private readonly string applicationPrefix;
+    private readonly string _applicationPrefix;
 
     protected Variable(string name, Type valueType)
     {
@@ -17,7 +17,7 @@ public class Variable : IVariable
 
         ValueType = valueType;
 
-        applicationPrefix = SlimHost.Instance.AppPrefix;
+        _applicationPrefix = SlimHost.Instance.AppPrefix;
     }
 
     public string Name { get; private set; }
@@ -84,7 +84,7 @@ public class Variable : IVariable
     internal string CreateKey(bool forCommandline, bool withApplicationPrefix)
     {
         var variableName = Name;
-        var appPrefix = applicationPrefix;
+        var appPrefix = _applicationPrefix;
         var prefix = Prefix;
 
         if (NoPrefix)

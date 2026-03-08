@@ -8,7 +8,7 @@ namespace xSdk.Data.Mocks;
 
 public class DatabaseFixture : DatabaseHostFixture
 {
-    private readonly IContainer? container = null;
+    private readonly IContainer? _container = null;
 
     protected override void Initialize()
     {
@@ -43,7 +43,7 @@ public class DatabaseFixture : DatabaseHostFixture
         {
             try
             {
-                container?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                _container?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             }
             catch
             {

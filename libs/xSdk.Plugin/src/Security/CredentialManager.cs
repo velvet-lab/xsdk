@@ -5,7 +5,7 @@ namespace xSdk.Security;
 
 public static class CredentialManager
 {
-    private static readonly object LockObject = new object();
+    private static readonly object _lockObject = new object();
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     private static string Context => GetContext();

@@ -116,7 +116,7 @@ public static partial class AuthenticationBuilderExtensions
         }
         else
         {
-            Logger.Warn("API Key could not validated, because no Authorization Service is available");
+            _logger.Warn("API Key could not validated, because no Authorization Service is available");
         }
     }
 

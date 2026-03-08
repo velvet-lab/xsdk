@@ -5,7 +5,7 @@ namespace xSdk.Data;
 
 public sealed class GuidPK : PrimaryKey<Guid>
 {
-    private readonly object syncObject = new();
+    private readonly object _syncObject = new();
 
     public GuidPK()
         : base(Guid.NewGuid()) { }
@@ -18,7 +18,7 @@ public sealed class GuidPK : PrimaryKey<Guid>
 
     protected override TType Convert<TType>(object value)
     {
-        lock (syncObject)
+        lock (_syncObject)
         {
             if (GuidConverter.TryConvert(value, out Guid result))
             {

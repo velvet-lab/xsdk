@@ -9,7 +9,7 @@ namespace xSdk.Hosting;
 
 public static partial class TestHost
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     private const string APP_NAME = "xUnitTestHost";
     private const string APP_COMPANY = "xUnit";

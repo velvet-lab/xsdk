@@ -8,22 +8,22 @@ namespace xSdk.Extensions.Links;
 
 internal class RoutedLinkBuilder
 {
-    private readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     internal IHateoasItem? Build<TModel>(RoutedLink<TModel> link)
         where TModel : IModel
     {
-        logger.Info("Build links");
+        _logger.Info("Build links");
 
         var description = link.Description;
         if (description != null)
         {
-            logger.Debug("Create base url path");
+            _logger.Debug("Create base url path");
             var baseUrl = CreateBaseUrl(link);
 
             if (!string.IsNullOrEmpty(baseUrl))
             {
-                logger.Debug("Replace values");
+                _logger.Debug("Replace values");
                 var href = ReplaceValue(link, baseUrl);
 
                 if (!string.IsNullOrEmpty(href))
@@ -32,7 +32,7 @@ internal class RoutedLinkBuilder
 
                     if (isAuthorized)
                     {
-                        logger.Debug("Create HateOas Item");
+                        _logger.Debug("Create HateOas Item");
                         var item = new HateoasItem();
                         item.Rel = description.ControllerType.Name + "/" + description.MethodName;
                         item.Href = href;
@@ -50,7 +50,7 @@ internal class RoutedLinkBuilder
     {
         if (description != null)
         {
-            logger.Debug("Clean controller name");
+            _logger.Debug("Clean controller name");
             return description.ControllerType.Name.Replace("Controller", "", StringComparison.OrdinalIgnoreCase);
         }
         return default;

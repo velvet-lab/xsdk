@@ -4,7 +4,7 @@ namespace xSdk.Data.Converters.Mapper;
 
 public static class SemVerConverter
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public static string Convert(SemVer sourceMember)
     {
@@ -18,9 +18,9 @@ public static class SemVerConverter
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Version could not converted. See further Log for further Details");
+            _logger.Error(ex, "Version could not converted. See further Log for further Details");
             if (ex.InnerException != null)
-                logger.Info(ex.InnerException.Message);
+                _logger.Info(ex.InnerException.Message);
 
             throw;
         }
@@ -43,9 +43,9 @@ public static class SemVerConverter
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Version could not converted. See further Log for further Details");
+            _logger.Error(ex, "Version could not converted. See further Log for further Details");
             if (ex.InnerException != null)
-                logger.Info(ex.InnerException.Message);
+                _logger.Info(ex.InnerException.Message);
 
             throw;
         }

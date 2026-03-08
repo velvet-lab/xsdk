@@ -8,7 +8,7 @@ namespace xSdk.Data.Mocks;
 
 public class DatabaseFixture : DatabaseHostFixture
 {
-    private IContainer? container = null;
+    private IContainer? _container = null;
 
     protected override void Initialize()
     {
@@ -23,7 +23,7 @@ public class DatabaseFixture : DatabaseHostFixture
                 }
 
                 var imageName = GetEnvironmentVariable("GENERIC_LINUX_IMAGE_NAME");
-                container = new ContainerBuilder()
+                _container = new ContainerBuilder()
                     .WithImage(imageName)
                     .WithPortBinding(8080, true)
                     .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080)))
@@ -32,7 +32,7 @@ public class DatabaseFixture : DatabaseHostFixture
                     .WithImagePullPolicy(PullPolicy.Missing)
                     .Build();
 
-                container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                _container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
                 builder
                     // Enable FlatFile
@@ -55,7 +55,7 @@ public class DatabaseFixture : DatabaseHostFixture
         {
             try
             {
-                container?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                _container?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             }
             catch
             {

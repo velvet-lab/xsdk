@@ -10,7 +10,7 @@ public static class CryptoTool
 {
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    private static readonly object LockObject = new object();
+    private static readonly object _lockObject = new object();
 
     public static void Encrypt<TData>(string file, TData data, string context = "xsdk")
     {
@@ -21,7 +21,7 @@ public static class CryptoTool
             var dataAsJson = JsonSerializer.Serialize(data, JsonHelper.GetSerializerOptions());
             var dataAsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataAsJson));
 
-            lock (LockObject)
+            lock (_lockObject)
             {
                 using (FileStream fileStream = new(file, FileMode.OpenOrCreate))
                 {
@@ -61,7 +61,7 @@ public static class CryptoTool
         {
             _logger.Debug("Decrypt data");
 
-            lock (LockObject)
+            lock (_lockObject)
             {
                 using (FileStream fileStream = new(file, FileMode.Open))
                 {

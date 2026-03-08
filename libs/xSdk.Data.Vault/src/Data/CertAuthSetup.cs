@@ -10,7 +10,7 @@ namespace xSdk.Data;
 [VariablePrefix("CertAuth")]
 public class CertAuthSetup : Setup
 {
-    private readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     [Variable(
         name: Definitions.Certificate.Name,
@@ -49,14 +49,14 @@ public class CertAuthSetup : Setup
             var cert = this.Certificate;
             if (Base64Helper.IsBase64(cert))
             {
-                logger.Info("Converting base64 encoded certificate to PEM format.");
+                _logger.Info("Converting base64 encoded certificate to PEM format.");
                 cert = Base64Helper.ConvertFromBase64(cert);
             }
 
             var key = this.Key;
             if (Base64Helper.IsBase64(key))
             {
-                logger.Info("Converting base64 encoded key to PEM format.");
+                _logger.Info("Converting base64 encoded key to PEM format.");
                 key = Base64Helper.ConvertFromBase64(key);
             }
 

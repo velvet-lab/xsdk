@@ -9,7 +9,7 @@ namespace xSdk.Extensions.Web;
 
 public static class RestClientBuilder
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public static IRestClient CreateRestClient(Uri baseUrl)
         => CreateRestClientWithHandler(baseUrl, default, default, default, default);
@@ -72,7 +72,7 @@ public static class RestClientBuilder
 
     private static IRestClient CreateRestClientWithHttpClient(Uri baseUrl, IAuthenticator? authenticator, Action<RestClientOptions>? options, HttpClient httpClient, IProgress<double>? progress)
     {
-        logger.Trace("Create rest api client");
+        _logger.Trace("Create rest api client");
 
         var restOptions = new RestClientOptions(baseUrl);
 

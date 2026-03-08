@@ -2,9 +2,9 @@ namespace xSdk.Hosting;
 
 public static class TestRunnerDetection
 {
-    private static bool? areUnitTestsRunning;
+    private static bool? _areUnitTestsRunning;
 
-    public static bool AreUnitTestsRunning => areUnitTestsRunning ??= IsTestRunnerFound();
+    public static bool AreUnitTestsRunning => _areUnitTestsRunning ??= IsTestRunnerFound();
 
     private static bool IsTestRunnerFound()
     {

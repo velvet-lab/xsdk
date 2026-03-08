@@ -5,7 +5,7 @@ namespace xSdk.Data;
 
 internal class NoSqlEntityPK : PrimaryKey<ObjectId>
 {
-    private readonly object syncObject = new();
+    private readonly object _syncObject = new();
 
     public NoSqlEntityPK()
         : base(ObjectId.NewObjectId()) { }
@@ -18,7 +18,7 @@ internal class NoSqlEntityPK : PrimaryKey<ObjectId>
 
     protected override TType Convert<TType>(object value)
     {
-        lock (syncObject)
+        lock (_syncObject)
         {
             if (ObjectIdConverter.TryConvert(value, out ObjectId result))
             {

@@ -5,7 +5,7 @@ namespace xSdk.Data.Converters.Mapper;
 public class JsonElementConverterTests
 {
 
-    private readonly JsonElement JsonEl = JsonSerializer.SerializeToElement(@"
+    private readonly JsonElement _jsonEl = JsonSerializer.SerializeToElement(@"
 {
     ""key1"": ""value1"",
     ""key2"": 123,
@@ -13,12 +13,12 @@ public class JsonElementConverterTests
 }
 ");
 
-    private readonly static string JsonString = "IlxyXG57XHJcbiAgICBcdTAwMjJrZXkxXHUwMDIyOiBcdTAwMjJ2YWx1ZTFcdTAwMjIsXHJcbiAgICBcdTAwMjJrZXkyXHUwMDIyOiAxMjMsXHJcbiAgICBcdTAwMjJrZXkzXHUwMDIyOiB0cnVlXHJcbn1cclxuIg==";
+    private readonly static string _jsonString = "IlxyXG57XHJcbiAgICBcdTAwMjJrZXkxXHUwMDIyOiBcdTAwMjJ2YWx1ZTFcdTAwMjIsXHJcbiAgICBcdTAwMjJrZXkyXHUwMDIyOiAxMjMsXHJcbiAgICBcdTAwMjJrZXkzXHUwMDIyOiB0cnVlXHJcbn1cclxuIg==";
 
     [Fact]
     public void ConvertJsonElementToBase64String()
     {
-        var actual = JsonElementConverter.Convert(JsonEl);
+        var actual = JsonElementConverter.Convert(_jsonEl);
 
         Assert.NotNull(actual);
         Assert.IsType<string>(actual);
@@ -27,6 +27,6 @@ public class JsonElementConverterTests
     [Fact]
     public void ConvertBase64StringToJsonElement()
     {
-        var actual = JsonElementConverter.Convert(JsonString);
+        var actual = JsonElementConverter.Convert(_jsonString);
     }
 }

@@ -10,7 +10,7 @@ namespace xSdk.Data;
 
 internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepository
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     protected override VaultDatabase Database => base.Database as VaultDatabase;
 
@@ -79,7 +79,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
         }
         catch (Exception ex)
         {
-            logger.Fatal(ex, "A Error occured while Vault will readed");
+            _logger.Fatal(ex, "A Error occured while Vault will readed");
             throw;
         }
 

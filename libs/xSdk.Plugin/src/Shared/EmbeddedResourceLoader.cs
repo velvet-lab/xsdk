@@ -5,7 +5,7 @@ namespace xSdk.Shared;
 
 public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     private readonly Assembly _assembly = assembly;
     private readonly string _namespace = @namespace;
@@ -25,7 +25,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             }
             else
             {
-                logger.Trace("Resource '{0}' not found in Assembly", resourceName);
+                _logger.Trace("Resource '{0}' not found in Assembly", resourceName);
             }
         }
 
@@ -47,7 +47,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             }
             else
             {
-                logger.Trace("Resource '{0}' not found in Assembly", resourceName);
+                _logger.Trace("Resource '{0}' not found in Assembly", resourceName);
             }
         }
 
@@ -56,7 +56,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 
     private static string FormatResourceName(string resourceNamespace, string resourceName)
     {
-        logger.Trace($"Create resource name for '{0}'", resourceName);
+        _logger.Trace($"Create resource name for '{0}'", resourceName);
 
         string fileName = "";
         if (resourceName.IndexOf("/") > -1)
@@ -86,7 +86,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
         });
 
         var result = $"{resourceNamespace}.{items.Aggregate((a, b) => a + "." + b)}{fileName}";
-        logger.Trace($"Resourcename for '{0}' is '{1}'", resourceName, result);
+        _logger.Trace($"Resourcename for '{0}' is '{1}'", resourceName, result);
 
         return result;
     }

@@ -5,9 +5,9 @@ namespace xSdk.Extensions.Plugin;
 
 internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin)
 {
-    private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-    private object? concretePlugin;
+    private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;
 
     public IPluginDescription Description { get; private set; }
@@ -18,12 +18,12 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     {
         get
         {
-            if (concretePlugin == null)
+            if (_concretePlugin == null)
             {
-                concretePlugin = Activator.CreateInstance(weikioPlugin);
+                _concretePlugin = Activator.CreateInstance(weikioPlugin);
                 Initialize();
             }
-            return concretePlugin;
+            return _concretePlugin;
         }
     }
     public Weikio.PluginFramework.Abstractions.Plugin WeikioPlugin => weikioPlugin;
@@ -35,9 +35,9 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
     private void Initialize()
     {
-        if (weikioPlugin != null && concretePlugin is PluginDescription description)
+        if (weikioPlugin != null && _concretePlugin is PluginDescription description)
         {
-            Logger.Info("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
+            _logger.Info("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
 
             description.Name = weikioPlugin.Name;
             description.Version = weikioPlugin.Version;

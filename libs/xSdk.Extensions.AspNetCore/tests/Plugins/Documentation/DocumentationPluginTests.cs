@@ -8,8 +8,8 @@ namespace xSdk.Plugins.Documentation;
 
 public class DocumentationPluginTests : IClassFixture<TestHostFixture>
 {
-    private readonly IPluginService service;
-    private readonly TestHostFixture fixture;
+    private readonly IPluginService _service;
+    private readonly TestHostFixture _fixture;
 
     public DocumentationPluginTests(TestHostFixture fixture)
     {
@@ -18,15 +18,15 @@ public class DocumentationPluginTests : IClassFixture<TestHostFixture>
                 .EnableWebApi()
                 .EnableDocumentation<DocumentationPluginBuilderMock>());
 
-        service = fixture.GetRequiredService<IPluginService>();
+        _service = fixture.GetRequiredService<IPluginService>();
 
-        this.fixture = fixture;
+        this._fixture = fixture;
     }
 
     [Fact]
     public void CreatePlugin()
     {
-        var plugin = service.GetPlugin<DocumentationPlugin>();
+        var plugin = _service.GetPlugin<DocumentationPlugin>();
 
         Assert.NotNull(plugin);
     }
@@ -34,7 +34,7 @@ public class DocumentationPluginTests : IClassFixture<TestHostFixture>
     [Fact]
     public void GetPluginConfigurations()
     {
-        var plugins = service.GetPlugins<IDocumentationPluginBuilder>();
+        var plugins = _service.GetPlugins<IDocumentationPluginBuilder>();
 
         Assert.NotNull(plugins);
         Assert.Single(plugins);
@@ -43,7 +43,7 @@ public class DocumentationPluginTests : IClassFixture<TestHostFixture>
     [Fact]
     public void LoadSwaggerSchemaGenerator()
     {
-        var schemaGenerator = this.fixture.GetRequiredService<ISchemaGenerator>();
+        var schemaGenerator = this._fixture.GetRequiredService<ISchemaGenerator>();
 
         Assert.NotNull(schemaGenerator);
     }

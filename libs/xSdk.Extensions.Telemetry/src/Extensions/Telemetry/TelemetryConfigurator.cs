@@ -15,7 +15,7 @@ public static class TelemetryConfigurator
     //private static TelemetrySetup _telemetrySetup;
     //private static ResourceBuilder _resourceBuilder;
 
-    private static readonly NLog.ILogger logger = NLog.LogManager.GetCurrentClassLogger();
+    private static readonly NLog.ILogger _logger = NLog.LogManager.GetCurrentClassLogger();
 
     private enum TelemetryType
     {
@@ -113,7 +113,7 @@ public static class TelemetryConfigurator
             return true;
         }
 
-        logger.Warn("Telemetry is enabled, but endpoint and token is missing. MaaS Observability is not possible.");
+        _logger.Warn("Telemetry is enabled, but endpoint and token is missing. MaaS Observability is not possible.");
 
         return false;
     }

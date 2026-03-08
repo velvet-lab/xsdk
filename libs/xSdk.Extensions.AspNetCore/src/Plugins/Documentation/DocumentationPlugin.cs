@@ -16,7 +16,7 @@ namespace xSdk.Plugins.Documentation;
 
 internal sealed class DocumentationPlugin : WebHostPluginBase
 {
-    private static readonly OpenApiInfo DefaultApiInfo = new OpenApiInfo
+    private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
     {
         Title = "SDK API Documentation",
         Version = "v1",
@@ -47,7 +47,7 @@ internal sealed class DocumentationPlugin : WebHostPluginBase
                     var apiInfo = docPluginBuilder?.CreateApiInfo(description);
                     if (apiInfo == null)
                     {
-                        apiInfo = DefaultApiInfo;
+                        apiInfo = _defaultApiInfo;
                     }
                     options.SwaggerDoc(description.GroupName, apiInfo);
                 }

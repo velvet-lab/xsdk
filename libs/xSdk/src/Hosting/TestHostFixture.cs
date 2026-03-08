@@ -8,30 +8,30 @@ namespace xSdk.Hosting;
 
 public class TestHostFixture : IDisposable
 {
-    private readonly IHostBuilder builder;
-    private IHost? host;
+    private readonly IHostBuilder _builder;
+    private IHost? _host;
 
-    private readonly List<Action<IServiceCollection>> servicesDelegates = new();
-    private readonly List<Action<HostBuilderContext, IServiceCollection>> hostServicesDelegates = new();
-    private readonly List<Action<WebHostBuilderContext, IServiceCollection>> webhostServicesDelegates = new();
+    private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
+    private readonly List<Action<HostBuilderContext, IServiceCollection>> _hostServicesDelegates = new();
+    private readonly List<Action<WebHostBuilderContext, IServiceCollection>> _webhostServicesDelegates = new();
 
     internal List<Action<IHostBuilder>> builderDelegates = new();
 
-    private bool disposed;
+    private bool _disposed;
 
-    private bool? currentDemoMode;
-    private bool demoModeShouldEnabled;
+    private bool? _currentDemoMode;
+    private bool _demoModeShouldEnabled;
 
     private readonly bool _initializeShouldCalled;
 
     public TestHostFixture()
     {
-        builder = TestHost.CreateBuilder();
+        _builder = TestHost.CreateBuilder();
     }
 
     protected TestHostFixture(bool callInitialize)
     {
-        builder = TestHost.CreateBuilder();
+        _builder = TestHost.CreateBuilder();
         _initializeShouldCalled = callInitialize;
     }
 
@@ -46,7 +46,7 @@ public class TestHostFixture : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public IHostBuilder Builder => builder;
+    public IHostBuilder Builder => _builder;
 
     public IHost Host => Build();
 
@@ -112,21 +112,21 @@ public class TestHostFixture : IDisposable
 
     public TestHostFixture ConfigureServices(Action<IServiceCollection> configure)
     {
-        servicesDelegates.Add(configure);
+        _servicesDelegates.Add(configure);
 
         return this;
     }
 
     public TestHostFixture ConfigureHostServices(Action<HostBuilderContext, IServiceCollection> configure)
     {
-        hostServicesDelegates.Add(configure);
+        _hostServicesDelegates.Add(configure);
 
         return this;
     }
 
     public TestHostFixture ConfigureWebHostServices(Action<WebHostBuilderContext, IServiceCollection> configure)
     {
-        webhostServicesDelegates.Add(configure);
+        _webhostServicesDelegates.Add(configure);
 
         return this;
     }
@@ -140,23 +140,23 @@ public class TestHostFixture : IDisposable
 
     private IHost Build()
     {
-        if (host == null)
+        if (_host == null)
         {
             if (_initializeShouldCalled)
             {
                 Initialize();
             }
 
-            builder
+            _builder
                 .ConfigureServices(
                     (context, services) =>
                     {
-                        foreach (var configure in servicesDelegates)
+                        foreach (var configure in _servicesDelegates)
                         {
                             configure?.Invoke(services);
                         }
 
-                        foreach (var configure in hostServicesDelegates)
+                        foreach (var configure in _hostServicesDelegates)
                         {
                             configure?.Invoke(context, services);
                         }
@@ -167,7 +167,7 @@ public class TestHostFixture : IDisposable
                     webhostBuilder.ConfigureServices(
                         (context, services) =>
                         {
-                            foreach (var configure in webhostServicesDelegates)
+                            foreach (var configure in _webhostServicesDelegates)
                             {
                                 configure?.Invoke(context, services);
                             }
@@ -177,20 +177,20 @@ public class TestHostFixture : IDisposable
 
             foreach (var configure in builderDelegates)
             {
-                configure?.Invoke(builder);
+                configure?.Invoke(_builder);
             }
 
-            host = builder.Build();
+            _host = _builder.Build();
         }
 
-        HandleDemoMode(demoModeShouldEnabled);
+        HandleDemoMode(_demoModeShouldEnabled);
 
-        return host;
+        return _host;
     }
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposed)
+        if (_disposed)
         {
             return;
         }
@@ -203,12 +203,12 @@ public class TestHostFixture : IDisposable
             LogManager.Flush();
             LogManager.Shutdown();
 
-            host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-            host?.Dispose();
+            _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            _host?.Dispose();
         }
 
         // Free unmanaged resources.
-        disposed = true;
+        _disposed = true;
     }
 
     protected string GetEnvironmentVariable(string key)
@@ -229,32 +229,32 @@ public class TestHostFixture : IDisposable
 
     public TestHostFixture EnableDemoMode()
     {
-        demoModeShouldEnabled = true;
+        _demoModeShouldEnabled = true;
 
         return this;
     }
 
     public void DisableDemoMode()
     {
-        demoModeShouldEnabled = false;
+        _demoModeShouldEnabled = false;
     }
 
     private void RestoreDemoMode()
     {
-        if (currentDemoMode.HasValue)
+        if (_currentDemoMode.HasValue)
         {
-            HandleDemoMode(currentDemoMode.Value);
+            HandleDemoMode(_currentDemoMode.Value);
         }
 
-        demoModeShouldEnabled = false;
+        _demoModeShouldEnabled = false;
     }
 
     private void HandleDemoMode(bool enable)
     {
-        var setup = host.Services.GetService<IVariableService>().GetSetup<EnvironmentSetup>();
-        if (!currentDemoMode.HasValue)
+        var setup = _host.Services.GetService<IVariableService>().GetSetup<EnvironmentSetup>();
+        if (!_currentDemoMode.HasValue)
         {
-            currentDemoMode = setup.IsDemo;
+            _currentDemoMode = setup.IsDemo;
         }
         setup.IsDemo = enable;
     }

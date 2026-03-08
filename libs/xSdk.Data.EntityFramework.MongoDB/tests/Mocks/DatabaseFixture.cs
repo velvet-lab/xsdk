@@ -9,7 +9,7 @@ namespace xSdk.Data.Mocks;
 
 public class DatabaseFixture : DatabaseHostFixture
 {
-    private MongoDbContainer? mongoDbContainer = null;
+    private MongoDbContainer? _mongoDbContainer = null;
 
     protected override void Initialize()
     {
@@ -21,14 +21,14 @@ public class DatabaseFixture : DatabaseHostFixture
                 {
                     // Use TestContainers for UnitTests
                     var imageName = GetEnvironmentVariable("MONGODB_IMAGE_NAME");
-                    mongoDbContainer = new MongoDbBuilder()
+                    _mongoDbContainer = new MongoDbBuilder()
                         .WithImage(imageName)
                         .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(27017)))
                         .WithAutoRemove(true)
                         .Build();
 
-                    mongoDbContainer.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    var connectionString = mongoDbContainer.GetConnectionString();
+                    _mongoDbContainer.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                    var connectionString = _mongoDbContainer.GetConnectionString();
 
                     var client = new MongoClient(connectionString);
                     options.UseMongoDB(client, Globals.DatabaseName);
@@ -54,7 +54,7 @@ public class DatabaseFixture : DatabaseHostFixture
         {
             try
             {
-                mongoDbContainer?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                _mongoDbContainer?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             }
             catch
             {

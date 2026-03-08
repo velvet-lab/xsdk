@@ -10,7 +10,7 @@ internal partial class VariableService : IVariableService
 {
     private readonly IConfiguration? _config;
 
-    private readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public VariableService(IConfiguration? config)
     {
@@ -33,7 +33,7 @@ internal partial class VariableService : IVariableService
                 }
                 else
                 {
-                    logger.Warn("Variable Value '{0}' not found", variable.Name);
+                    _logger.Warn("Variable Value '{0}' not found", variable.Name);
                 }
             }
             catch

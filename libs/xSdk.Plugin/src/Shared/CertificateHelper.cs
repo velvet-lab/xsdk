@@ -8,7 +8,7 @@ namespace xSdk.Shared;
 
 public static class CertificateHelper
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public static IEnumerable<X509Certificate> ImportFromString(string certificates)
     {
@@ -35,7 +35,7 @@ public static class CertificateHelper
                 foreach (var status in chain.ChainStatus)
                 {
                     //validation errors here
-                    logger.Error(status.StatusInformation);
+                    _logger.Error(status.StatusInformation);
                 }
             }
         }

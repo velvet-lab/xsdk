@@ -9,7 +9,7 @@ namespace xSdk.Hosting;
 
 public static partial class Host
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
 

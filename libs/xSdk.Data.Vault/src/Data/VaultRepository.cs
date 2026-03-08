@@ -7,7 +7,7 @@ namespace xSdk.Data;
 
 internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultRepository
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     public async Task<bool> AddSecretAsync(string? mountPoint, string path, Dictionary<string, object> data, CancellationToken token = default)
     {
@@ -27,7 +27,7 @@ internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultReposito
         }
         catch (Exception ex)
         {
-            logger.Fatal(ex, "A Error occured while Vault will readed");
+            _logger.Fatal(ex, "A Error occured while Vault will readed");
             throw;
         }
 

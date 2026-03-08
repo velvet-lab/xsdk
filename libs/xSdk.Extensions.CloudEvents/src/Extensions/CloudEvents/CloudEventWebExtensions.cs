@@ -14,7 +14,7 @@ namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventWebExtensions
 {
-    private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     public static string ToJson(this CloudEvent cloudEvent)
     {
@@ -172,7 +172,7 @@ public static class CloudEventWebExtensions
 
         try
         {
-            logger.Info("Send CloudEvent to '{0}'", url);
+            _logger.Info("Send CloudEvent to '{0}'", url);
             using (var client = HttpClientBuilder.CreateHttpClient(new Uri(url)))
             {
                 foreach (var header in additionalHeaders)
@@ -185,7 +185,7 @@ public static class CloudEventWebExtensions
                     var streamContent = new StreamContent(stream);
                     streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType.MediaType);
 
-                    logger.Info("Add CloudEvent Attributes as Http Header");
+                    _logger.Info("Add CloudEvent Attributes as Http Header");
                     foreach (var item in cloudEvent.GetPopulatedAttributes())
                     {
                         var attribute = item.Key;
@@ -203,7 +203,7 @@ public static class CloudEventWebExtensions
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "CloudEvent could not posted to '{0}' (Reason: {1})", url, ex.Message);
+            _logger.Error(ex, "CloudEvent could not posted to '{0}' (Reason: {1})", url, ex.Message);
             throw;
         }
     }

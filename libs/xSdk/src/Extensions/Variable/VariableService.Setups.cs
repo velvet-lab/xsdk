@@ -6,7 +6,7 @@ namespace xSdk.Extensions.Variable;
 internal partial class VariableService
 {
     private readonly ConcurrentDictionary<Type, ISetup> _setups = new ConcurrentDictionary<Type, ISetup>();
-    private readonly List<VariableRegistration> Registrations = new();
+    private readonly List<VariableRegistration> _registrations = new();
 
     public IVariableService RegisterSetup<TSetup>()
         where TSetup : class, ISetup, new()

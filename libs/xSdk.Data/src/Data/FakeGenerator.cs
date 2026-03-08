@@ -7,7 +7,7 @@ public static class FakeGenerator
 {
     private const string DefaultContext = "default";
     private static Dictionary<string, object> _fakers;
-    private static readonly int GlobalCount = new Random().Next(1, 10);
+    private static readonly int _globalCount = new Random().Next(1, 10);
 
     public static TEntity Generate<TFake, TEntity>()
         where TFake : Fakes<TEntity>, new()
@@ -99,58 +99,58 @@ public static class FakeGenerator
     public static IEnumerable<TEntity> GenerateList<TFake, TEntity>()
        where TFake : Fakes<TEntity>, new()
        where TEntity : class
-       => GenerateListAsync<TFake, TEntity>(GlobalCount, DefaultContext, false, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TFake, TEntity>(_globalCount, DefaultContext, false, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TFake, TEntity>(bool repeatableData)
        where TFake : Fakes<TEntity>, new()
        where TEntity : class
-       => GenerateListAsync<TFake, TEntity>(GlobalCount, DefaultContext, repeatableData, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TFake, TEntity>(_globalCount, DefaultContext, repeatableData, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TFake, TEntity>(bool repeatableData, bool strictMode)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, DefaultContext, repeatableData, strictMode).GetAwaiter().GetResult();
+        => GenerateListAsync<TFake, TEntity>(_globalCount, DefaultContext, repeatableData, strictMode).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TFake, TEntity>(string context)
        where TFake : Fakes<TEntity>, new()
        where TEntity : class
-       => GenerateListAsync<TFake, TEntity>(GlobalCount, context, false, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TFake, TEntity>(_globalCount, context, false, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TFake, TEntity>(string context, bool repeatableData)
        where TFake : Fakes<TEntity>, new()
        where TEntity : class
-       => GenerateListAsync<TFake, TEntity>(GlobalCount, context, repeatableData, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TFake, TEntity>(_globalCount, context, repeatableData, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TFake, TEntity>(string context, bool repeatableData, bool strictMode)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, context, repeatableData, strictMode).GetAwaiter().GetResult();
+        => GenerateListAsync<TFake, TEntity>(_globalCount, context, repeatableData, strictMode).GetAwaiter().GetResult();
 
 
 
     public static IEnumerable<TEntity> GenerateList<TEntity>(Type fake)
        where TEntity : class
-       => GenerateListAsync<TEntity>(fake, GlobalCount, DefaultContext, false, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TEntity>(fake, _globalCount, DefaultContext, false, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TEntity>(Type fake, bool repeatableData)
        where TEntity : class
-       => GenerateListAsync<TEntity>(fake, GlobalCount, DefaultContext, repeatableData, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TEntity>(fake, _globalCount, DefaultContext, repeatableData, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TEntity>(Type fake, bool repeatableData, bool strictMode)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, DefaultContext, repeatableData, strictMode).GetAwaiter().GetResult();
+        => GenerateListAsync<TEntity>(fake, _globalCount, DefaultContext, repeatableData, strictMode).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TEntity>(Type fake, string context)
        where TEntity : class
-       => GenerateListAsync<TEntity>(fake, GlobalCount, context, false, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TEntity>(fake, _globalCount, context, false, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TEntity>(Type fake, string context, bool repeatableData)
        where TEntity : class
-       => GenerateListAsync<TEntity>(fake, GlobalCount, context, repeatableData, false).GetAwaiter().GetResult();
+       => GenerateListAsync<TEntity>(fake, _globalCount, context, repeatableData, false).GetAwaiter().GetResult();
 
     public static IEnumerable<TEntity> GenerateList<TEntity>(Type fake, string context, bool repeatableData, bool strictMode)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, context, repeatableData, strictMode).GetAwaiter().GetResult();
+        => GenerateListAsync<TEntity>(fake, _globalCount, context, repeatableData, strictMode).GetAwaiter().GetResult();
 
 
 
@@ -218,58 +218,58 @@ public static class FakeGenerator
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TFake, TEntity>()
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, DefaultContext, false, false);
+        => GenerateListAsync<TFake, TEntity>(_globalCount, DefaultContext, false, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TFake, TEntity>(bool repeatableData)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, DefaultContext, repeatableData, false);
+        => GenerateListAsync<TFake, TEntity>(_globalCount, DefaultContext, repeatableData, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TFake, TEntity>(bool repeatableData, bool strictMode)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, DefaultContext, repeatableData, strictMode);
+        => GenerateListAsync<TFake, TEntity>(_globalCount, DefaultContext, repeatableData, strictMode);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TFake, TEntity>(string context)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, context, false, false);
+        => GenerateListAsync<TFake, TEntity>(_globalCount, context, false, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TFake, TEntity>(string context, bool repeatableData)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, context, repeatableData, false);
+        => GenerateListAsync<TFake, TEntity>(_globalCount, context, repeatableData, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TFake, TEntity>(string context, bool repeatableData, bool strictMode)
         where TFake : Fakes<TEntity>, new()
         where TEntity : class
-        => GenerateListAsync<TFake, TEntity>(GlobalCount, context, repeatableData, strictMode);
+        => GenerateListAsync<TFake, TEntity>(_globalCount, context, repeatableData, strictMode);
 
 
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TEntity>(Type fake)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, DefaultContext, false, false);
+        => GenerateListAsync<TEntity>(fake, _globalCount, DefaultContext, false, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TEntity>(Type fake, bool repeatableData)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, DefaultContext, repeatableData, false);
+        => GenerateListAsync<TEntity>(fake, _globalCount, DefaultContext, repeatableData, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TEntity>(Type fake, bool repeatableData, bool strictMode)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, DefaultContext, repeatableData, strictMode);
+        => GenerateListAsync<TEntity>(fake, _globalCount, DefaultContext, repeatableData, strictMode);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TEntity>(Type fake, string context)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, context, false, false);
+        => GenerateListAsync<TEntity>(fake, _globalCount, context, false, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TEntity>(Type fake, string context, bool repeatableData)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, context, repeatableData, false);
+        => GenerateListAsync<TEntity>(fake, _globalCount, context, repeatableData, false);
 
     public static Task<IEnumerable<TEntity>> GenerateListAsync<TEntity>(Type fake, string context, bool repeatableData, bool strictMode)
         where TEntity : class
-        => GenerateListAsync<TEntity>(fake, GlobalCount, context, repeatableData, strictMode);
+        => GenerateListAsync<TEntity>(fake, _globalCount, context, repeatableData, strictMode);
 
 
 

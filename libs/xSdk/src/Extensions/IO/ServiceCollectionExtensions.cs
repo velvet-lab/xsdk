@@ -6,13 +6,13 @@ namespace xSdk.Extensions.IO;
 
 public static class ServiceCollectionExtensions
 {
-    private static bool IsLocked;
+    private static bool _isLocked;
 
     public static IServiceCollection AddFileServices(this IServiceCollection services)
     {
         services.TryAddSingleton(provider =>
         {
-            IsLocked = true;
+            _isLocked = true;
             return SlimHost.Instance.FileSystem;
         });
 
@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddSingleton<IFileSystemService>(provider =>
         {
-            if (!IsLocked)
+            if (!_isLocked)
             {
                 return ActivatorUtilities.CreateInstance<FileSystemService>(provider);
             }

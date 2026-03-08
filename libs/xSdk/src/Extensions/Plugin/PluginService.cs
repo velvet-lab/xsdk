@@ -5,7 +5,7 @@ namespace xSdk.Extensions.Plugin;
 
 internal partial class PluginService(IFileSystemService fsService, ILogger<PluginService> logger) : IPluginService
 {
-    private readonly List<PluginItem> plugins = new();
+    private readonly List<PluginItem> _plugins = new();
 
     public Task<TPlugin?> GetPluginAsync<TPlugin>(CancellationToken token = default) =>
         GetPluginsAsync<TPlugin>(token).ContinueWith(task => task.Result.FirstOrDefault());
@@ -15,7 +15,7 @@ internal partial class PluginService(IFileSystemService fsService, ILogger<Plugi
         var searchResult = new List<PluginItem>();
 
         await LoadPluginsAsync();
-        foreach (var item in plugins)
+        foreach (var item in _plugins)
         {
             if (item.Plugin is TPlugin concretePlugin)
             {

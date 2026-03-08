@@ -5,7 +5,7 @@ namespace xSdk.Hosting;
 public sealed class SlimHostBuilder
 {
     private Action<IServiceCollection> _configureServicesDelegate;
-    private SlimHostBase host;
+    private SlimHostBase _host;
 
     public static SlimHostBuilder CreateBuilder<TSlimHost>()
         where TSlimHost : ISlimHost, new()
@@ -14,7 +14,7 @@ public sealed class SlimHostBuilder
         var builder = new SlimHostBuilder();
 #nullable disable
         // Create the host
-        builder.host = new TSlimHost() as SlimHostBase;
+        builder._host = new TSlimHost() as SlimHostBase;
 #nullable restore
 
         // return the builder
@@ -24,7 +24,7 @@ public sealed class SlimHostBuilder
     public ISlimHost PreBuild()
     {
         // Return a not fully initialized host
-        return host;
+        return _host;
     }
 
     public ISlimHost Build()
@@ -35,13 +35,13 @@ public sealed class SlimHostBuilder
 
         // Save the provider to the host
         var provider = services.BuildServiceProvider();
-        host.Configure(provider);
+        _host.Configure(provider);
 
         // Configure only the fake SlimHost in the Abstractions Library
-        SlimHost.Configure(host);
+        SlimHost.Configure(_host);
 
         // Return the fully initialized host
-        return host;
+        return _host;
     }
 
     public SlimHostBuilder ConfigureServices(Action<IServiceCollection> configureDelegate)
@@ -58,9 +58,9 @@ public sealed class SlimHostBuilder
             appPrefix = defaultValue;
         }
 
-        if (host != null)
+        if (_host != null)
         {
-            host.AppPrefix = appPrefix;
+            _host.AppPrefix = appPrefix;
         }
 
         return this;
@@ -73,9 +73,9 @@ public sealed class SlimHostBuilder
             appName = defaultValue;
         }
 
-        if (host != null)
+        if (_host != null)
         {
-            host.AppName = appName;
+            _host.AppName = appName;
         }
 
         return this;
@@ -88,9 +88,9 @@ public sealed class SlimHostBuilder
             appCompany = defaultValue;
         }
 
-        if (host != null)
+        if (_host != null)
         {
-            host.AppCompany = appCompany;
+            _host.AppCompany = appCompany;
         }
 
         return this;
@@ -98,9 +98,9 @@ public sealed class SlimHostBuilder
 
     public SlimHostBuilder ValidateAppVersion(string? appVersion)
     {
-        if (!string.IsNullOrEmpty(appVersion) && host != null)
+        if (!string.IsNullOrEmpty(appVersion) && _host != null)
         {
-            host.AppVersion = appVersion;
+            _host.AppVersion = appVersion;
         }
 
         return this;

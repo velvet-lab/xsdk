@@ -10,7 +10,7 @@ namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventFactory
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     internal static string BaseUrl = $"https://{SlimHost.Instance.AppCompany}.de";
     internal static string SourceBaseUrl = $"{BaseUrl}/events/spec/v1";
@@ -134,7 +134,7 @@ public static class CloudEventFactory
             cloudEvent.Subject = subject;
 
         if (!cloudEvent.IsValid)
-            logger.Warn("Cloud Event is not valid. Some Attributes missing");
+            _logger.Warn("Cloud Event is not valid. Some Attributes missing");
 
         // Add Default Attributes
         cloudEvent.EnrichAttributes(extensions);

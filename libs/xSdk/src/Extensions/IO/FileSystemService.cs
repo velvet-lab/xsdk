@@ -10,12 +10,12 @@ namespace xSdk.Extensions.IO;
 
 internal class FileSystemService : IFileSystemService
 {
-    private readonly EnvironmentSetup envSetup;
-    private static readonly ILogger logger = LogManager.GetCurrentClassLogger();
+    private readonly EnvironmentSetup _envSetup;
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     public FileSystemService(IVariableService variableService)
     {
-        envSetup = variableService.GetSetup<EnvironmentSetup>();
+        _envSetup = variableService.GetSetup<EnvironmentSetup>();
     }
 
     internal FileSystemService() { }
@@ -30,7 +30,7 @@ internal class FileSystemService : IFileSystemService
     {
         var rootFolders = CreateRootFolders();
 
-        logger.Info("Request filesystem for context '{0}'", context);
+        _logger.Info("Request filesystem for context '{0}'", context);
 
         InternalFileSystemResult result = new() { App = new PhysicalFileSystem(), Data = new PhysicalFileSystem() };
 
@@ -66,7 +66,7 @@ internal class FileSystemService : IFileSystemService
 
     private RootFolders CreateRootFolders()
     {
-        logger.Trace("Determine root folders");
+        _logger.Trace("Determine root folders");
 
         RootFolders result;
 
@@ -104,9 +104,9 @@ internal class FileSystemService : IFileSystemService
 
         var companyName = SlimHost.Instance.AppCompany;
         var appName = SlimHost.Instance.AppName;
-        if (envSetup != null)
+        if (_envSetup != null)
         {
-            var contentRoot = envSetup.ContentRoot;
+            var contentRoot = _envSetup.ContentRoot;
 
             if (!string.IsNullOrEmpty(contentRoot))
             {
@@ -114,8 +114,8 @@ internal class FileSystemService : IFileSystemService
                 result.LocalData = contentRoot;
             }
 
-            companyName = envSetup.AppCompany;
-            appName = envSetup.AppName;
+            companyName = _envSetup.AppCompany;
+            appName = _envSetup.AppName;
         }
 
         var specificPath = (UPath)$"{companyName}/{appName}".ToLower();
@@ -135,7 +135,7 @@ internal class FileSystemService : IFileSystemService
 
     private UPath CreateFolder(UPath path, bool shouldCreate = true)
     {
-        logger.Trace("Create folder if not exists");
+        _logger.Trace("Create folder if not exists");
 
         var fs = new PhysicalFileSystem();
         var realPath = fs.ConvertPathFromInternal(path.FullName);
@@ -146,13 +146,13 @@ internal class FileSystemService : IFileSystemService
             {
                 if (shouldCreate)
                 {
-                    logger.Trace("Creating folder '{0}'", realPath);
+                    _logger.Trace("Creating folder '{0}'", realPath);
                     fs.CreateDirectory(realPath);
                 }
             }
             catch
             {
-                logger.Trace("Folder '{0}' could not created", realPath);
+                _logger.Trace("Folder '{0}' could not created", realPath);
             }
         }
         return realPath;
@@ -166,12 +166,12 @@ internal class FileSystemService : IFileSystemService
 
         if (Directory.Exists(realPath))
         {
-            logger.Debug("Path '{0}' exists", realPath);
+            _logger.Debug("Path '{0}' exists", realPath);
             return path;
         }
         else if (Directory.Exists(realFallbackPath))
         {
-            logger.Warn("Path '{0}' does not exist. Use fallback path '{1}'", realPath, realFallbackPath);
+            _logger.Warn("Path '{0}' does not exist. Use fallback path '{1}'", realPath, realFallbackPath);
             return fallback;
         }
         else

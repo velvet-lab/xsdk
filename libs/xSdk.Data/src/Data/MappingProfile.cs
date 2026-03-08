@@ -5,7 +5,7 @@ namespace xSdk.Data;
 
 public abstract class MappingProfile
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     protected static TypeAdapterSetter<TSource, TDestination> CreateMap<TSource, TDestination>()
     {
@@ -28,22 +28,22 @@ public abstract class MappingProfile
             config.RequireDestinationMemberSource = false;
         };
 
-        logger.Debug("Creating TypeAdapterConfig for Profile '{0}'", GetType());
+        _logger.Debug("Creating TypeAdapterConfig for Profile '{0}'", GetType());
         var globalConfig = TypeAdapterConfig.GlobalSettings;
 
         if (configure == null)
         {
-            logger.Debug("Using default configuration for Profile '{0}'", GetType());
+            _logger.Debug("Using default configuration for Profile '{0}'", GetType());
             configure = defaultConfig;
         }
 
-        logger.Debug("Applying global configuration for Profile '{0}'", GetType());
+        _logger.Debug("Applying global configuration for Profile '{0}'", GetType());
         configure(globalConfig);
 
-        logger.Debug("Applying profile configuration for Profile '{0}'", GetType());
+        _logger.Debug("Applying profile configuration for Profile '{0}'", GetType());
         Configure(globalConfig);
 
-        logger.Debug("Compiling TypeAdapterConfig for Profile '{0}'", GetType());
+        _logger.Debug("Compiling TypeAdapterConfig for Profile '{0}'", GetType());
         globalConfig.Compile();
 
         return globalConfig;

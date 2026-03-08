@@ -7,7 +7,7 @@ namespace xSdk.Extensions.Variable;
 
 public static class SerivceCollectionExtensions
 {
-    private static bool IsLocked;
+    private static bool _isLocked;
 
     private static readonly List<Action<VariableServiceSetup>> _configureActions = new List<Action<VariableServiceSetup>>();
 
@@ -44,7 +44,7 @@ public static class SerivceCollectionExtensions
                 }
             }
 
-            IsLocked = true;
+            _isLocked = true;
             return service;
         });
 
@@ -57,7 +57,7 @@ public static class SerivceCollectionExtensions
             .AddSingleton<IConfiguration>(config)
             .AddSingleton<IVariableService>(provider =>
             {
-                if (!IsLocked || ignoreLock)
+                if (!_isLocked || ignoreLock)
                 {
                     var service = ActivatorUtilities.CreateInstance<VariableService>(provider);
 

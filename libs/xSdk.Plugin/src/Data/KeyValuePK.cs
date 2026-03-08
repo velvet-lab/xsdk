@@ -2,7 +2,7 @@ namespace xSdk.Data;
 
 public sealed class KeyValuePK : PrimaryKey<string>
 {
-    private readonly object syncObject = new();
+    private readonly object _syncObject = new();
 
     public KeyValuePK()
         : base(string.Empty) { }
@@ -12,7 +12,7 @@ public sealed class KeyValuePK : PrimaryKey<string>
 
     protected override TType Convert<TType>(object value)
     {
-        lock (syncObject)
+        lock (_syncObject)
         {
             return (TType)value;
         }

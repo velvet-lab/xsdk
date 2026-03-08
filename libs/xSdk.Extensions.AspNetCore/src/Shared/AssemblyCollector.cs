@@ -7,30 +7,30 @@ namespace xSdk.Shared;
 
 internal static class AssemblyCollector
 {
-    private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-    private static List<Assembly>? assemblies;
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static List<Assembly>? _assemblies;
 
     internal static List<Assembly> Collect()
     {
-        Logger.Info("Collect loaded Assemblies");
+        _logger.Info("Collect loaded Assemblies");
 
-        if (assemblies == null || assemblies.Count == 0)
+        if (_assemblies == null || _assemblies.Count == 0)
         {
-            assemblies = new List<Assembly>();
+            _assemblies = new List<Assembly>();
 
-            Logger.Debug("Add assemblies from executing folder");
-            AddAssembliesFromExecutingFolder(assemblies);
+            _logger.Debug("Add assemblies from executing folder");
+            AddAssembliesFromExecutingFolder(_assemblies);
 
-            Logger.Debug("Add assemblies from loaded plugins");
+            _logger.Debug("Add assemblies from loaded plugins");
             var plugins = SlimHost.Instance.PluginSystem.GetPlugins();
             foreach (var plugin in plugins)
             {
                 var assembly = plugin.GetType().Assembly;
-                AddAssembly(assemblies, assembly);
+                AddAssembly(_assemblies, assembly);
             }
         }
 
-        return assemblies;
+        return _assemblies;
     }
 
     private static void AddAssembly(List<Assembly> assemblies, Assembly assembly)
@@ -41,7 +41,7 @@ internal static class AssemblyCollector
         {
             assemblies.Add(assembly);
 
-            Logger.Debug("Add referenced Assemblies for found Assemblies");
+            _logger.Debug("Add referenced Assemblies for found Assemblies");
             AddReferencedAssemblies(assemblies, assembly);
         }
     }

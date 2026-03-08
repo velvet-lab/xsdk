@@ -8,7 +8,7 @@ namespace xSdk.Data;
 [VariablePrefix("AppRoleAuth")]
 public class AppRoleAuthSetup : Setup
 {
-    private readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     [Variable(
         name: Definitions.RoleId.Name,

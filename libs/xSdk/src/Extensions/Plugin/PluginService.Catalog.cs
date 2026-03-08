@@ -7,13 +7,13 @@ namespace xSdk.Extensions.Plugin;
 
 internal partial class PluginService
 {
-    private CompositePluginCatalog aggregateCatalog;
+    private CompositePluginCatalog _aggregateCatalog;
 
-    private readonly Dictionary<Type, TypePluginCatalog> typePluginCatalogs = new();
-    private bool isTypePluginCatalogsStale = false;
+    private readonly Dictionary<Type, TypePluginCatalog> _typePluginCatalogs = new();
+    private bool _isTypePluginCatalogsStale = false;
 
-    private readonly Dictionary<Assembly, AssemblyPluginCatalog> assemblyPluginCatalogs = new();
-    private bool isAssemblyPluginCatalogsStale = false;
+    private readonly Dictionary<Assembly, AssemblyPluginCatalog> _assemblyPluginCatalogs = new();
+    private bool _isAssemblyPluginCatalogsStale = false;
 
     private async Task LoadPluginsAsync()
     {
@@ -24,10 +24,10 @@ internal partial class PluginService
         {
             try
             {
-                if (!plugins.Any(x => x.WeikioPlugin.Type == abstractPlugin.Type))
+                if (!_plugins.Any(x => x.WeikioPlugin.Type == abstractPlugin.Type))
                 {
                     var item = new PluginItem(abstractPlugin);
-                    plugins.Add(item);
+                    _plugins.Add(item);
                 }
             }
             catch (MissingMethodException mme)
@@ -44,9 +44,9 @@ internal partial class PluginService
 
     private async Task<CompositePluginCatalog> InitialzeCatalogsAsync()
     {
-        if (isTypePluginCatalogsStale || isAssemblyPluginCatalogsStale || aggregateCatalog == null)
+        if (_isTypePluginCatalogsStale || _isAssemblyPluginCatalogsStale || _aggregateCatalog == null)
         {
-            aggregateCatalog = new CompositePluginCatalog();
+            _aggregateCatalog = new CompositePluginCatalog();
 
             var machineCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Machine, "/pluginBuilders");
             var userCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.User, "/pluginBuilders");
@@ -54,35 +54,35 @@ internal partial class PluginService
 
             if (machineCatalog != null)
             {
-                aggregateCatalog.AddCatalog(machineCatalog);
+                _aggregateCatalog.AddCatalog(machineCatalog);
             }
 
             if (userCatalog != null)
             {
-                aggregateCatalog.AddCatalog(userCatalog);
+                _aggregateCatalog.AddCatalog(userCatalog);
             }
 
             if (localCatalog != null)
             {
-                aggregateCatalog.AddCatalog(localCatalog);
+                _aggregateCatalog.AddCatalog(localCatalog);
             }
 
-            foreach (var kvp in typePluginCatalogs)
+            foreach (var kvp in _typePluginCatalogs)
             {
-                aggregateCatalog.AddCatalog(kvp.Value);
+                _aggregateCatalog.AddCatalog(kvp.Value);
             }
 
-            foreach (var kvp in assemblyPluginCatalogs)
+            foreach (var kvp in _assemblyPluginCatalogs)
             {
-                aggregateCatalog.AddCatalog(kvp.Value);
+                _aggregateCatalog.AddCatalog(kvp.Value);
             }
         }
 
-        await aggregateCatalog.Initialize();
+        await _aggregateCatalog.Initialize();
 
-        isTypePluginCatalogsStale = false;
-        isAssemblyPluginCatalogsStale = false;
+        _isTypePluginCatalogsStale = false;
+        _isAssemblyPluginCatalogsStale = false;
 
-        return aggregateCatalog;
+        return _aggregateCatalog;
     }
 }

@@ -7,36 +7,36 @@ internal partial class PluginService
 {
     public Task AddPluginAsync(Type pluginType, CancellationToken token = default)
     {
-        typePluginCatalogs.AddOrNew(pluginType, CatalogHelper.CreateTypeCatalog(pluginType));
-        isTypePluginCatalogsStale = true;
+        _typePluginCatalogs.AddOrNew(pluginType, CatalogHelper.CreateTypeCatalog(pluginType));
+        _isTypePluginCatalogsStale = true;
 
         return Task.CompletedTask;
     }
 
     public Task AddPluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
     {
-        assemblyPluginCatalogs.AddOrNew(sourceAssembly, CatalogHelper.CreateAssemblyCatalog(sourceAssembly));
-        isAssemblyPluginCatalogsStale = true;
+        _assemblyPluginCatalogs.AddOrNew(sourceAssembly, CatalogHelper.CreateAssemblyCatalog(sourceAssembly));
+        _isAssemblyPluginCatalogsStale = true;
 
         return Task.CompletedTask;
     }
 
     public Task RemovePluginAsync(Type pluginType, CancellationToken token = default)
     {
-        if (typePluginCatalogs.ContainsKey(pluginType))
+        if (_typePluginCatalogs.ContainsKey(pluginType))
         {
-            isTypePluginCatalogsStale = true;
-            typePluginCatalogs.Remove(pluginType);
+            _isTypePluginCatalogsStale = true;
+            _typePluginCatalogs.Remove(pluginType);
         }
         return Task.CompletedTask;
     }
 
     public Task RemovePluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
     {
-        if (assemblyPluginCatalogs.ContainsKey(sourceAssembly))
+        if (_assemblyPluginCatalogs.ContainsKey(sourceAssembly))
         {
-            isAssemblyPluginCatalogsStale = true;
-            assemblyPluginCatalogs.Remove(sourceAssembly);
+            _isAssemblyPluginCatalogsStale = true;
+            _assemblyPluginCatalogs.Remove(sourceAssembly);
         }
         return Task.CompletedTask;
     }

@@ -8,7 +8,7 @@ namespace xSdk.Data;
 [VariablePrefix("Vault")]
 public class VaultSetup : Setup
 {
-    private readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
     [Variable(
        name: Definitions.Endpoint.Name,

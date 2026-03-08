@@ -8,9 +8,9 @@ namespace xSdk.Hosting;
 
 internal sealed class SlimHostInternal : SlimHostBase
 {
-    private static ISlimHost host;
+    private static ISlimHost _host;
 
-    internal static ISlimHost Instance => host ?? throw new InvalidOperationException("SlimHost is not initialized");
+    internal static ISlimHost Instance => _host ?? throw new InvalidOperationException("SlimHost is not initialized");
 
     internal static ISlimHost Initialize(string[] args, string? appName, string? appCompany, string? appPrefix) =>
         InitializeSlimHost(args, appName, appCompany, appPrefix, false);
@@ -20,7 +20,7 @@ internal sealed class SlimHostInternal : SlimHostBase
 
     private static ISlimHost InitializeSlimHost(string[] args, string? appName, string? appCompany, string? appPrefix, bool isTestHost)
     {
-        if (host == null)
+        if (_host == null)
         {
             HostLoggingManager.ResetLogger();
 
@@ -31,7 +31,7 @@ internal sealed class SlimHostInternal : SlimHostBase
                 .ValidateAppPrefix(appPrefix, EnvironmentSetup.Definitions.AppPrefix.DefaultValue);
 
             // Get soon as possible an instance of the host
-            host = builder.PreBuild();
+            _host = builder.PreBuild();
 
             // Letz continue with the configuration
             IConfigurationBuilder configBuilder = new ConfigurationBuilder().AddInMemoryCollection();
@@ -58,18 +58,18 @@ internal sealed class SlimHostInternal : SlimHostBase
             });
 
             // Now get the real instance of the host
-            host = builder.Build();
+            _host = builder.Build();
 
             // Validate the app version
-            var envSetup = host.VariableSystem.GetSetup<EnvironmentSetup>();
+            var envSetup = _host.VariableSystem.GetSetup<EnvironmentSetup>();
             builder.ValidateAppVersion(envSetup.AppVersion);
 
             // Set the environment setup
-            envSetup.AppName = host.AppName;
-            envSetup.AppCompany = host.AppCompany;
-            envSetup.AppPrefix = host.AppPrefix;
+            envSetup.AppName = _host.AppName;
+            envSetup.AppCompany = _host.AppCompany;
+            envSetup.AppPrefix = _host.AppPrefix;
         }
 
-        return host;
+        return _host;
     }
 }

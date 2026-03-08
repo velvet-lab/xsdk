@@ -7,7 +7,7 @@ namespace xSdk.Extensions.Web;
 
 public static class HttpClientBuilder
 {
-    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
 
     public static HttpClient CreateHttpClient(Uri? baseUrl)

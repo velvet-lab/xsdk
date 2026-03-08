@@ -7,7 +7,7 @@ public static partial class WebHost
 {
     private static void ConfigureApplicationWithContext(WebHostBuilderContext context, IApplicationBuilder app)
     {
-        Logger.Info("Configuring application services");
+        _logger.Info("Configuring application services");
 
         var plugins = SlimHost.Instance.PluginSystem.GetPlugins<WebHostPluginBase>();
 
