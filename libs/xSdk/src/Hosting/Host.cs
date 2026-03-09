@@ -9,8 +9,6 @@ namespace xSdk.Hosting;
 
 public static partial class Host
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
     public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
 
     public static IHostBuilder CreateBuilder(string[] args, string appName) => CreateBuilder(args, appName, default, default);
@@ -19,7 +17,7 @@ public static partial class Host
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
-        var boot = SlimHostInternal.Initialize(args, appName, appCompany, appPrefix);
+        SlimHostInternal.Initialize(args, appName, appCompany, appPrefix);
 
         var builder = new HostBuilder()
             .ConfigureHostConfiguration(HostConfigurationManager.LoadHostConfiguration)
