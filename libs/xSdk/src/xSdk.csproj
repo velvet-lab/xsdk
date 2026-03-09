@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
@@ -14,37 +14,9 @@
         <PackageReference Include="Weikio.PluginFramework" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
-
+    
     <ItemGroup>
-      <PackageReference Include="Asp.Versioning.Http" VersionOverride="8.1.1" />
-      <PackageReference Include="Microsoft.OpenApi" VersionOverride="3.4.0" />
-    <PackageReference Include="NLog" VersionOverride="6.1.1" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" VersionOverride="1.15.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Process" VersionOverride="0.5.0-beta.7" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" VersionOverride="1.15.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" VersionOverride="10.1.4" />
         <ProjectReference Include="..\..\xSdk.Plugin\src\xSdk.Plugin.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageVersion Update="Microsoft.SourceLink.GitHub" Version="10.0.103" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="Microsoft.SourceLink.GitHub">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="System.Text.Encodings.Web" Version="10.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="System.Text.Encodings.Web">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
 </Project>

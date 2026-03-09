@@ -17,26 +17,4 @@
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="Microsoft.SourceLink.GitHub" Version="10.0.103" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="Microsoft.SourceLink.GitHub">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="System.Text.Encodings.Web" Version="10.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="System.Text.Encodings.Web">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
 </Project>

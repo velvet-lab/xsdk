@@ -24,16 +24,4 @@
         <Using Include="Xunit" />
         <Using Include="FluentAssertions" />
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="System.Text.Encodings.Web" Version="10.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="System.Text.Encodings.Web">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
 </Project>
