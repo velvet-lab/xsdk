@@ -1,4 +1,4 @@
-## Changelog
+# Changelog
 
 ## [1.1.0-next.1](https://github.com/velvet-lab/xsdk/compare/v1.0.0...v1.1.0-next.1) (2026-03-06)
 
