@@ -288,6 +288,8 @@ charset = utf-8-bom
 # Solution Files
 [*.sln]
 indent_style = tab
+max_line_length = off
+end_of_line = crlf
 
 # Batch Files
 [*.{cmd,bat}]
