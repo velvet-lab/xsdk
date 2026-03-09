@@ -1,4 +1,4 @@
-﻿//using Consul;
+//using Consul;
 //using xSdk.Configuration;
 //using Microsoft.Extensions.Configuration;
 //using Microsoft.Extensions.Logging;

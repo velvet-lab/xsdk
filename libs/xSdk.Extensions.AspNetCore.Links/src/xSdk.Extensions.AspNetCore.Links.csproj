@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
-      <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
-    </ItemGroup>    
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+        <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
+    </ItemGroup>
 </Project>

@@ -74,7 +74,6 @@ public class WebSecurityPlugin : WebHostPluginBase
         // dann würde die App nur auf den Forwarded Headers vertrauen, wenn sie von einem
         // vertrauenswürdigen Proxy kommt.
 
-         //Check if this is needed, because the ForwardedHeadersOptions are already cleared
         // KnownNetworks und KnownProxies werden geleert, damit der Forwarded Header
         // unabhängig vom vorgelagerten Proxy akzeptiert wird.
 

@@ -27,8 +27,8 @@
         <Company>Velvet Lab</Company>
         <Copyright>Copyright (c)2026 Velvet Lab</Copyright>
         <PackageProjectUrl>https://github.com/velvet-lab/xsdk</PackageProjectUrl>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/velvet-lab/xsdk</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/velvet-lab/xsdk</RepositoryUrl>
     </PropertyGroup>
 
     <!-- see https://github.com/dotnet/sourcelink -->

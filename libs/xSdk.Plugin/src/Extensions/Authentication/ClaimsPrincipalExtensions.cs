@@ -11,12 +11,12 @@ public static class ClaimsPrincipalExtensions
         Guard.IsNotNull(principal);
 
         return principal.HasClaim(
-                   claim => claim.Type == SdkClaimTypes.ApiKey.Name
-                       && claim.Value == ApiKeySignature.Name
-               )
-               && principal.HasClaim(
-                   claim => claim.Type == SdkClaimTypes.ApiKey.Identifier
-                       && claim.Value == ApiKeySignature.Identifier
-               );
+            claim => claim.Type == SdkClaimTypes.ApiKey.Name
+                && claim.Value == ApiKeySignature.Name
+        )
+        && principal.HasClaim(
+            claim => claim.Type == SdkClaimTypes.ApiKey.Identifier
+                && claim.Value == ApiKeySignature.Identifier
+        );
     }
 }

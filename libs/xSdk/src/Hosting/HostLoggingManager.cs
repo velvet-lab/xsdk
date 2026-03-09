@@ -151,8 +151,8 @@ internal static class HostLoggingManager
             var config =
                 $@"<?xml version=""1.0"" encoding=""utf-8"" ?>
 <nlog xmlns=""http://www.nlog-project.org/schemas/NLog.xsd"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""
-      autoReload=""true""
-      throwConfigExceptions=""true"">
+        autoReload=""true""
+        throwConfigExceptions=""true"">
 
     <variable name=""logDirectory"" value=""{logFolder}""/>
     <include file=""common.config"" />

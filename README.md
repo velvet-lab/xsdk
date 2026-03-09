@@ -1,4 +1,4 @@
-﻿# xSDK
+# xSDK
 
 > A modular .NET SDK with pluggable data providers, extensible hosting, and built-in observability — designed for building production-ready services and applications.
 

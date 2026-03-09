@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<!-- SonarQube needs this, do not change -->
-		<ProjectGuid>31310438-E3D0-4861-9996-D4B24A8FF3F1</ProjectGuid>
-	</PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>31310438-E3D0-4861-9996-D4B24A8FF3F1</ProjectGuid>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="NLog" />
