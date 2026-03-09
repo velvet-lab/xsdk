@@ -25,8 +25,10 @@
         <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
-        <ItemGroup>
-                <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    <ItemGroup>
+      <PackageReference Include="Asp.Versioning.Http" VersionOverride="8.1.1" />
+      <PackageReference Include="Asp.Versioning.Mvc" VersionOverride="8.1.1" />
+      <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
     </ItemGroup>
 
         <ItemGroup>
