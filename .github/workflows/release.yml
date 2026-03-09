@@ -57,6 +57,13 @@ jobs:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: just repository::release
 
+      # Get a short-lived NuGet API key
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_DEPLOY_USER }}
+
       - name: Publish
         shell: pwsh
         env:
@@ -64,4 +71,4 @@ jobs:
           nuget_host_url: ${{ vars.NUGET_HOST_URL }}
         run: |
           just dotnet::publish xsdk.sln
-          dotnet nuget push --skip-duplicate --api-key "$env:token" --source "$env:nuget_host_url" "dist/nuget/*.nupkg"
+          dotnet nuget push --skip-duplicate --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source "$env:nuget_host_url" "dist/nuget/*.nupkg"
