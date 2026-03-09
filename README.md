@@ -460,8 +460,8 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 
 | Version | Supported |
 |---------|-----------|
-| 1.1.x   | ✅         |
-| < 1.1.0 | ❌         |
+| 1.1.x   | ✅        |
+| < 1.1.0 | ❌        |
 
 To report a vulnerability, use [GitHub's private vulnerability reporting](https://github.com/velvet-lab/xsdk/security/advisories/new) or email `danlorb@velvet-lab.net`. **Do not** open public GitHub issues for security vulnerabilities.
 
