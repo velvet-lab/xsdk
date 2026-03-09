@@ -86,7 +86,7 @@ Key goals:
 
 xSDK follows a **modular, layered architecture** where each library is independently consumable:
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │                     Application Layer                    │
 │         (demos/, ASP.NET Core APIs, Console Apps)        │
@@ -187,7 +187,7 @@ await host.RunAsync();
 
 ## Project Structure
 
-```
+```text
 xsdk/
 ├── libs/                          # SDK library projects
 │   ├── xSdk/                      # Core SDK (hosting, plugin extensions, IO)
@@ -225,7 +225,7 @@ xsdk/
 
 Each library under `libs/` follows the same layout:
 
-```
+```text
 libs/xSdk.SomeLibrary/
 ├── src/      # Production code
 └── tests/    # Unit tests (mirrors src structure)
@@ -294,7 +294,7 @@ Pull requests target the `next` branch. Merges to `main` trigger official releas
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by `lint-commits` CI workflow. Commit messages must follow the format:
 
-```
+```text
 <type>(<scope>): <description>
 
 feat(data): add LiteDB async support
@@ -384,7 +384,7 @@ Testing follows the guidelines in [.github/instructions/testing.instructions.md]
 
 ### Test Naming
 
-```
+```text
 MethodName_Scenario_ExpectedBehavior
 ```
 
