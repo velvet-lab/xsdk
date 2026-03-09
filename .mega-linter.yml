@@ -76,6 +76,8 @@ DISABLE_LINTERS:
 EDITORCONFIG_EDITORCONFIG_CHECKER_DISABLE_ERRORS: true
 EDITORCONFIG_EDITORCONFIG_CHECKER_FILTER_REGEX_EXCLUDE: (packages.lock.json|package-lock.json|yarn.lock|pnpm-lock.yaml)
 JSON_JSONLINT_ARGUMENTS: --comments
-YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json)
-YAML_V8R_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json)
-YAML_PRETTIER_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json)
+YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json|mega-linter.yml)
+YAML_V8R_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json|mega-linter.yml)
+YAML_PRETTIER_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json|mega-linter.yml)
+TYPESCRIPT_TS_STANDARD_FILTER_REGEX_EXCLUDE: '(^|/)\.commitlintrc(\.ts)?$'
+TYPESCRIPT_FILTER_REGEX_EXCLUDE: '(^|/)\.commitlintrc(\.ts)?$'

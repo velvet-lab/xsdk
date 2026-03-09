@@ -74,6 +74,7 @@ public class WebSecurityPlugin : WebHostPluginBase
         // dann würde die App nur auf den Forwarded Headers vertrauen, wenn sie von einem
         // vertrauenswürdigen Proxy kommt.
 
+        // DevSkim: ignore DS176209
         // TODO: Check if this is needed, because the ForwardedHeadersOptions are already cleared
 
         Logger.Debug("Configure Forwarded Headers");
