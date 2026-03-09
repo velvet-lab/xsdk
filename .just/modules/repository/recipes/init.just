@@ -5,7 +5,7 @@ init: _init-pnpm && _init-semantic-release update
     @just {{module_name}}::info "Initializing repository '{{repo_name}}'..."
 
     @just {{module_name}}::info "Adding needed dependencies for repository '{{repo_name}}'..."
-    pnpm add -D mega-linter-runner prettier
+    pnpm add -D mega-linter-runner prettier @commitlint/cli @commitlint/config-conventional
     @just {{module_name}}::success "Dependencies added for repository '{{repo_name}}'."
 
     @just {{module_name}}::success "Repository '{{repo_name}}' initialized successfully."

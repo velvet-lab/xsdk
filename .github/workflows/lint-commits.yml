@@ -25,6 +25,10 @@ jobs:
         with:
           disable-dotnet: true
 
-      - name: Validate PR Commits
-        # Prüft alle Commits im Pull Request gegen den Standard
-        run: pnpm commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+      - name: Validate current commit (last commit)
+        if: github.event_name == 'push'
+        run: npx commitlint --last --verbose
+
+      - name: Validate PR commits
+        if: github.event_name == 'pull_request'
+        run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
