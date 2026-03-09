@@ -7,6 +7,12 @@
         "**/.github/**",
         "**/dist/**",
         "**/node_modules/**",
+        "**/bin/**",
+        "**/obj/**",
+        "**/pnpm-lock.yaml",
+        "**/package-lock.json",
+        "**/yarn.lock",
+        "**/packages.lock.json",
         "**/demos/**",
         "**/tests/**"
     ]

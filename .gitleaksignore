@@ -1,0 +1,17 @@
+16acf6570442f9958365eff62b86b81a2dc84e78:demos/webapi/host/Builders/ApiKeyHandler.cs:generic-api-key:28
+16acf6570442f9958365eff62b86b81a2dc84e78:demos/webapi/host/Builders/ApiKeyHandler.cs:generic-api-key:34
+16acf6570442f9958365eff62b86b81a2dc84e78:demos/webapi/host/Builders/ApiKeyHandlerTwo.cs:generic-api-key:28
+16acf6570442f9958365eff62b86b81a2dc84e78:demos/webapi/host/Builders/ApiKeyHandlerTwo.cs:generic-api-key:34
+1768c64dc242936c58ce6be56a293e2c2c72aecb:.github/agents/reviewer.agent.md:stripe-access-token:152
+1768c64dc242936c58ce6be56a293e2c2c72aecb:.github/instructions/code-review.instructions.md:stripe-access-token:141
+1768c64dc242936c58ce6be56a293e2c2c72aecb:.github/instructions/code-review.instructions.md:stripe-access-token:261
+1768c64dc242936c58ce6be56a293e2c2c72aecb:.github/instructions/security.instructions.md:stripe-access-token:31
+60a26d0870bc4c7d6681a5d85c6fd3b8ee572303:tools/apis/xSdk/xSdk/environments/localhost v1 (read).bru:generic-api-key:4
+60a26d0870bc4c7d6681a5d85c6fd3b8ee572303:tools/apis/xSdk/xSdk/environments/localhost v2 (read).bru:generic-api-key:4
+60a26d0870bc4c7d6681a5d85c6fd3b8ee572303:tools/apis/xSdk/xSdk/environments/localhost v3 (read).bru:generic-api-key:4
+60a26d0870bc4c7d6681a5d85c6fd3b8ee572303:tools/apis/xSdk/xSdk/environments/localhost v3 (write).bru:generic-api-key:4
+c8292bce1af7d3bf70310918fcae7efddc73a86f:demos/telemetry/host/appsettings.json:generic-api-key:34
+c8292bce1af7d3bf70310918fcae7efddc73a86f:demos/webapi/host/Builders/ApiKeyHandler.cs:generic-api-key:28
+c8292bce1af7d3bf70310918fcae7efddc73a86f:demos/webapi/host/Builders/ApiKeyHandler.cs:generic-api-key:34
+c8292bce1af7d3bf70310918fcae7efddc73a86f:demos/webapi/host/Builders/ApiKeyHandlerTwo.cs:generic-api-key:28
+c8292bce1af7d3bf70310918fcae7efddc73a86f:demos/webapi/host/Builders/ApiKeyHandlerTwo.cs:generic-api-key:34

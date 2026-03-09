@@ -11,6 +11,8 @@ MARKDOWN_DEFAULT_STYLE: markdownlint
 TYPESCRIPT_DEFAULT_STYLE: prettier
 SHOW_ELAPSED_TIME: true
 DISABLE_ERRORS: false
+PARALLEL: true
+PRINT_ALPACA: false
 # Reporter Config
 CONSOLE_REPORTER: true
 TEXT_REPORTER: true
@@ -26,7 +28,6 @@ UPDATED_SOURCES_REPORTER: false
 FILEIO_REPORTER: false
 TAP_REPORTER: false
 # Exclude Config
-FILTER_REGEX_INCLUDE: (apps/|libs/|plugins/|demos/)
 EXCLUDED_DIRECTORIES:
   - .config
   - .devcontainer
@@ -35,13 +36,16 @@ EXCLUDED_DIRECTORIES:
   - .vs
   - dist
   - node_modules
+ADDITIONAL_EXCLUDED_DIRECTORIES:
+  - bin
+  - obj
+  - TestResults
+  - megalinter-reports
 # Language config
 ENABLE:
   - CSHARP
   - CREDENTIALS
-  - DOCKERFILE
   - EDITORCONFIG
-  - ENV
   - GIT
   - JSON
   - MARKDOWN
@@ -49,13 +53,16 @@ ENABLE:
   - REPOSITORY
   - TYPESCRIPT
   - XML
+  - YAML
 # Linter config
 ENABLE_LINTERS:
+  - REPOSITORY_DEVSKIM
   - REPOSITORY_GITLEAKS
 DISABLE_LINTERS:
   - REPOSITORY_CHECKOV
   - REPOSITORY_GRYPE
   - REPOSITORY_KICS
+  - REPOSITORY_KINGFISHER
   - REPOSITORY_LS_LINT
   - REPOSITORY_SECRETLINT
   - REPOSITORY_TRIVY
@@ -67,5 +74,8 @@ DISABLE_LINTERS:
   - CSHARP_CSHARPIER
 # Specific linter configs
 EDITORCONFIG_EDITORCONFIG_CHECKER_DISABLE_ERRORS: true
-EDITORCONFIG_EDITORCONFIG_CHECKER_FILTER_REGEX_EXCLUDE: (packages.lock.json|package-lock.json|yarn.lock)
+EDITORCONFIG_EDITORCONFIG_CHECKER_FILTER_REGEX_EXCLUDE: (packages.lock.json|package-lock.json|yarn.lock|pnpm-lock.yaml)
 JSON_JSONLINT_ARGUMENTS: --comments
+YAML_YAMLLINT_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json)
+YAML_V8R_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json)
+YAML_PRETTIER_FILTER_REGEX_EXCLUDE: (pnpm-lock.yaml|package-lock.json|yarn.lock|packages.lock.json)
