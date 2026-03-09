@@ -1,3 +1,4 @@
+using System.Globalization;
 using Newtonsoft.Json.Linq;
 
 namespace xSdk.Shared;
@@ -56,7 +57,7 @@ public static class TypeConverter
 
         try
         {
-            result = Convert.ChangeType(value, targetType);
+            result = Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
         }
         catch
         {
@@ -68,29 +69,29 @@ public static class TypeConverter
             try
             {
                 if (targetType == typeof(int))
-                    result = Convert.ToInt32(value);
+                    result = Convert.ToInt32(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(short))
-                    result = Convert.ToInt16(value);
+                    result = Convert.ToInt16(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(long))
-                    result = Convert.ToInt64(value);
+                    result = Convert.ToInt64(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(double))
-                    result = Convert.ToDouble(value);
+                    result = Convert.ToDouble(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(float))
-                    result = Convert.ToSingle(value);
+                    result = Convert.ToSingle(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(bool))
-                    result = Convert.ToBoolean(value);
+                    result = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(char))
-                    result = Convert.ToChar(value);
+                    result = Convert.ToChar(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(string))
-                    result = Convert.ToString(value);
+                    result = Convert.ToString(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(byte))
-                    result = Convert.ToByte(value);
+                    result = Convert.ToByte(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(decimal))
-                    result = Convert.ToDecimal(value);
+                    result = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(sbyte))
-                    result = Convert.ToSByte(value);
+                    result = Convert.ToSByte(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(DateTime))
-                    result = Convert.ToDateTime(value);
+                    result = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
                 else if (targetType == typeof(TimeSpan))
                     result = TimeSpanParser.Parse(value);
                 else if (targetType == typeof(Guid))
