@@ -1,12 +1,11 @@
 using Swashbuckle.AspNetCore.Filters;
 
-namespace xSdk.Data.Models
+namespace xSdk.Data.Models;
+
+internal class PingResponseExample : IExamplesProvider<string>
 {
-    internal class PingResponseExample : IExamplesProvider<string>
+    public string GetExamples()
     {
-        public string GetExamples()
-        {
-            return "pong";
-        }
+        return "pong";
     }
 }

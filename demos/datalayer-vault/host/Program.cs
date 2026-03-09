@@ -12,15 +12,15 @@
 // Retrieve the Secret ID
 // vault write -f auth/approle4tests/role/my-test-role/secret-id
 
-using xSdk;
-using xSdk.Data;
-using xSdk.Demos.Hosting;
-using xSdk.Hosting;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Images;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using xSdk;
+using xSdk.Data;
+using xSdk.Demos.Hosting;
+using xSdk.Hosting;
 
 const string APP_NAME = "datalayer-vault";
 const string APP_COMPANY = "xdemos";

@@ -1,11 +1,10 @@
-namespace xSdk.Extensions.Variable
+namespace xSdk.Extensions.Variable;
+
+internal static class Globals
 {
-    internal static class Globals
+    internal static class Constants
     {
-        internal static class Constants
-        {
-            internal const string VARIABLE_SEPERATOR = "_";
-            internal const string PREFIX_SEPERATOR = "__";
-        }
+        internal const string VARIABLE_SEPERATOR = "_";
+        internal const string PREFIX_SEPERATOR = "__";
     }
 }

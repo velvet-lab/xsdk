@@ -1,12 +1,11 @@
 using Swashbuckle.AspNetCore.Filters;
 
-namespace xSdk.Data.Models
+namespace xSdk.Data.Models;
+
+internal class HealthResponseExample : IExamplesProvider<string>
 {
-    internal class HealthResponseExample : IExamplesProvider<string>
+    public string GetExamples()
     {
-        public string GetExamples()
-        {
-            return "Ok";
-        }
+        return "Ok";
     }
 }

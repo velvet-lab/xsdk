@@ -1,7 +1,6 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public interface IConnectionBuilder
 {
-    public interface IConnectionBuilder
-    {
-        object Create(IDatabaseSetup setup);
-    }
+    object Create(IDatabaseSetup setup);
 }

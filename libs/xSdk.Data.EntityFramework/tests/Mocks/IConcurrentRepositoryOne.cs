@@ -1,9 +1,8 @@
-namespace xSdk.Data.Mocks
-{
-    internal interface IConcurrentRepositoryOne : IRepository
-    {
-        Task AddDataAsync(ConcurrentEntityOne[] samples, CancellationToken token = default);
+namespace xSdk.Data.Mocks;
 
-        Task<IEnumerable<ConcurrentEntityOne>> GetDataAsync(CancellationToken token = default);
-    }
+internal interface IConcurrentRepositoryOne : IRepository
+{
+    Task AddDataAsync(ConcurrentEntityOne[] samples, CancellationToken token = default);
+
+    Task<IEnumerable<ConcurrentEntityOne>> GetDataAsync(CancellationToken token = default);
 }

@@ -1,44 +1,43 @@
-using xSdk.Shared;
 using System.Reflection;
+using xSdk.Shared;
 
-namespace xSdk.Extensions.Plugin
+namespace xSdk.Extensions.Plugin;
+
+internal partial class PluginService
 {
-    internal partial class PluginService
+    public Task AddPluginAsync(Type pluginType, CancellationToken token = default)
     {
-        public Task AddPluginAsync(Type pluginType, CancellationToken token = default)
+        _typePluginCatalogs.AddOrNew(pluginType, CatalogHelper.CreateTypeCatalog(pluginType));
+        _isTypePluginCatalogsStale = true;
+
+        return Task.CompletedTask;
+    }
+
+    public Task AddPluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+    {
+        _assemblyPluginCatalogs.AddOrNew(sourceAssembly, CatalogHelper.CreateAssemblyCatalog(sourceAssembly));
+        _isAssemblyPluginCatalogsStale = true;
+
+        return Task.CompletedTask;
+    }
+
+    public Task RemovePluginAsync(Type pluginType, CancellationToken token = default)
+    {
+        if (_typePluginCatalogs.ContainsKey(pluginType))
         {
-            typePluginCatalogs.AddOrNew(pluginType, CatalogHelper.CreateTypeCatalog(pluginType));
-            isTypePluginCatalogsStale = true;
-
-            return Task.CompletedTask;
+            _isTypePluginCatalogsStale = true;
+            _typePluginCatalogs.Remove(pluginType);
         }
+        return Task.CompletedTask;
+    }
 
-        public Task AddPluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+    public Task RemovePluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+    {
+        if (_assemblyPluginCatalogs.ContainsKey(sourceAssembly))
         {
-            assemblyPluginCatalogs.AddOrNew(sourceAssembly, CatalogHelper.CreateAssemblyCatalog(sourceAssembly));
-            isAssemblyPluginCatalogsStale = true;
-
-            return Task.CompletedTask;
+            _isAssemblyPluginCatalogsStale = true;
+            _assemblyPluginCatalogs.Remove(sourceAssembly);
         }
-
-        public Task RemovePluginAsync(Type pluginType, CancellationToken token = default)
-        {
-            if (typePluginCatalogs.ContainsKey(pluginType))
-            {
-                isTypePluginCatalogsStale = true;
-                typePluginCatalogs.Remove(pluginType);
-            }
-            return Task.CompletedTask;
-        }
-
-        public Task RemovePluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
-        {
-            if (assemblyPluginCatalogs.ContainsKey(sourceAssembly))
-            {
-                isAssemblyPluginCatalogsStale = true;
-                assemblyPluginCatalogs.Remove(sourceAssembly);
-            }
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

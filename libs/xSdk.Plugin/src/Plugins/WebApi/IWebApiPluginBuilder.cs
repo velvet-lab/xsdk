@@ -1,10 +1,9 @@
-using xSdk.Extensions.Plugin;
 using Microsoft.AspNetCore.Mvc;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.WebApi
+namespace xSdk.Plugins.WebApi;
+
+public interface IWebApiPluginBuilder : IPluginBuilder
 {
-    public interface IWebApiPluginBuilder : IPluginBuilder
-    {
-        void ConfigureMvc(MvcOptions options);
-    }
+    void ConfigureMvc(MvcOptions options);
 }

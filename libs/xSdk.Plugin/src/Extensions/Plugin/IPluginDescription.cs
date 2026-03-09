@@ -1,17 +1,16 @@
-namespace xSdk.Extensions.Plugin
+namespace xSdk.Extensions.Plugin;
+
+public interface IPluginDescription
 {
-    public interface IPluginDescription
-    {
-        string? Name { get; }
+    string? Name { get; }
 
-        Version? Version { get; }
+    Version? Version { get; }
 
-        string? Description { get; }
+    string? Description { get; }
 
-        string? ProductVersion { get; }
+    string? ProductVersion { get; }
 
-        string? Tag { get; }
+    string? Tag { get; }
 
-        List<string> Tags { get; }
-    }
+    List<string> Tags { get; }
 }

@@ -8,7 +8,7 @@
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="NLog.Extensions.Logging" PrivateAssets="contentfiles;analyzers;build;compile" />
-		<PackageReference Include="NLog.Targets.Network" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="NLog.Targets.Network" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Weikio.PluginFramework" PrivateAssets="contentfiles;analyzers;build;compile" />
@@ -24,5 +24,27 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" VersionOverride="1.15.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" VersionOverride="10.1.4" />
         <ProjectReference Include="..\..\xSdk.Plugin\src\xSdk.Plugin.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageVersion Update="Microsoft.SourceLink.GitHub" Version="10.0.103" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.SourceLink.GitHub">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageVersion Update="System.Text.Encodings.Web" Version="10.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="System.Text.Encodings.Web">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 </Project>

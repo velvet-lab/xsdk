@@ -1,23 +1,22 @@
 using xSdk.Shared;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public sealed class OidcAuth
 {
-    public sealed class OidcAuth
+    public OidcAuth()
     {
-        public OidcAuth()
-        {
-            Headers = new Dictionary<string, object>();
-        }
+        Headers = new Dictionary<string, object>();
+    }
 
-        public string Role { get; set; }
+    public string Role { get; set; }
 
-        public IDictionary<string, object> Headers { get; }
+    public IDictionary<string, object> Headers { get; }
 
-        public OidcAuth AddHeader(string key, object value)
-        {
-            Headers.AddOrNew(key, value);
+    public OidcAuth AddHeader(string key, object value)
+    {
+        Headers.AddOrNew(key, value);
 
-            return this;
-        }
+        return this;
     }
 }

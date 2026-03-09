@@ -1,21 +1,20 @@
 using xSdk.Data.Mocks;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
-    public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
+    [Fact]
+    public async Task InsertData()
     {
-        [Fact]
-        public async Task InsertData()
-        {
-            var factory = fixture.Factory;
-            var repo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        var factory = fixture.Factory;
+        var repo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
-            await repo.AddDataAsync(Globals.Entities);
+        await repo.AddDataAsync(Globals.Entities);
 
-            var entities = await repo.GetDataAsync();
+        var entities = await repo.GetDataAsync();
 
-            Assert.NotNull(entities);
-            Assert.Equal(Globals.Entities.Count(), entities.Count());
-        }
+        Assert.NotNull(entities);
+        Assert.Equal(Globals.Entities.Count(), entities.Count());
     }
 }

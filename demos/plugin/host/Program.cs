@@ -1,7 +1,7 @@
-using xSdk.Demos;
-using xSdk.Hosting;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using xSdk.Demos;
+using xSdk.Hosting;
 
 const string APP_NAME = "plugin";
 const string APP_COMPANY = "xdemos";

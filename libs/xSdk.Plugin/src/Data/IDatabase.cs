@@ -1,10 +1,9 @@
-namespace xSdk.Data
-{
-    public interface IDatabase : IDisposable
-    {
-        void Close();
+namespace xSdk.Data;
 
-        TConnection Open<TConnection>(bool persistConnection = false)
-            where TConnection : class;
-    }
+public interface IDatabase : IDisposable
+{
+    void Close();
+
+    TConnection Open<TConnection>(bool persistConnection = false)
+        where TConnection : class;
 }

@@ -1,13 +1,12 @@
-namespace xSdk.Hosting
-{
-    public class HostTests
-    {
-        [Fact]
-        public void CreateBuilder()
-        {
-            var builder = Host.CreateBuilder(null);
+namespace xSdk.Hosting;
 
-            Assert.NotNull(builder);
-        }
+public class HostTests
+{
+    [Fact]
+    public void CreateBuilder()
+    {
+        var builder = Host.CreateBuilder(null);
+
+        Assert.NotNull(builder);
     }
 }

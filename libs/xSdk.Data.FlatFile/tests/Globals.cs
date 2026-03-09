@@ -1,8 +1,7 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+internal static class Globals
 {
-    internal static class Globals
-    {
-        internal const string DatabaseName = "UnitTestDb";
-        internal const string DatalayerName = "UniqueTestName";
-    }
+    internal const string DatabaseName = "UnitTestDb";
+    internal const string DatalayerName = "UniqueTestName";
 }

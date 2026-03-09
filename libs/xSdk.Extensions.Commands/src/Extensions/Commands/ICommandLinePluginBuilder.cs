@@ -1,10 +1,9 @@
-using xSdk.Extensions.Plugin;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.Commands
+namespace xSdk.Extensions.Commands;
+
+public interface ICommandLinePluginBuilder : IPluginBuilder
 {
-    public interface ICommandLinePluginBuilder : IPluginBuilder
-    {
-        void ConfigureCommandLine(IConfigurator configurator);
-    }
+    void ConfigureCommandLine(IConfigurator configurator);
 }

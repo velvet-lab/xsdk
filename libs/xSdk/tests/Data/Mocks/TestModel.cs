@@ -1,7 +1,6 @@
-namespace xSdk.Data.Mocks
+namespace xSdk.Data.Mocks;
+
+public class TestModel : Model
 {
-    public class TestModel : Model
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

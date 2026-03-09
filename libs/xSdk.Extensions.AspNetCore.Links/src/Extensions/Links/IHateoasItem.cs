@@ -1,11 +1,10 @@
-namespace xSdk.Extensions.Links
+namespace xSdk.Extensions.Links;
+
+public interface IHateoasItem
 {
-    public interface IHateoasItem
-    {
-        string Rel { get; set; }
+    string Rel { get; set; }
 
-        string Href { get; set; }
+    string Href { get; set; }
 
-        string Method { get; set; }
-    }
+    string Method { get; set; }
 }

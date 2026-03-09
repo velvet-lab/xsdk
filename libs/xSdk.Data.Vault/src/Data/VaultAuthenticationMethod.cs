@@ -1,14 +1,13 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public enum VaultAuthenticationMethod
 {
-    public enum VaultAuthenticationMethod
-    {
-        None,
-        AppRole,
-        UsernamePassword,
-        Ldap,
-        Jwt,
-        Oidc,
-        Token,
-        Cert
-    }
+    None,
+    AppRole,
+    UsernamePassword,
+    Ldap,
+    Jwt,
+    Oidc,
+    Token,
+    Cert
 }

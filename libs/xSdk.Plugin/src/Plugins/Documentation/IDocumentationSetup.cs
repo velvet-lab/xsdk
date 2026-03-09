@@ -1,11 +1,10 @@
 using xSdk.Extensions.Variable;
 
-namespace xSdk.Plugins.Documentation
-{
-    public interface IDocumentationSetup : ISetup
-    {
-        string RoutePrefix { get; set; }
+namespace xSdk.Plugins.Documentation;
 
-        //bool ShowVariableDocumentation { get; set; }
-    }
+public interface IDocumentationSetup : ISetup
+{
+    string RoutePrefix { get; set; }
+
+    //bool ShowVariableDocumentation { get; set; }
 }

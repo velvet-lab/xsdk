@@ -243,3 +243,6 @@ coverage
 .devcontainer/**/.postCreateCommandMarker
 .devcontainer/**/.postStartCommandMarker
 .devcontainer/**/.updateContentCommandMarker
+
+# MegaLinter reports
+megalinter-reports/

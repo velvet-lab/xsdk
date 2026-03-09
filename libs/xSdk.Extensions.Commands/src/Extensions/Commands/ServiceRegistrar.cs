@@ -1,33 +1,32 @@
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace xSdk.Extensions.Commands
+namespace xSdk.Extensions.Commands;
+
+internal class ServiceRegistrar(IServiceCollection builder) : ITypeRegistrar
 {
-    internal class ServiceRegistrar(IServiceCollection builder) : ITypeRegistrar
+    public ITypeResolver Build()
     {
-        public ITypeResolver Build()
+        return new ServiceResolver(builder.BuildServiceProvider());
+    }
+
+    public void Register(Type service, Type implementation)
+    {
+        builder.AddSingleton(service, implementation);
+    }
+
+    public void RegisterInstance(Type service, object implementation)
+    {
+        builder.AddSingleton(service, implementation);
+    }
+
+    public void RegisterLazy(Type service, Func<object> factory)
+    {
+        if (factory is null)
         {
-            return new ServiceResolver(builder.BuildServiceProvider());
+            throw new ArgumentNullException(nameof(factory));
         }
 
-        public void Register(Type service, Type implementation)
-        {
-            builder.AddSingleton(service, implementation);
-        }
-
-        public void RegisterInstance(Type service, object implementation)
-        {
-            builder.AddSingleton(service, implementation);
-        }
-
-        public void RegisterLazy(Type service, Func<object> factory)
-        {
-            if (factory is null)
-            {
-                throw new ArgumentNullException(nameof(factory));
-            }
-
-            builder.AddSingleton(service, _ => factory());
-        }
+        builder.AddSingleton(service, _ => factory());
     }
 }

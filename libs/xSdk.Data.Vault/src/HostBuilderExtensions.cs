@@ -1,19 +1,18 @@
+using Microsoft.Extensions.Hosting;
 using xSdk.Data;
 using xSdk.Hosting;
-using Microsoft.Extensions.Hosting;
 
-namespace xSdk
+namespace xSdk;
+
+public static class HostBuilderExtensions
 {
-    public static class HostBuilderExtensions
+    public static IHostBuilder EnableVaultAuth(this IHostBuilder builder)
     {
-        public static IHostBuilder EnableVaultAuth(this IHostBuilder builder)
-        {
-            builder
-                .RegisterSetup<VaultSetup>()
-                .RegisterSetup<AppRoleAuthSetup>()
-                .RegisterSetup<CertAuthSetup>();
+        builder
+            .RegisterSetup<VaultSetup>()
+            .RegisterSetup<AppRoleAuthSetup>()
+            .RegisterSetup<CertAuthSetup>();
 
-            return builder;
-        }
+        return builder;
     }
 }

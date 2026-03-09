@@ -4,39 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace xSdk.Data.Converters.Mapper
+namespace xSdk.Data.Converters.Mapper;
+
+public sealed class ExtensionDataConverterTests
 {
-    public sealed class ExtensionDataConverterTests
+    [Fact]
+    public void ConvertToDictionary()
     {
-        [Fact]
-        public void ConvertToDictionary()
-        {
-            var json = @"
+        var json = @"
 {
     ""key1"": ""value1"",
     ""key2"": 123,
     ""key3"": true
 }";
-            var actual = ExtensionDataConverter.Convert(json);
+        var actual = ExtensionDataConverter.Convert(json);
 
-            Assert.NotNull(actual);
-            Assert.IsType<Dictionary<string, object>>(actual);
-        }
+        Assert.NotNull(actual);
+        Assert.IsType<Dictionary<string, object>>(actual);
+    }
 
-        [Fact]
-        public void ConvertFromDictionary()
+    [Fact]
+    public void ConvertFromDictionary()
+    {
+        var dictionary = new Dictionary<string, object>
         {
-            var dictionary = new Dictionary<string, object>
-            {
-                { "key1", "value1" },
-                { "key2", 123 },
-                { "key3", true }
-            };
+            { "key1", "value1" },
+            { "key2", 123 },
+            { "key3", true }
+        };
 
-            var actual = ExtensionDataConverter.Convert(dictionary);
+        var actual = ExtensionDataConverter.Convert(dictionary);
 
-            Assert.NotNull(actual);
-            Assert.IsType<string>(actual);
-        }
+        Assert.NotNull(actual);
+        Assert.IsType<string>(actual);
     }
 }

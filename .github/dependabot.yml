@@ -6,37 +6,37 @@
 version: 2
 updates:
   # Monitoring for NuGet
-  - package-ecosystem: "nuget"
-    directory: "/" # Scans the entire solution for .csproj files
+  - package-ecosystem: 'nuget'
+    directory: '/' # Scans the entire solution for .csproj files
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "08:00"
-      timezone: "Europe/Berlin"
+      interval: 'weekly'
+      day: 'monday'
+      time: '08:00'
+      timezone: 'Europe/Berlin'
     open-pull-requests-limit: 3 # Prevents being overwhelmed by PRs on Monday
     groups:
       dotnet-dependencies:
         patterns:
-          - "*" # Groups all NuGet updates into a single PR
+          - '*' # Groups all NuGet updates into a single PR
 
   # Monitoring for GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly" # Actions change less frequently; once a month is sufficient
+      interval: 'weekly' # Actions change less frequently; once a month is sufficient
     open-pull-requests-limit: 1
 
   # Monitoring for semantic-release and other Node tools
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     open-pull-requests-limit: 3
     groups:
       release-tools:
         patterns:
-          - "semantic-release"
-          - "@semantic-release/*"
-          - "conventional-changelog-*"
-          - "@commitlint/*"
+          - 'semantic-release'
+          - '@semantic-release/*'
+          - 'conventional-changelog-*'
+          - '@commitlint/*'

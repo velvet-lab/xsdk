@@ -1,83 +1,82 @@
-using xSdk.Data;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop.Implementation;
-using System.Text.Json;
+using xSdk.Data;
 
-namespace xSdk.Extensions.Links
+namespace xSdk.Extensions.Links;
+
+internal sealed partial class LinksService(LinksOptions options, IHttpContextAccessor context, IServiceProvider _, ILogger<LinksService> __) : ILinksService
 {
-    internal sealed partial class LinksService(LinksOptions options, IHttpContextAccessor context, IServiceProvider provider, ILogger<LinksService> logger) : ILinksService
+    public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
+        where TModel : class, IModel
     {
-        public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
-            where TModel : class, IModel
+        foreach (var item in model)
         {
-            foreach (var item in model)
-            {
-                AddLinksInternal(item);
-            }
-
-            return Task.CompletedTask;
+            AddLinksInternal(item);
         }
 
-        public Task AddLinksAsync<TModel>(TModel model, CancellationToken cancellationToken = default)
-            where TModel : class, IModel
-        {
-            AddLinksInternal(model);
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 
-        private void AddLinksInternal<TModel>(TModel model)
-            where TModel : class, IModel
-        {
-            var descriptions = MethodAnalyzer.Analyze(context.HttpContext);
-            var links = new Dictionary<string, IHateoasItem>();
+    public Task AddLinksAsync<TModel>(TModel model, CancellationToken cancellationToken = default)
+        where TModel : class, IModel
+    {
+        AddLinksInternal(model);
+        return Task.CompletedTask;
+    }
 
-            foreach (var description in descriptions)
+    private void AddLinksInternal<TModel>(TModel model)
+        where TModel : class, IModel
+    {
+        var descriptions = MethodAnalyzer.Analyze(context.HttpContext);
+        var links = new Dictionary<string, IHateoasItem>();
+
+        foreach (var description in descriptions)
+        {
+            var link = SearchPolicyLink(model, description, context.HttpContext);
+            if (link != null && !links.ContainsKey(link.Name))
             {
-                var link = SearchPolicyLink(model, description, context.HttpContext);
-                if (link != null && !links.ContainsKey(link.Name))
+                if (link is RoutedLink routedLink)
                 {
-                    if (link is RoutedLink routedLink)
+                    var linkItem = routedLink.Build();
+                    if (linkItem != null)
                     {
-                        var linkItem = routedLink.Build();
-                        if (linkItem != null)
-                        {
-                            links.Add(link.Name, linkItem);
-                        }
+                        links.Add(link.Name, linkItem);
                     }
                 }
             }
-
-            SaveLinks(model, links);
         }
 
-        private RoutedLink? SearchPolicyLink(IModel model, MethodDescription description, HttpContext? context)
+        SaveLinks(model, links);
+    }
+
+    private RoutedLink? SearchPolicyLink(IModel model, MethodDescription description, HttpContext? context)
+    {
+        foreach (var policy in options.Policies)
         {
-            foreach (var policy in options.Policies)
+            foreach (var link in policy.Links)
             {
-                foreach (var link in policy.Links)
+                if (string.Compare(link.MethodName, description.MethodName, StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    if (string.Compare(link.MethodName, description.MethodName, StringComparison.OrdinalIgnoreCase) == 0)
-                    {
-                        link.Model = model;
-                        link.Description = description;
-                        link.Context = context;
-                        return link;
-                    }
+                    link.Model = model;
+                    link.Description = description;
+                    link.Context = context;
+                    return link;
                 }
             }
-            return default;
         }
+        return default;
+    }
 
-        private void SaveLinks(IModel model, IDictionary<string, IHateoasItem> links)
+    private void SaveLinks(IModel model, IDictionary<string, IHateoasItem> links)
+    {
+        if (model is Model concreteModel)
         {
-            if (model is Model concreteModel)
-            {
-                var converted = links.ToDictionary(x => x.Key, x => x.Value);
-                concreteModel.AdditionalData = new Dictionary<string, object>();
-                concreteModel.AdditionalData.Add("_links", converted);
-            }
+            var converted = links.ToDictionary(x => x.Key, x => x.Value);
+            concreteModel.AdditionalData = new Dictionary<string, object>();
+            concreteModel.AdditionalData.Add("_links", converted);
         }
     }
 }

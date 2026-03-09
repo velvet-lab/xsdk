@@ -1,13 +1,12 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public interface IPrimaryKey
 {
-    public interface IPrimaryKey
-    {
-        object GetValue();
+    object GetValue();
 
-        TType GetValue<TType>();
+    TType GetValue<TType>();
 
-        void SetValue(object value);
-    }
-
-    public interface IPrimaryKey<TPrimaryKeyType> : IPrimaryKey { }
+    void SetValue(object value);
 }
+
+public interface IPrimaryKey<TPrimaryKeyType> : IPrimaryKey { }

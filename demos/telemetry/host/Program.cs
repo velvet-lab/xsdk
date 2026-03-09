@@ -1,7 +1,7 @@
-using xSdk.Demos;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using xSdk.Demos;
 
 const string APP_NAME = "telemetry";
 const string APP_COMPANY = "xdemos";

@@ -3,6 +3,8 @@
     "bracketSameLine": true,
     "semi": true,
     "bracketSpacing": true,
+    "tabWidth": 2,
     "arrowParens": "avoid",
+    "trailingComma": "es5",
     "printWidth": 180
 }

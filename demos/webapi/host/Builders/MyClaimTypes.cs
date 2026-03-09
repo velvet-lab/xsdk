@@ -1,12 +1,11 @@
 using xSdk.Security.Claims;
 
-namespace xSdk.Demos.Builders
+namespace xSdk.Demos.Builders;
+
+internal static class MyClaimTypes
 {
-    internal static class MyClaimTypes
+    internal static class MyTableA
     {
-        internal static class MyTableA
-        {
-            public static string Permission = ClaimCreator.CreateClaimType("mytablea", "permission");
-        }
+        public static string Permission = ClaimCreator.CreateClaimType("mytablea", "permission");
     }
 }

@@ -1,3 +1,14 @@
+# Initialize repository with pnpm, write package.json and add needed dependencies
+[no-cd]
+[group('initialization')]
+init: _init-pnpm && _init-semantic-release update
+    @just {{module_name}}::info "Initializing repository '{{repo_name}}'..."
+
+    @just {{module_name}}::info "Adding needed dependencies for repository '{{repo_name}}'..."
+    pnpm add -D mega-linter-runner prettier @commitlint/cli @commitlint/config-conventional
+    @just {{module_name}}::success "Dependencies added for repository '{{repo_name}}'."
+
+    @just {{module_name}}::success "Repository '{{repo_name}}' initialized successfully."
 
 [no-cd]
 [windows]
@@ -5,7 +16,7 @@ _init-pnpm:
     if(-not (Test-Path -Path "package.json")) { just {{module_name}}::_execute-init-pnpm }
 
 [no-cd]
-[linux]
+[unix]
 _init-pnpm:
     if [ ! -f package.json ]; then just {{module_name}}::_execute-init-pnpm; fi
 

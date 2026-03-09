@@ -1,7 +1,6 @@
-namespace xSdk.Extensions.Links
+namespace xSdk.Extensions.Links;
+
+public interface IPolicy
 {
-    public interface IPolicy
-    {
-        List<RoutedLink> Links { get; }
-    }
+    List<RoutedLink> Links { get; }
 }

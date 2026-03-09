@@ -1,9 +1,8 @@
 using xSdk.Extensions.Variable;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public interface IDatabaseSetup : ISetup
 {
-    public interface IDatabaseSetup : ISetup
-    {
-        IDictionary<string, string> Properties { get; }
-    }
+    IDictionary<string, string> Properties { get; }
 }

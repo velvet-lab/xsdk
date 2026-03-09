@@ -1,58 +1,57 @@
-using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Plugin;
+using xSdk.Hosting;
 
 
-namespace xSdk.Extensions.Commands
+namespace xSdk.Extensions.Commands;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddCommandServices(this IServiceCollection services, Action<IConfigurator> configureDelegate)
     {
-        public static IServiceCollection AddCommandServices(this IServiceCollection services, Action<IConfigurator> configureDelegate)
+        services.TryAddSingleton<ICommandApp>(provider =>
         {
-            services.TryAddSingleton<ICommandApp>(provider =>
-            {
-                var app = new CommandApp<DefaultCommand>(new ServiceRegistrar(services));
-                return AddCommandServicesInternal(provider, app, configureDelegate);
-            });
+            var app = new CommandApp<DefaultCommand>(new ServiceRegistrar(services));
+            return AddCommandServicesInternal(provider, app, configureDelegate);
+        });
 
-            return services;
-        }
+        return services;
+    }
 
-        public static IServiceCollection AddCommandServices<TDefaultCommand>(this IServiceCollection services, Action<IConfigurator> configureDelegate)
-            where TDefaultCommand : class, ICommand
+    public static IServiceCollection AddCommandServices<TDefaultCommand>(this IServiceCollection services, Action<IConfigurator> configureDelegate)
+        where TDefaultCommand : class, ICommand
+    {
+        services.TryAddSingleton<ICommandApp>(provider =>
         {
-            services.TryAddSingleton<ICommandApp>(provider =>
-            {
-                var app = new CommandApp<TDefaultCommand>(new ServiceRegistrar(services));
-                return AddCommandServicesInternal(provider, app, configureDelegate);
-            });
+            var app = new CommandApp<TDefaultCommand>(new ServiceRegistrar(services));
+            return AddCommandServicesInternal(provider, app, configureDelegate);
+        });
 
-            return services;
-        }
+        return services;
+    }
 
-        private static ICommandApp AddCommandServicesInternal(IServiceProvider provider, ICommandApp app, Action<IConfigurator> configureDelegate)
+    private static ICommandApp AddCommandServicesInternal(IServiceProvider provider, ICommandApp app, Action<IConfigurator> configureDelegate)
+    {
+        app.Configure(config =>
         {
-            app.Configure(config =>
-            {
-                configureDelegate?.Invoke(config);
+            configureDelegate?.Invoke(config);
 
-                var plugins = SlimHost.Instance.PluginSystem.Invoke<ICommandLinePluginBuilder>(x => x.ConfigureCommandLine(config));
-            });
+            var plugins = SlimHost.Instance.PluginSystem.Invoke<ICommandLinePluginBuilder>(x => x.ConfigureCommandLine(config));
+        });
 
-            return app;
-        }
+        return app;
+    }
 
-        public static IConfigurator AddReplConsole(this IConfigurator config, Action<IReplBuilder> builderDelegate)
-        {
-            config.AddCommand<ConsoleCommand>(ConsoleCommand.Definitions.Name);
-            config.AddCommand<ClearCommand>(ClearCommand.Definitions.Name);
-            config.AddCommand<ExitCommand>(ExitCommand.Definitions.Name);
+    public static IConfigurator AddReplConsole(this IConfigurator config, Action<IReplBuilder> builderDelegate)
+    {
+        config.AddCommand<ConsoleCommand>(ConsoleCommand.Definitions.Name);
+        config.AddCommand<ClearCommand>(ClearCommand.Definitions.Name);
+        config.AddCommand<ExitCommand>(ExitCommand.Definitions.Name);
 
-            HostExtensions.ReplBuilderDelegate = builderDelegate;
+        HostExtensions.ReplBuilderDelegate = builderDelegate;
 
-            return config;
-        }
+        return config;
     }
 }

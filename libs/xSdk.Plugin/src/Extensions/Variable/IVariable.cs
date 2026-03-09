@@ -1,21 +1,20 @@
-namespace xSdk.Extensions.Variable
+namespace xSdk.Extensions.Variable;
+
+public interface IVariable
 {
-    public interface IVariable
-    {
-        bool IsHidden { get; }
+    bool IsHidden { get; }
 
-        bool IsProtected { get; }
+    bool IsProtected { get; }
 
-        string Name { get; }
+    string Name { get; }
 
-        string Prefix { get; }
+    string Prefix { get; }
 
-        bool NoPrefix { get; }
+    bool NoPrefix { get; }
 
-        string Template { get; }
+    string Template { get; }
 
-        Type ValueType { get; }
+    Type ValueType { get; }
 
-        string HelpText { get; }
-    }
+    string HelpText { get; }
 }

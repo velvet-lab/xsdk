@@ -1,9 +1,8 @@
 using AspNetCore.Authentication.ApiKey;
 
-namespace xSdk.Extensions.Authentication
+namespace xSdk.Extensions.Authentication;
+
+public interface IApiKeyHandler
 {
-    public interface IApiKeyHandler
-    {
-        Task<IApiKey?> GetApiKeyAsync(string key);
-    }
+    Task<IApiKey?> GetApiKeyAsync(string key);
 }

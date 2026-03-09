@@ -1,13 +1,12 @@
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public interface IDataMigrationPlugin : IPlugin
 {
-    public interface IDataMigrationPlugin : IPlugin
-    {
-        void EnsureDataMigration();
+    void EnsureDataMigration();
 
-        void Initialize(IServiceProvider provider);
+    void Initialize(IServiceProvider provider);
 
-        // void ConfigureServices(IServiceCollection services);
-    }
+    // void ConfigureServices(IServiceCollection services);
 }

@@ -1,7 +1,6 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public sealed class TokenAuth
 {
-    public sealed class TokenAuth
-    {
-        public string Token { get; set; }
-    }
+    public string Token { get; set; }
 }

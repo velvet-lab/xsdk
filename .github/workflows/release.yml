@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - next
-    paths-ignore: &shared_ignore
+    paths-ignore:
       - '**.md'
       - '.github/**'
       - '.gitignore'
@@ -14,6 +14,13 @@ on:
       - 'demos/**'
       - 'docs/**'
       - 'tools/**'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry Run (Do not create an actual release)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   release:
@@ -27,28 +34,34 @@ jobs:
       id-token: write
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
 
-      - name: Install Semantic Release Dependencies
+      - name: Validate Release Config
         run: |
-          npm install -g semantic-release \
-          @semantic-release/commit-analyzer \
-          @semantic-release/release-notes-generator \
-          @semantic-release/changelog \
-          @semantic-release/npm \
-          @semantic-release/git \
-          @semantic-release/github \
-          conventional-changelog-conventionalcommits
+          if [ ! -f release.config.js ]; then
+            echo "❌ Error: release.config.js not found!"
+            exit 1
+          fi
+          echo "✅ Release config found. Ready to proceed."
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: just release ${{ github.event.inputs.dry_run || 'false' }}
+
+      - name: Publish
+        if: github.event.inputs.dry_run != 'true'
+        shell: pwsh
+        env:
+          token: ${{ secrets.NUGET_API_KEY }}
+          nuget_host_url: 'https://api.nuget.org/v3/index.json'
+          dist_dir: 'dist'
+        run: |
+          just dotnet::publish xsdk.sln
+          dotnet nuget push --skip-duplicate --api-key "$env:token" --source "$env:nuget_host_url" "dist/nuget/*.nupkg"

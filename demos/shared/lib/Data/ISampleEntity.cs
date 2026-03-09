@@ -1,8 +1,7 @@
-namespace xSdk.Demos.Data
+namespace xSdk.Demos.Data;
+
+public interface ISampleEntity
 {
-    public interface ISampleEntity
-    {
-        int Age { get; set; }
-        string Name { get; set; }
-    }
+    int Age { get; set; }
+    string Name { get; set; }
 }

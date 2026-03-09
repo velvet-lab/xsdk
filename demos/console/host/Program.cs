@@ -1,9 +1,9 @@
-using xSdk.Demos.Hosting;
-using xSdk.Extensions.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
 using Spectre.Console.Cli;
+using xSdk.Demos.Hosting;
+using xSdk.Extensions.Commands;
 
 const string APP_NAME = "host";
 const string APP_COMPANY = "xdemos";

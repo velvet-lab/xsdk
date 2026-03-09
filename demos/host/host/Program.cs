@@ -1,11 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using NLog;
 using xSdk.Demos;
 using xSdk.Demos.Hosting;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using NLog;
 
 const string APP_NAME = "host";
 const string APP_COMPANY = "demos";

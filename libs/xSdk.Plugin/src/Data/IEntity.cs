@@ -1,15 +1,14 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-        object Id { get; set; }
+    object Id { get; set; }
 
-        IPrimaryKey PrimaryKey { get; }
-    }
+    IPrimaryKey PrimaryKey { get; }
+}
 
-    public interface IEntity<TPrimaryKey, TPrimaryKeyType> : IEntity
-        where TPrimaryKey : IPrimaryKey<TPrimaryKeyType>, new()
-    {
-        new TPrimaryKeyType Id { get; set; }
-    }
+public interface IEntity<TPrimaryKey, TPrimaryKeyType> : IEntity
+    where TPrimaryKey : IPrimaryKey<TPrimaryKeyType>, new()
+{
+    new TPrimaryKeyType Id { get; set; }
 }

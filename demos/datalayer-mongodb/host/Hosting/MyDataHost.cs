@@ -1,62 +1,62 @@
-using xSdk.Data;
-using xSdk.Demos.Data;
+using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
-using System.Text.Json;
+using xSdk.Data;
+using xSdk.Demos.Data;
 
-namespace xSdk.Demos.Hosting
+namespace xSdk.Demos.Hosting;
+
+public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger) : IHostedService
 {
-    public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger) : IHostedService
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            logger.LogInformation("First add some data to database");
-            await AddData(cancellationToken);
+        logger.LogInformation("First add some data to database");
+        await AddData(cancellationToken);
 
-            logger.LogInformation("Load data from database");
-            await LoadData(cancellationToken);
-        }
+        logger.LogInformation("Load data from database");
+        await LoadData(cancellationToken);
+    }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 
-        private async Task LoadData(CancellationToken token)
+    private async Task LoadData(CancellationToken token)
+    {
+        try
         {
-            try
+            // Load the the Repository
+            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
+
+            // Load the Samples from the Database
+            var entities = await sampleRepo.GetSamplesAsync();
+
+            // Map the result to Modesl
+            var models = entities.ToModel<SampleMappingProfile, SampleModel>();
+
+            // Write Results tu Console
+            var table = new Table();
+            table.AddColumn("Name");
+            table.AddColumn("Age");
+            foreach (var model in models)
             {
-                // Load the the Repository
-                var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
-
-                // Load the Samples from the Database
-                var entities = await sampleRepo.GetSamplesAsync();
-
-                // Map the result to Modesl
-                var models = entities.ToModel<SampleMappingProfile, SampleModel>();
-
-                // Write Results tu Console
-                var table = new Table();
-                table.AddColumn("Name");
-                table.AddColumn("Age");
-                foreach (var model in models)
-                {
-                    table.AddRow(model.Name, model.Age.ToString());
-                }
-                AnsiConsole.Write(table);
+                table.AddRow(model.Name, model.Age.ToString());
             }
-            catch
-            {
-                throw;
-            }
+            AnsiConsole.Write(table);
         }
-
-        private async Task AddData(CancellationToken token)
+        catch
         {
-            try
-            {
-                var json = @"
+            throw;
+        }
+    }
+
+    private async Task AddData(CancellationToken token)
+    {
+        try
+        {
+            var json = @"
 [
   {
     ""Name"": ""John Doe"",
@@ -84,20 +84,19 @@ namespace xSdk.Demos.Hosting
   }
 ]
 ";
-                // Load the the Repository
-                var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
+            // Load the the Repository
+            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
 
-                // Convert the Models to Entities
-                var models = JsonSerializer.Deserialize<IEnumerable<SampleModel>>(json, JsonHelper.GetSerializerOptions());
-                var entities = models.ToEntity<SampleMappingProfile, SampleEntity>();
+            // Convert the Models to Entities
+            var models = JsonSerializer.Deserialize<IEnumerable<SampleModel>>(json, JsonHelper.GetSerializerOptions());
+            var entities = models.ToEntity<SampleMappingProfile, SampleEntity>();
 
-                // Add this Samples to Database
-                await sampleRepo.AddSamplesAsync(entities);
-            }
-            catch
-            {
-                throw;
-            }
+            // Add this Samples to Database
+            await sampleRepo.AddSamplesAsync(entities);
+        }
+        catch
+        {
+            throw;
         }
     }
 }

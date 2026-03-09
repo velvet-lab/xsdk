@@ -1,46 +1,45 @@
-namespace xSdk.Data.Annotations
+namespace xSdk.Data.Annotations;
+
+/// <summary>
+/// Min primaryKey attribute.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+public class MinAttribute : DataAnnotationAttribute
 {
     /// <summary>
-    /// Min primaryKey attribute.
+    /// Initializes a new instance of the MinAttribute class.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-    public class MinAttribute : DataAnnotationAttribute
+    /// <param name="value">The minimum primaryKey.</param>
+    public MinAttribute(object value)
+        : base(value) { }
+
+    public override bool IsValid(object value)
     {
-        /// <summary>
-        /// Initializes a new instance of the MinAttribute class.
-        /// </summary>
-        /// <param name="value">The minimum primaryKey.</param>
-        public MinAttribute(object value)
-            : base(value) { }
-
-        public override bool IsValid(object value)
+        if (IsIntValue())
         {
-            if (IsIntValue())
-            {
-                var configured = GetIntValue();
-                var current = (int)Value;
+            var configured = GetIntValue();
+            var current = (int)Value;
 
-                if (current < configured)
-                    return false;
-            }
-            else if (IsDoubleValue())
-            {
-                var configured = GetDoubleValue();
-                var current = (double)Value;
-
-                if (current < configured)
-                    return false;
-            }
-            else if (IsTimeSpanValue())
-            {
-                var configured = GetTimeSpanValue();
-                var current = (TimeSpan)Value;
-
-                if (current < configured)
-                    return false;
-            }
-
-            return true;
+            if (current < configured)
+                return false;
         }
+        else if (IsDoubleValue())
+        {
+            var configured = GetDoubleValue();
+            var current = (double)Value;
+
+            if (current < configured)
+                return false;
+        }
+        else if (IsTimeSpanValue())
+        {
+            var configured = GetTimeSpanValue();
+            var current = (TimeSpan)Value;
+
+            if (current < configured)
+                return false;
+        }
+
+        return true;
     }
 }

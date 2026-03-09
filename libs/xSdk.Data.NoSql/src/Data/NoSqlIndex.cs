@@ -1,9 +1,8 @@
-namespace xSdk.Data
+namespace xSdk.Data;
+
+internal sealed class NoSqlIndex
 {
-    internal sealed class NoSqlIndex
-    {
-        public string Field { get; set; }
-        public string Expression { get; set; }
-        public bool IsUnique { get; set; }
-    }
+    public string Field { get; set; }
+    public string Expression { get; set; }
+    public bool IsUnique { get; set; }
 }

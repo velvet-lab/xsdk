@@ -1,4 +1,3 @@
-namespace xSdk.Extensions.Plugin
-{
-    public abstract class PluginBuilderBase : PluginDescription, IPluginBuilder { }
-}
+namespace xSdk.Extensions.Plugin;
+
+public abstract class PluginBuilderBase : PluginDescription, IPluginBuilder { }

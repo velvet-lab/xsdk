@@ -1,9 +1,9 @@
-using xSdk.Data;
-using xSdk.Demos.Data;
-using xSdk.Demos.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using xSdk.Data;
+using xSdk.Demos.Data;
+using xSdk.Demos.Hosting;
 
 const string APP_NAME = "datalayer-nosql";
 const string APP_COMPANY = "xdemos";

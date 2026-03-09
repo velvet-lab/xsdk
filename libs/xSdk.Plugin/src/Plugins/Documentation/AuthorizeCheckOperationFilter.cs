@@ -1,75 +1,69 @@
-using xSdk.Plugins.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using xSdk.Plugins.Authentication;
 
-namespace xSdk.Plugins.Documentation
+namespace xSdk.Plugins.Documentation;
+
+public class AuthorizeCheckOperationFilter : IOperationFilter
 {
-    public class AuthorizeCheckOperationFilter : IOperationFilter
+    public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        var hasAuthorize =
+            context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
+            || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any();
+
+        if (hasAuthorize)
         {
-            var hasAuthorize =
-                context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()
-                || context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any();
-
-            if (hasAuthorize)
+            if (!operation.Responses.ContainsKey("401"))
             {
-                if (!operation.Responses.ContainsKey("401"))
-                {
-                    operation.Responses.Add("401", CreateProblemResponse("Unauthorized"));
-                }
-
-                if (!operation.Responses.ContainsKey("403"))
-                {
-                    operation.Responses.Add("403", CreateProblemResponse("Forbidden"));
-                }
-
-                var requirements = new List<OpenApiSecurityRequirement>();
-                requirements.Add(
-                    new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme()
-                            {
-                                Reference = new OpenApiReference { Id = AuthenticationDefaults.ApiKeyAuth.Name, Type = ReferenceType.SecurityScheme },
-                            },
-                            new List<string>()
-                        },
-                    }
-                );
-
-                operation.Security = requirements;
+                operation.Responses.Add("401", CreateProblemResponse("Unauthorized"));
             }
-        }
 
-        private OpenApiResponse CreateProblemResponse(string message)
-        {
-            return new OpenApiResponse
+            if (!operation.Responses.ContainsKey("403"))
             {
-                Description = message
-            };
+                operation.Responses.Add("403", CreateProblemResponse("Forbidden"));
+            }
 
-            return new OpenApiResponse
-            {
-                Description = message,
-                Content = new Dictionary<string, OpenApiMediaType>()
+            var requirements = new List<OpenApiSecurityRequirement>();
+            requirements.Add(
+                new OpenApiSecurityRequirement
                 {
                     {
-                        "application/json", new OpenApiMediaType()
+                        new OpenApiSecurityScheme()
                         {
-                            Schema = new OpenApiSchema()
+                            Reference = new OpenApiReference { Id = AuthenticationDefaults.ApiKeyAuth.Name, Type = ReferenceType.SecurityScheme },
+                        },
+                        new List<string>()
+                    },
+                }
+            );
+
+            operation.Security = requirements;
+        }
+    }
+
+    private OpenApiResponse CreateProblemResponse(string message)
+    {
+        return new OpenApiResponse
+        {
+            Description = message,
+            Content = new Dictionary<string, OpenApiMediaType>()
+            {
+                {
+                    "application/json", new OpenApiMediaType()
+                    {
+                        Schema = new OpenApiSchema()
+                        {
+                            Reference = new OpenApiReference()
                             {
-                                Reference = new OpenApiReference()
-                                {
-                                    Id = "ProblemDetails",
-                                    Type = ReferenceType.Schema
-                                }
+                                Id = "ProblemDetails",
+                                Type = ReferenceType.Schema
                             }
                         }
                     }
                 }
-            };
-        }
+            }
+        };
     }
 }

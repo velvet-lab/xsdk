@@ -1,4 +1,4 @@
-name: "Copilot Setup Steps"
+name: 'Copilot Setup Steps'
 
 # This workflow sets up the environment for GitHub Copilot's Coding Agent
 # to understand the project structure and tooling requirements.
@@ -23,23 +23,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-          global-json-file: global.json
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
 
-      - name: Restore dependencies
-        run: dotnet restore xsdk.sln
-
-      - name: Build solution
-        run: dotnet build xsdk.sln --configuration Release --no-restore
-
-      - name: Run unit tests
-        run: dotnet test xsdk.sln --configuration Release --no-build --verbosity normal
+      - name: Build and test with just
+        run: just test
 
       - name: Display project structure
         run: |

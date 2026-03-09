@@ -1,0 +1,35 @@
+name: 'Quality Gate: Mega-Linter'
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main, next]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  megalinter:
+    name: 'Scan Code Quality'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Wichtig für Mega-Linter, um Differenzen zu erkennen
+
+      - name: Run Mega-Linter
+        uses: oxsecurity/megalinter/flavors/dotnet@8fbdead70d1409964ab3d5afa885e18ee85388bb
+        env:
+          MEGALINTER_CONFIG: .mega-linter.yml
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Wir erzwingen hier den Status-Reporter für GitHub,
+          # damit der PR-Check grün/rot wird, auch wenn es in der Datei auf false steht.
+          GITHUB_STATUS_REPORTER: true
+          # Nur geänderte Dateien im PR scannen (spart extrem viel Zeit)
+          VALIDATE_ALL_CODEBASE: false

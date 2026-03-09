@@ -1,10 +1,9 @@
-using xSdk.Extensions.Plugin;
 using Microsoft.Extensions.DependencyInjection;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Hosting
+namespace xSdk.Hosting;
+
+public abstract class PluginBase : PluginDescription, IPlugin
 {
-    public abstract class PluginBase : PluginDescription, IPlugin
-    {
-        public virtual void ConfigureServices(IServiceCollection services) { }
-    }
+    public virtual void ConfigureServices(IServiceCollection services) { }
 }

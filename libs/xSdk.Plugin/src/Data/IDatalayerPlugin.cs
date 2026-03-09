@@ -1,10 +1,9 @@
-using xSdk.Extensions.Plugin;
 using Microsoft.Extensions.DependencyInjection;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public interface IDatalayerPlugin : IPlugin
 {
-    public interface IDatalayerPlugin : IPlugin
-    {
-        void ConfigureDatalayer(IServiceCollection services);
-    }
+    void ConfigureDatalayer(IServiceCollection services);
 }

@@ -1,10 +1,9 @@
-namespace xSdk.Extensions.IO
+namespace xSdk.Extensions.IO;
+
+public enum FileSystemContext
 {
-    public enum FileSystemContext
-    {
-        None,
-        Local,
-        Machine,
-        User,
-    }
+    None,
+    Local,
+    Machine,
+    User,
 }

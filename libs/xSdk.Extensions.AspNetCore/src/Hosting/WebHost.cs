@@ -1,81 +1,80 @@
-using xSdk.Extensions.IO;
-using xSdk.Extensions.Variable;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using NLog;
+using xSdk.Extensions.IO;
+using xSdk.Extensions.Variable;
 
-namespace xSdk.Hosting
+namespace xSdk.Hosting;
+
+public static partial class WebHost
 {
-    public static partial class WebHost
+    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+    public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
+
+    public static IHostBuilder CreateBuilder(string[] args, string appName) => CreateBuilder(args, appName, default, default);
+
+    public static IHostBuilder CreateBuilder(string[] args, string appName, string appPrefix) => CreateBuilder(args, appName, default, appPrefix);
+
+    public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        var builder = xSdk
+            .Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix)
+            .ConfigureWebHostDefaults(webHostBuilder =>
+            {
+                _logger.Debug("Configuring WebHostBuilder");
 
-        public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
+                var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
+                var stage = envSetup.Stage;
 
-        public static IHostBuilder CreateBuilder(string[] args, string appName) => CreateBuilder(args, appName, default, default);
+                var contentRoot = GetContentRoot(envSetup);
+                webHostBuilder
+                    // Set the Content Root
+                    .UseContentRoot(contentRoot)
+                    .UseWebRoot(contentRoot)
 
-        public static IHostBuilder CreateBuilder(string[] args, string appName, string appPrefix) => CreateBuilder(args, appName, default, appPrefix);
+                    // Set the Environment
+                    .UseEnvironment(stage.ToString())
+                    // Enable detailed Errors if in Development Mode
+                    .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
+                    // Configure Services
+                    .ConfigureServices(ConfigureWebHostServicesWithContext)
+                    // Load Middlewares
+                    .Configure(ConfigureApplicationWithContext)
+                    // Configure Kestrel
+                    .UseKestrel(ConfigureKestrel);
 
-        public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
+                if (stage == Stage.Development)
+                    webHostBuilder.CaptureStartupErrors(true);
+            });
+
+        SlimHost.Instance.VariableSystem.RegisterSetup<WebHostSetup>();
+        return builder;
+    }
+
+    private static string GetContentRoot(EnvironmentSetup envSetup)
+    {
+        _logger.Debug(envSetup.IsDemo ? "Demo Mode" : "Production Mode");
+        _logger.Debug("Try to get Content Root");
+
+        var root = envSetup.ContentRoot;
+        if (envSetup.IsDemo)
         {
-            var builder = xSdk
-                .Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix)
-                .ConfigureWebHostDefaults(webHostBuilder =>
-                {
-                    Logger.Debug("Configuring WebHostBuilder");
-
-                    var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-                    var stage = envSetup.Stage;
-
-                    var contentRoot = GetContentRoot(envSetup);
-                    webHostBuilder
-                        // Set the Content Root
-                        .UseContentRoot(contentRoot)
-                        .UseWebRoot(contentRoot)
-
-                        // Set the Environment
-                        .UseEnvironment(stage.ToString())
-                        // Enable detailed Errors if in Development Mode
-                        .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
-                        // Configure Services
-                        .ConfigureServices(ConfigureWebHostServicesWithContext)
-                        // Load Middlewares
-                        .Configure(ConfigureApplicationWithContext)
-                        // Configure Kestrel
-                        .UseKestrel(ConfigureKestrel);
-
-                    if (stage == Stage.Development)
-                        webHostBuilder.CaptureStartupErrors(true);
-                });
-
-            SlimHost.Instance.VariableSystem.RegisterSetup<WebHostSetup>();
-            return builder;
+            return FileSystemHelper.GetExecutingFolder();
         }
 
-        private static string GetContentRoot(EnvironmentSetup envSetup)
+        if (!Directory.Exists(root))
         {
-            Logger.Debug(envSetup.IsDemo ? "Demo Mode" : "Production Mode");
-            Logger.Debug("Try to get Content Root");
-
-            var root = envSetup.ContentRoot;
-            if (envSetup.IsDemo)
+            try
             {
-                return FileSystemHelper.GetExecutingFolder();
+                _logger.Trace("Content root does not exist, creating it");
+                Directory.CreateDirectory(root);
             }
-
-            if (!Directory.Exists(root))
+            catch
             {
-                try
-                {
-                    Logger.Trace("Content root does not exist, creating it");
-                    Directory.CreateDirectory(root);
-                }
-                catch
-                {
-                    // Only catch, nothing to tell
-                }
+                // Only catch, nothing to tell
             }
-            return Path.GetFullPath(root);
         }
+        return Path.GetFullPath(root);
     }
 }
