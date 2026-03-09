@@ -27,8 +27,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(type);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
     }
 
     [Fact]
@@ -40,8 +40,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(scope, type);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
     }
 
     [Fact]
@@ -54,9 +54,9 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(scope, type, subject);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
-        cloudEvent.Subject.Should().Be(subject);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
+        Assert.Equal(subject, cloudEvent.Subject);
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(null, type);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
     }
 
     [Fact]
@@ -79,8 +79,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(string.Empty, type);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
     }
 
     [Fact]
@@ -91,8 +91,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(type);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Data.Should().NotBeNull();
+        Assert.NotNull(cloudEvent);
+        Assert.NotNull(cloudEvent.Data);
     }
 
     [Fact]
@@ -103,9 +103,9 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var retrievedModel = cloudEvent.ToModel<TestModel>();
 
-        retrievedModel.Should().NotBeNull();
-        retrievedModel.Name.Should().Be(originalModel.Name);
-        retrievedModel.Value.Should().Be(originalModel.Value);
+        Assert.NotNull(retrievedModel);
+        Assert.Equal(originalModel.Name, retrievedModel.Name);
+        Assert.Equal(originalModel.Value, retrievedModel.Value);
     }
 
     [Fact]
@@ -116,9 +116,9 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var cloudEvent = originalModel.ToCloudEvent("model.created");
         var retrievedModel = cloudEvent.ToModel<TestModel>();
 
-        retrievedModel.Should().NotBeNull();
-        retrievedModel.Name.Should().Be(originalModel.Name);
-        retrievedModel.Value.Should().Be(originalModel.Value);
+        Assert.NotNull(retrievedModel);
+        Assert.Equal(originalModel.Name, retrievedModel.Name);
+        Assert.Equal(originalModel.Value, retrievedModel.Value);
     }
 
     [Fact]
@@ -130,9 +130,9 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var updateEvent = model.ToCloudEvent("model.updated");
         var deleteEvent = model.ToCloudEvent("model.deleted");
 
-        createEvent.Type.Should().Contain("created");
-        updateEvent.Type.Should().Contain("updated");
-        deleteEvent.Type.Should().Contain("deleted");
+        Assert.Contains("created", createEvent.Type);
+        Assert.Contains("updated", updateEvent.Type);
+        Assert.Contains("deleted", deleteEvent.Type);
     }
 
     [Fact]
@@ -152,9 +152,9 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var cloudEvent = model.ToCloudEvent("model.created");
         var retrievedModel = cloudEvent.ToModel<TestModel>();
 
-        retrievedModel.Should().NotBeNull();
-        retrievedModel.Name.Should().Be(model.Name);
-        retrievedModel.Value.Should().Be(model.Value);
+        Assert.NotNull(retrievedModel);
+        Assert.Equal(model.Name, retrievedModel.Name);
+        Assert.Equal(model.Value, retrievedModel.Value);
     }
 
     [Fact]
@@ -164,8 +164,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent("test/scope", "model.created", null);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Subject.Should().BeNull();
+        Assert.NotNull(cloudEvent);
+        Assert.Null(cloudEvent.Subject);
     }
 
     [Fact]
@@ -177,12 +177,12 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var cloudEvent1 = model1.ToCloudEvent("model.created");
         var cloudEvent2 = model2.ToCloudEvent("model.created");
 
-        cloudEvent1.Should().NotBeSameAs(cloudEvent2);
+        Assert.NotSame(cloudEvent1, cloudEvent2);
         var retrieved1 = cloudEvent1.ToModel<TestModel>();
         var retrieved2 = cloudEvent2.ToModel<TestModel>();
 
-        retrieved1.Name.Should().Be("Model1");
-        retrieved2.Name.Should().Be("Model2");
+        Assert.Equal("Model1", retrieved1.Name);
+        Assert.Equal("Model2", retrieved2.Name);
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
 
         var cloudEvent = model.ToCloudEvent(customScope, "model.created");
 
-        cloudEvent.Should().NotBeNull();
+        Assert.NotNull(cloudEvent);
         // Scope is embedded in source/type, exact validation depends on CloudEventFactory implementation
     }
 }

@@ -11,8 +11,8 @@ public class HashToolsTests
 
         var result = HashTools.GetHash(input);
 
-        result.Should().NotBeNull();
-        result.Should().HaveCount(32); // SHA256 produces 32 bytes
+        Assert.NotNull(result);
+        Assert.Equal(32, result.Length); // SHA256 produces 32 bytes
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class HashToolsTests
         var result1 = HashTools.GetHash(input);
         var result2 = HashTools.GetHash(input);
 
-        result1.Should().Equal(result2);
+        Assert.Equal(result1, result2);
     }
 
     [Fact]
@@ -35,7 +35,7 @@ public class HashToolsTests
         var result1 = HashTools.GetHash(input1);
         var result2 = HashTools.GetHash(input2);
 
-        result1.Should().NotEqual(result2);
+        Assert.NotEqual(result1, result2);
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class HashToolsTests
 
         var result = HashTools.GetHash(input);
 
-        result.Should().NotBeNull();
-        result.Should().HaveCount(32);
+        Assert.NotNull(result);
+        Assert.Equal(32, result.Length);
     }
 
     [Fact]
@@ -56,9 +56,10 @@ public class HashToolsTests
 
         var result = HashTools.GetHashString(input);
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().HaveLength(64); // 32 bytes * 2 hex chars = 64 chars
-        result.Should().MatchRegex("^[0-9A-F]+$"); // Only hex characters (uppercase)
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.Equal(64, result.Length); // 32 bytes * 2 hex chars = 64 chars
+        Assert.Matches("^[0-9A-F]+$", result); // Only hex characters (uppercase)
     }
 
     [Fact]
@@ -69,7 +70,7 @@ public class HashToolsTests
         var result1 = HashTools.GetHashString(input);
         var result2 = HashTools.GetHashString(input);
 
-        result1.Should().Be(result2);
+        Assert.Equal(result1, result2);
     }
 
     [Fact]
@@ -81,7 +82,7 @@ public class HashToolsTests
         var result1 = HashTools.GetHashString(input1);
         var result2 = HashTools.GetHashString(input2);
 
-        result1.Should().NotBe(result2);
+        Assert.NotEqual(result1, result2);
     }
 
     [Fact]
@@ -91,8 +92,9 @@ public class HashToolsTests
 
         var result = HashTools.GetHashString(input);
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().HaveLength(64);
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.Equal(64, result.Length);
     }
 
     [Fact]
@@ -104,7 +106,7 @@ public class HashToolsTests
 
         var result = HashTools.GetHashString(input);
 
-        result.Should().Be(expectedHash);
+        Assert.Equal(expectedHash, result);
     }
 
     [Fact]
@@ -114,8 +116,9 @@ public class HashToolsTests
 
         var result = HashTools.GetHashString(input);
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().HaveLength(64);
-        result.Should().MatchRegex("^[0-9A-F]+$");
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.Equal(64, result.Length);
+        Assert.Matches("^[0-9A-F]+$", result);
     }
 }
