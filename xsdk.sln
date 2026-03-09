@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31903.59
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_globals", "_globals", "{B9EE65BA-F4E5-4FA3-A469-55EB6F8DB6EF}"
 	ProjectSection(SolutionItems) = preProject
@@ -61,6 +61,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.Vault", "libs\xSdk.Data.Vault\src\xSdk.Data.Vault.csproj", "{B7C4015A-AD4B-4A63-AC3E-47B4197BCBD5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.Vault.Tests", "libs\xSdk.Data.Vault\tests\xSdk.Data.Vault.Tests.csproj", "{9C35A693-B1A4-2C50-F9D3-72F1A503146C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Plugin.Tests", "libs\xSdk.Plugin\tests\xSdk.Plugin.Tests.csproj", "{13753187-3110-9BA0-5A86-C7B09223E62D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.CloudEvents.Tests", "libs\xSdk.Extensions.CloudEvents\tests\xSdk.Extensions.CloudEvents.Tests.csproj", "{2A12887B-139F-EC24-8122-EED09CD80EB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +160,14 @@ Global
 		{9C35A693-B1A4-2C50-F9D3-72F1A503146C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C35A693-B1A4-2C50-F9D3-72F1A503146C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C35A693-B1A4-2C50-F9D3-72F1A503146C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13753187-3110-9BA0-5A86-C7B09223E62D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13753187-3110-9BA0-5A86-C7B09223E62D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13753187-3110-9BA0-5A86-C7B09223E62D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13753187-3110-9BA0-5A86-C7B09223E62D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -186,6 +198,8 @@ Global
 		{858E1632-8579-4F13-A6CE-9AE4127F89C6} = {FF388FAE-081B-4CE1-9E5A-68EE75EA1CBC}
 		{B7C4015A-AD4B-4A63-AC3E-47B4197BCBD5} = {6FE5E729-2235-4E27-93C4-202875459083}
 		{9C35A693-B1A4-2C50-F9D3-72F1A503146C} = {6FE5E729-2235-4E27-93C4-202875459083}
+		{13753187-3110-9BA0-5A86-C7B09223E62D} = {9C6309E2-5648-4297-AF76-2C6659EFAAF4}
+		{2A12887B-139F-EC24-8122-EED09CD80EB3} = {FF388FAE-081B-4CE1-9E5A-68EE75EA1CBC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {616C08C6-30E9-451B-898B-4DBD57867C0A}
