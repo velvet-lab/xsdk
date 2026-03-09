@@ -15,12 +15,6 @@ on:
       - 'docs/**'
       - 'tools/**'
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 'Dry Run (Do not create an actual release)'
-        required: false
-        type: boolean
-        default: false
 
 jobs:
   release:
@@ -61,15 +55,13 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: just repository::release ${{ github.event.inputs.dry_run || 'false' }}
+        run: just repository::release
 
       - name: Publish
-        if: github.event.inputs.dry_run != 'true'
         shell: pwsh
         env:
           token: ${{ secrets.NUGET_API_KEY }}
           nuget_host_url: ${{ vars.NUGET_HOST_URL }}
-          dist_dir: 'dist'
         run: |
           just dotnet::publish xsdk.sln
           dotnet nuget push --skip-duplicate --api-key "$env:token" --source "$env:nuget_host_url" "dist/nuget/*.nupkg"
