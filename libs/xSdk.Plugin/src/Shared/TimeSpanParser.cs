@@ -41,6 +41,11 @@ public static class TimeSpanParser
             if (!IsValidUnit(unit))
                 unit = "s";
 
+            if (stringValue.Contains('.'))
+            {
+                stringValue = stringValue.Replace('.', ',');
+            }
+
             unit = unit.ToLower();
             var doubleValue = Convert.ToDouble(stringValue);
             if (unit == "ms")
@@ -66,7 +71,7 @@ public static class TimeSpanParser
     {
         var units = new string[] { "ms", "s", "m", "h", "d" };
 
-        return units.Contains(value);
+        return units.Contains(value.ToLower());
     }
 
     private static string ValidateString(string value)
@@ -76,7 +81,7 @@ public static class TimeSpanParser
             .ToList()
             .ForEach(x =>
             {
-                if (value.EndsWith(x))
+                if (value.ToLower().EndsWith(x))
                     existUnit = true;
             });
 

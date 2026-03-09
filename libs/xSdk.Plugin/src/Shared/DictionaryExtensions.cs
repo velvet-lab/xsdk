@@ -1,3 +1,5 @@
+using Google.Protobuf.WellKnownTypes;
+
 namespace xSdk.Shared;
 
 public static class DictionaryExtensions
@@ -38,6 +40,11 @@ public static class DictionaryExtensions
         {
             if (dictionary.TryGetValue(key, out string value))
             {
+                if (value.Contains('.'))
+                {
+                    value = value.Replace('.', ',');
+                }
+
                 return TypeConverter.ConvertTo<TValue>(value);
             }
         }

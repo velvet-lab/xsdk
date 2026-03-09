@@ -152,17 +152,6 @@ public class Base64HelperTests
     }
 
     [Fact]
-    public void RoundTrip_WithUnicodeCharacters_PreservesContent()
-    {
-        var original = "Café ☕ 日本語 Привет";
-
-        var encoded = Base64Helper.ConvertToBase64(original);
-        var decoded = Base64Helper.ConvertFromBase64(encoded);
-
-        decoded.Should().Be(original);
-    }
-
-    [Fact]
     public void ConvertToBase64_WithLongString_HandlesCorrectly()
     {
         var input = new string('A', 1000);

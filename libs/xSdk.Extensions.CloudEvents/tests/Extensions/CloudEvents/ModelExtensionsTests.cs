@@ -1,10 +1,11 @@
 using CloudNative.CloudEvents;
 using xSdk.Data;
 using xSdk.Extensions.CloudEvents;
+using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class ModelExtensionsTests
+public class ModelExtensionsTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     // Test model class
     private class TestModel : Model
