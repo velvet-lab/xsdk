@@ -5,7 +5,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class ExceptionExtensionsTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
 {
     [Fact]
     public void ToCloudEvent_WithException_CreatesCloudEventWithScope()

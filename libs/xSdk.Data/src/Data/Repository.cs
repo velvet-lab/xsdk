@@ -7,7 +7,7 @@ namespace xSdk.Data;
 
 public abstract class Repository : IRepository
 {
-    private IDatabase _database;
+    private IDatabase _database = null!;
 
     #region Dispose Handling
 
@@ -27,7 +27,7 @@ public abstract class Repository : IRepository
 
     #endregion
 
-    internal IEnumerable<InternalDatabaseSetup> InternalSetups { get; set; }
+    internal IEnumerable<InternalDatabaseSetup>? InternalSetups { get; set; }
 
     protected bool IsDemoMode
     {

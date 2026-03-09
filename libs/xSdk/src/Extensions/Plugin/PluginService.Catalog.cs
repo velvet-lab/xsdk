@@ -30,7 +30,7 @@ internal partial class PluginService
                     _plugins.Add(item);
                 }
             }
-            catch (MissingMethodException mme)
+            catch (MissingMethodException)
             {
                 // Ignore this type of Exception, because this Exception is thrown
                 // if a class does not have a default constructor.

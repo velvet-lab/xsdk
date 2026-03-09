@@ -22,13 +22,13 @@ public sealed class VariableModel
     }
 
     [SwaggerSchema("The name of the variable")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [SwaggerSchema("The help text for the variable")]
-    public string HelpText { get; set; }
+    public string HelpText { get; set; } = string.Empty;
 
     [SwaggerSchema("Used prefix for the variable")]
-    public string Prefix { get; set; }
+    public string Prefix { get; set; } = string.Empty;
 
     [SwaggerSchema("Is the variable hidden?")]
     public bool IsHidden { get; set; }

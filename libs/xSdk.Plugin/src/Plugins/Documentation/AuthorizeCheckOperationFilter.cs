@@ -47,11 +47,6 @@ public class AuthorizeCheckOperationFilter : IOperationFilter
     {
         return new OpenApiResponse
         {
-            Description = message
-        };
-
-        return new OpenApiResponse
-        {
             Description = message,
             Content = new Dictionary<string, OpenApiMediaType>()
             {

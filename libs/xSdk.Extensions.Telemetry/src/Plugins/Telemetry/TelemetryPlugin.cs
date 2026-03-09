@@ -7,7 +7,7 @@ namespace xSdk.Plugins.Telemetry;
 
 internal class TelemetryPlugin : PluginBase
 {
-    public void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(IServiceCollection services)
     {
         var plugins = SlimHost.Instance.PluginSystem.GetPlugins();
 

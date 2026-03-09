@@ -13,9 +13,9 @@ public sealed class ConcreteApiKey : IApiKey
         _claims = new List<Claim>();
     }
 
-    public string Key { get; set; }
+    public string Key { get; set; } = string.Empty;
 
-    public string OwnerName { get; set; }
+    public string OwnerName { get; set; } = string.Empty;
 
-    public IReadOnlyCollection<Claim> Claims { get; set; }
+    public IReadOnlyCollection<Claim> Claims { get; set; } = new List<Claim>();
 }

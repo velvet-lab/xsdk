@@ -5,11 +5,11 @@ namespace xSdk.Extensions.Links;
 internal class HateoasItem : IHateoasItem
 {
     [JsonPropertyName("rel")]
-    public string Rel { get; set; }
+    public string Rel { get; set; } = string.Empty;
 
     [JsonPropertyName("href")]
-    public string Href { get; set; }
+    public string Href { get; set; } = string.Empty;
 
     [JsonPropertyName("method")]
-    public string Method { get; set; }
+    public string Method { get; set; } = string.Empty;
 }

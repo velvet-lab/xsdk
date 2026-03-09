@@ -13,14 +13,14 @@ public class VariableAttribute : DataAnnotationAttribute
     /// </summary>
     /// <param name="value">The default primaryKey.</param>
     public VariableAttribute(
-        string name = default,
-        object defaultValue = default,
-        string template = default,
-        string prefix = default,
-        string helpText = default,
+        string name = default!,
+        object defaultValue = default!,
+        string template = default!,
+        string prefix = default!,
+        string helpText = default!,
         bool protect = false,
         bool hidden = false,
-        string[] resourceNames = default,
+        string[] resourceNames = default!,
         bool noPrefix = false
     )
         : base(defaultValue)

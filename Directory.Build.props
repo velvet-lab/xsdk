@@ -18,6 +18,8 @@
         <IsGitHub Condition="'$(IsGitHub)' == ''" >false</IsGitHub>
         <IsPluginProject Condition="'$(IsPluginProject)' == ''">false</IsPluginProject>
         <IsApplicationProject Condition="'$(IsApplicationProject)' == ''">false</IsApplicationProject>
+        <!-- Disable CLS compliance warnings - this is a C#-only library -->
+        <CLSCompliant>false</CLSCompliant>
     </PropertyGroup>
 
     <PropertyGroup>

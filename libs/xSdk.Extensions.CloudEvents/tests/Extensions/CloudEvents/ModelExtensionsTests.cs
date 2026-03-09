@@ -5,7 +5,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class ModelExtensionsTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
 {
     // Test model class
     private class TestModel : Model
