@@ -7,10 +7,10 @@ namespace xSdk.Demos;
 public sealed class SetupWithoutPrefix : Setup
 {
     [Variable(
-       name: Definitions.Prop1.Name,
-       template: Definitions.Prop1.Template,
-       protect: true,
-       noPrefix: true)]
+        name: Definitions.Prop1.Name,
+        template: Definitions.Prop1.Template,
+        protect: true,
+        noPrefix: true)]
     public string NoAppPrefix_NoSetupPrefix
     {
         get => ReadValue<string>(Definitions.Prop1.Name);
@@ -18,9 +18,9 @@ public sealed class SetupWithoutPrefix : Setup
     }
 
     [Variable(
-       name: Definitions.Prop2.Name,
-       template: Definitions.Prop2.Template,
-       protect: true)]
+        name: Definitions.Prop2.Name,
+        template: Definitions.Prop2.Template,
+        protect: true)]
     public string WithAppPrefix_NoSetupPrefix
     {
         get => ReadValue<string>(Definitions.Prop2.Name);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Consul;
 using Microsoft.Extensions.Logging;
 

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>        
+    <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>79e60893-828d-40a5-b65a-fc8b282a334f</ProjectGuid>
     </PropertyGroup>
@@ -10,7 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
     </ItemGroup>
 
 </Project>

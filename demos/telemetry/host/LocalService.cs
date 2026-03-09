@@ -22,7 +22,7 @@ internal class LocalService
     public void DoWorkA()
     {
         _logger.LogInformation("Now start a activity");
-        using var activity = _telemetrySvc.StartActivity("Do work A");
+        using var activity = _telemetrySvc.StartActivity(ActivityKind.Client, "Do work A");
 
         _counter.Add(1);
         _logger.LogInformation("This is a Sample Log Entry");

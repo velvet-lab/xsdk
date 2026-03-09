@@ -12,7 +12,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse(input);
 
-        result.Should().Be(TimeSpan.FromMilliseconds(expectedMilliseconds));
+        Assert.Equal(TimeSpan.FromMilliseconds(expectedMilliseconds), result);
     }
 
     [Theory]
@@ -23,7 +23,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse(input);
 
-        result.Should().Be(TimeSpan.FromSeconds(expectedSeconds));
+        Assert.Equal(TimeSpan.FromSeconds(expectedSeconds), result);
     }
 
     [Theory]
@@ -34,7 +34,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse(input);
 
-        result.Should().Be(TimeSpan.FromMinutes(expectedMinutes));
+        Assert.Equal(TimeSpan.FromMinutes(expectedMinutes), result);
     }
 
     [Theory]
@@ -45,7 +45,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse(input);
 
-        result.Should().Be(TimeSpan.FromHours(expectedHours));
+        Assert.Equal(TimeSpan.FromHours(expectedHours), result);
     }
 
     [Theory]
@@ -56,7 +56,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse(input);
 
-        result.Should().Be(TimeSpan.FromDays(expectedDays));
+        Assert.Equal(TimeSpan.FromDays(expectedDays), result);
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse("42");
 
-        result.Should().Be(TimeSpan.FromSeconds(42));
+        Assert.Equal(TimeSpan.FromSeconds(42), result);
     }
 
     [Theory]
@@ -76,11 +76,11 @@ public class TimeSpanParserTests
         var result = TimeSpanParser.Parse(input);
 
         if (input.EndsWith("s"))
-            result.Should().Be(TimeSpan.FromSeconds(expectedValue));
+            Assert.Equal(TimeSpan.FromSeconds(expectedValue), result);
         else if (input.EndsWith("m"))
-            result.Should().Be(TimeSpan.FromMinutes(expectedValue));
+            Assert.Equal(TimeSpan.FromMinutes(expectedValue), result);
         else if (input.EndsWith("h"))
-            result.Should().Be(TimeSpan.FromHours(expectedValue));
+            Assert.Equal(TimeSpan.FromHours(expectedValue), result);
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public class TimeSpanParserTests
 
         var success = TimeSpanParser.TryParse(input, out var result);
 
-        success.Should().BeTrue();
-        result.Should().Be(TimeSpan.FromSeconds(10));
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromSeconds(10), result);
     }
 
     [Fact]
@@ -99,8 +99,8 @@ public class TimeSpanParserTests
     {
         var success = TimeSpanParser.TryParse(null, out var result);
 
-        success.Should().BeFalse();
-        result.Should().Be(TimeSpan.Zero);
+        Assert.False(success);
+        Assert.Equal(TimeSpan.Zero, result);
     }
 
     [Fact]
@@ -110,8 +110,8 @@ public class TimeSpanParserTests
 
         var success = TimeSpanParser.TryParse(input, out var result);
 
-        success.Should().BeTrue();
-        result.Should().Be(TimeSpan.FromMilliseconds(500));
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromMilliseconds(500), result);
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class TimeSpanParserTests
 
         var success = TimeSpanParser.TryParse(input, out var result);
 
-        success.Should().BeTrue();
-        result.Should().Be(TimeSpan.FromMinutes(5));
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromMinutes(5), result);
     }
 
     [Fact]
@@ -132,8 +132,8 @@ public class TimeSpanParserTests
 
         var success = TimeSpanParser.TryParse(input, out var result);
 
-        success.Should().BeTrue();
-        result.Should().Be(TimeSpan.FromHours(2));
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromHours(2), result);
     }
 
     [Fact]
@@ -143,8 +143,8 @@ public class TimeSpanParserTests
 
         var success = TimeSpanParser.TryParse(input, out var result);
 
-        success.Should().BeTrue();
-        result.Should().Be(TimeSpan.FromDays(7));
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromDays(7), result);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class TimeSpanParserTests
     {
         var result = TimeSpanParser.Parse("0s");
 
-        result.Should().Be(TimeSpan.Zero);
+        Assert.Equal(TimeSpan.Zero, result);
     }
 
     [Theory]
@@ -164,6 +164,6 @@ public class TimeSpanParserTests
         var resultLower = TimeSpanParser.Parse(input.ToLower());
         var resultUpper = TimeSpanParser.Parse(input.ToUpper());
 
-        resultLower.Should().Be(resultUpper);
+        Assert.Equal(resultLower, resultUpper);
     }
 }

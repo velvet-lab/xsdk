@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Data

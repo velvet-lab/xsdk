@@ -12,8 +12,8 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertToBase64(input);
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes(input)));
+        Assert.NotNull(result);
+        Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes(input)), result);
     }
 
     [Fact]
@@ -23,7 +23,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertToBase64(input);
 
-        result.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes("")));
+        Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes("")), result);
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertToBase64(input);
 
-        result.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes("")));
+        Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes("")), result);
     }
 
     [Fact]
@@ -43,9 +43,9 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertToBase64(input);
 
-        result.Should().NotBeNullOrEmpty();
+        Assert.NotNull(result);
         var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(result));
-        decoded.Should().Be(input);
+        Assert.Equal(input, decoded);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public class Base64HelperTests
         var resultUtf8 = Base64Helper.ConvertToBase64(input, Encoding.UTF8);
         var resultUnicode = Base64Helper.ConvertToBase64(input, Encoding.Unicode);
 
-        resultUtf8.Should().NotBe(resultUnicode); // Different encodings produce different base64
+        Assert.NotEqual(resultUtf8, resultUnicode); // Different encodings produce different base64
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertFromBase64(encoded);
 
-        result.Should().Be(original);
+        Assert.Equal(original, result);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertFromBase64(input);
 
-        result.Should().Be(input);
+        Assert.Equal(input, result);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertFromBase64(input);
 
-        result.Should().BeEmpty();
+        Assert.Equal(string.Empty, result);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertFromBase64(input);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.IsBase64(input);
 
-        result.Should().BeTrue();
+        Assert.True(result);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.IsBase64(input);
 
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Fact]
@@ -127,7 +127,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.IsBase64(input);
 
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public class Base64HelperTests
 
         var result = Base64Helper.IsBase64(input);
 
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class Base64HelperTests
         var encoded = Base64Helper.ConvertToBase64(original);
         var decoded = Base64Helper.ConvertFromBase64(encoded);
 
-        decoded.Should().Be(original);
+        Assert.Equal(original, decoded);
     }
 
     [Fact]
@@ -158,8 +158,9 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertToBase64(input);
 
-        result.Should().NotBeNullOrEmpty();
-        Base64Helper.IsBase64(result).Should().BeTrue();
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.True(Base64Helper.IsBase64(result));
     }
 
     [Fact]
@@ -170,6 +171,6 @@ public class Base64HelperTests
 
         var result = Base64Helper.ConvertFromBase64(encoded);
 
-        result.Should().Be(original);
+        Assert.Equal(original, result);
     }
 }

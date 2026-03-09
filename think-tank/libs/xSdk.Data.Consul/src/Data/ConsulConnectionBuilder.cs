@@ -17,7 +17,9 @@ namespace xSdk.Data
                     if (concreteSetup.UseTls)
                         _.Address = new Uri($"https://{concreteSetup.Host}:{concreteSetup.Port}");
                     else
-                        _.Address = new Uri($"http://{concreteSetup.Host}:{concreteSetup.Port}"); // DevSkim: ignore DS137138 until 2025-03-18
+                    {
+                        _.Address = new Uri($"http://{concreteSetup.Host}:{concreteSetup.Port}"); // DevSkim: ignore DS137138 - HTTP nur wenn UseTls=false explizit konfiguriert
+                    }
 
                     if (!string.IsNullOrEmpty(concreteSetup.DataCenter))
                         _.Datacenter = concreteSetup.DataCenter;

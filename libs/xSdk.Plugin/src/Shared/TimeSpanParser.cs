@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace xSdk.Shared;
 
 public static class TimeSpanParser
@@ -41,13 +43,8 @@ public static class TimeSpanParser
             if (!IsValidUnit(unit))
                 unit = "s";
 
-            if (stringValue.Contains('.'))
-            {
-                stringValue = stringValue.Replace('.', ',');
-            }
-
             unit = unit.ToLower();
-            var doubleValue = Convert.ToDouble(stringValue);
+            var doubleValue = double.Parse(stringValue, CultureInfo.InvariantCulture);
             if (unit == "ms")
                 return TimeSpan.FromMilliseconds(doubleValue);
             else if (unit == "s")

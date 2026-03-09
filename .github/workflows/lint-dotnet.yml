@@ -1,4 +1,4 @@
-name: 'Quality Gate: Mega-Linter'
+name: 'Code Consistency Scan for .NET'
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   megalinter:
-    name: 'Scan Code Quality'
+    name: 'Scan Code Consistency'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,12 +19,12 @@ jobs:
       statuses: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Wichtig für Mega-Linter, um Differenzen zu erkennen
 
       - name: Run Mega-Linter
-        uses: oxsecurity/megalinter/flavors/dotnet@8fbdead70d1409964ab3d5afa885e18ee85388bb
+        uses: oxsecurity/megalinter/flavors/dotnetweb@8fbdead70d1409964ab3d5afa885e18ee85388bb
         env:
           MEGALINTER_CONFIG: .mega-linter.yml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-﻿# xSDK
+# xSDK
 
 > A modular .NET SDK with pluggable data providers, extensible hosting, and built-in observability — designed for building production-ready services and applications.
 
@@ -86,7 +86,7 @@ Key goals:
 
 xSDK follows a **modular, layered architecture** where each library is independently consumable:
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │                     Application Layer                    │
 │         (demos/, ASP.NET Core APIs, Console Apps)        │
@@ -187,7 +187,7 @@ await host.RunAsync();
 
 ## Project Structure
 
-```
+```text
 xsdk/
 ├── libs/                          # SDK library projects
 │   ├── xSdk/                      # Core SDK (hosting, plugin extensions, IO)
@@ -225,7 +225,7 @@ xsdk/
 
 Each library under `libs/` follows the same layout:
 
-```
+```text
 libs/xSdk.SomeLibrary/
 ├── src/      # Production code
 └── tests/    # Unit tests (mirrors src structure)
@@ -294,7 +294,7 @@ Pull requests target the `next` branch. Merges to `main` trigger official releas
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/) enforced by `lint-commits` CI workflow. Commit messages must follow the format:
 
-```
+```text
 <type>(<scope>): <description>
 
 feat(data): add LiteDB async support
@@ -384,7 +384,7 @@ Testing follows the guidelines in [.github/instructions/testing.instructions.md]
 
 ### Test Naming
 
-```
+```text
 MethodName_Scenario_ExpectedBehavior
 ```
 
@@ -460,8 +460,8 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 
 | Version | Supported |
 |---------|-----------|
-| 1.1.x   | ✅         |
-| < 1.1.0 | ❌         |
+| 1.1.x   | ✅        |
+| < 1.1.0 | ❌        |
 
 To report a vulnerability, use [GitHub's private vulnerability reporting](https://github.com/velvet-lab/xsdk/security/advisories/new) or email `danlorb@velvet-lab.net`. **Do not** open public GitHub issues for security vulnerabilities.
 

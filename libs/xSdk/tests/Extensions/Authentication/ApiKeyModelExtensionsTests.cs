@@ -27,7 +27,14 @@ public sealed class ApiKeyModelExtensionsTests
             {
                 new ClaimModel{ Type = "type1", Value = "value1" },
                 new ClaimModel{ Type = "type2", Value = "value2" },
-                new ClaimModel{ Type = "https://velvet-lab.net/centraldb/claims/workflow", Value = "Read", ValueType = "http://www.w3.org/2001/XMLSchema#string", Issuer = "A Issuer", OriginalIssuer = "A Original Issuer" }
+                new ClaimModel
+                {
+                    Type = "https://velvet-lab.net/centraldb/claims/workflow",
+                    Value = "Read",
+                    ValueType = "http://www.w3.org/2001/XMLSchema#string",
+                    Issuer = "A Issuer",
+                    OriginalIssuer = "A Original Issuer"
+                }
             }
         };
 

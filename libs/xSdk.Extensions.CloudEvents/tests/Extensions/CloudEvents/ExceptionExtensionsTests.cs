@@ -15,8 +15,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent(scope);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain("error");
+        Assert.NotNull(cloudEvent);
+        Assert.Contains("error", cloudEvent.Type);
     }
 
     [Fact]
@@ -28,8 +28,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent(scope, type);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
     }
 
     [Fact]
@@ -42,9 +42,9 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent(scope, type, subject);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain(type);
-        cloudEvent.Subject.Should().Be(subject);
+        Assert.NotNull(cloudEvent);
+        Assert.Contains(type, cloudEvent.Type);
+        Assert.Equal(subject, cloudEvent.Subject);
     }
 
     [Fact]
@@ -55,8 +55,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent(scope, null);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain("error");
+        Assert.NotNull(cloudEvent);
+        Assert.Contains("error", cloudEvent.Type);
     }
 
     [Fact]
@@ -67,8 +67,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent(scope, string.Empty);
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain("error");
+        Assert.NotNull(cloudEvent);
+        Assert.Contains("error", cloudEvent.Type);
     }
 
     [Fact]
@@ -79,8 +79,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent("test/scope");
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Data.Should().NotBeNull();
+        Assert.NotNull(cloudEvent);
+        Assert.NotNull(cloudEvent.Data);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var result = cloudEvent.IsException();
 
-        result.Should().BeTrue();
+        Assert.True(result);
     }
 
     [Fact]
@@ -106,8 +106,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var exception = cloudEvent.ToException<InvalidOperationException>();
 
-        exception.Should().NotBeNull();
-        exception.Message.Should().Be("Error message from CloudEvent");
+        Assert.NotNull(exception);
+        Assert.Equal("Error message from CloudEvent", exception.Message);
     }
 
     [Fact]
@@ -124,8 +124,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var exception = cloudEvent.ToException<Exception>();
 
-        exception.Should().NotBeNull();
-        exception.Message.Should().Be(errorMessage);
+        Assert.NotNull(exception);
+        Assert.Equal(errorMessage, exception.Message);
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var exception = cloudEvent.ToException<Exception>();
 
-        exception.Should().BeNull();
+        Assert.Null(exception);
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var exception = cloudEvent.ToException<Exception>();
 
-        exception.Should().BeNull();
+        Assert.Null(exception);
     }
 
     [Fact]
@@ -165,9 +165,9 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var exception = cloudEvent.ToException<ArgumentException>();
 
-        exception.Should().NotBeNull();
-        exception.Should().BeOfType<ArgumentException>();
-        exception.Message.Should().Be("Argument error message");
+        Assert.NotNull(exception);
+        Assert.IsType<ArgumentException>(exception);
+        Assert.Equal("Argument error message", exception.Message);
     }
 
     [Fact]
@@ -179,8 +179,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
         var cloudEvent = originalException.ToCloudEvent("test/scope");
         var reconstructedException = cloudEvent.ToException<InvalidOperationException>();
 
-        reconstructedException.Should().NotBeNull();
-        reconstructedException.Message.Should().Be(originalMessage);
+        Assert.NotNull(reconstructedException);
+        Assert.Equal(originalMessage, reconstructedException.Message);
     }
 
     [Fact]
@@ -190,7 +190,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
 
         var cloudEvent = exception.ToCloudEvent("test/scope", "validation.error");
 
-        cloudEvent.Should().NotBeNull();
-        cloudEvent.Type.Should().Contain("validation.error");
+        Assert.NotNull(cloudEvent);
+        Assert.Contains("validation.error", cloudEvent.Type);
     }
 }

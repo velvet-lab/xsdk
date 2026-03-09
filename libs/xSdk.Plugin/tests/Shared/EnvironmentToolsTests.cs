@@ -20,7 +20,7 @@ public class EnvironmentToolsTests
 
         var result = EnvironmentTools.ReadEnvironmentVariable(TestVarName);
 
-        result.Should().Be(TestValue);
+        Assert.Equal(TestValue, result);
 
         CleanupTestVariable();
     }
@@ -30,7 +30,7 @@ public class EnvironmentToolsTests
     {
         var result = EnvironmentTools.ReadEnvironmentVariable("NON_EXISTING_VAR_XYZ_123");
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class EnvironmentToolsTests
 
         var result = EnvironmentTools.ReadEnvironmentVariable("NON_EXISTING_VAR", defaultValue);
 
-        result.Should().Be(defaultValue);
+        Assert.Equal(defaultValue, result);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class EnvironmentToolsTests
 
         var result = EnvironmentTools.ReadEnvironmentVariable(TestVarName, defaultValue);
 
-        result.Should().Be(TestValue);
+        Assert.Equal(TestValue, result);
 
         CleanupTestVariable();
     }
@@ -64,7 +64,7 @@ public class EnvironmentToolsTests
 
         var result = EnvironmentTools.ReadEnvironmentVariable(TestVarName, defaultValue);
 
-        result.Should().Be(defaultValue);
+        Assert.Equal(defaultValue, result);
 
         CleanupTestVariable();
     }
@@ -76,8 +76,8 @@ public class EnvironmentToolsTests
 
         var success = EnvironmentTools.TryReadEnvironmentVariable(TestVarName, out var value);
 
-        success.Should().BeTrue();
-        value.Should().Be(TestValue);
+        Assert.True(success);
+        Assert.Equal(TestValue, value);
 
         CleanupTestVariable();
     }
@@ -87,8 +87,8 @@ public class EnvironmentToolsTests
     {
         var success = EnvironmentTools.TryReadEnvironmentVariable("NON_EXISTING_VAR", out var value);
 
-        success.Should().BeFalse();
-        value.Should().BeEmpty();
+        Assert.False(success);
+        Assert.Equal(string.Empty, value);
     }
 
     [Fact]
@@ -98,8 +98,8 @@ public class EnvironmentToolsTests
 
         var success = EnvironmentTools.TryReadEnvironmentVariable("NON_EXISTING_VAR", out var value, defaultValue);
 
-        success.Should().BeTrue();
-        value.Should().Be(defaultValue);
+        Assert.True(success);
+        Assert.Equal(defaultValue, value);
     }
 
     [Fact]
@@ -110,8 +110,8 @@ public class EnvironmentToolsTests
 
         var success = EnvironmentTools.TryReadEnvironmentVariable(TestVarName, out var value, defaultValue);
 
-        success.Should().BeTrue();
-        value.Should().Be(TestValue);
+        Assert.True(success);
+        Assert.Equal(TestValue, value);
 
         CleanupTestVariable();
     }
@@ -124,8 +124,8 @@ public class EnvironmentToolsTests
 
         var success = EnvironmentTools.TryReadEnvironmentVariable(TestVarName, out var value, defaultValue);
 
-        success.Should().BeTrue();
-        value.Should().Be(defaultValue);
+        Assert.True(success);
+        Assert.Equal(defaultValue, value);
 
         CleanupTestVariable();
     }
@@ -138,7 +138,7 @@ public class EnvironmentToolsTests
 
         var result = EnvironmentTools.ReadEnvironmentVariable(TestVarName);
 
-        result.Should().Be(processValue);
+        Assert.Equal(processValue, result);
 
         CleanupTestVariable();
     }
@@ -148,8 +148,8 @@ public class EnvironmentToolsTests
     {
         var success = EnvironmentTools.TryReadEnvironmentVariable("NON_EXISTING_VAR", out var value, null);
 
-        success.Should().BeFalse();
-        value.Should().BeEmpty();
+        Assert.False(success);
+        Assert.Equal(string.Empty, value);
     }
 
     private void CleanupTestVariable()

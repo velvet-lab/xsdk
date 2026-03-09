@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <IsPackable>false</IsPackable>
@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-		<PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="xunit" />
         <PackageReference Include="xunit.runner.visualstudio">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentValidation" />
     </ItemGroup>
@@ -30,16 +30,4 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="System.Text.Encodings.Web" Version="10.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="System.Text.Encodings.Web">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
 </Project>

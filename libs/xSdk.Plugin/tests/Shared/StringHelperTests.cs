@@ -11,7 +11,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().Be("abc123XYZ");
+        Assert.Equal(input, result);
     }
 
     [Fact]
@@ -21,7 +21,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().Be("HelloWorld2024");
+        Assert.Equal("HelloWorld2024", result);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().Be("HelloWorld123");
+        Assert.Equal("HelloWorld123", result);
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().Be("Caf123");
+        Assert.Equal("Caf123", result);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().BeEmpty();
+        Assert.Equal(string.Empty, result);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().BeEmpty();
+        Assert.Equal(string.Empty, result);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().Be("AbC123xYz");
+        Assert.Equal("AbC123xYz", result);
     }
 
     [Fact]
@@ -81,6 +81,6 @@ public class StringHelperTests
 
         var result = StringHelper.RemoveSpecialChars(input);
 
-        result.Should().Be("testvalue123");
+        Assert.Equal("testvalue123", result);
     }
 }

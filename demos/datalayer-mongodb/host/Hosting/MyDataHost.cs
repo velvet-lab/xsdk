@@ -58,30 +58,30 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
         {
             var json = @"
 [
-  {
-    ""Name"": ""John Doe"",
-    ""Age"": 25
-  },
-  {
-    ""Name"": ""Jane Smith"",
-    ""Age"": 30,
-    ""Email"": ""jane.smith@example.com"",
-    ""Department"": ""Marketing"",
-    ""EmployeeId"": 12346,
-    ""IsActive"": true,
-    ""StartDate"": ""2020-01-15""
-  },
-  {
-    ""Name"": ""Bob Johnson"",
-    ""Age"": 45,
-    ""EmployeeId"": 12347,
-    ""IsActive"": false,
-    ""location"": {
-        ""Email"": ""bob.johnson@example.com"",
-        ""Department"": ""Sales"",
-        ""EndDate"": ""2023-12-31""
+    {
+        ""Name"": ""John Doe"",
+        ""Age"": 25
+    },
+    {
+        ""Name"": ""Jane Smith"",
+        ""Age"": 30,
+        ""Email"": ""jane.smith@example.com"",
+        ""Department"": ""Marketing"",
+        ""EmployeeId"": 12346,
+        ""IsActive"": true,
+        ""StartDate"": ""2020-01-15""
+    },
+    {
+        ""Name"": ""Bob Johnson"",
+        ""Age"": 45,
+        ""EmployeeId"": 12347,
+        ""IsActive"": false,
+        ""location"": {
+            ""Email"": ""bob.johnson@example.com"",
+            ""Department"": ""Sales"",
+            ""EndDate"": ""2023-12-31""
+        }
     }
-  }
 ]
 ";
             // Load the the Repository

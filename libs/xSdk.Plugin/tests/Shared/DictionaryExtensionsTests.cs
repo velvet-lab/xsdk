@@ -11,8 +11,7 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew("key1", "value1");
 
-        dictionary.Should().ContainKey("key1");
-        dictionary["key1"].Should().Be("value1");
+        Assert.Equal("value1", dictionary["key1"]);
     }
 
     [Fact]
@@ -25,8 +24,8 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew("key1", "newValue");
 
-        dictionary["key1"].Should().Be("newValue");
-        dictionary.Should().HaveCount(1);
+        Assert.Equal("newValue", dictionary["key1"]);
+        Assert.Single(dictionary);
     }
 
     [Fact]
@@ -36,7 +35,7 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew<string, string>(null, "value");
 
-        dictionary.Should().BeEmpty();
+        Assert.Empty(dictionary);
     }
 
     [Fact]
@@ -46,7 +45,7 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew(string.Empty, "value");
 
-        dictionary.Should().BeEmpty();
+        Assert.Empty(dictionary);
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew("key1", 42);
 
-        dictionary["key1"].Should().Be("42");
+        Assert.Equal("42", dictionary["key1"]);
     }
 
     [Fact]
@@ -66,7 +65,7 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew("key1", true);
 
-        dictionary["key1"].Should().Be("True");
+        Assert.Equal("True", dictionary["key1"]);
     }
 
     [Fact]
@@ -79,7 +78,7 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew("key1", 42);
 
-        dictionary["key1"].Should().Be("42");
+        Assert.Equal("42", dictionary["key1"]);
     }
 
     [Fact]
@@ -90,8 +89,8 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew(kvp);
 
-        dictionary.Should().ContainKey("key1");
-        dictionary["key1"].Should().Be(100);
+        Assert.Contains("key1", dictionary);
+        Assert.Equal(100, dictionary["key1"]);
     }
 
     [Fact]
@@ -105,8 +104,8 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew(kvp);
 
-        dictionary["key1"].Should().Be(100);
-        dictionary.Should().HaveCount(1);
+        Assert.Equal(100, dictionary["key1"]);
+        Assert.Single(dictionary);
     }
 
     [Fact]
@@ -116,8 +115,8 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew(1, "value1");
 
-        dictionary.Should().ContainKey(1);
-        dictionary[1].Should().Be("value1");
+        Assert.Contains(1, dictionary);
+        Assert.Equal("value1", dictionary[1]);
     }
 
     [Fact]
@@ -130,8 +129,8 @@ public class DictionaryExtensionsTests
 
         dictionary.AddOrNew(1, "newValue");
 
-        dictionary[1].Should().Be("newValue");
-        dictionary.Should().HaveCount(1);
+        Assert.Equal("newValue", dictionary[1]);
+        Assert.Single(dictionary);
     }
 
     [Fact]
@@ -144,7 +143,7 @@ public class DictionaryExtensionsTests
 
         var result = dictionary.GetValue<int>("age");
 
-        result.Should().Be(42);
+        Assert.Equal(42, result);
     }
 
     [Fact]
@@ -154,7 +153,7 @@ public class DictionaryExtensionsTests
 
         var result = dictionary.GetValue<int>("nonexistent");
 
-        result.Should().Be(0); // default for int
+        Assert.Equal(0, result); // default for int
     }
 
     [Fact]
@@ -167,7 +166,7 @@ public class DictionaryExtensionsTests
 
         var result = dictionary.GetValue<string>(string.Empty);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -180,7 +179,7 @@ public class DictionaryExtensionsTests
 
         var result = dictionary.GetValue<string>(null);
 
-        result.Should().BeNull();
+        Assert.Null(result);
     }
 
     [Fact]
@@ -193,7 +192,7 @@ public class DictionaryExtensionsTests
 
         var result = dictionary.GetValue<bool>("isActive");
 
-        result.Should().BeTrue();
+        Assert.True(result);
     }
 
     [Fact]
@@ -206,7 +205,7 @@ public class DictionaryExtensionsTests
 
         var result = dictionary.GetValue<double>("price");
 
-        result.Should().Be(19.99);
+        Assert.Equal(19.99, result);
     }
 
     [Fact]
@@ -218,8 +217,8 @@ public class DictionaryExtensionsTests
         dictionary.AddOrNew("key2", "value2");
         dictionary.AddOrNew("key1", "updatedValue1");
 
-        dictionary.Should().HaveCount(2);
-        dictionary["key1"].Should().Be("updatedValue1");
-        dictionary["key2"].Should().Be("value2");
+        Assert.Equal(2, dictionary.Count);
+        Assert.Equal("updatedValue1", dictionary["key1"]);
+        Assert.Equal("value2", dictionary["key2"]);
     }
 }
