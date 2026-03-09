@@ -97,7 +97,8 @@ public static class RestClientBuilder
         Uri baseUrl,
         IAuthenticator? authenticator,
         Action<RestClientOptions>? options,
-        HttpClient httpClient
+        HttpClient httpClient,
+        IProgress<double>? progress = default
     )
     {
         _logger.Trace("Create rest api client");

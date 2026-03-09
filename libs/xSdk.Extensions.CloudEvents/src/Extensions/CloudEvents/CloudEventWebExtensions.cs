@@ -163,7 +163,7 @@ public static class CloudEventWebExtensions
         string url,
         ReadOnlyMemory<byte> body,
         ContentType contentType,
-        IDictionary<string, string> additionalHeaders,
+        IDictionary<string, string>? additionalHeaders,
         CancellationToken token = default
     )
     {
@@ -182,7 +182,7 @@ public static class CloudEventWebExtensions
             _logger.Info("Send CloudEvent to '{0}'", url);
             using (var client = HttpClientBuilder.CreateHttpClient(new Uri(url)))
             {
-                foreach (var header in additionalHeaders ?? [])
+                foreach (var header in additionalHeaders ?? new Dictionary<string, string>())
                 {
                     client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
                 }
