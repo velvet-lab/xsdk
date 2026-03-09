@@ -80,8 +80,15 @@ public class VariableController(IVariableService variableSvc, ILogger<HealthCont
     [HttpGet("resource")]
     [MapToApiVersion(1)]
     [Authorize]
-    [SwaggerOperation(Summary = "Gets resource names", Description = "Returns a dictionary of resource names for open telemetry. You need to be authenticated to get resource names")]
-    [SwaggerResponse(StatusCodes.Status200OK, Description = "Dictionary of resource names", Type = typeof(IDictionary<string, object>))]
+    [SwaggerOperation(
+        Summary = "Gets resource names",
+        Description = "Returns a dictionary of resource names for open telemetry. You need to be authenticated to get resource names"
+    )]
+    [SwaggerResponse(
+        StatusCodes.Status200OK,
+        Description = "Dictionary of resource names",
+        Type = typeof(IDictionary<string, object>)
+    )]
     [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
     public async Task<ActionResult<IDictionary<string, object>>> GetResourceNames(CancellationToken token = default)
     {

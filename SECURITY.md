@@ -5,7 +5,7 @@
 We actively provide security updates for the following versions of the SDK:
 
 | Version | Supported          |
-| ------- | ------------------ |
+|---------|--------------------|
 | 1.1.x   | :white_check_mark: |
 | < 1.1.0 | :x:                |
 

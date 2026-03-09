@@ -25,8 +25,8 @@
         <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+        <ItemGroup>
+                <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
     </ItemGroup>
 
 </Project>

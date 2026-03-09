@@ -43,19 +43,42 @@ public static class RestClientBuilder
     public static IRestClient CreateRestClient(Uri baseUrl, IAuthenticator authenticator, HttpClient httpClient)
         => CreateRestClientWithHttpClient(baseUrl, authenticator, default, httpClient, default);
 
-    public static IRestClient CreateRestClient(Uri baseUrl, IAuthenticator authenticator, HttpClient httpClient, Action<RestClientOptions>? options)
+    public static IRestClient CreateRestClient(
+        Uri baseUrl,
+        IAuthenticator authenticator,
+        HttpClient httpClient,
+        Action<RestClientOptions>? options
+    )
         => CreateRestClientWithHttpClient(baseUrl, authenticator, options, httpClient, default);
 
 
 
-    public static IRestClient CreateRestClient(Uri baseUrl, IAuthenticator? authenticator, Action<RestClientOptions>? options, Action<HttpClientHandler>? handler, IProgress<double>? progress)
+    public static IRestClient CreateRestClient(
+        Uri baseUrl,
+        IAuthenticator? authenticator,
+        Action<RestClientOptions>? options,
+        Action<HttpClientHandler>? handler,
+        IProgress<double>? progress
+    )
         => CreateRestClientWithHandler(baseUrl, authenticator, options, handler, progress);
 
-    public static IRestClient CreateRestClient(Uri baseUrl, IAuthenticator? authenticator, Action<RestClientOptions>? options, HttpClient httpClient, IProgress<double>? progress)
+    public static IRestClient CreateRestClient(
+        Uri baseUrl,
+        IAuthenticator? authenticator,
+        Action<RestClientOptions>? options,
+        HttpClient httpClient,
+        IProgress<double>? progress
+    )
         => CreateRestClientWithHttpClient(baseUrl, authenticator, options, httpClient, progress);
 
 
-    private static IRestClient CreateRestClientWithHandler(Uri baseUrl, IAuthenticator? authenticator, Action<RestClientOptions>? options, Action<HttpClientHandler>? handler, IProgress<double>? progress)
+    private static IRestClient CreateRestClientWithHandler(
+        Uri baseUrl,
+        IAuthenticator? authenticator,
+        Action<RestClientOptions>? options,
+        Action<HttpClientHandler>? handler,
+        IProgress<double>? progress
+    )
     {
         HttpClient? httpClient = null;
         if (handler != null)
@@ -67,10 +90,15 @@ public static class RestClientBuilder
             httpClient = HttpClientBuilder.CreateHttpClient(baseUrl, progress);
         }
 
-        return CreateRestClientWithHttpClient(baseUrl, authenticator, options, httpClient, progress);
+        return CreateRestClientWithHttpClient(baseUrl, authenticator, options, httpClient);
     }
 
-    private static IRestClient CreateRestClientWithHttpClient(Uri baseUrl, IAuthenticator? authenticator, Action<RestClientOptions>? options, HttpClient httpClient, IProgress<double>? progress)
+    private static IRestClient CreateRestClientWithHttpClient(
+        Uri baseUrl,
+        IAuthenticator? authenticator,
+        Action<RestClientOptions>? options,
+        HttpClient httpClient
+    )
     {
         _logger.Trace("Create rest api client");
 
@@ -85,6 +113,10 @@ public static class RestClientBuilder
 
         options?.Invoke(restOptions);
 
-        return new RestClient(httpClient, restOptions, configureSerialization: s => s.UseSystemTextJson(JsonHelper.GetSerializerOptions()));
+        return new RestClient(
+            httpClient,
+            restOptions,
+            configureSerialization: serializer => serializer.UseSystemTextJson(JsonHelper.GetSerializerOptions())
+        );
     }
 }

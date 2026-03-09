@@ -18,7 +18,7 @@ public static class CloudEventWebExtensions
 
     public static string ToJson(this CloudEvent cloudEvent)
     {
-        var (body, contentType) = cloudEvent.ToHttpContent();
+        var (body, _) = cloudEvent.ToHttpContent();
         string json = Encoding.UTF8.GetString(body.Span);
 
         return json;
@@ -103,7 +103,7 @@ public static class CloudEventWebExtensions
     public static Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
-        IDictionary<string, string> additionalHeaders,
+        IDictionary<string, string>? additionalHeaders,
         CancellationToken token = default
     )
     {
@@ -158,7 +158,14 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     ) => cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
 
-    public static async Task PostToHttpAsync(this CloudEvent cloudEvent, string url, ReadOnlyMemory<byte> body, ContentType contentType, IDictionary<string, string> additionalHeaders, CancellationToken token = default)
+    public static async Task PostToHttpAsync(
+        this CloudEvent cloudEvent,
+        string url,
+        ReadOnlyMemory<byte> body,
+        ContentType contentType,
+        IDictionary<string, string> additionalHeaders,
+        CancellationToken token = default
+    )
     {
         if (string.IsNullOrEmpty(url))
         {
@@ -175,7 +182,7 @@ public static class CloudEventWebExtensions
             _logger.Info("Send CloudEvent to '{0}'", url);
             using (var client = HttpClientBuilder.CreateHttpClient(new Uri(url)))
             {
-                foreach (var header in additionalHeaders)
+                foreach (var header in additionalHeaders ?? [])
                 {
                     client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
                 }
@@ -204,7 +211,7 @@ public static class CloudEventWebExtensions
         catch (Exception ex)
         {
             _logger.Error(ex, "CloudEvent could not posted to '{0}' (Reason: {1})", url, ex.Message);
-            throw;
+            throw new InvalidOperationException($"CloudEvent could not be posted to '{url}'.", ex);
         }
     }
 }

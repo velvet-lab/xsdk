@@ -17,14 +17,22 @@ public sealed class DataProtectionSetup : Setup, IDataProtectionSetup
         set => this.SetValue(Definitions.ApplicationDiscriminator.Name, value);
     }
 
-    [Variable(name: Definitions.ApplicationName.Name, template: Definitions.ApplicationName.Template, helpText: Definitions.ApplicationName.HelpText)]
+    [Variable(
+        name: Definitions.ApplicationName.Name,
+        template: Definitions.ApplicationName.Template,
+        helpText: Definitions.ApplicationName.HelpText
+    )]
     public string ApplicationName
     {
         get => this.ReadValue<string>(Definitions.ApplicationName.Name);
         set => this.SetValue(Definitions.ApplicationName.Name, value);
     }
 
-    [Variable(name: Definitions.KeyLifetime.Name, template: Definitions.KeyLifetime.Template, helpText: Definitions.KeyLifetime.HelpText)]
+    [Variable(
+        name: Definitions.KeyLifetime.Name,
+        template: Definitions.KeyLifetime.Template,
+        helpText: Definitions.KeyLifetime.HelpText
+    )]
     public string KeyLifetime
     {
         get => this.ReadValue<string>(Definitions.KeyLifetime.Name);

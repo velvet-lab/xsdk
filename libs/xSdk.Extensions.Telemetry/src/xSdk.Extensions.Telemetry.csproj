@@ -15,8 +15,8 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
+        <ItemGroup>
+                <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
     </ItemGroup>
 
 </Project>

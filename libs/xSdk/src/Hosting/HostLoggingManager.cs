@@ -38,7 +38,10 @@ internal static class HostLoggingManager
         }
 
         builder.SetMinimumLevel(ConvertLogLevel(envSetup));
-        builder.AddNLog(LogManager.Configuration);
+
+        var configuration = LogManager.Configuration ?? new LoggingConfiguration();
+        LogManager.Configuration = configuration;
+        builder.AddNLog(configuration);
 
         LogManager.ReconfigExistingLoggers();
     }
@@ -104,7 +107,7 @@ internal static class HostLoggingManager
                 Address = "udp://localhost:7071", // DevSkim: ignore DS162092
             };
 
-            LogManager.Configuration.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, target);
+            LogManager.Configuration?.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, target);
         }
     }
 
@@ -123,21 +126,21 @@ internal static class HostLoggingManager
             var target = new NLog.Targets.ConsoleTarget("ConsoleTarget");
             target.Layout = "${date:format=dd.MM.yyyy HH\\:mm\\:ss} ${level:uppercase=true} ${message:withexception=true}";
 
-            LogManager.Configuration.AddRule(minLogLevel, maxLogLevel, target);
+            LogManager.Configuration?.AddRule(minLogLevel, maxLogLevel, target);
         }
     }
 
     private static void EnableFileTarget(ISetupBuilder logSetup, EnvironmentSetup envSetup)
     {
         // Disable File Log for Visual Studio and Containers
-        var configFile = LoadDefaultLogConfig(envSetup, (!Debugger.IsAttached && !envSetup.IsDotNetRunningInContainer));
+        var configFile = LoadDefaultLogConfig(!Debugger.IsAttached && !envSetup.IsDotNetRunningInContainer);
         if (File.Exists(configFile))
         {
             logSetup.LoadConfigurationFromFile(configFile);
         }
     }
 
-    private static string LoadDefaultLogConfig(EnvironmentSetup envSetup, bool shouldExists)
+    private static string LoadDefaultLogConfig(bool shouldExists)
     {
         var configFolder = FileSystemHelper.CreateSpecificDataFolder(FileSystemContext.Machine, "/config");
         var logFolder = FileSystemHelper.CreateSpecificDataFolder(FileSystemContext.Machine, "/logs");
@@ -164,7 +167,14 @@ internal static class HostLoggingManager
 
     <targets>
         <target xsi:type=""AsyncWrapper"" name=""fileLog"" overflowAction=""Block"">
-            <target type=""File"" fileName=""${logDirectory}/${shortdate}.log"" archiveFileName=""${logDirectory}/archive/{#}.zip"" archiveDateFormat=""yyyy-MM-dd"" archiveNumbering=""Date"" enableArchiveFileCompression=""True"" maxArchiveFiles=""7"" archiveEvery=""Day""/>
+            <target type=""File""
+                    fileName=""${logDirectory}/${shortdate}.log""
+                    archiveFileName=""${logDirectory}/archive/{#}.zip""
+                    archiveDateFormat=""yyyy-MM-dd""
+                    archiveNumbering=""Date""
+                    enableArchiveFileCompression=""True""
+                    maxArchiveFiles=""7""
+                    archiveEvery=""Day""/>
         </target>
     </targets>
 

@@ -9,15 +9,15 @@ namespace xSdk.Extensions.Telemetry;
 
 internal partial class TelemetryService(EnvironmentSetup envSetup, ILogger<TelemetryService> logger) : ITelemetryService
 {
-    private static ActivitySource _mainActivitySource;
-    private static Meter _mainMeter;
+    private ActivitySource? _mainActivitySource;
+    private Meter? _mainMeter;
 
     public ActivitySource MainActivitySource => CreateMainActivitySource();
 
     public Meter MainMeter => CreateMainMeter();
 
 #nullable enable
-    public Activity? StartActivity([CallerMemberName] string name = "", ActivityKind kind = ActivityKind.Internal)
+    public Activity? StartActivity(ActivityKind kind = ActivityKind.Internal, [CallerMemberName] string name = "")
     {
         var source = CreateMainActivitySource();
 

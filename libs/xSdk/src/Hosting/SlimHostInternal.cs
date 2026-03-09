@@ -13,12 +13,12 @@ internal sealed class SlimHostInternal : SlimHostBase
     internal static ISlimHost Instance => _host ?? throw new InvalidOperationException("SlimHost is not initialized");
 
     internal static ISlimHost Initialize(string[] args, string? appName, string? appCompany, string? appPrefix) =>
-        InitializeSlimHost(args, appName, appCompany, appPrefix, false);
+        InitializeSlimHost(appName, appCompany, appPrefix, false);
 
     internal static ISlimHost InitializeTestHost(string[] args, string? appName, string? appCompany, string? appPrefix) =>
-        InitializeSlimHost(args, appName, appCompany, appPrefix, true);
+        InitializeSlimHost(appName, appCompany, appPrefix, true);
 
-    private static ISlimHost InitializeSlimHost(string[] args, string? appName, string? appCompany, string? appPrefix, bool isTestHost)
+    private static ISlimHost InitializeSlimHost(string? appName, string? appCompany, string? appPrefix, bool isTestHost)
     {
         if (_host == null)
         {
@@ -51,10 +51,10 @@ internal sealed class SlimHostInternal : SlimHostBase
             builder.ConfigureServices(services =>
             {
                 services
-                   .AddLogging(HostLoggingManager.ConfigureSlimLogging)
-                   .AddSlimPluginServices()
-                   .AddSlimFileServices()
-                   .AddSlimVariableServices(config, false);
+                    .AddLogging(HostLoggingManager.ConfigureSlimLogging)
+                    .AddSlimPluginServices()
+                    .AddSlimFileServices()
+                    .AddSlimVariableServices(config, false);
             });
 
             // Now get the real instance of the host

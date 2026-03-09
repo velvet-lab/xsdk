@@ -75,7 +75,7 @@ public sealed class DatalayerBuilder : IDatalayerBuilder
         return this;
     }
 
-    internal void InitializeRepository(IServiceProvider provider, IRepository repository, IEnumerable<string> dataProviders)
+    internal static void InitializeRepository(IServiceProvider provider, IRepository repository, IEnumerable<string> dataProviders)
     {
         var setups = provider.GetServices<InternalDatabaseSetup>();
 
@@ -89,7 +89,8 @@ public sealed class DatalayerBuilder : IDatalayerBuilder
         {
             if (!dataProviders.Any())
                 throw new SdkException(
-                    $"No Data Provider Name specified. Add the Data Provider Name to Repository Mappings, to specify the Data Provider, which the Repository '{repository.GetType().FullName}' should used"
+                    "No Data Provider Name specified. Add the Data Provider Name to Repository Mappings "
+                    + $"to specify the Data Provider that the Repository '{repository.GetType().FullName}' should use"
                 );
 
             databaseSetups = setups.Where(x => dataProviders.Any(y => string.Compare(x.Name, y, true) == 0));
@@ -102,43 +103,23 @@ public sealed class DatalayerBuilder : IDatalayerBuilder
         ((Repository)repository).InternalSetups = databaseSetups;
     }
 
-    private void ValidateLogicalNames(IEnumerable<string> names)
+    private static void ValidateLogicalNames(IEnumerable<string> names)
     {
         var cleanedNamesCount = names.Distinct().Count();
         if (cleanedNamesCount != names.Count())
-            throw new SdkException($"Database Logical Names are not unique. Please choose a another Name to register the Database");
+            throw new SdkException(
+                "Database Logical Names are not unique. Please choose another name to register the database"
+            );
     }
 
-    private void ValidateLogicalNames(string name, ref List<string> names)
+    private static void ValidateLogicalNames(string name, ref List<string> names)
     {
         if (names.Any(x => string.Compare(x, name, true) == 0))
-            throw new SdkException($"Database with Name '{name}' is already registered. Please choose a another Name to register the Database");
+            throw new SdkException(
+                $"Database with name '{name}' is already registered. Please choose another name to register the database"
+            );
 
         names.Add(name);
     }
 
-    //private void ConfigureFramework(IDatabaseSetup setup)
-    //{
-    //    if (setup.Dialect != Dialect.LiteDb && setup.Dialect != Dialect.None)
-    //    {
-    //        if (setup.Dialect == Dialect.DB2)
-    //            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.DB2);
-    //        else if (setup.Dialect == Dialect.MySQL)
-    //            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.MySQL);
-    //        else if (setup.Dialect == Dialect.Oracle)
-    //            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.Oracle);
-    //        else if (setup.Dialect == Dialect.PostgreSQL)
-    //            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.PostgreSQL);
-    //        else if (setup.Dialect == Dialect.SQLite)
-    //            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLite);
-    //        else
-    //            SimpleCRUD.SetDialect(SimpleCRUD.Dialect.SQLServer);
-
-    //        SqlMapper.AddTypeHandler<Guid>(new GuidTypeHandler());
-    //    }
-    //    else if (setup.Dialect == Dialect.LiteDb)
-    //    { }
-    //    else
-    //        throw new AminOOException("No Dialect choosed for Repository");
-    //}
 }

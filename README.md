@@ -57,28 +57,28 @@ Key goals:
 
 ## Technology Stack
 
-| Category | Technology | Version |
-|---|---|---|
-| Runtime | .NET | 8.0 / 9.0 |
-| Language | C# | 12 (latest) |
-| Web Framework | ASP.NET Core | 9.0 |
-| ORM | Entity Framework Core | 9.0.11 |
-| Document DB | MongoDB (EF Core provider) | 9.0.3 |
-| Embedded DB | LiteDB / LiteDB.Async | 5.0.21 |
-| Flat File Store | JsonFlatFileDataStore | 2.4.2 |
-| Secrets Management | VaultSharp | 1.17.5.1 |
-| Plugin System | Weikio.PluginFramework | 1.5.1 |
-| Validation | FluentValidation | 12.1.1 |
-| Object Mapping | Mapster | 7.4.0 |
-| Logging | NLog | 6.0.6 |
-| Observability | OpenTelemetry | 1.9.0 (net8) / 1.14.0 (net9) |
-| API Versioning | Asp.Versioning | 8.1.0 |
-| API Documentation | Swashbuckle (OpenAPI) | 9.0.6 |
-| Cloud Events | CloudNative.CloudEvents | 2.8.0 |
-| CLI | Spectre.Console.Cli | 0.53.1 |
-| HTTP Client | RestSharp | 113.0.0 |
-| Security Middleware | NWebsec | 3.0.0 |
-| Release Tooling | semantic-release / pnpm | — |
+| Category            | Technology                 | Version                      |
+|---------------------|----------------------------|------------------------------|
+| Runtime             | .NET                       | 8.0 / 9.0                    |
+| Language            | C#                         | 12 (latest)                  |
+| Web Framework       | ASP.NET Core               | 9.0                          |
+| ORM                 | Entity Framework Core      | 9.0.11                       |
+| Document DB         | MongoDB (EF Core provider) | 9.0.3                        |
+| Embedded DB         | LiteDB / LiteDB.Async      | 5.0.21                       |
+| Flat File Store     | JsonFlatFileDataStore      | 2.4.2                        |
+| Secrets Management  | VaultSharp                 | 1.17.5.1                     |
+| Plugin System       | Weikio.PluginFramework     | 1.5.1                        |
+| Validation          | FluentValidation           | 12.1.1                       |
+| Object Mapping      | Mapster                    | 7.4.0                        |
+| Logging             | NLog                       | 6.0.6                        |
+| Observability       | OpenTelemetry              | 1.9.0 (net8) / 1.14.0 (net9) |
+| API Versioning      | Asp.Versioning             | 8.1.0                        |
+| API Documentation   | Swashbuckle (OpenAPI)      | 9.0.6                        |
+| Cloud Events        | CloudNative.CloudEvents    | 2.8.0                        |
+| CLI                 | Spectre.Console.Cli        | 0.53.1                       |
+| HTTP Client         | RestSharp                  | 113.0.0                      |
+| Security Middleware | NWebsec                    | 3.0.0                        |
+| Release Tooling     | semantic-release / pnpm    | —                            |
 
 ---
 
@@ -282,11 +282,11 @@ libs/xSdk.SomeLibrary/
 
 ### Branching Strategy
 
-| Branch | Purpose |
-|---|---|
-| `main` | Stable, released code |
-| `next` | Default integration branch (pre-release) |
-| `feature-*` | Feature development |
+| Branch      | Purpose                                  |
+|-------------|------------------------------------------|
+| `main`      | Stable, released code                    |
+| `next`      | Default integration branch (pre-release) |
+| `feature-*` | Feature development                      |
 
 Pull requests target the `next` branch. Merges to `main` trigger official releases.
 
@@ -306,14 +306,14 @@ Common types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`.
 
 ### CI/CD Pipelines
 
-| Workflow | Trigger | Description |
-|---|---|---|
-| `unit-tests.yml` | Push / PR to `main`, `next` | Build and run all unit tests |
-| `sonar-scan.yml` | PR to `main`, `next` | SonarCloud quality analysis |
-| `mega-linter.yml` | Push / PR | Lint all file types |
-| `check-format.yml` | Push / PR | Verify code formatting |
-| `lint-commits.yml` | PR | Conventional commit enforcement |
-| `release.yml` | Push to `main`, `next` | Semantic versioning & GitHub Release |
+| Workflow           | Trigger                     | Description                          |
+|--------------------|-----------------------------|--------------------------------------|
+| `unit-tests.yml`   | Push / PR to `main`, `next` | Build and run all unit tests         |
+| `sonar-scan.yml`   | PR to `main`, `next`        | SonarCloud quality analysis          |
+| `mega-linter.yml`  | Push / PR                   | Lint all file types                  |
+| `check-format.yml` | Push / PR                   | Verify code formatting               |
+| `lint-commits.yml` | PR                          | Conventional commit enforcement      |
+| `release.yml`      | Push to `main`, `next`      | Semantic versioning & GitHub Release |
 
 ### Release Process
 
@@ -337,13 +337,13 @@ All C# code in this repository follows the guidelines in [.github/instructions/c
 
 ### Naming
 
-| Construct | Convention | Example |
-|---|---|---|
-| Types, Methods, Properties | PascalCase | `DataStore`, `GetByIdAsync` |
-| Private fields, locals, parameters | camelCase | `_repository`, `userId` |
-| Interfaces | `I` prefix | `IDataStore<T>` |
-| Generic type parameters | `T` prefix | `TEntity`, `TContext` |
-| Async methods | `Async` suffix | `SaveAsync`, `GetAllAsync` |
+| Construct                          | Convention     | Example                     |
+|------------------------------------|----------------|-----------------------------|
+| Types, Methods, Properties         | PascalCase     | `DataStore`, `GetByIdAsync` |
+| Private fields, locals, parameters | camelCase      | `_repository`, `userId`     |
+| Interfaces                         | `I` prefix     | `IDataStore<T>`             |
+| Generic type parameters            | `T` prefix     | `TEntity`, `TContext`       |
+| Async methods                      | `Async` suffix | `SaveAsync`, `GetAllAsync`  |
 
 ### Key Rules
 
@@ -372,15 +372,15 @@ Testing follows the guidelines in [.github/instructions/testing.instructions.md]
 
 ### Frameworks and Libraries
 
-| Library | Purpose |
-|---|---|
-| xUnit | Test runner (`[Fact]`, `[Theory]`) |
-| FluentAssertions | Expressive assertions |
-| Moq | Mocking framework |
-| Testcontainers | Integration tests with real containers (MongoDB, etc.) |
-| `Xunit.SkippableFact` | Skip tests conditionally |
-| `Bogus` | Fake data generation |
-| `Microsoft.EntityFrameworkCore.InMemory` | In-memory EF Core provider for unit tests |
+| Library                                  | Purpose                                                |
+|------------------------------------------|--------------------------------------------------------|
+| xUnit                                    | Test runner (`[Fact]`, `[Theory]`)                     |
+| FluentAssertions                         | Expressive assertions                                  |
+| Moq                                      | Mocking framework                                      |
+| Testcontainers                           | Integration tests with real containers (MongoDB, etc.) |
+| `Xunit.SkippableFact`                    | Skip tests conditionally                               |
+| `Bogus`                                  | Fake data generation                                   |
+| `Microsoft.EntityFrameworkCore.InMemory` | In-memory EF Core provider for unit tests              |
 
 ### Test Naming
 
@@ -441,12 +441,12 @@ Test projects are named `[ProjectName].Tests` and mirror the source project stru
 
 This repository ships with a full set of GitHub Copilot customizations:
 
-| Resource | Purpose |
-|---|---|
-| [copilot-instructions.md](.github/copilot-instructions.md) | Project-wide coding context |
-| [.github/instructions/](.github/instructions/) | Focused instruction files by topic |
-| [.github/prompts/](.github/prompts/) | Reusable prompt templates |
-| [.github/agents/](.github/agents/) | Specialized agent modes (Architect, Reviewer, Debugger) |
+| Resource                                                   | Purpose                                                 |
+|------------------------------------------------------------|---------------------------------------------------------|
+| [copilot-instructions.md](.github/copilot-instructions.md) | Project-wide coding context                             |
+| [.github/instructions/](.github/instructions/)             | Focused instruction files by topic                      |
+| [.github/prompts/](.github/prompts/)                       | Reusable prompt templates                               |
+| [.github/agents/](.github/agents/)                         | Specialized agent modes (Architect, Reviewer, Debugger) |
 
 Use the **Architect** agent for design decisions, **Reviewer** for code reviews, and **Debugger** for diagnosing issues.
 
@@ -459,9 +459,9 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 **Supported versions:**
 
 | Version | Supported |
-|---|---|
-| 1.1.x | ✅ |
-| < 1.1.0 | ❌ |
+|---------|-----------|
+| 1.1.x   | ✅         |
+| < 1.1.0 | ❌         |
 
 To report a vulnerability, use [GitHub's private vulnerability reporting](https://github.com/velvet-lab/xsdk/security/advisories/new) or email `danlorb@velvet-lab.net`. **Do not** open public GitHub issues for security vulnerabilities.
 

@@ -18,10 +18,24 @@ public static class ApiKeyModelExtensions
             claims.Add(ClaimCreator.CreateClaim(claim.Type, claim.Value, claim.ValueType, claim.Issuer, claim.OriginalIssuer));
         }
 
-        claims.Add(ClaimCreator.CreateClaim(SdkClaimTypes.ApiKey.Name, ApiKeySignature.Name, ClaimValueTypes.String, Security.Claims.Authority.Name, Security.Claims.Authority.Name));
-        claims.Add(ClaimCreator.CreateClaim(SdkClaimTypes.ApiKey.Identifier, ApiKeySignature.Identifier,
-                                            ClaimValueTypes.String, Security.Claims.Authority.Name,
-                                            Authority.Name));
+        claims.Add(
+            ClaimCreator.CreateClaim(
+                SdkClaimTypes.ApiKey.Name,
+                ApiKeySignature.Name,
+                ClaimValueTypes.String,
+                Security.Claims.Authority.Name,
+                Security.Claims.Authority.Name
+            )
+        );
+        claims.Add(
+            ClaimCreator.CreateClaim(
+                SdkClaimTypes.ApiKey.Identifier,
+                ApiKeySignature.Identifier,
+                ClaimValueTypes.String,
+                Security.Claims.Authority.Name,
+                Authority.Name
+            )
+        );
 
         var result = new ConcreteApiKey
         {
