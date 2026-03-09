@@ -3,7 +3,7 @@
 [group('linting')]
 check-lint: install
     @just {{module_name}}::info "Linting repository '{{repo_name}}'..."
-    pnpm mega-linter-runner --image oxsecurity/megalinter:latest
+    pnpm mega-linter-runner --image oxsecurity/megalinter:latest --no-remove-container
     @just {{module_name}}::success "Linting completed for repository '{{repo_name}}'."
 
 # Lint repository with auto-fix using MegaLinter
@@ -11,5 +11,5 @@ check-lint: install
 [group('linting')]
 lint: install
     @just {{module_name}}::info "Linting with auto-fix for repository '{{repo_name}}'..."
-    pnpm mega-linter-runner --image oxsecurity/megalinter:latest --fix
+    pnpm mega-linter-runner --image oxsecurity/megalinter:latest --fix --no-remove-container
     @just {{module_name}}::success "Linting with auto-fix completed for repository '{{repo_name}}'."
