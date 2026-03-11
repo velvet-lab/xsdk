@@ -14,4 +14,8 @@
         <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <InternalsVisibleTo Include="xSdk.Extensions.Commands.UnitTests" />
+    </ItemGroup>
+
 </Project>
