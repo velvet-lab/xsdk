@@ -1,3 +1,4 @@
+using MapsterMapper;
 using xSdk.Data.Mocks;
 
 namespace xSdk.Data;
@@ -26,6 +27,17 @@ public class DataExtensionsTests
         Assert.NotNull(model);
         Assert.Equal(entity.Name, model.Name);
         Assert.Equal(entity.Age, model.Age);
+    }
+
+    [Fact]
+    public void ToJson_SerializesModelToJsonString()
+    {
+        var model = new TestModel { Name = "Eve", Age = 20 };
+
+        var json = model.ToJson();
+
+        Assert.NotNull(json);
+        Assert.Contains("Eve", json);
     }
 
 }

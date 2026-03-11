@@ -72,4 +72,52 @@ public class FlatFileDatabaseSetupTests
 
         Assert.True(setup.ReloadBeforeGetCollection);
     }
+
+    [Fact]
+    public void Validate_WithEmptyFilePath_AddsValidationError()
+    {
+        var setup = new FlatFileDatabaseSetup { FilePath = string.Empty };
+
+        setup.Validate(false);
+
+        Assert.NotEmpty(setup.Results);
+    }
+
+    [Fact]
+    public void Validate_WithValidFilePath_NoValidationErrors()
+    {
+        var setup = new FlatFileDatabaseSetup { FilePath = "mydata.json" };
+
+        setup.Validate(false);
+
+        Assert.Empty(setup.Results);
+    }
+
+    [Fact]
+    public void Validate_FilePathWithoutExtension_AppendsJsonExtension()
+    {
+        var setup = new FlatFileDatabaseSetup { FilePath = "mydata" };
+
+        setup.Validate(false);
+
+        Assert.Equal("mydata.json", setup.FilePath);
+    }
+
+    [Fact]
+    public void Validate_FilePathAlreadyWithJsonExtension_DoesNotDoubleAppend()
+    {
+        var setup = new FlatFileDatabaseSetup { FilePath = "mydata.json" };
+
+        setup.Validate(false);
+
+        Assert.Equal("mydata.json", setup.FilePath);
+    }
+
+    [Fact]
+    public void Validate_WithEmptyFilePath_ThrowsWhenRequired()
+    {
+        var setup = new FlatFileDatabaseSetup { FilePath = string.Empty };
+
+        Assert.Throws<SdkException>(() => setup.Validate(true));
+    }
 }
