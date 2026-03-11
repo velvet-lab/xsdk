@@ -66,7 +66,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Plugin.Tests", "libs\x
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.CloudEvents.Tests", "libs\xSdk.Extensions.CloudEvents\tests\xSdk.Extensions.CloudEvents.Tests.csproj", "{2A12887B-139F-EC24-8122-EED09CD80EB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Commands.UnitTests", "libs\xSdk.Extensions.Commands\tests\xSdk.Extensions.Commands.Tests.csproj", "{76951DDA-F59E-4370-A4CC-087867E37792}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Commands.Tests", "libs\xSdk.Extensions.Commands\tests\xSdk.Extensions.Commands.Tests.csproj", "{76951DDA-F59E-4370-A4CC-087867E37792}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -206,7 +206,7 @@ Global
 		{9C35A693-B1A4-2C50-F9D3-72F1A503146C} = {6FE5E729-2235-4E27-93C4-202875459083}
 		{13753187-3110-9BA0-5A86-C7B09223E62D} = {9C6309E2-5648-4297-AF76-2C6659EFAAF4}
 		{2A12887B-139F-EC24-8122-EED09CD80EB3} = {FF388FAE-081B-4CE1-9E5A-68EE75EA1CBC}
-		{76951DDA-F59E-4370-A4CC-087867E37792} = {B9EE65BA-F4E5-4FA3-A469-55EB6F8DB6EF}
+		{76951DDA-F59E-4370-A4CC-087867E37792} = {FF388FAE-081B-4CE1-9E5A-68EE75EA1CBC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {616C08C6-30E9-451B-898B-4DBD57867C0A}
