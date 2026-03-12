@@ -6,11 +6,12 @@ concurrency:
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - next
       - main
-    paths-ignore:
+    paths-ignore: &shared-ignores
       - '**.md'
       # - '.github/**'
       - '.gitignore'
@@ -19,6 +20,11 @@ on:
       - 'demos/**'
       - 'docs/**'
       - 'tools/**'
+  push:
+    branches:
+      - next
+      - main
+    paths-ignore: *shared-ignores
 
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
