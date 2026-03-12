@@ -70,6 +70,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PR_NUMBER: ${{ github.event.pull_request.number }}
+          SONAR_PR_BRANCH: ${{ github.head_ref }}
+          SONAR_PR_BASE: ${{ github.base_ref }}
         shell: pwsh
         run: |
           $org, $repo = $env:GITHUB_REPOSITORY -split '/', 2
@@ -87,7 +90,16 @@ jobs:
             "/d:sonar.scanner.skipJreProvisioning=true"
           )
 
-          $beginArgs += "/d:sonar.branch.name=$env:GITHUB_REF_NAME"
+          if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
+            $beginArgs += @(
+              "/d:sonar.pullrequest.key=$env:SONAR_PR_NUMBER"
+              "/d:sonar.pullrequest.branch=$env:SONAR_PR_BRANCH"
+              "/d:sonar.pullrequest.base=$env:SONAR_PR_BASE"
+              "/d:sonar.pullrequest.provider=GitHub"
+            )
+          } else {
+            $beginArgs += "/d:sonar.branch.name=$env:GITHUB_REF_NAME"
+          }
 
           dotnet dotnet-sonarscanner @beginArgs
           just dotnet::sonar-build xsdk.sln
