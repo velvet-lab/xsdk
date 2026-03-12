@@ -40,6 +40,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup repository
         uses: ./.github/actions/setup-repository
