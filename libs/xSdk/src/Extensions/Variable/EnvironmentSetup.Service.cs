@@ -81,7 +81,7 @@ public sealed partial class EnvironmentSetup
         var types = assembly.GetExportedTypes();
         if (types != null && types.Any())
         {
-            return types.Select(x => x.Namespace).OrderBy(x => x.Length).FirstOrDefault();
+            return types.Select(x => x.Namespace).Where(x => x != null).OrderBy(x => x.Length).FirstOrDefault();
         }
         else
         {
