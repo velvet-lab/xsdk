@@ -1,3 +1,15 @@
+## [1.1.0-next.3](https://github.com/velvet-lab/xsdk/compare/v1.1.0-next.2...v1.1.0-next.3) (2026-03-14)
+
+### Features
+
+* **data:** implement soft-delete functionality in EntityFramework provider ([9d0d314](https://github.com/velvet-lab/xsdk/commit/9d0d314a958fa806f63adcfda5124e7dcb2e8687))
+
+### Bug Fixes
+
+* **controller:** rename GetSampleAsyncV2 to GetSampleAsync ([2e16f5c](https://github.com/velvet-lab/xsdk/commit/2e16f5cbba1ebd2dbfcee012d2991625e0acf85a))
+* **extensions:** filter out null namespaces when retrieving types ([59dc9c3](https://github.com/velvet-lab/xsdk/commit/59dc9c30dce925ba1580cd0cfb806747a272d8d4))
+* resolve merge conflicts in pnpm-lock.yaml ([78b2962](https://github.com/velvet-lab/xsdk/commit/78b29621374138ec5f3f70c2e250cdd86f3d6004))
+
 ## [1.1.0-next.2](https://github.com/velvet-lab/xsdk/compare/v1.1.0-next.1...v1.1.0-next.2) (2026-03-09)
 
 ### Features
