@@ -112,7 +112,6 @@ internal static class AssemblyCollector
             "SemanticVersioning",
             "Sewer56",
             "Spectre",
-            "Swashbuckle",
             "System",
             "VaultSharp",
             "Weikio",

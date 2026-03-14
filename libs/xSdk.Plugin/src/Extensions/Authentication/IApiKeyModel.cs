@@ -14,7 +14,7 @@ public interface IApiKeyModel : IModel
 
     string Description { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+    DateTime CreatedAt { get; set; }
 
-    public DateTime ValidUntil { get; set; }
+    DateTime ValidUntil { get; set; }
 }

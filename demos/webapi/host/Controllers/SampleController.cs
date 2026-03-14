@@ -2,29 +2,36 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
 using xSdk.Demos.Builders;
 using xSdk.Extensions.Web;
 
 namespace xSdk.Demos.Controllers;
 
-[ApiVersion(1, Deprecated = true)]
-[AdvertiseApiVersions("1")]
-[Route("api/v{version:apiVersion}/[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
+[
+    ApiController,
+    Route("api/v{version:apiVersion}/[controller]"),
+    ApiVersion(1, Deprecated = true),
+    AdvertiseApiVersions("1"),
+    Produces("application/json"),
+    Consumes("application/json"),
+    ProducesErrorResponseType(typeof(ProblemDetails))
+]
 public sealed class SampleController(ILogger<SampleController> logger) : ControllerBase
 {
-    /// <summary>
-    /// Sends a Hello World back
-    /// </summary>
-    [HttpGet()]
-    [MapToApiVersion(1)]
-    [Authorize]
-    [SwaggerResponse(StatusCodes.Status200OK)]
-    [SwaggerResponse(StatusCodes.Status400BadRequest)]
+    [
+        HttpGet(),
+        MapToApiVersion(1),
+        AllowAnonymous,
+        //Authorize
+        EndpointName(nameof(GetSampleAsync)),
+        EndpointSummary("Sends a Hello World back"),
+        EndpointDescription("Sends a Hello World back in Version 1"),
+        ProducesResponseType<string>(StatusCodes.Status200OK, "text/plain", Description = "Sends a Hello World back"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
+    ]
     public async Task<ActionResult> GetSampleAsync(CancellationToken token = default)
     {
         try
@@ -43,15 +50,17 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
     }
 
 
-    [HttpGet("read")]
-    [MapToApiVersion(1)]
-    [Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead)]
-    [SwaggerOperation(
-        Summary = "Loads data for readonly users",
-        Description = "Requires authentication",
-        OperationId = nameof(GetOnlyReadAsync),
-        Tags = new[] { "Sample" }
-    )]
+    [
+        HttpGet("read"),
+        MapToApiVersion(1),
+        Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
+        EndpointName(nameof(GetOnlyReadAsync)),
+        EndpointSummary("Loads data for readonly users"),
+        EndpointDescription("Requires authentication"),
+        ProducesResponseType<string>(StatusCodes.Status200OK, "text/plain", Description = "If allowed a message will be returned"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
+    ]
     public async Task<ActionResult> GetOnlyReadAsync(CancellationToken token = default)
     {
         try
@@ -74,15 +83,17 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         }
     }
 
-    [HttpGet("write")]
-    [MapToApiVersion(1)]
-    [Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite)]
-    [SwaggerOperation(
-        Summary = "Writes data",
-        Description = "Requires authentication",
-        OperationId = nameof(GetReadAndWriteAsync),
-        Tags = new[] { "Sample" }
-    )]
+    [
+        HttpGet("write"),
+        MapToApiVersion(1),
+        Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
+        EndpointName(nameof(GetReadAndWriteAsync)),
+        EndpointSummary("Writes data"),
+        EndpointDescription("Requires authentication"),
+        ProducesResponseType<string>(StatusCodes.Status200OK, "text/plain", Description = "If allowed a message will be returned"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
+    ]
     public async Task<ActionResult> GetReadAndWriteAsync(CancellationToken token = default)
     {
         try

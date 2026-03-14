@@ -1,7 +1,5 @@
 using Asp.Versioning.ApiExplorer;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.OpenApi;
 using xSdk.Extensions.Plugin;
 using xSdk.Plugins.Documentation;
 
@@ -9,13 +7,6 @@ namespace xSdk.Demos.Builders;
 
 public class DocumentationPluginBuilder : PluginBuilderBase, IDocumentationPluginBuilder
 {
-    public void ConfigureSwagger(SwaggerGenOptions options)
-    {
-        options.EnableApiKeyAuthentication();
-    }
-
-    public void ConfigureSwaggerUi(SwaggerUIOptions options) { }
-
     public OpenApiInfo CreateApiInfo(ApiVersionDescription description)
     {
         var info = new OpenApiInfo

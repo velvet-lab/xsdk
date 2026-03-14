@@ -3,8 +3,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using Swashbuckle.AspNetCore.Annotations;
 using xSdk.Demos.Builders;
 using xSdk.Demos.Data;
 using xSdk.Extensions.Links;
@@ -12,24 +12,26 @@ using xSdk.Extensions.Web;
 
 namespace xSdk.Demos.Controllers.v3;
 
-[ApiVersion(3)]
-[AdvertiseApiVersions("3")]
-[Route("api/v{version:apiVersion}/[controller]")]
-[ApiController]
-[Produces("application/json")]
-[Consumes("application/json")]
+[
+    ApiController,
+    Route("api/v{version:apiVersion}/[controller]"),
+    ApiVersion(3),
+    AdvertiseApiVersions("3"),
+    Produces("application/json"),
+    Consumes("application/json"),
+    ProducesErrorResponseType(typeof(ProblemDetails))
+]
 public sealed class SampleController(IValidator<SampleModel> validator, ILinksService linksService, ILogger<SampleController> logger) : ControllerBase
 {
     [
         HttpGet(),
         MapToApiVersion(3),
-        SwaggerOperation(
-            Summary = "Sends all samples model without hateoas links back",
-            OperationId = nameof(GetSamplesAsync),
-            Tags = new[] { "Sample" }
-        ),
-        SwaggerResponse(StatusCodes.Status200OK, Type = typeof(IEnumerable<SampleModel>), Description = "All sample models without hateoas links"),
-        SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))
+        EndpointName(nameof(GetSamplesAsync)),
+        EndpointSummary("Sends all samples model without hateoas links back"),
+        EndpointDescription("Demostrates all samples model without hateoas links"),
+        ProducesResponseType<IEnumerable<SampleModel>>(StatusCodes.Status200OK, "application/json", Description = "All sample models without hateoas links"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
     ]
     public async Task<ActionResult<IEnumerable<SampleModel>>> GetSamplesAsync(CancellationToken token = default)
     {
@@ -52,13 +54,12 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         HttpGet("hateoas", Name = nameof(GetSamplesHateOasAsync)),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
         MapToApiVersion(3),
-        SwaggerOperation(
-            Summary = "Sends all samples model with hateoas links back",
-            OperationId = nameof(GetSamplesHateOasAsync),
-            Tags = new[] { "Sample" }
-        ),
-        SwaggerResponse(StatusCodes.Status200OK, Type = typeof(IEnumerable<SampleModel>), Description = "All sample models with hateoas links"),
-        SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))
+        EndpointName(nameof(GetSamplesHateOasAsync)),
+        EndpointSummary("Sends all samples model with hateoas links back"),
+        EndpointDescription("Demostrates all samples model with hateoas links. Requires authentication"),
+        ProducesResponseType<IEnumerable<SampleModel>>(StatusCodes.Status200OK, "application/json", Description = "All sample models with hateoas links"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
     ]
     public async Task<ActionResult<IEnumerable<SampleModel>>> GetSamplesHateOasAsync(CancellationToken token = default)
     {
@@ -85,13 +86,12 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         HttpGet("hateoas/{id}", Name = nameof(GetSampleHateOasAsync)),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
         MapToApiVersion(3),
-        SwaggerOperation(
-            Summary = "Sends a sample model with hateoas links back",
-            OperationId = nameof(GetSampleHateOasAsync),
-            Tags = new[] { "Sample" }
-        ),
-        SwaggerResponse(StatusCodes.Status200OK, Type = typeof(IEnumerable<SampleModel>), Description = "The sample model with hateoas links"),
-        SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))
+        EndpointName(nameof(GetSampleHateOasAsync)),
+                EndpointSummary("Sends a sample model with hateoas links back"),
+        EndpointDescription("Demostrates a sample model with hateoas links. Requires authentication"),
+        ProducesResponseType<SampleModel>(StatusCodes.Status200OK, "application/json", Description = "The sample model with hateoas links"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
     ]
     public async Task<ActionResult<IEnumerable<SampleModel>>> GetSampleHateOasAsync(string id, CancellationToken token = default)
     {
@@ -117,13 +117,12 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         HttpPost("hateoas", Name = nameof(SaveSampleHateOasAsync)),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
         MapToApiVersion(3),
-        SwaggerOperation(
-            Summary = "Saves a sample model",
-            OperationId = nameof(SaveSampleHateOasAsync),
-            Tags = new[] { "Sample" }
-        ),
-        SwaggerResponse(StatusCodes.Status200OK, Description = "True if saved, otherwise false", Type = typeof(bool)),
-        SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))
+        EndpointName(nameof(SaveSampleHateOasAsync)),
+        EndpointSummary("Saves a sample model"),
+        EndpointDescription("Demostrates saving a sample model. Requires authentication"),
+        ProducesResponseType<bool>(StatusCodes.Status200OK, "application/json", Description = "True if saved, otherwise false"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
     ]
     public async Task<ActionResult<bool>> SaveSampleHateOasAsync(
         [FromBody]
@@ -152,13 +151,12 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         HttpPut("hateoas/{id}", Name = nameof(UpdateSampleHateOasAsync)),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
         MapToApiVersion(3),
-        SwaggerOperation(
-            Summary = "Saves a sample model",
-            OperationId = nameof(UpdateSampleHateOasAsync),
-            Tags = new[] { "Sample" }
-        ),
-        SwaggerResponse(StatusCodes.Status200OK, Description = "True if saved, otherwise false", Type = typeof(bool)),
-        SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))
+        EndpointName(nameof(UpdateSampleHateOasAsync)),
+        EndpointSummary("Updates a sample model"),
+        EndpointDescription("Demostrates updating a sample model. Requires authentication"),
+        ProducesResponseType<bool>(StatusCodes.Status200OK, "application/json", Description = "True if updated, otherwise false"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
     ]
     public async Task<ActionResult<bool>> UpdateSampleHateOasAsync(
         string id,
@@ -190,13 +188,12 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         HttpDelete("hateoas/{id}", Name = nameof(DeleteSampleHateOasAsync)),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
         MapToApiVersion(3),
-        SwaggerOperation(
-            Summary = "Removes a sample model",
-            OperationId = nameof(DeleteSampleHateOasAsync),
-            Tags = new[] { "Sample" }
-        ),
-        SwaggerResponse(StatusCodes.Status200OK, Description = "True if removed, otherwise false", Type = typeof(bool)),
-        SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))
+        EndpointName(nameof(DeleteSampleHateOasAsync)),
+        EndpointSummary("Removes a sample model"),
+        EndpointDescription("Demostrates removing a sample model. Requires authentication"),
+        ProducesResponseType<bool>(StatusCodes.Status200OK, "application/json", Description = "True if removed, otherwise false"),
+        ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
+        Tags("Sample"),
     ]
     public async Task<ActionResult<bool>> DeleteSampleHateOasAsync(string id, CancellationToken token = default)
     {
