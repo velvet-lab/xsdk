@@ -13,24 +13,24 @@ public class DocumentationSetupTests(TestHostFixture fixture) : IClassFixture<Te
         fixture.EnablePlugin(b => b.EnableWebApi().EnableDocumentation());
         var setup = fixture.GetRequiredService<IVariableService>().GetSetup<DocumentationSetup>();
 
-        Assert.Equal("api/documentation", setup.RoutePrefix);
+        Assert.Equal(DocumentationSetup.Definitions.DocumentPattern.DefaultValue, setup.DocumentPattern);
     }
 
     [Fact]
-    public void DocumentationSetup_Definitions_RoutePrefixDefaultValue_IsSet()
+    public void DocumentationSetup_Definitions_DocumentPatternDefaultValue_IsSet()
     {
-        Assert.Equal("api/documentation", DocumentationSetup.Definitions.RoutePrefix.DefaultValue);
+        Assert.Equal("openapi/{documentName}.json", DocumentationSetup.Definitions.DocumentPattern.DefaultValue);
     }
 
     [Fact]
-    public void DocumentationSetup_Definitions_RoutePrefixName_IsCorrect()
+    public void DocumentationSetup_Definitions_DocumentPatternName_IsCorrect()
     {
-        Assert.Equal("route-prefix", DocumentationSetup.Definitions.RoutePrefix.Name);
+        Assert.Equal("document-pattern", DocumentationSetup.Definitions.DocumentPattern.Name);
     }
 
     [Fact]
-    public void DocumentationSetup_Definitions_RoutePrefixTemplate_ContainsRoute()
+    public void DocumentationSetup_Definitions_DocumentPatternTemplate_ContainsPattern()
     {
-        Assert.Contains("route", DocumentationSetup.Definitions.RoutePrefix.Template);
+        Assert.Contains("pattern", DocumentationSetup.Definitions.DocumentPattern.Template);
     }
 }

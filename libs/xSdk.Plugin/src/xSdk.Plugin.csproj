@@ -22,8 +22,6 @@
         <PackageReference Include="RestSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Weikio.PluginFramework.Abstractions" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>

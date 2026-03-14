@@ -35,7 +35,7 @@ public static partial class WebHost
 
                     // Set the Environment
                     .UseEnvironment(stage.ToString())
-                    // Enable detailed Errors if in Development Mode
+                    // Enabled detailed Errors if in Development Mode
                     .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
                     // Configure Services
                     .ConfigureServices(ConfigureWebHostServicesWithContext)

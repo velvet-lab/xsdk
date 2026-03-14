@@ -52,7 +52,7 @@ public class WebSecurityPlugin : WebHostPluginBase
             app.UseDeveloperExceptionPage();
         }
 
-        Logger.Debug("Enable Cookie Policy");
+        Logger.Debug("Enabled Cookie Policy");
         app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax, Secure = CookieSecurePolicy.Always });
 
         Build(app);
