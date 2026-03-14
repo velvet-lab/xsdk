@@ -24,14 +24,14 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         MapToApiVersion(2),
         AllowAnonymous,
         //Authorize
-        EndpointName(nameof(GetSampleAsyncV2)),
+        EndpointName(nameof(GetSampleAsync)),
         EndpointSummary("Sends a Hello World in Version 2 back"),
         EndpointDescription("Demostrates a hello world in version 2"),
         ProducesResponseType<string>(StatusCodes.Status200OK, "text/plain", Description = "Sends a Hello World back in Version 2"),
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult> GetSampleAsyncV2(CancellationToken token = default)
+    public async Task<ActionResult> GetSampleAsync(CancellationToken token = default)
     {
         try
         {
