@@ -42,7 +42,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             if (stream != null)
             {
                 buffer = new byte[stream.Length];
-                stream.Read(buffer, 0, buffer.Length);
+                stream.ReadExactly(buffer);
                 return true;
             }
             else

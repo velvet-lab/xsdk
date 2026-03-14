@@ -4,7 +4,7 @@ namespace xSdk.Extensions.IO;
 
 public interface IFileSystemResult
 {
-    public IFileSystem App { get; }
+    IFileSystem App { get; }
 
-    public IFileSystem Data { get; }
+    IFileSystem Data { get; }
 }

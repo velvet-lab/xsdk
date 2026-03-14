@@ -13,7 +13,7 @@ namespace xSdk.Demos.Controllers;
     ApiController,
     Route("api/v{version:apiVersion}/[controller]"),
     ApiVersion(1, Deprecated = true),
-    AdvertiseApiVersions("1"),    
+    AdvertiseApiVersions("1"),
     Produces("application/json"),
     Consumes("application/json"),
     ProducesErrorResponseType(typeof(ProblemDetails))
@@ -31,7 +31,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         ProducesResponseType<string>(StatusCodes.Status200OK, "text/plain", Description = "Sends a Hello World back"),
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
-    ]    
+    ]
     public async Task<ActionResult> GetSampleAsync(CancellationToken token = default)
     {
         try
@@ -55,7 +55,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         MapToApiVersion(1),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
         EndpointName(nameof(GetOnlyReadAsync)),
-        EndpointSummary("Loads data for readonly users"),        
+        EndpointSummary("Loads data for readonly users"),
         EndpointDescription("Requires authentication"),
         ProducesResponseType<string>(StatusCodes.Status200OK, "text/plain", Description = "If allowed a message will be returned"),
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
