@@ -69,8 +69,11 @@ jobs:
           NUGET_SOURCE: ${{ vars.NUGET_HOST_URL }}
         run: |
           just dotnet::publish xsdk.sln
+
+          $v3_source = "https://api.nuget.org/v3/index.json"
+
           dotnet nuget push "dist/nuget/*.nupkg" `
             --api-key "${{ steps.nuget-token.outputs.NUGET_API_KEY }}" `
-            --source "$env:NUGET_SOURCE" `
+            --source "$v3_source" `
             --skip-duplicate  
           # dotnet nuget push --skip-duplicate --symbol-api-key ${{steps.nuget-token.outputs.NUGET_API_KEY}} --symbol-source "$env:NUGET_SOURCE" "dist/nuget/*.snupkg"

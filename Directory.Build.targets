@@ -33,8 +33,6 @@
             <Version Condition="'$(Version)' == ''">0.1.0-next.0</Version>
             <PackageVersion>$(Version)</PackageVersion>
         </PropertyGroup>
-
-        <Message Importance="high" Text="DEBUG1: Version für $(MSBuildProjectName) aus package.json gelesen: $(Version)" />
     </Target>
 
     <Target Name="ReadProjectVersion" BeforeTargets="PreBuildEvent;GetPackageContents;GenerateNuspec"
@@ -57,8 +55,6 @@
             <Description Condition="'$(TempDescription)' != '' AND '$(Description)' == ''">
                 $(TempDescription)</Description>
         </PropertyGroup>
-
-        <Message Importance="high" Text="DEBUG2: Version für $(MSBuildProjectName) aus package.json gelesen: $(Version)" />
     </Target>
 
     <Target Name="DeployApplication" AfterTargets="PostBuildEvent"
