@@ -1,4 +1,3 @@
-using Swashbuckle.AspNetCore.SwaggerGen;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;
@@ -38,13 +37,5 @@ public class DocumentationPluginTests : IClassFixture<TestHostFixture>
 
         Assert.NotNull(plugins);
         Assert.Single(plugins);
-    }
-
-    [Fact]
-    public void LoadSwaggerSchemaGenerator()
-    {
-        var schemaGenerator = this._fixture.GetRequiredService<ISchemaGenerator>();
-
-        Assert.NotNull(schemaGenerator);
     }
 }

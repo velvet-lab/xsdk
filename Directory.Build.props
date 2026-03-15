@@ -3,7 +3,7 @@
 
     <PropertyGroup>
         <Configuration>Debug</Configuration>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <RootNamespace>xSdk</RootNamespace>
         <BaseOutputPath>$(SolutionDir)dist\$(MSBuildProjectName)</BaseOutputPath>
@@ -25,8 +25,10 @@
     <PropertyGroup>
         <Authors>Roland Breitschaft &lt;danlorb@velvet-lab.net&gt;</Authors>
         <Company>Velvet Lab</Company>
-        <Copyright>Copyright (c)2026 Velvet Lab</Copyright>
+        <Copyright>Copyright (c)2026 Roland Breitschaft</Copyright>
         <PackageProjectUrl>https://github.com/velvet-lab/xsdk</PackageProjectUrl>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/velvet-lab/xsdk</RepositoryUrl>
     </PropertyGroup>

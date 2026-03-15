@@ -65,11 +65,11 @@ public class WebApiPlugin : WebHostPluginBase
                 _.JsonSerializerOptions.ConfigureSerializerOptions();
             });
 
-        // Enable Versioning
+        // Enabled Versioning
         services
             .AddApiVersioning(_ =>
             {
-                Logger.Debug("Enable Api Versioning");
+                Logger.Debug("Enabled Api Versioning");
 
                 // Add the headers "api-supported-versions" and "api-deprecated-versions"
                 // This is better for discoverability
@@ -97,7 +97,7 @@ public class WebApiPlugin : WebHostPluginBase
                 _.SubstituteApiVersionInUrl = true;
             });
 
-        Logger.Debug("Enable Endpoints for API Explorer");
+        Logger.Debug("Enabled Endpoints for API Explorer");
         services.AddEndpointsApiExplorer();
 
         var assemblies = AssemblyCollector.Collect();
@@ -122,7 +122,7 @@ public class WebApiPlugin : WebHostPluginBase
             app.UseDeveloperExceptionPage();
         }
 
-        Logger.Debug("Enable HTTPS Redirection");
+        Logger.Debug("Enabled HTTPS Redirection");
         app.UseHttpsRedirection();
 
         app.UseRouting();

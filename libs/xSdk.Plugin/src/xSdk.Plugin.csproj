@@ -5,6 +5,10 @@
         <ProjectGuid>ce74def0-ac7a-40be-a072-9c27f1febfa9</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>xSdk.Plugin - Plugin framework extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Asp.Versioning.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
@@ -22,8 +26,6 @@
         <PackageReference Include="RestSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Weikio.PluginFramework.Abstractions" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>

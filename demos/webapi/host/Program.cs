@@ -23,7 +23,7 @@ var host = xSdk
     .EnableWebApi()
     .EnableDocumentation<DocumentationPluginBuilder>()
     .EnableWebSecurity()
-    .EnableAuthentication<AuthenticationPluginBuilder>()
+    //.EnableAuthentication<AuthenticationPluginBuilder>()
     .EnableCompression()
     .EnableDataProtection<DataProtectionPluginBuilder>()
     .EnableLinks<LinksPluginBuilder>()

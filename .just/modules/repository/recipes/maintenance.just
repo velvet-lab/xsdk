@@ -3,7 +3,7 @@
 [group('maintenance')]
 install:
     @just {{module_name}}::info "Installing dependencies for repository '{{repo_name}}'..."
-    pnpm install
+    @pnpm install
     @just {{module_name}}::success "Dependencies installed for repository '{{repo_name}}'."
 
 # Update repository dependencies with pnpm
@@ -11,5 +11,5 @@ install:
 [group('maintenance')]
 update:
     @just {{module_name}}::info "Updating repository '{{repo_name}}'..."
-    pnpm update
+    @pnpm update
     @just {{module_name}}::success "Repository '{{repo_name}}' updated successfully."

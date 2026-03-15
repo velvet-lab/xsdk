@@ -246,3 +246,4 @@ coverage
 
 # MegaLinter reports
 megalinter-reports/
+.bin

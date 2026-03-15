@@ -1,0 +1,21 @@
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Roland Breitschaft
+    copyright-year: 2026
+    software-name: xsdk
+  paths:
+    - 'libs'
+    - 'demos'
+    - 'think-tank'
+  paths-ignore:
+    - '**/obj'
+    - '**/bin'
+    - '**/node_modules'
+    - '**/*.json'
+    - '**/*.yml'
+    - '**/*.md'
+    - '**/*.sln'
+    - '**/*.txt'
+    - '**/*.csproj'
+  comment: on-failure

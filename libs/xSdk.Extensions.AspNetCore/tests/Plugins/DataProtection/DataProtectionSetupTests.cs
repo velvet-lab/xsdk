@@ -2,7 +2,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.DataProtection;
 
-public class DataProtectionSetupTests
+public class DataProtectionSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
     public void DataProtectionSetup_DefaultProperties_AreEmpty()

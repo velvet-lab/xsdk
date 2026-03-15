@@ -1,9 +1,9 @@
-using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Data.Models;
 
-[SwaggerSchema("Represents a variable")]
+[Description("Represents a variable")]
 public sealed class VariableModel
 {
     public VariableModel()
@@ -21,21 +21,21 @@ public sealed class VariableModel
         NoPrefix = variable.NoPrefix;
     }
 
-    [SwaggerSchema("The name of the variable")]
+    [Description("The name of the variable")]
     public string Name { get; set; } = string.Empty;
 
-    [SwaggerSchema("The help text for the variable")]
+    [Description("The help text for the variable")]
     public string HelpText { get; set; } = string.Empty;
 
-    [SwaggerSchema("Used prefix for the variable")]
+    [Description("Used prefix for the variable")]
     public string Prefix { get; set; } = string.Empty;
 
-    [SwaggerSchema("Is the variable hidden?")]
+    [Description("Is the variable hidden?")]
     public bool IsHidden { get; set; }
 
-    [SwaggerSchema("Is the variable protected?")]
+    [Description("Is the variable protected?")]
     public bool IsProtected { get; set; }
 
-    [SwaggerSchema("Does the variable have a prefix?")]
+    [Description("Does the variable have a prefix?")]
     public bool NoPrefix { get; set; }
 }

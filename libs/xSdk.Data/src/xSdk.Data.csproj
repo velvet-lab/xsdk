@@ -5,12 +5,15 @@
         <ProjectGuid>11f011a7-108c-4eee-a2e3-162aa16d319e</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>xSdk.Data - Base data layer abstractions and common utilities for the xSdk project.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Filters" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="YamlDotNet" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 

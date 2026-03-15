@@ -5,7 +5,7 @@ init: _init-pnpm && _init-semantic-release update
     @just {{module_name}}::info "Initializing repository '{{repo_name}}'..."
 
     @just {{module_name}}::info "Adding needed dependencies for repository '{{repo_name}}'..."
-    pnpm add -D \
+    @pnpm add -D \
         mega-linter-runner \
         prettier \
         @commitlint/cli \
@@ -30,8 +30,8 @@ _init-pnpm:
 [no-cd]
 _execute-init-pnpm:
     @just {{module_name}}::info "Initializing pnpm for repository '{{repo_name}}'..."
-    pnpm init
-    pnpm pkg delete \
+    @pnpm init
+    @pnpm pkg delete \
         author \
         bugs \
         keywords \
@@ -39,7 +39,7 @@ _execute-init-pnpm:
         main \
         repository \
         scripts
-    pnpm pkg set \
+    @pnpm pkg set \
         author.name="<Firstname> <Lastname>" \
         author.email="<type@your.mail>" \
         bugs.url="https://github.com/<organisation>/{{repo_name}}/issues" \

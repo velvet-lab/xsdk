@@ -16,9 +16,7 @@
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="NLog" />
         <PackageReference Include="AspNetCore.Authentication.ApiKey" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
-        <PackageReference Include="Swashbuckle.AspNetCore.Filters" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     </ItemGroup>
 
     <ItemGroup>

@@ -5,6 +5,10 @@
         <ProjectGuid>d49489f5-b855-41ff-8fab-685590a2b535</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>Core library for xSdk, providing common utilities and abstractions for plugin development.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="NLog.Extensions.Logging" PrivateAssets="contentfiles;analyzers;build;compile" />

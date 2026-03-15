@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11520.95 d18.3
+VisualStudioVersion = 18.3.11520.95
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_globals", "_globals", "{B9EE65BA-F4E5-4FA3-A469-55EB6F8DB6EF}"
 	ProjectSection(SolutionItems) = preProject
@@ -121,6 +121,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Plugin.Tests", "libs\xSdk.Plugin\tests\xSdk.Plugin.Tests.csproj", "{13753187-3110-9BA0-5A86-C7B09223E62D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.CloudEvents.Tests", "libs\xSdk.Extensions.CloudEvents\tests\xSdk.Extensions.CloudEvents.Tests.csproj", "{2A12887B-139F-EC24-8122-EED09CD80EB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Commands.Tests", "libs\xSdk.Extensions.Commands\tests\xSdk.Extensions.Commands.Tests.csproj", "{2AADB9C0-E24F-8A2A-B519-6290E5A2EB77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -272,6 +274,10 @@ Global
 		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A12887B-139F-EC24-8122-EED09CD80EB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AADB9C0-E24F-8A2A-B519-6290E5A2EB77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AADB9C0-E24F-8A2A-B519-6290E5A2EB77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AADB9C0-E24F-8A2A-B519-6290E5A2EB77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AADB9C0-E24F-8A2A-B519-6290E5A2EB77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -329,6 +335,7 @@ Global
 		{31310438-E3D0-4861-9996-D4B24A8FF3F1} = {9892091D-941A-426D-8F90-4AB032727CEE}
 		{13753187-3110-9BA0-5A86-C7B09223E62D} = {9C6309E2-5648-4297-AF76-2C6659EFAAF4}
 		{2A12887B-139F-EC24-8122-EED09CD80EB3} = {FF388FAE-081B-4CE1-9E5A-68EE75EA1CBC}
+		{2AADB9C0-E24F-8A2A-B519-6290E5A2EB77} = {FF388FAE-081B-4CE1-9E5A-68EE75EA1CBC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {616C08C6-30E9-451B-898B-4DBD57867C0A}

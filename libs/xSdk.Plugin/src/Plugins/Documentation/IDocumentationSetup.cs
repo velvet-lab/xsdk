@@ -4,7 +4,7 @@ namespace xSdk.Plugins.Documentation;
 
 public interface IDocumentationSetup : ISetup
 {
-    string RoutePrefix { get; set; }
+    bool Enabled { get; set; }
 
-    //bool ShowVariableDocumentation { get; set; }
+    string DocumentPattern { get; set; }
 }
