@@ -72,8 +72,17 @@ jobs:
 
           $v3_source = "https://api.nuget.org/v3/index.json"
 
-          dotnet nuget push "dist/nuget/*.nupkg" `
-            --api-key "${{ steps.nuget-token.outputs.NUGET_API_KEY }}" `
-            --source "$v3_source" `
-            --skip-duplicate  
+          # Wir erzwingen die Quelle und unterbinden das Laden von Configs
+          # Falls vorhanden, nutzen wir auch direkt den Pfad zu den Files
+          $packages = Get-ChildItem "dist/nuget/*.nupkg"
+          
+          foreach ($package in $packages) {
+            Write-Host "Forcing Push for $($package.Name) to V3..."
+            dotnet nuget push "$($package.FullName)" `
+              --api-key "${{ steps.nuget-token.outputs.NUGET_API_KEY }}" `
+              --source "https://api.nuget.org/v3/index.json" `
+              --skip-duplicate `
+              --no-symbols true
+          }
+              
           # dotnet nuget push --skip-duplicate --symbol-api-key ${{steps.nuget-token.outputs.NUGET_API_KEY}} --symbol-source "$env:NUGET_SOURCE" "dist/nuget/*.snupkg"
