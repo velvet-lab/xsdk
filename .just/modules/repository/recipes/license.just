@@ -13,7 +13,7 @@ apply-license: _setup-license-tool
 [no-cd]
 [windows]
 _setup-license-tool:
-    #!pwsh
+    #!{{shebang}}
     $version="0.8.0"
     $url="https://dlcdn.apache.org/skywalking/eyes/$version/skywalking-license-eye-$version-bin.tgz"
     $tarFile = '{{bin_dir}}/eyes.tgz'

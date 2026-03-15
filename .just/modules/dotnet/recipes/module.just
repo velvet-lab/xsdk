@@ -16,7 +16,7 @@ dist_dir := clean(repo_root / "dist")
 
 # Cross platform shebang
 shebang := if os() == 'windows' {
-  'powershell.exe'
+  'pwsh.exe'
 } else {
   '/usr/bin/env pwsh'
 }

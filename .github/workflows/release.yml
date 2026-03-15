@@ -70,3 +70,5 @@ jobs:
         run: |
           just dotnet::publish xsdk.sln
           dotnet nuget push --skip-duplicate --api-key ${{steps.nuget-token.outputs.NUGET_API_KEY}} --source "$env:nuget_host_url" "dist/nuget/*.nupkg"
+          dotnet nuget push --skip-duplicate --symbol-api-key ${{steps.nuget-token.outputs.NUGET_API_KEY}} --symbol-source "$env:nuget_host_url" "dist/nuget/*.snupkg"
+          
