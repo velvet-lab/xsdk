@@ -14,6 +14,7 @@ import 'recipes/clean.just'
 import 'recipes/release.just'
 import 'recipes/lint.just'
 import 'recipes/format.just'
+import 'recipes/license.just'
 
 # List available recipes
 [private]

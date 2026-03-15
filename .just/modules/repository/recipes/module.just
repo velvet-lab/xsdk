@@ -13,6 +13,7 @@ module_dir := clean(repo_root / ".just/modules" / module_name)
 
 # Dist directory for build outputs
 dist_dir := clean(repo_root / "dist")
+bin_dir := clean(repo_root / ".bin")
 
 # Private recipe to print colored messages
 [private]

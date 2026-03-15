@@ -3,7 +3,7 @@
 [group('deployment')]
 release:
     @just {{module_name}}::info "Running Semantic Release for repository '{{repo_name}}'..."
-    pnpm semantic-release
+    @pnpm semantic-release
     @just {{module_name}}::success "Semantic Release completed for repository '{{repo_name}}'."
 
 [no-cd]
