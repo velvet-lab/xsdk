@@ -11,7 +11,6 @@ apply-license: _setup-license-tool
     {{bin_dir}}/license-eye.exe header fix
 
 [no-cd]
-[windows]
 _setup-license-tool:
     #!{{shebang}}
     $version="0.8.0"
