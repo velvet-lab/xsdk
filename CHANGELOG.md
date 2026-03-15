@@ -1,3 +1,11 @@
+## [1.1.0-next.4](https://github.com/velvet-lab/xsdk/compare/v1.1.0-next.3...v1.1.0-next.4) (2026-03-15)
+
+### Features
+
+* add license header validation and management tools ([26374f5](https://github.com/velvet-lab/xsdk/commit/26374f5ee86c48fd0fa735d13a6267f4a40a2185))
+* **data:** add project descriptions for data layer integrations ([5b56f40](https://github.com/velvet-lab/xsdk/commit/5b56f40883a2401828cac70b834ed13fefb6e572))
+* enhance NuGet package publishing with symbol package support ([e4fe6ed](https://github.com/velvet-lab/xsdk/commit/e4fe6eddb7a3697ddd154d309c7d5ec76e4cb1ee))
+
 ## [1.1.0-next.3](https://github.com/velvet-lab/xsdk/compare/v1.1.0-next.2...v1.1.0-next.3) (2026-03-14)
 
 ### Features
