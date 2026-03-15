@@ -5,6 +5,10 @@
         <ProjectGuid>61f3daf8-6c65-40f1-9ae6-e5ffda5cfe15</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>xSdk.Extensions.AspNetCore.Links - Hateoas Link generation extensions for ASP.NET Core in the xSdk project.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>

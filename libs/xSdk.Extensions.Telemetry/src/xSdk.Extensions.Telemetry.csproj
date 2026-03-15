@@ -5,6 +5,10 @@
         <ProjectGuid>858e1632-8579-4f13-a6ce-9ae4127f89c6</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>xSdk.Extensions.Telemetry - Telemetry extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />

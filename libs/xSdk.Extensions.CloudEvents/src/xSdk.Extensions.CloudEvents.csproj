@@ -5,6 +5,10 @@
         <ProjectGuid>4d32f769-9038-4364-9396-8616b8e6fd47</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>xSdk.Extensions.CloudEvents - CloudEvents extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>

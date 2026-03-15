@@ -5,6 +5,10 @@
         <ProjectGuid>5d71c932-2d9b-4bf6-b207-b9e206b6d549</ProjectGuid>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>xSdk.Extensions.AspNetCore - ASP.NET Core extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
