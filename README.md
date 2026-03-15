@@ -19,9 +19,9 @@
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=velvet-lab_xsdk&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=velvet-lab_xsdk)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=velvet-lab_xsdk&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=velvet-lab_xsdk)
 
-![.NET Version](https://img.shields.io/badge/.NET-9.0-512bd4?logo=dotnet)
+![.NET Version](https://img.shields.io/badge/.NET-10.0-512bd4?logo=dotnet)
 ![pnpm Version](https://img.shields.io/badge/pnpm-10.x-f69220?logo=pnpm)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ---
 
@@ -59,24 +59,24 @@ Key goals:
 
 | Category            | Technology                 | Version                      |
 |---------------------|----------------------------|------------------------------|
-| Runtime             | .NET                       | 8.0 / 9.0                    |
-| Language            | C#                         | 12 (latest)                  |
-| Web Framework       | ASP.NET Core               | 9.0                          |
-| ORM                 | Entity Framework Core      | 9.0.11                       |
-| Document DB         | MongoDB (EF Core provider) | 9.0.3                        |
+| Runtime             | .NET                       | 10.0                         |
+| Language            | C#                         | 13 (latest)                  |
+| Web Framework       | ASP.NET Core               | 10.0                         |
+| ORM                 | Entity Framework Core      | 10.0.5                       |
+| Document DB         | MongoDB (EF Core provider) | 10.0.1                       |
 | Embedded DB         | LiteDB / LiteDB.Async      | 5.0.21                       |
 | Flat File Store     | JsonFlatFileDataStore      | 2.4.2                        |
 | Secrets Management  | VaultSharp                 | 1.17.5.1                     |
 | Plugin System       | Weikio.PluginFramework     | 1.5.1                        |
 | Validation          | FluentValidation           | 12.1.1                       |
 | Object Mapping      | Mapster                    | 7.4.0                        |
-| Logging             | NLog                       | 6.0.6                        |
-| Observability       | OpenTelemetry              | 1.9.0 (net8) / 1.14.0 (net9) |
-| API Versioning      | Asp.Versioning             | 8.1.0                        |
-| API Documentation   | Swashbuckle (OpenAPI)      | 9.0.6                        |
+| Logging             | NLog                       | 6.1.1                        |
+| Observability       | OpenTelemetry              | 1.15.0                       |
+| API Versioning      | Asp.Versioning             | 8.1.1                        |
+| API Documentation   | Microsoft.AspNetCore.OpenAPI | 10.0.5                     |
 | Cloud Events        | CloudNative.CloudEvents    | 2.8.0                        |
 | CLI                 | Spectre.Console.Cli        | 0.53.1                       |
-| HTTP Client         | RestSharp                  | 113.0.0                      |
+| HTTP Client         | RestSharp                  | 114.0.0                      |
 | Security Middleware | NWebsec                    | 3.0.0                        |
 | Release Tooling     | semantic-release / pnpm    | —                            |
 
@@ -128,7 +128,7 @@ xSDK follows a **modular, layered architecture** where each library is independe
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8) or [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9) (version `8.0.411` or later, see `global.json`)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10) (version `10.0.200` or later, see `global.json`)
 - [just](https://just.systems/) (command runner for development tasks)
 - [pnpm](https://pnpm.io/) 10.x (required for release tooling only)
 - [Git](https://git-scm.com/)
@@ -173,12 +173,17 @@ dotnet add package xSdk.Extensions.AspNetCore
 ### Minimal Host Setup
 
 ```csharp
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Hosting;
 
-var host = await SlimHost.CreateAsync(args, builder =>
-{
-    builder.Services.AddMyService();
-});
+var host = Host
+    .CreateBuilder(args, "my-app", "my-company", "ma")
+    .ConfigureServices((context, services) =>
+    {
+        services.AddMyService();
+    })
+    .Build();
 
 await host.RunAsync();
 ```
@@ -257,7 +262,7 @@ libs/xSdk.SomeLibrary/
 
 - API versioning configuration
 - Problem Details middleware integration
-- FluentValidation-to-Swagger bridge via `MicroElements.Swashbuckle.FluentValidation`
+- FluentValidation DI registration
 - NWebsec security headers middleware
 - API key authentication support
 
@@ -375,7 +380,6 @@ Testing follows the guidelines in [.github/instructions/testing.instructions.md]
 | Library                                  | Purpose                                                |
 |------------------------------------------|--------------------------------------------------------|
 | xUnit                                    | Test runner (`[Fact]`, `[Theory]`)                     |
-| FluentAssertions                         | Expressive assertions                                  |
 | Moq                                      | Mocking framework                                      |
 | Testcontainers                           | Integration tests with real containers (MongoDB, etc.) |
 | `Xunit.SkippableFact`                    | Skip tests conditionally                               |
@@ -469,6 +473,6 @@ To report a vulnerability, use [GitHub's private vulnerability reporting](https:
 
 ## License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **Apache-2.0 License** — see the [LICENSE](LICENSE) file for details.
 
 Copyright © 2026 [Velvet Lab](https://github.com/velvet-lab)
