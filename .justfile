@@ -69,6 +69,16 @@ check-format:
     @just repository::check-format
     @just dotnet::check-format xsdk-demos.sln
 
+# Verify license headers in all files according to the configuration in .licenserc.json
+[group('license')]
+check-license:
+    @just repository::check-license
+
+# Corrects and updates file headers according to the configuration in .licenserc.json
+[group('license')]
+apply-license:
+    @just repository::apply-license
+
 # Format code in whole repository
 [group('format')]
 format:
