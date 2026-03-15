@@ -71,10 +71,9 @@ jobs:
           dotnet nuget push "dist/nuget/*.nupkg" `
             --api-key "${{steps.nuget-token.outputs.NUGET_API_KEY}}" `
             --source "${{ vars.NUGET_HOST_URL }}" `
-            --skip-duplicate `
-            --no-symbols true
+            --skip-duplicate
 
           dotnet nuget push "dist/nuget/*.snupkg" `
-            --symbol-api-key "${{steps.nuget-token.outputs.NUGET_API_KEY}}" `
-            --symbol-source "${{ vars.NUGET_HOST_URL }}" `
+            --api-key "${{steps.nuget-token.outputs.NUGET_API_KEY}}" `
+            --source "${{ vars.NUGET_HOST_URL }}" `
             --skip-duplicate
