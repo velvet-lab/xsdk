@@ -34,12 +34,14 @@ const Configuration = {
    * To see full list, check https://github.com/conventional-changelog/commitlint/blob/master/%40commitlint/is-ignored/src/defaults.ts.
    * To disable those ignores and run rules always, set `defaultIgnores: false` as shown below.
    */
-  ignores: [(message: string) =>
-    message === '' ||
-    // Ignore commits from dependabot and renovate
-    message.includes('Signed-off-by: dependabot[bot]') ||
-    message.startsWith('build(deps): bump') ||
-    message.startsWith('Bump the')],
+  ignores: [
+    (message: string) =>
+      message === '' ||
+      // Ignore commits from dependabot and renovate
+      message.includes('Signed-off-by: dependabot[bot]') ||
+      message.startsWith('build(deps): bump') ||
+      message.startsWith('Bump the'),
+  ],
   /*
    * Whether commitlint uses the default ignore rules, see the description above.
    */
