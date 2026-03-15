@@ -1,68 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-        <Target Name="CopyPlugin" AfterTargets="PostBuildEvent" Condition="'$(IsPluginProject)' == 'true'">
-                <ItemGroup>
-                        <PluginFiles Include="$(BaseOutputPath)\$(Configuration)\$(TargetFramework)\**\*.*"/>
-                </ItemGroup>
+    <Target Name="CopyPlugin" AfterTargets="PostBuildEvent"
+        Condition="'$(IsPluginProject)' == 'true'">
+        <ItemGroup>
+            <PluginFiles Include="$(BaseOutputPath)\$(Configuration)\$(TargetFramework)\**\*.*" />
+        </ItemGroup>
 
-                <JsonPeek Condition="Exists('..\package.json')" ContentPath="..\package.json" Query="$.version">
-                        <Output TaskParameter="Result" PropertyName="PackageJsonVersion"/>
-                </JsonPeek>
+        <JsonPeek Condition="Exists('..\package.json')" ContentPath="..\package.json"
+            Query="$.version">
+            <Output TaskParameter="Result" PropertyName="PackageJsonVersion" />
+        </JsonPeek>
 
-                <PropertyGroup>
-                        <ProjectVersion Condition="'$(PackageJsonVersion)' != ''">$(PackageJsonVersion)</ProjectVersion>
-                        <ProjectVersion Condition="'$(PackageJsonVersion)' == ''">1.0.0</ProjectVersion>
-                </PropertyGroup>
+        <PropertyGroup>
+            <ProjectVersion Condition="'$(PackageJsonVersion)' != ''">$(PackageJsonVersion)</ProjectVersion>
+            <ProjectVersion Condition="'$(PackageJsonVersion)' == ''">1.0.0</ProjectVersion>
+        </PropertyGroup>
 
-                <MakeDir Directories="$(BaseOutputPath)..\plugins\$(MSBuildProjectName)\$(ProjectVersion)"/>
-                <Copy SourceFiles="@(PluginFiles)" DestinationFolder="$(BaseOutputPath)..\plugins\$(MSBuildProjectName)\$(ProjectVersion)"/>
-        </Target>
+        <MakeDir Directories="$(BaseOutputPath)..\plugins\$(MSBuildProjectName)\$(ProjectVersion)" />
+        <Copy SourceFiles="@(PluginFiles)"
+            DestinationFolder="$(BaseOutputPath)..\plugins\$(MSBuildProjectName)\$(ProjectVersion)" />
+    </Target>
 
-        <Target Name="ReadRepositoryVersion" BeforeTargets="PreBuildEvent" Condition="Exists('$(SolutionDir)package.json')">
-                <JsonPeek ContentPath="$(SolutionDir)\package.json" Query="$.version">
-                        <Output TaskParameter="Result" PropertyName="RepositoryVersion"/>
-                </JsonPeek>
+    <Target Name="ReadRepositoryVersion" BeforeTargets="PreBuildEvent;GetPackageContents;GenerateNuspec"
+        Condition="Exists('$(SolutionDir)package.json')">
+        <JsonPeek ContentPath="$(SolutionDir)\package.json" Query="$.version">
+            <Output TaskParameter="Result" PropertyName="RepositoryVersion" />
+        </JsonPeek>
 
-                <PropertyGroup>
-                        <Version>$([System.String]::new('$(RepositoryVersion)'))</Version>
-                        <Version Condition="'$(Version)' == ''">0.1.0-next.0</Version>
-                </PropertyGroup>
-        </Target>
+        <PropertyGroup>
+            <Version>$([System.String]::new('$(RepositoryVersion)').Trim())</Version>
+            <Version Condition="'$(Version)' == ''">0.1.0-next.0</Version>
+            <PackageVersion>$(Version)</PackageVersion>
+        </PropertyGroup>
 
-        <Target Name="ReadProjectVersion" BeforeTargets="PreBuildEvent" Condition="Exists('..\package.json')">
-                <JsonPeek ContentPath="..\package.json" Query="$.version">
-                        <Output TaskParameter="Result" PropertyName="ProjectVersion"/>
-                </JsonPeek>
+        <Message Importance="high" Text="DEBUG1: Version für $(MSBuildProjectName) aus package.json gelesen: $(Version)" />
+    </Target>
 
-                <JsonPeek ContentPath="..\package.json" Query="$.description">
-                        <Output TaskParameter="Result" PropertyName="ProjectDescription"/>
-                </JsonPeek>
+    <Target Name="ReadProjectVersion" BeforeTargets="PreBuildEvent;GetPackageContents;GenerateNuspec"
+        Condition="Exists('..\package.json')">
+        <JsonPeek ContentPath="..\package.json" Query="$.version">
+            <Output TaskParameter="Result" PropertyName="ProjectVersion" />
+        </JsonPeek>
 
-                <PropertyGroup>
-                        <!-- For Monorepos we use version from root package.json -->
-                        <!-- <TempVersion>$([System.String]::new('$(ProjectVersion)'))</TempVersion> -->
-                        <!-- <Version Condition="'$(TempVersion)' != ''">$(TempVersion)</Version> -->
+        <JsonPeek ContentPath="..\package.json" Query="$.description">
+            <Output TaskParameter="Result" PropertyName="ProjectDescription" />
+        </JsonPeek>
 
-                        <TempDescription>$([System.String]::new('$(ProjectDescription)'))</TempDescription>
-                        <Description Condition="'$(TempDescription)' != ''">$(TempDescription)</Description>
-                </PropertyGroup>
-        </Target>
+        <PropertyGroup>
+            <!-- For Monorepos we use version from root package.json -->
+            <TempVersion>$([System.String]::new('$(ProjectVersion)').Trim())</TempVersion>
+            <Version Condition="'$(TempVersion)' != ''">$(TempVersion)</Version>
+            <PackageVersion>$(Version)</PackageVersion>
 
-        <Target Name="DeployApplication" AfterTargets="PostBuildEvent" Condition="'$(IsApplicationProject)' == 'true' AND Exists('..\package.json')">
-                <ItemGroup>
-                        <ApplicationFiles Include="$(BaseOutputPath)\$(Configuration)\$(TargetFramework)\**\*.*"/>
-                        <PackageJsonFile Include="..\package.json"/>
-                </ItemGroup>
+            <TempDescription>$([System.String]::new('$(ProjectDescription)'))</TempDescription>
+            <Description Condition="'$(TempDescription)' != '' AND '$(Description)' == ''">
+                $(TempDescription)</Description>
+        </PropertyGroup>
 
-                <JsonPeek ContentPath="..\package.json" Query="$.version">
-                        <Output TaskParameter="Result" PropertyName="ProjectVersion"/>
-                </JsonPeek>
+        <Message Importance="high" Text="DEBUG2: Version für $(MSBuildProjectName) aus package.json gelesen: $(Version)" />
+    </Target>
 
-                <MakeDir Directories="$(BaseOutputPath)..\..\apps\$(AssemblyName)\$(ProjectVersion)\bin"/>
-                <Copy SourceFiles="@(ApplicationFiles)"
-                                        DestinationFiles="@(ApplicationFiles->'$(BaseOutputPath)..\..\apps\$(AssemblyName)\$(ProjectVersion)\bin\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    <Target Name="DeployApplication" AfterTargets="PostBuildEvent"
+        Condition="'$(IsApplicationProject)' == 'true' AND Exists('..\package.json')">
+        <ItemGroup>
+            <ApplicationFiles Include="$(BaseOutputPath)\$(Configuration)\$(TargetFramework)\**\*.*" />
+            <PackageJsonFile Include="..\package.json" />
+        </ItemGroup>
 
-                <Copy SourceFiles="@(PackageJsonFile)" DestinationFolder="$(BaseOutputPath)..\..\apps\$(AssemblyName)\$(ProjectVersion)"/>
-        </Target>
+        <JsonPeek ContentPath="..\package.json" Query="$.version">
+            <Output TaskParameter="Result" PropertyName="ProjectVersion" />
+        </JsonPeek>
+
+        <MakeDir Directories="$(BaseOutputPath)..\..\apps\$(AssemblyName)\$(ProjectVersion)\bin" />
+        <Copy SourceFiles="@(ApplicationFiles)"
+            DestinationFiles="@(ApplicationFiles->'$(BaseOutputPath)..\..\apps\$(AssemblyName)\$(ProjectVersion)\bin\%(RecursiveDir)%(Filename)%(Extension)')" />
+
+        <Copy SourceFiles="@(PackageJsonFile)"
+            DestinationFolder="$(BaseOutputPath)..\..\apps\$(AssemblyName)\$(ProjectVersion)" />
+    </Target>
+
+    <Target Name="GenerateNuGetReadme" BeforeTargets="GenerateNuspec"
+        Condition="'$(IsTestProject)' == 'false'">
+        <PropertyGroup>
+            <GeneratedReadmeFile>$(IntermediateOutputPath)README.md</GeneratedReadmeFile>
+            <ReadmeContent>
+# $(PackageId)
+
+$(Description)
+
+---
+*For more information, see the repository: $(PackageProjectUrl)*
+            </ReadmeContent>
+        </PropertyGroup>
+
+        <MakeDir Directories="$(IntermediateOutputPath)"
+            Condition="!Exists('$(IntermediateOutputPath)')" />
+
+        <WriteLinesToFile File="$(GeneratedReadmeFile)"
+            Lines="$(ReadmeContent)"
+            Overwrite="true" />
+
+        <ItemGroup>
+            <_PackageFiles Include="$(GeneratedReadmeFile)">
+                <PackagePath>\</PackagePath>
+                <Pack>true</Pack>
+            </_PackageFiles>
+            <None Include="$(GeneratedReadmeFile)" Pack="true" PackagePath="\" />
+        </ItemGroup>
+    </Target>
 </Project>

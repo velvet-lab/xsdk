@@ -24,9 +24,11 @@
 
     <PropertyGroup>
         <Authors>Roland Breitschaft &lt;danlorb@velvet-lab.net&gt;</Authors>
-        <Company>Velvet Lab</Company>
-        <Copyright>Copyright (c)2026 Velvet Lab</Copyright>
+        <!-- <Company>Velvet Lab</Company> -->
+        <Copyright>Copyright (c)2026 Roland Breitschaft</Copyright>
         <PackageProjectUrl>https://github.com/velvet-lab/xsdk</PackageProjectUrl>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/velvet-lab/xsdk</RepositoryUrl>
     </PropertyGroup>
