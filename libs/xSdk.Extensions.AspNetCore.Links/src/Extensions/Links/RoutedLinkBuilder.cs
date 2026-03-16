@@ -1,0 +1,204 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using HandlebarsDotNet;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using NLog;
+using xSdk.Data;
+
+namespace xSdk.Extensions.Links;
+
+internal class RoutedLinkBuilder
+{
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+    internal IHateoasItem? Build<TModel>(RoutedLink<TModel> link)
+        where TModel : IModel
+    {
+        _logger.Info("Build links");
+
+        var description = link.Description;
+        if (description != null)
+        {
+            _logger.Debug("Create base url path");
+            var baseUrl = CreateBaseUrl(link);
+
+            if (!string.IsNullOrEmpty(baseUrl))
+            {
+                _logger.Debug("Replace values");
+                var href = ReplaceValue(link, baseUrl);
+
+                if (!string.IsNullOrEmpty(href))
+                {
+                    var isAuthorized = IsAuthorized(link);
+
+                    if (isAuthorized)
+                    {
+                        _logger.Debug("Create HateOas Item");
+                        var item = new HateoasItem();
+                        item.Rel = description.ControllerType.Name + "/" + description.MethodName;
+                        item.Href = href;
+                        item.Method = description.HttpMethod.ToString().ToUpperInvariant();
+                        return item;
+                    }
+                }
+            }
+        }
+
+        return default;
+    }
+
+    private string? CleanControllerName(MethodDescription? description)
+    {
+        if (description != null)
+        {
+            _logger.Debug("Clean controller name");
+            return description.ControllerType.Name.Replace("Controller", "", StringComparison.OrdinalIgnoreCase);
+        }
+        return default;
+    }
+
+    private string? CreateBaseUrl(RoutedLink link)
+    {
+        if (link.Description != null && link.Context != null)
+        {
+            var controllerName = CleanControllerName(link.Description);
+
+            if (!string.IsNullOrEmpty(controllerName))
+            {
+                var request = link.Context.Request;
+                var scheme = request.Scheme;
+                var host = request.Host.Value;
+
+                var path = request.Path.Value ?? string.Empty;
+                if (!string.IsNullOrEmpty(path))
+                {
+                    if (path.IndexOf(controllerName, StringComparison.OrdinalIgnoreCase) > -1)
+                    {
+                        path = path.Substring(0, path.IndexOf(controllerName, StringComparison.OrdinalIgnoreCase));
+                    }
+                }
+
+                var baseUrl = scheme + "://" + host;
+                baseUrl = ConcatUrl(baseUrl, path, controllerName, link.Description.RouteTemplate ?? string.Empty);
+
+                return baseUrl.ToLowerInvariant();
+            }
+        }
+        return default;
+    }
+
+    private string ConcatUrl(params string[] values)
+    {
+        string result = string.Empty;
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                var item = value;
+                if (item.StartsWith("/"))
+                {
+                    item = item.Substring(1);
+                }
+
+                if (!item.EndsWith("/"))
+                {
+                    result += item + "/";
+                }
+                else
+                {
+                    result += item;
+                }
+            }
+        }
+        if (!string.IsNullOrEmpty(result))
+        {
+            if (result.EndsWith("/"))
+            {
+                result = result.Substring(0, result.Length - 1);
+            }
+        }
+        return result;
+    }
+
+    private string? ReplaceValue<TModel>(RoutedLink<TModel> link, string baseUrl)
+        where TModel : IModel
+    {
+        if (link.ConcreteModel != null)
+        {
+            var data = link.Values?.Invoke(link.ConcreteModel);
+
+            var href = baseUrl.Replace("{", "{{").Replace("}", "}}");
+            if (data != null)
+            {
+                var source = Handlebars.Compile(href);
+                href = source(data);
+            }
+
+            return href;
+        }
+        return default;
+    }
+
+    private bool IsAuthorized<TModel>(RoutedLink<TModel> link)
+        where TModel : IModel
+    {
+        var description = link.Description;
+        if (description != null && description.ShouldAuthorize)
+        {
+            var context = link.Context;
+            if (context != null)
+            {
+                var user = context.User;
+
+                if (!string.IsNullOrEmpty(description.AuthPolicy))
+                {
+                    var authService = context.RequestServices.GetService<IAuthorizationService>();
+                    var policyProvider = context.RequestServices.GetService<IAuthorizationPolicyProvider>();
+
+                    if (authService != null && policyProvider != null)
+                    {
+                        var policy = policyProvider.GetPolicyAsync(description.AuthPolicy).GetAwaiter().GetResult();
+                        if (policy != null)
+                        {
+                            var result = authService.AuthorizeAsync(user, policy).GetAwaiter().GetResult();
+                            if (result.Succeeded)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                if (description.AuthRoles.Any())
+                {
+                    foreach (var role in description.AuthRoles)
+                    {
+                        if (user.IsInRole(role))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+}

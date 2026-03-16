@@ -1,0 +1,27 @@
+name: 'Formatting Code'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main, next]
+
+jobs:
+  prettier:
+    name: 'Check Code Style'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
+
+      - name: Run Format Check
+        run: just check-format

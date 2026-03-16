@@ -1,0 +1,59 @@
+name: 'Quality Assurance'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - next
+    paths-ignore: &shared_ignore
+      - '**.md'
+      - '.github/**'
+      - '.gitignore'
+      - '.just/**'
+      - '.vscode/**'
+      - 'demos/**'
+      - 'docs/**'
+      - 'tools/**'
+  pull_request:
+    branches:
+      - main
+      - next
+    types: [opened, synchronize, reopened]
+    paths-ignore: *shared_ignore
+
+jobs:
+  unit-test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
+
+      - name: Test
+        run: just test
+
+      - name: Test Report
+        uses: dorny/test-reporter@3d76b34a4535afbd0600d347b09a6ee5deb3ed7f
+        if: always()
+        with:
+          name: 'Test Results Detail'
+          path: '**/test-results.trx'
+          reporter: dotnet-trx
+
+      - name: Publish Test Results Summary
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040
+        if: always() && github.event_name == 'pull_request'
+        with:
+          files: '**/test-results.trx'

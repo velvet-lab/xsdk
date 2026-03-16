@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>xSdk.Extensions.Package</RootNamespace>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>1cc29ff2-7da8-4122-865b-fdffe1d0890b</ProjectGuid>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="RestSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Sewer56.Update" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Sewer56.Update.Resolvers.GitHub" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Sewer56.Update.Resolvers.NuGet" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+
+</Project>

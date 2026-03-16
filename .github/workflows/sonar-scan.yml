@@ -1,0 +1,106 @@
+name: 'SonarCloud Analysis'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - next
+      - main
+    paths-ignore: &shared-ignores
+      - '**.md'
+      # - '.github/**'
+      - '.gitignore'
+      - '.just/**'
+      - '.vscode/**'
+      - 'demos/**'
+      - 'docs/**'
+      - 'tools/**'
+  push:
+    branches:
+      - next
+      - main
+    paths-ignore: *shared-ignores
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  sonar-analysis:
+    name: SonarQube Quality Gate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
+
+      - name: Cache Sonar Scanner
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-cache
+
+      # TRICKY: To get clean results for sonar scan, we need to ensure that all dependencies are restored and
+      # the build is successful before running the scan. This is because Sonar Scanner analyzes the compiled
+      # code and needs all dependencies to be in place to provide accurate results.
+      - name: Restore DotNet dependencies
+        shell: pwsh
+        run: just dotnet::restore xsdk.sln
+
+      - name: Sonar scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PR_NUMBER: ${{ github.event.pull_request.number }}
+          SONAR_PR_BRANCH: ${{ github.head_ref }}
+          SONAR_PR_BASE: ${{ github.base_ref }}
+        shell: pwsh
+        run: |
+          $org, $repo = $env:GITHUB_REPOSITORY -split '/', 2
+          $projectKey  = "${org}_${repo}"
+          $version     = (Get-Content ./package.json | ConvertFrom-Json).version
+
+          $beginArgs = @(
+            "begin"
+            "/o:$org"
+            "/k:$projectKey"
+            "/v:$version"
+            "/d:sonar.token=$env:SONAR_TOKEN"
+            "/d:sonar.qualitygate.wait=false"
+            "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
+            "/d:sonar.scanner.skipJreProvisioning=true"
+          )
+
+          if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
+            $beginArgs += @(
+              "/d:sonar.pullrequest.key=$env:SONAR_PR_NUMBER"
+              "/d:sonar.pullrequest.branch=$env:SONAR_PR_BRANCH"
+              "/d:sonar.pullrequest.base=$env:SONAR_PR_BASE"
+              "/d:sonar.pullrequest.provider=GitHub"
+            )
+          } else {
+            $beginArgs += "/d:sonar.branch.name=$env:GITHUB_REF_NAME"
+          }
+
+          dotnet dotnet-sonarscanner @beginArgs
+          just dotnet::sonar-build xsdk.sln
+          dotnet dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"

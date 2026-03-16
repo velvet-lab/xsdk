@@ -1,0 +1,17 @@
+meta {
+  name: create sample
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/sample/hateoas
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "Hallo"
+  }
+}

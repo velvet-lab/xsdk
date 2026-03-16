@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>xSdk.Data</RootNamespace>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>df0d5a78-10ab-4c1d-ae64-4bc461cdb6a6</ProjectGuid>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>xSdk.Data.EntityFramework.MongoDB - MongoDB provider integration for the xSdk EntityFramework data layer.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="MongoDB.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data.EntityFramework\src\xSdk.Data.EntityFramework.csproj" />
+    </ItemGroup>
+
+</Project>

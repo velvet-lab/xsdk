@@ -1,27 +1,32 @@
 {
-  "name": "@global/xsdk",
-  "version": "1.0.0-next.14",
-  "description": "xbash is a bash function library for commonly used operations",
+  "name": "xsdk",
+  "version": "1.1.0-next.4",
+  "description": "Base SDK for generic services",
+  "packageManager": "pnpm@10.31.0",
+  "author": {
+    "name": "danlorb",
+    "email": "danlorb@velvet-lab.net"
+  },
+  "bugs": {
+    "url": "https://github.com/velvet-lab/xsdk/issues"
+  },
+  "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://git.x-breitschaft.de/global/xsdk.git"
-  },
-  "author": "github@danlor.simplelogin.com",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://git.x-breitschaft.de/global/xsdk/issues"
-  },
-  "scripts": {
-    "lint": "mega-linter-runner --image registry.x-breitschaft.de/oxsecurity/megalinter:v8.4.2",
-    "lint:fix": "mega-linter-runner --image registry.x-breitschaft.de/oxsecurity/megalinter:v8.4.2 --fix",
-    "release:version": "semantic-release"
+    "url": "git+https://github.com/velvet-lab/xsdk.git"
   },
   "devDependencies": {
-    "@saithodev/semantic-release-gitea": "^2.1.0",
+    "@commitlint/cli": "^20.4.4",
+    "@commitlint/config-conventional": "^20.4.4",
+    "@commitlint/format": "^20.4.4",
+    "@commitlint/types": "^20.4.4",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "mega-linter-runner": "^8.4.2",
-    "semantic-release": "^24.2.3"
+    "@semantic-release/github": "^12.0.6",
+    "conventional-changelog-conventionalcommits": "^9.3.0",
+    "mega-linter-runner": "^9.4.0",
+    "prettier": "^3.8.1",
+    "semantic-release": "^25.0.3"
   }
 }

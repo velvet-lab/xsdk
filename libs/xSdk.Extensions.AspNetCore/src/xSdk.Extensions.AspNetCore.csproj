@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>5d71c932-2d9b-4bf6-b207-b9e206b6d549</ProjectGuid>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>xSdk.Extensions.AspNetCore - ASP.NET Core extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="NWebsec.AspNetCore.Middleware" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+</Project>

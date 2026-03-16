@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>ce2ccd4e-a9fe-43d7-8e1d-1848759ac45f</ProjectGuid>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>xSdk.Extensions.Commands - Command line interface extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <InternalsVisibleTo Include="xSdk.Extensions.Commands.UnitTests" />
+    </ItemGroup>
+
+</Project>

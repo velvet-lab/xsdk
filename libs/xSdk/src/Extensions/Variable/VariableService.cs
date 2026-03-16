@@ -1,0 +1,97 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using System.Collections;
+using System.Collections.Concurrent;
+using Microsoft.Extensions.Configuration;
+using NLog;
+using xSdk.Shared;
+
+namespace xSdk.Extensions.Variable;
+
+internal partial class VariableService : IVariableService
+{
+    private readonly IConfiguration? _config;
+
+    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+    public VariableService(IConfiguration? config)
+    {
+        this._config = config;
+
+        InitProviders();
+    }
+
+    public Dictionary<string, object> ToDictionary()
+    {
+        var result = new Dictionary<string, object>();
+
+        foreach (var variable in this.Variables)
+        {
+            try
+            {
+                if (TryReadVariableValue<object>(variable.Name, out object value))
+                {
+                    result.AddOrNew(variable.Name, value);
+                }
+                else
+                {
+                    _logger.Warn("Variable Value '{0}' not found", variable.Name);
+                }
+            }
+            catch
+            {
+                // Nothing to tell
+            }
+        }
+
+        return result;
+    }
+
+    internal void AddEnvironmentVariables()
+    {
+        var items = Environment.GetEnvironmentVariables();
+
+        // GetPrimaryKey Items to Dictionary
+        var dic = new ConcurrentDictionary<string, object>();
+        foreach (DictionaryEntry item in items)
+        {
+            dic.AddOrNew(item.Key.ToString(), item.Value);
+        }
+
+        // Execute in Parallel
+        Parallel.ForEach(
+            dic,
+            item =>
+            {
+                var value = item.Value?.ToString();
+                var valueType = TypeConverter.GetValueType(value);
+
+                if (valueType != null)
+                {
+                    var name = item.Key.ToString();
+                    var variable = this.LoadVariableInternal(name);
+                    if (variable == null)
+                    {
+                        variable = Variable.Create(name, valueType).Protect().DisablePrefix().Hide();
+
+                        NewVariable(variable);
+                    }
+                }
+            }
+        );
+    }
+}

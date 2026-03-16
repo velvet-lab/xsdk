@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Host": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "VAH_DEMO": "true",
+        "VAH_INFRASTRUCTURE": "BK20",
+        "VAH_LEVEL": "Information",
+        "VAH_MODE": "Console",
+        "VAH_PLUGIN_ROOT": "../../../plugins",
+        "VAH_RUNLEVEL": "HEALTHY",
+        "VAH_STAGE": "DEVELOPMENT",
+        "VAH_DISABLE_TELEMETRY": "true",
+        "DOTNET_ENVIRONMENT": "DEVELOPMENT"
+      }
+    }
+  }
+}

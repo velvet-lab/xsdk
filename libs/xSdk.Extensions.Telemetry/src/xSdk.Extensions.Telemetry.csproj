@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>858e1632-8579-4f13-a6ce-9ae4127f89c6</ProjectGuid>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>xSdk.Extensions.Telemetry - Telemetry extensions for the xSdk project.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+        <ItemGroup>
+                <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
+    </ItemGroup>
+</Project>

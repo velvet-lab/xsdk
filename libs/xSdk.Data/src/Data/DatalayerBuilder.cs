@@ -1,0 +1,141 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+namespace xSdk.Data;
+
+public sealed class DatalayerBuilder : IDatalayerBuilder
+{
+    private readonly IServiceCollection _services;
+    private List<string> _logicalNames;
+
+    internal DatalayerBuilder(IServiceCollection services)
+    {
+        _services = services ?? throw new ArgumentNullException(nameof(services));
+        _logicalNames = new List<string>();
+    }
+
+    public IDatalayerBuilder ConfigureDatabase<TDatabase, TDatabaseSetup, TConnectionStringBuilder>(string name)
+        where TDatabase : class, IDatabase
+        where TDatabaseSetup : IDatabaseSetup, new()
+        where TConnectionStringBuilder : class, IConnectionBuilder => ConfigureDatabase<TDatabase, TDatabaseSetup, TConnectionStringBuilder>(name, null);
+
+    public IDatalayerBuilder ConfigureDatabase<TDatabase, TDatabaseSetup, TConnectionStringBuilder>(string name, Action<TDatabaseSetup> factory)
+        where TDatabase : class, IDatabase
+        where TDatabaseSetup : IDatabaseSetup, new()
+        where TConnectionStringBuilder : class, IConnectionBuilder
+    {
+        ValidateLogicalNames(name, ref _logicalNames);
+
+        var setup = new TDatabaseSetup();
+        factory?.Invoke(setup);
+
+        setup.Validate();
+
+        _services.AddSingleton<TConnectionStringBuilder>();
+        _services.AddScoped<TDatabase>();
+        _services.AddSingleton(
+            new InternalDatabaseSetup
+            {
+                Setup = setup,
+                Name = name,
+                ConnectionBuilderType = typeof(TConnectionStringBuilder),
+                DatabaseType = typeof(TDatabase),
+            }
+        );
+
+        return this;
+    }
+
+    public IDatalayerBuilder ConfigureRepository<TImplementation>(IEnumerable<string> dataProviders)
+        where TImplementation : class, IRepository
+    {
+        _services.TryAddScoped<TImplementation>(provider =>
+        {
+            var instance = ActivatorUtilities.CreateInstance<TImplementation>(provider);
+            InitializeRepository(provider, instance, dataProviders);
+
+            return instance;
+        });
+
+        return this;
+    }
+
+    public IDatalayerBuilder ConfigureRepository<TInterface, TImplementation>(IEnumerable<string> dataProviders)
+        where TInterface : class
+        where TImplementation : class, IRepository, TInterface
+    {
+        _services.TryAddScoped<TInterface>(provider =>
+        {
+            var instance = ActivatorUtilities.CreateInstance<TImplementation>(provider);
+            InitializeRepository(provider, instance, dataProviders);
+
+            return instance;
+        });
+
+        return this;
+    }
+
+    internal static void InitializeRepository(IServiceProvider provider, IRepository repository, IEnumerable<string> dataProviders)
+    {
+        var setups = provider.GetServices<InternalDatabaseSetup>();
+
+        ValidateLogicalNames(setups.Select(x => x.Name));
+
+        if (!setups.Any())
+            throw new SdkException("No Datalayer Setups found");
+
+        IEnumerable<InternalDatabaseSetup> databaseSetups;
+        if (setups.Count() > 1)
+        {
+            if (!dataProviders.Any())
+                throw new SdkException(
+                    "No Data Provider Name specified. Add the Data Provider Name to Repository Mappings "
+                    + $"to specify the Data Provider that the Repository '{repository.GetType().FullName}' should use"
+                );
+
+            databaseSetups = setups.Where(x => dataProviders.Any(y => string.Compare(x.Name, y, true) == 0));
+            if (!databaseSetups.Any())
+                throw new SdkException($"No Datalayer Setups found for Mappings '{dataProviders}'");
+        }
+        else
+            databaseSetups = setups;
+
+        ((Repository)repository).InternalSetups = databaseSetups;
+    }
+
+    private static void ValidateLogicalNames(IEnumerable<string> names)
+    {
+        var cleanedNamesCount = names.Distinct().Count();
+        if (cleanedNamesCount != names.Count())
+            throw new SdkException(
+                "Database Logical Names are not unique. Please choose another name to register the database"
+            );
+    }
+
+    private static void ValidateLogicalNames(string name, ref List<string> names)
+    {
+        if (names.Any(x => string.Compare(x, name, true) == 0))
+            throw new SdkException(
+                $"Database with name '{name}' is already registered. Please choose another name to register the database"
+            );
+
+        names.Add(name);
+    }
+
+}

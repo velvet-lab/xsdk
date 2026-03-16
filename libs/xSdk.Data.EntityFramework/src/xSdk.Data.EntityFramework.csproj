@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>xSdk.Data</RootNamespace>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>c89b4ebf-27bc-4c46-bbaa-3fc461fd7b9f</ProjectGuid>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>xSdk.Data.EntityFramework - Entity Framework Core integration for xSdk.Data.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    </ItemGroup>
+
+</Project>

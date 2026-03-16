@@ -1,0 +1,18 @@
+{
+    "profiles": {
+        "Host": {
+            "commandName": "Project",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DOTNET_RUNNING_IN_CONTAINER": "false",
+                "DV__LOG_LEVEL": "info",
+                "DV__DEMO": "false",
+                "DV__STAGE": "Development",
+                "DV__VAULT__ENDPOINT": "http://myendpoint:8200",
+                "DV__APPROLEAUTH__ROLE_ID": "a_key",
+                "DV__APPROLEAUTH__ROLE_SECRET": "a_secret"
+
+            }
+        }
+    }
+}

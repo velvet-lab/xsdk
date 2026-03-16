@@ -1,0 +1,11 @@
+meta {
+  name: get all configured variables
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{url}}/variable/definition
+  body: none
+  auth: inherit
+}

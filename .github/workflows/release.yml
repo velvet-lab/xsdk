@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+      - next
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - '.gitignore'
+      - '.just/**'
+      - '.vscode/**'
+      - 'demos/**'
+      - 'docs/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    concurrency: release
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - name: Generate Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.ORG_BOT_ID }}
+          private-key: ${{ secrets.ORG_BOT_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Setup repository
+        uses: ./.github/actions/setup-repository
+
+      - name: Validate Release Config
+        run: |
+          if [ ! -f release.config.js ]; then
+            echo "❌ Error: release.config.js not found!"
+            exit 1
+          fi
+          echo "✅ Release config found. Ready to proceed."
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: just repository::release
+
+      - name: Request NuGet API Key
+        uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544
+        id: nuget-token
+        with:
+          user: ${{ secrets.NUGET_DEPLOY_USER }}
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          just dotnet::publish xsdk.sln
+
+          dotnet nuget push "dist/nuget/*.nupkg" `
+            --api-key "${{steps.nuget-token.outputs.NUGET_API_KEY}}" `
+            --source "${{ vars.NUGET_HOST_URL }}" `
+            --skip-duplicate
+
+          dotnet nuget push "dist/nuget/*.snupkg" `
+            --api-key "${{steps.nuget-token.outputs.NUGET_API_KEY}}" `
+            --source "${{ vars.NUGET_HOST_URL }}" `
+            --skip-duplicate
