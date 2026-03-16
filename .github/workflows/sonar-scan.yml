@@ -13,7 +13,7 @@ on:
       - main
     paths-ignore: &shared-ignores
       - '**.md'
-      # - '.github/**'
+      - '.github/**'
       - '.gitignore'
       - '.just/**'
       - '.vscode/**'
