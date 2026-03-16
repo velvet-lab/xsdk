@@ -6,17 +6,11 @@ Always write pull request titles and descriptions in **English**.
 
 ## Title
 
-The PR title **must** follow the same [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)
-format used for commit messages. It becomes the squash-merge commit and feeds into semantic-release.
+The PR title must be **descriptive and self-explanatory** — a reader should immediately understand what the PR is about without having to read the description.
 
-```
-<type>[optional scope]: <description>
-```
-
-- Use the same **types** and **scope** rules defined in the commit instructions
-- Use **imperative mood**, lowercase, no trailing period
+- Write a clear, human-readable sentence or phrase
+- Use title case
 - Must not exceed **72 characters**
-- Append `!` and add a `BREAKING CHANGE:` section in the body for breaking changes
 
 ## Description Structure
 
@@ -26,20 +20,7 @@ Use the following sections. Omit sections that do not apply — but never omit *
 
 ### Summary
 
-A short paragraph (2–4 sentences) explaining what this PR changes and **why**.
-Describe the problem or motivation first, then the solution.
-
-### Changes
-
-A bullet list grouping related changes. Group by area (e.g. library, demo, CI).
-Keep each bullet concise — one line per logical change.
-
-```
-- `libs/xSdk.Data`: add `FindPagedAsync` overload to `IDataStore`
-- `libs/xSdk.Data.EntityFramework`: implement `FindPagedAsync` using `.Skip`/`.Take`
-- `libs/xSdk.Data.NoSql`: implement `FindPagedAsync` using cursor-based paging
-- `demos/datalayer-entityframework`: demonstrate paged query in `Program.cs`
-```
+A brief overview of the commits included in this PR. Summarize what changed and why in 2–4 sentences. List the most relevant commits or group them by topic if there are many.
 
 ### Breaking Changes
 
@@ -65,39 +46,24 @@ Link any related GitHub issues or PRs using `Closes #<n>`, `Fixes #<n>`, or `Ref
 
 ---
 
-## Scope Rules (same as commit messages)
-
-| Changed area              | Scope        |
-|---------------------------|--------------|
-| `libs/xSdk.Data.*`        | `data`       |
-| `libs/xSdk.Extensions.*`  | `extensions` |
-| `libs/xSdk.Plugin`        | `plugin`     |
-| `libs/xSdk` (core)        | `xsdk`       |
-| `demos/**`                | `demos`      |
-| `docs/**`                 | `docs`       |
-| CI, build, tooling, root  | *(no scope)* |
-
 ## Examples
 
 ### Feature PR
 
-**Title:** `feat(data): add paged query support to IDataStore`
+**Title:** `Add Paged Query Support to All Data Providers`
 
 ```markdown
 ## Summary
 
-The current `FindAsync` API returns all matching documents at once, which is
-unsuitable for large collections. This PR introduces a `FindPagedAsync` overload
-to all data providers to support cursor- and offset-based paging.
+Adds a `FindPagedAsync` overload to `IDataStore` and all concrete data providers
+(EntityFramework, LiteDB, MongoDB). The existing `FindAsync` returns all matching
+documents at once, which is unsuitable for large collections. Relevant commits:
 
-## Changes
-
-- `libs/xSdk.Data`: add `FindPagedAsync<T>` to `IDataStore` and `DataStoreBase`
-- `libs/xSdk.Data.EntityFramework`: implement via `.Skip`/`.Take` with total-count projection
-- `libs/xSdk.Data.NoSql`: implement via LiteDB cursor paging
-- `libs/xSdk.Data.MongoDB`: implement via MongoDB `IAsyncCursor`
-- `libs/xSdk.Data.*`: unit tests for all three providers
-- `demos/datalayer-entityframework`: add paged-query example to `Program.cs`
+- Add `FindPagedAsync<T>` to `IDataStore` and `DataStoreBase`
+- Implement offset-based paging in EF Core provider via `.Skip`/`.Take`
+- Implement cursor-based paging in LiteDB and MongoDB providers
+- Add unit tests for all three providers
+- Add paged-query example to the EF Core demo
 
 ## Testing
 
@@ -114,19 +80,17 @@ Closes #42
 
 ### Bug Fix PR
 
-**Title:** `fix(extensions): resolve null reference in health-check middleware`
+**Title:** `Fix Null Reference in Health-Check Middleware on Startup`
 
 ```markdown
 ## Summary
 
 The health-check middleware threw a `NullReferenceException` on startup when no
-`IHealthCheckService` was registered. A null guard and a clear configuration error
-message have been added.
+`IHealthCheckService` was registered. A null guard and a descriptive configuration
+error message have been added. Relevant commits:
 
-## Changes
-
-- `libs/xSdk.Extensions.AspNetCore`: add null guard in `HealthCheckMiddleware.InvokeAsync`
-- `libs/xSdk.Extensions.AspNetCore.Tests`: add test for missing-service scenario
+- Add null guard in `HealthCheckMiddleware.InvokeAsync`
+- Add test for missing-service scenario
 
 ## Testing
 
@@ -142,21 +106,18 @@ Fixes #87
 
 ### Breaking Change PR
 
-**Title:** `feat(xsdk)!: replace sync data-access methods with async-only API`
+**Title:** `Replace All Synchronous Data-Access Methods with Async-Only API`
 
 ```markdown
 ## Summary
 
-All synchronous data-access overloads have been removed to enforce a consistent
-async programming model. This eliminates accidental blocking calls and aligns the
-SDK with .NET best practices.
+All synchronous data-access overloads (`Find`, `Save`, `Delete`) have been removed
+to enforce a consistent async programming model and eliminate accidental blocking calls.
+Relevant commits:
 
-## Changes
-
-- `libs/xSdk.Data`: remove `Find`, `Save`, `Delete` from `IDataStore`
-- `libs/xSdk.Data.*`: remove all synchronous implementations
-- `libs/xSdk.Data.*`: update tests to use async variants only
-- `demos/**`: migrate all demo projects to async call sites
+- Remove `Find`, `Save`, `Delete` from `IDataStore` and all implementations
+- Update all tests to use async variants only
+- Migrate all demo projects to async call sites
 
 ## Breaking Changes
 
