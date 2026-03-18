@@ -49,19 +49,22 @@ Create a minimal, reproducible example:
 
 ```csharp
 [Fact]
-public async Task ReproduceBug_GetByIdAsync_WithNullId_ThrowsNullReference()
+public async Task ReproduceBug_SelectAsync_WithNullId_ThrowsNullReference()
 {
     // Document what we observe
-    var store = new EntityFrameworkDataStore<User>(_context);
-    
+    // Use the actual DatalayerFactory to get a repository (see ADR-005)
+    var repo = _factory.CreateRepository<IUserRepository>("TestDb");
+
     // This currently throws NullReferenceException instead of ArgumentException
     var ex = await Assert.ThrowsAsync<NullReferenceException>(
-        () => store.GetByIdAsync(null!));
-    
+        () => repo.SelectAsync(null!));
+
     _output.WriteLine($"Exception: {ex.Message}");
     _output.WriteLine($"Stack trace: {ex.StackTrace}");
 }
 ```
+
+> **Tip**: Before debugging, check the relevant ADR in `docs/adr/` — the **Consequences/Negative** section may document that the behavior is a known limitation rather than a bug.
 
 ### Phase 2: Investigation
 
@@ -114,16 +117,13 @@ Test each hypothesis:
 ```csharp
 // Test Hypothesis 1: Missing validation
 [Fact]
-public async Task GetByIdAsync_WithNullId_ShouldValidate()
+public async Task SelectAsync_WithNullId_ShouldValidate()
 {
-    var store = new EntityFrameworkDataStore<User>(_context);
-    
+    var repo = _factory.CreateRepository<IUserRepository>("TestDb");
+
     // Does it validate? Currently, no - throws NullReferenceException
     await Assert.ThrowsAsync<ArgumentException>(
-        () => store.GetByIdAsync(null!));
-}
-```
-
+        () => repo.SelectAsync(null!));
 ### Phase 3: Common Bug Patterns
 
 #### Pattern 1: Null Reference Bugs
@@ -136,7 +136,7 @@ public async Task GetByIdAsync_WithNullId_ShouldValidate()
 **Debug:**
 ```csharp
 // Add logging to track null values
-_logger.LogDebug("GetByIdAsync called with id: {Id}", id ?? "NULL");
+_logger.LogDebug("SelectAsync called with id: {Id}", id ?? "NULL");
 
 // Check method parameters
 Debug.Assert(id != null, "Id should not be null");
@@ -149,19 +149,8 @@ Debug.Assert(id != null, "Id should not be null");
 
 **Fix:**
 ```csharp
-public async Task<TEntity?> GetByIdAsync(
-    string id, 
-    CancellationToken cancellationToken = default)
-{
-    // Add validation
-    ArgumentException.ThrowIfNullOrEmpty(id);
-    
-    return await _context.Set<TEntity>()
-        .FindAsync(new object[] { id }, cancellationToken);
-}
-```
-
-#### Pattern 2: Async/Await Deadlocks
+// In a Repository<TEntity> subclass, guard at the top of the method:
+ArgumentException.ThrowIfNullOrEmpty(id);
 
 **Symptoms:**
 - Code hangs indefinitely
@@ -174,28 +163,22 @@ public async Task<TEntity?> GetByIdAsync(
 public User GetUser(string id)
 {
     // ❌ This can deadlock!
-    return _repository.GetByIdAsync(id).Result;
+    return _repository.SelectAsync(id).Result;
 }
 
 // Check for missing ConfigureAwait in library code
-await SomethingAsync().ConfigureAwait(false); // ✅ Correct
-await SomethingAsync(); // ❌ Can cause issues
+await SomethingAsync().ConfigureAwait(false); // ✅ Correct in library code
+await SomethingAsync(); // ❌ Can cause issues in library code
 ```
 
 **Fix:**
 ```csharp
 // Make entire chain async
-public async Task<User> GetUserAsync(
-    string id, 
+public async Task<User?> GetUserAsync(
+    string id,
     CancellationToken cancellationToken = default)
 {
-    return await _repository.GetByIdAsync(id, cancellationToken);
-}
-```
-
-#### Pattern 3: Entity Framework Issues
-
-**Symptoms:**
+    return await _repository.SelectAsync(id, cancellationToken).ConfigureAwait(false);
 - "Object already tracked" errors
 - Disposed context errors
 - Unexpected query behavior
@@ -210,7 +193,7 @@ using (var context = new AppDbContext()) // ❌ Wrong lifetime
 }
 
 // Check for tracking conflicts
-_logger.LogDebug("Context tracking {Count} entities", 
+_logger.LogDebug("Context tracking {Count} entities",
     _context.ChangeTracker.Entries().Count());
 
 // Log generated SQL
@@ -242,7 +225,7 @@ var users = await _context.Users
 private static int _counter = 0; // ❌ Not thread-safe
 
 // Add logging with thread IDs
-_logger.LogDebug("[Thread {ThreadId}] Counter: {Counter}", 
+_logger.LogDebug("[Thread {ThreadId}] Counter: {Counter}",
     Thread.CurrentThread.ManagedThreadId, _counter);
 
 // Use thread-safe collections for testing
@@ -342,12 +325,12 @@ Make targeted, minimal changes:
 
 ```csharp
 public async Task<TEntity?> GetByIdAsync(
-    string id, 
+    string id,
     CancellationToken cancellationToken = default)
 {
     // FIX: Add validation to prevent NullReferenceException
     ArgumentException.ThrowIfNullOrEmpty(id);
-    
+
     return await _context.Set<TEntity>()
         .FindAsync(new object[] { id }, cancellationToken);
 }
@@ -380,16 +363,16 @@ public async Task<TEntity?> GetByIdAsync(
 
 ```csharp
 public async Task<User> ProcessUserAsync(
-    User user, 
+    User user,
     CancellationToken cancellationToken = default)
 {
     // Validate inputs early
     ArgumentNullException.ThrowIfNull(user);
     ArgumentException.ThrowIfNullOrEmpty(user.Id);
-    
+
     // Log for debugging
     _logger.LogDebug("Processing user {UserId}", user.Id);
-    
+
     try
     {
         return await _repository.SaveAsync(user, cancellationToken);
@@ -416,7 +399,7 @@ public async Task<User> ProcessUserAsync(
 /// Thrown when <paramref name="id"/> is null or empty.
 /// </exception>
 /// <remarks>
-/// Fixed in v1.2.3: Added validation to prevent NullReferenceException. 
+/// Fixed in v1.2.3: Added validation to prevent NullReferenceException.
 /// See issue #123.
 /// </remarks>
 ```
@@ -427,7 +410,7 @@ public async Task<User> ProcessUserAsync(
 
 ```csharp
 // Use structured logging
-_logger.LogDebug("Processing {EntityType} with ID {Id}", 
+_logger.LogDebug("Processing {EntityType} with ID {Id}",
     typeof(TEntity).Name, id);
 
 // Log method entry/exit

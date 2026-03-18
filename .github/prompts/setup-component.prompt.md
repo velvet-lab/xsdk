@@ -24,6 +24,7 @@ Ask for the following information if not provided:
 
 Before creating anything, analyze:
 
+- **Read the relevant ADR(s) in `docs/adr/`** — the [ADR index](../../docs/adr/README.md) maps each component area to its decision record. ADRs document the chosen patterns, known limitations, and rejected alternatives.
 - Existing similar components in the codebase
 - Established patterns and conventions
 - Common abstractions and base types
@@ -38,18 +39,22 @@ Based on the component type, create the appropriate structure:
 
 ### For a New Data Provider (`xSdk.Data.{ProviderName}`)
 
+A data provider requires exactly four implementation classes (see [ADR-006](../../docs/adr/ADR-006-provider-agnostic-data-layer.md)):
+
 ```
 libs/
 └── xSdk.Data.{ProviderName}/
     ├── src/
     │   ├── xSdk.Data.{ProviderName}.csproj
-    │   ├── {ProviderName}DataStore.cs
-    │   ├── {ProviderName}DataStoreOptions.cs
+    │   ├── {ProviderName}Database.cs              (IDatabase implementation)
+    │   ├── {ProviderName}ConnectionBuilder.cs     (IConnectionBuilder implementation)
+    │   ├── {ProviderName}DatabaseSetup.cs         (IDatabaseSetup implementation)
+    │   ├── {ProviderName}Repository.cs            (Repository<TEntity> subclass)
     │   └── Extensions/
-    │       └── ServiceCollectionExtensions.cs
+    │       └── IDatalayerBuilderExtensions.cs
     └── tests/
         ├── xSdk.Data.{ProviderName}.Tests.csproj
-        └── {ProviderName}DataStoreTests.cs
+        └── {ProviderName}RepositoryTests.cs
 ```
 
 ### For a New Extension (`xSdk.Extensions.{ExtensionName}`)
@@ -78,7 +83,7 @@ Follow the existing pattern from other projects:
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -105,110 +110,122 @@ Add any new package dependencies:
 
 ## Step 5: Define Core Abstractions
 
-### Create Main Interface
+A new data provider requires four components (see ADR-006):
+
+### Create Database class
 
 ```csharp
 namespace xSdk.Data.{ProviderName};
 
 /// <summary>
-/// Provides {provider-specific} data storage operations.
+/// Manages the {Provider} connection lifecycle.
 /// </summary>
-/// <typeparam name="TEntity">The type of entity to store.</typeparam>
-public interface I{ProviderName}DataStore<TEntity> : IDataStore<TEntity> 
-    where TEntity : class
+public class {ProviderName}Database : Database
 {
-    // Provider-specific methods if needed
+    // Override Open<TConnection>() to return the provider-specific connection
 }
 ```
 
-### Create Implementation
+### Create ConnectionBuilder class
 
 ```csharp
 namespace xSdk.Data.{ProviderName};
 
 /// <summary>
-/// {Provider} implementation of the data store.
+/// Builds the connection string for {Provider} from setup properties.
 /// </summary>
-/// <typeparam name="TEntity">The type of entity to store.</typeparam>
-public class {ProviderName}DataStore<TEntity> : I{ProviderName}DataStore<TEntity> 
-    where TEntity : class
+public class {ProviderName}ConnectionBuilder : ConnectionBuilder
 {
-    private readonly {ProviderName}DataStoreOptions _options;
-    private readonly ILogger<{ProviderName}DataStore<TEntity>> _logger;
-
-    public {ProviderName}DataStore(
-        IOptions<{ProviderName}DataStoreOptions> options,
-        ILogger<{ProviderName}DataStore<TEntity>> logger)
-    {
-        _options = options.Value;
-        _logger = logger;
-    }
-
-    public async Task<TEntity?> GetByIdAsync(
-        string id, 
-        CancellationToken cancellationToken = default)
-    {
-        // Implementation
-    }
-
-    // Other IDataStore methods...
+    // Override Build() to assemble the provider-specific connection string
 }
 ```
 
-### Create Options Class
+### Create DatabaseSetup class
 
 ```csharp
 namespace xSdk.Data.{ProviderName};
 
 /// <summary>
-/// Configuration options for {Provider} data store.
+/// Configuration for a {Provider} database instance.
 /// </summary>
-public class {ProviderName}DataStoreOptions
+public class {ProviderName}DatabaseSetup : DatabaseSetup
 {
     /// <summary>
     /// Gets or sets the connection string.
     /// </summary>
     public string ConnectionString { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the timeout in seconds.
-    /// </summary>
-    public int TimeoutSeconds { get; set; } = 30;
+    // Add provider-specific settings here
 }
 ```
 
-## Step 6: Create Dependency Injection Extensions
+### Create Repository class
 
 ```csharp
-namespace Microsoft.Extensions.DependencyInjection;
+namespace xSdk.Data.{ProviderName};
 
 /// <summary>
-/// Extension methods for registering {Provider} data store services.
+/// {Provider} repository implementation.
 /// </summary>
-public static class {ProviderName}DataStoreServiceCollectionExtensions
+/// <typeparam name="TEntity">The entity type.</typeparam>
+public class {ProviderName}Repository<TEntity> : Repository<TEntity>
+    where TEntity : class, IEntity
+{
+    protected override Task<TResult> ExecuteInternalAsync<TResult>(
+        Func<Task<TResult>> operation,
+        bool withTransaction,
+        CancellationToken cancellationToken)
+    {
+        // Provider-specific execution logic
+    }
+
+    // InsertAsync, SelectAsync, SelectListAsync, UpdateAsync, UpsertAsync, RemoveAsync
+}
+```
+
+## Step 6: Create Dependency Injection Extension
+
+```csharp
+namespace xSdk.Data.{ProviderName}.Extensions;
+
+/// <summary>
+/// Extension methods for registering the {Provider} data provider.
+/// </summary>
+public static class IDatalayerBuilderExtensions
 {
     /// <summary>
-    /// Adds {Provider} data store to the service collection.
+    /// Registers the {Provider} database with the datalayer builder.
     /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <param name="services">The service collection.</param>
-    /// <param name="configureOptions">Action to configure options.</param>
-    /// <returns>The service collection for chaining.</returns>
-    public static IServiceCollection Add{ProviderName}DataStore<TEntity>(
-        this IServiceCollection services,
-        Action<{ProviderName}DataStoreOptions>? configureOptions = null)
-        where TEntity : class
+    /// <param name="builder">The datalayer builder.</param>
+    /// <param name="name">The logical database name.</param>
+    /// <param name="configure">Action to configure the database setup.</param>
+    /// <returns>The builder for chaining.</returns>
+    public static IDatalayerBuilder Use{ProviderName}(
+        this IDatalayerBuilder builder,
+        string name,
+        Action<{ProviderName}DatabaseSetup> configure)
     {
-        if (configureOptions is not null)
-        {
-            services.Configure(configureOptions);
-        }
+        builder.ConfigureDatabase<
+            {ProviderName}Database,
+            {ProviderName}DatabaseSetup,
+            {ProviderName}ConnectionBuilder>(name, configure);
 
-        services.AddSingleton<IDataStore<TEntity>, {ProviderName}DataStore<TEntity>>();
-
-        return services;
+        return builder;
     }
 }
+```
+
+Registration in host startup:
+
+```csharp
+services.AddDatalayer(datalayer =>
+{
+    datalayer.Use{ProviderName}("MyDatabase", config =>
+    {
+        config.ConnectionString = "your-connection-string";
+    });
+    datalayer.MapRepository<IMyRepository, MyRepository>("MyDatabase");
+});
 ```
 
 ## Step 7: Create Initial Tests
@@ -216,30 +233,36 @@ public static class {ProviderName}DataStoreServiceCollectionExtensions
 ```csharp
 namespace xSdk.Data.{ProviderName}.Tests;
 
-public class {ProviderName}DataStoreTests
+public class {ProviderName}RepositoryTests
 {
     [Fact]
-    public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
+    public async Task InsertAsync_WithValidEntity_InsertsSuccessfully()
     {
-        // Arrange
-        var options = Options.Create(new {ProviderName}DataStoreOptions
-        {
-            ConnectionString = "test-connection"
-        });
-        var logger = NullLogger<{ProviderName}DataStore<TestEntity>>.Instance;
-        var store = new {ProviderName}DataStore<TestEntity>(options, logger);
+        var factory = BuildTestFactory();
+        var repo = factory.CreateRepository<IMyRepository>("TestDb");
+        var entity = new TestEntity { Id = "test-id", Name = "Test" };
 
-        // Act
-        var result = await store.GetByIdAsync("test-id");
+        await repo.InsertAsync(entity);
 
-        // Assert
-        result.Should().NotBeNull();
+        var result = await repo.SelectAsync("test-id");
+        Assert.NotNull(result);
+        Assert.Equal("Test", result.Name);
+    }
+
+    [Fact]
+    public async Task SelectAsync_WhenEntityNotFound_ReturnsNull()
+    {
+        var factory = BuildTestFactory();
+        var repo = factory.CreateRepository<IMyRepository>("TestDb");
+
+        var result = await repo.SelectAsync("non-existent");
+
+        Assert.Null(result);
     }
 }
 
-public class TestEntity
+public class TestEntity : {ProviderName}Entity
 {
-    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 }
 ```
@@ -248,7 +271,7 @@ public class TestEntity
 
 Create a README.md in the project folder:
 
-```markdown
+````markdown
 # xSdk.Data.{ProviderName}
 
 Provides {Provider}-based data storage for xSDK.
@@ -262,23 +285,26 @@ dotnet add package xSdk.Data.{ProviderName}
 ## Usage
 
 ```csharp
-services.Add{ProviderName}DataStore<MyEntity>(options =>
+services.AddDatalayer(datalayer =>
 {
-    options.ConnectionString = "your-connection-string";
+    datalayer.Use{ProviderName}("MyDatabase", config =>
+    {
+        config.ConnectionString = "your-connection-string";
+    });
+    datalayer.MapRepository<IMyRepository, MyRepository>("MyDatabase");
 });
 ```
 
 ## Configuration
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| ConnectionString | Connection string for {Provider} | Empty |
-| TimeoutSeconds | Timeout in seconds | 30 |
+| Property | Description | Default |
+|----------|-------------|---------|
+| `ConnectionString` | Connection string for {Provider} | Empty |
 
 ## License
 
-MIT
-```
+Apache-2.0 License - see LICENSE file for details
+````
 
 ## Step 9: Update Solution File
 

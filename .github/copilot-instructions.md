@@ -4,7 +4,7 @@ This document provides project-wide coding standards and conventions for the xSD
 
 ## Project Context
 
-- **Technology Stack**: .NET 8 / C# 12
+- **Technology Stack**: .NET 10 / C# 13
 - **Project Type**: SDK/Library with multiple data layer abstractions and extensions
 - **Architecture**: Modular SDK with pluggable data providers and extension points
 - **Testing Framework**: xUnit
@@ -30,7 +30,7 @@ This document provides project-wide coding standards and conventions for the xSD
 - `libs/`: Contains all SDK libraries organized by functionality
   - `xSdk/`: Core SDK functionality (hosting, plugin extensions, IO, variables)
   - `xSdk.Data/`: Base data layer abstractions (interfaces, base implementations)
-  - `xSdk.Data.*`: Concrete data provider implementations (EntityFramework, MongoDB, FlatFile, NoSql, Vault)
+  - `xSdk.Data.*`: Concrete data provider implementations (EntityFramework, EntityFramework.MongoDB, FlatFile, NoSql, Vault)
   - `xSdk.Extensions.*`: Extension libraries for specific scenarios
   - `xSdk.Plugin/`: Plugin infrastructure
 - `demos/`: Sample applications demonstrating SDK usage
@@ -40,7 +40,7 @@ This document provides project-wide coding standards and conventions for the xSD
 
 - **Central Package Management**: All package versions are managed in `Directory.Packages.props`
 - **Directory.Build.props/targets**: Shared MSBuild configuration across all projects
-- **SDK Version**: .NET 8.0.411 (see `global.json`)
+- **SDK Version**: .NET 10.0.200 (see `global.json`)
 
 ## Coding Standards
 
@@ -96,7 +96,7 @@ All public APIs must include:
 - Follow the Arrange-Act-Assert (AAA) pattern
 - Test method naming: `MethodName_Scenario_ExpectedBehavior`
 - No Act/Arrange/Assert comments in tests
-- Use FluentAssertions when available in test projects
+- Use xUnit assertions (`Assert.*`) as the standard
 - Mock external dependencies, not domain logic
 
 ## Security Considerations
@@ -114,6 +114,36 @@ All public APIs must include:
 - Stream large data instead of loading into memory
 - Use appropriate EF Core query patterns (avoid N+1)
 - Implement proper disposal patterns (`IDisposable`, `IAsyncDisposable`)
+
+## Architecture Decision Records (ADRs)
+
+All significant architectural decisions are documented in [`docs/adr/`](./docs/adr/README.md). **Before implementing a new feature or changing an existing pattern, consult the relevant ADR(s).** Each ADR documents the rationale, known limitations, and trade-offs of the chosen design.
+
+| Component Area | ADR |
+|---|---|
+| Modular library structure | [ADR-001](./docs/adr/ADR-001-modular-library-architecture.md) |
+| SlimHost singleton facade | [ADR-002](./docs/adr/ADR-002-slim-host-singleton.md) |
+| Plugin extensibility model | [ADR-003](./docs/adr/ADR-003-plugin-extensibility-model.md) |
+| Variable / Setup configuration | [ADR-004](./docs/adr/ADR-004-variable-setup-configuration-system.md) |
+| Repository pattern + factory DI | [ADR-005](./docs/adr/ADR-005-repository-pattern-with-factory.md) |
+| Provider-agnostic data layer | [ADR-006](./docs/adr/ADR-006-provider-agnostic-data-layer.md) |
+| EF Core data provider | [ADR-007](./docs/adr/ADR-007-entity-framework-data-provider.md) |
+| LiteDB NoSQL provider | [ADR-008](./docs/adr/ADR-008-nosql-litedb-provider.md) |
+| FlatFile JSON provider | [ADR-009](./docs/adr/ADR-009-flatfile-jsonstore-provider.md) |
+| HashiCorp Vault provider | [ADR-010](./docs/adr/ADR-010-vault-secret-management.md) |
+| MongoDB via EF Core | [ADR-011](./docs/adr/ADR-011-mongodb-via-efcore.md) |
+| Demo / fake repository mode | [ADR-012](./docs/adr/ADR-012-demo-fake-repository-mode.md) |
+| NLog logging framework | [ADR-013](./docs/adr/ADR-013-nlog-logging-framework.md) |
+| OpenTelemetry observability | [ADR-014](./docs/adr/ADR-014-opentelemetry-observability.md) |
+| ASP.NET Core web host | [ADR-015](./docs/adr/ADR-015-aspnetcore-web-host-extension.md) |
+| CloudEvents integration | [ADR-016](./docs/adr/ADR-016-cloudevents-integration.md) |
+| Spectre.Console CLI commands | [ADR-017](./docs/adr/ADR-017-spectre-console-commands.md) |
+| Mapster object mapping | [ADR-018](./docs/adr/ADR-018-mapster-object-mapping.md) |
+| Zio file system abstraction | [ADR-019](./docs/adr/ADR-019-zio-filesystem-abstraction.md) |
+| Central NuGet package management | [ADR-020](./docs/adr/ADR-020-central-package-management.md) |
+| SemVer plugin compatibility | [ADR-021](./docs/adr/ADR-021-semver-version-validation.md) |
+| Weikio plugin framework | [ADR-022](./docs/adr/ADR-022-weikio-plugin-framework.md) |
+| HATEOAS hypermedia links | [ADR-023](./docs/adr/ADR-023-aspnetcore-links-hypermedia.md) |
 
 ## Continuous Improvement
 

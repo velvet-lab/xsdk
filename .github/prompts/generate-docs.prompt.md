@@ -14,7 +14,7 @@ Determine what documentation is needed:
 2. **README**: For library projects
 3. **Code Comments**: For complex logic
 4. **Usage Examples**: For common scenarios
-5. **Architecture Documentation**: For design decisions
+5. **Architecture Documentation**: For design decisions — document as an ADR in `docs/adr/` when making a significant architectural choice. See the [ADR index](../../docs/adr/README.md) for format and existing decisions.
 6. **Migration Guides**: For breaking changes
 
 ## XML Documentation for Public APIs
@@ -157,15 +157,17 @@ Entity Framework Core-based data access layer for xSDK.
 
 ## Overview
 
-This package provides an implementation of `IDataStore<TEntity>` using Entity Framework Core, enabling relational database access with LINQ query support, change tracking, and migration capabilities.
+This package provides an `EntityFrameworkRepository<TDbContext, TEntity>` implementation
+that plugs into the xSDK `DatalayerFactory` / `DatalayerBuilder` registration model,
+enabling relational database access with LINQ query support, change tracking, and
+transaction management.
 
 ## Features
 
-- ✅ Generic repository pattern implementation
-- ✅ Full async/await support with cancellation
-- ✅ Built-in pagination, filtering, and sorting
-- ✅ Transaction management
-- ✅ Change tracking integration
+- ✅ Generic repository pattern (`Repository<TEntity>` subclass)
+- ✅ Full async/await support with `CancellationToken` propagation
+- ✅ LINQ filter helpers (`SelectAsync`, `SelectListAsync` with expression predicates)
+- ✅ Configurable transaction support per database instance
 - ✅ Support for multiple database providers (SQL Server, PostgreSQL, SQLite, etc.)
 
 ## Installation
@@ -179,9 +181,9 @@ dotnet add package xSdk.Data.EntityFramework
 ### 1. Define Your Entity
 
 ```csharp
-public class User
+// Extend the EFEntity base class supplied by xSdk.Data
+public class User : EFEntity
 {
-    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
 }
@@ -192,154 +194,96 @@ public class User
 ```csharp
 public class AppDbContext : DbContext
 {
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users { get; set; } = null!;
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 }
 ```
 
-### 3. Configure Services
+### 3. Define and Implement Repository
 
 ```csharp
-services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+public interface IUserRepository : IRepository<User> { }
 
-services.AddEntityFrameworkDataStore<AppDbContext, User>();
+public class UserRepository : EntityFrameworkRepository<AppDbContext, User>, IUserRepository { }
 ```
 
-### 4. Use in Your Application
+### 4. Configure Services
+
+```csharp
+// Register DbContextFactory (required by EntityFrameworkDatabase)
+services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// Register through xSDK datalayer builder
+services.AddDatalayer(datalayer =>
+{
+    datalayer.UseEntityFramework<AppDbContext>("AppDb", config =>
+    {
+        config.TransactionsEnabled = true;
+    });
+    datalayer.MapRepository<IUserRepository, UserRepository>("AppDb");
+});
+```
+
+### 5. Use in Your Application
 
 ```csharp
 public class UserService
 {
-    private readonly IDataStore<User> _dataStore;
+    private readonly IUserRepository _repository;
 
-    public UserService(IDataStore<User> dataStore)
+    public UserService(IUserRepository repository)
     {
-        _dataStore = dataStore;
+        _repository = repository;
     }
 
     public async Task<User?> GetUserAsync(string id, CancellationToken cancellationToken)
     {
-        return await _dataStore.GetByIdAsync(id, cancellationToken);
+        return await _repository.SelectAsync(id, cancellationToken);
     }
 
     public async Task<User> CreateUserAsync(User user, CancellationToken cancellationToken)
     {
-        return await _dataStore.AddAsync(user, cancellationToken);
+        return await _repository.InsertAsync(user, cancellationToken);
     }
 }
 ```
 
 ## Configuration
 
-### Basic Configuration
+`EntityFrameworkDatabaseSetup` exposes the following properties:
 
-```csharp
-services.AddEntityFrameworkDataStore<AppDbContext, User>(options =>
-{
-    options.UseQueryTracking = false;  // Disable change tracking for reads
-    options.EnableSoftDelete = true;   // Enable soft delete support
-});
-```
+| Property | Description | Default |
+|----------|-------------|---------|
+| `TransactionsEnabled` | Wrap mutations in a `DbContext` transaction | `true` |
 
-### Advanced Configuration
+Set `TransactionsEnabled = false` when using in-memory or MongoDB EF providers,
+which do not support `DbContext`-level transactions.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `UseQueryTracking` | Enable change tracking for queries | `false` |
-| `EnableSoftDelete` | Support soft delete operations | `false` |
-| `CommandTimeout` | Database command timeout (seconds) | `30` |
-| `EnableRetryOnFailure` | Retry failed operations | `true` |
-| `MaxRetryCount` | Maximum retry attempts | `3` |
+## Repository Methods
 
-## Common Patterns
+| Method | Description |
+|--------|-------------|
+| `InsertAsync(entity)` | Insert a single entity |
+| `InsertAsync(entities)` | Bulk insert |
+| `SelectAsync(primaryKey)` | Select by primary key |
+| `SelectListAsync()` | Select all entities |
+| `SelectListAsync(filter)` | Select with LINQ predicate |
+| `UpdateAsync(entity)` | Update by primary key |
+| `UpsertAsync(entity)` | Insert-or-update |
+| `RemoveAsync(primaryKey)` | Delete by primary key |
 
-### Pagination
+## Demo Mode
 
-```csharp
-var pagedResult = await _dataStore.GetPagedAsync(
-    pageNumber: 1,
-    pageSize: 20,
-    orderBy: u => u.Name,
-    ascending: true,
-    cancellationToken);
+Set `{APP_PREFIX}_ENVIRONMENT_DEMO=true` to activate in-memory fake data mode.
+Override `CreateFakesAsync()` in your repository to supply synthetic entities.
 
-Console.WriteLine($"Total: {pagedResult.TotalCount}");
-Console.WriteLine($"Page {pagedResult.PageNumber} of {pagedResult.TotalPages}");
-```
+## Dependencies
 
-### Filtering
-
-```csharp
-var activeUsers = await _dataStore.FindAsync(
-    u => u.IsActive && u.CreatedDate > DateTime.UtcNow.AddDays(-30),
-    cancellationToken);
-```
-
-### Transactions
-
-```csharp
-await _dataStore.ExecuteInTransactionAsync(async () =>
-{
-    await _dataStore.AddAsync(user1, cancellationToken);
-    await _dataStore.AddAsync(user2, cancellationToken);
-}, cancellationToken);
-```
-
-## Database Providers
-
-This package supports all Entity Framework Core database providers:
-
-- SQL Server
-- PostgreSQL
-- MySQL/MariaDB
-- SQLite
-- Oracle
-- Cosmos DB
-
-## Performance Considerations
-
-- Use `AsNoTracking()` for read-only queries
-- Implement pagination for large result sets
-- Use projection (Select) to load only needed columns
-- Avoid N+1 queries with Include/ThenInclude
-- Use compiled queries for frequently executed queries
-
-## Migration Guide
-
-### From 1.x to 2.x
-
-Breaking changes in version 2.0:
-
-1. `IDataStore.Save()` renamed to `IDataStore.AddAsync()`
-2. All methods now require `CancellationToken`
-3. `GetAll()` removed - use `GetPagedAsync()` instead
-
-See [MIGRATION.md](./MIGRATION.md) for complete details.
-
-## Troubleshooting
-
-### Connection Issues
-
-If you encounter connection errors, verify:
-
-1. Connection string is correct
-2. Database server is accessible
-3. Firewall rules allow connection
-4. Credentials have appropriate permissions
-
-### Performance Issues
-
-For slow queries:
-
-1. Check query execution plan
-2. Ensure proper indexes exist
-3. Use pagination for large result sets
-4. Consider using raw SQL for complex queries
+- Microsoft.EntityFrameworkCore 10.0+
+- xSdk.Data 1.0+
 
 ## Contributing
 
@@ -347,12 +291,10 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) in the root repository.
 
 ## License
 
-MIT License - see [LICENSE](../../LICENSE)
+Apache-2.0 License - see [LICENSE](../../LICENSE)
 
 ## Links
 
-- [Documentation](https://xsdk.dev/docs/data/entityframework)
-- [API Reference](https://xsdk.dev/api/xsdk.data.entityframework)
 - [Samples](../../demos/datalayer-entityframework)
 - [Issue Tracker](https://github.com/velvet-lab/xsdk/issues)
 ````

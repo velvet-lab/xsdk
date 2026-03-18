@@ -43,18 +43,21 @@ Before debugging, reproduce the issue reliably:
 [Fact]
 public async Task ReproduceIssue()
 {
-    // Arrange: Set up the exact scenario that causes the issue
-    var store = new EntityFrameworkDataStore<User>(_context);
+    // Arrange: Get a repository via DatalayerFactory (see ADR-005)
+    // and set up the exact scenario that causes the issue
+    var repo = _factory.CreateRepository<IUserRepository>("TestDb");
     var user = new User { Id = null! }; // null ID causes error
 
     // Act & Assert: Expect the error to occur
     var exception = await Assert.ThrowsAsync<ArgumentException>(
-        () => store.GetByIdAsync(user.Id));
+        () => repo.SelectAsync(user.Id!));
 
     // Document what you observe
     _testOutputHelper.WriteLine($"Exception: {exception.Message}");
 }
 ```
+
+> **Before diving into the code**, check the relevant ADR in `docs/adr/` — the **Consequences/Negative** section may document that the observed behavior is an intentional known limitation rather than a bug.
 
 ## Phase 2: Investigate Root Cause
 
@@ -77,7 +80,7 @@ Console.WriteLine($"Store state: {_store.GetState()}");
 
 **Debug Logging:**
 ```csharp
-_logger.LogDebug("Processing user {UserId} with status {Status}", 
+_logger.LogDebug("Processing user {UserId} with status {Status}",
     user.Id, user.Status);
 ```
 
@@ -150,7 +153,7 @@ public async Task SaveUserAsync(User user)
     // continues before save completes
 }
 
-// Blocking in async  
+// Blocking in async
 public async Task ProcessAsync()
 {
     Thread.Sleep(1000); // ❌ Blocks thread
@@ -315,7 +318,7 @@ public class DataService
     public DataService(IOptions<DatabaseOptions> options)
     {
         _options = options.Value;
-        
+
         // Validate configuration
         if (string.IsNullOrEmpty(_options.ConnectionString))
         {
@@ -334,13 +337,13 @@ Before fixing, write a test that reproduces the bug:
 
 ```csharp
 [Fact]
-public async Task GetByIdAsync_WithNullId_ShouldThrowArgumentException()
+public async Task SelectAsync_WithNullId_ShouldThrowArgumentException()
 {
     // This test currently fails due to the bug
-    var store = new EntityFrameworkDataStore<User>(_context);
+    var repo = _factory.CreateRepository<IUserRepository>("TestDb");
 
     await Assert.ThrowsAsync<ArgumentException>(
-        () => store.GetByIdAsync(null!));
+        () => repo.SelectAsync(null!));
 }
 ```
 
@@ -349,16 +352,8 @@ public async Task GetByIdAsync_WithNullId_ShouldThrowArgumentException()
 Make targeted, minimal changes:
 
 ```csharp
-public async Task<TEntity?> GetByIdAsync(
-    string id, 
-    CancellationToken cancellationToken = default)
-{
-    // Fix: Add null/empty validation
-    ArgumentException.ThrowIfNullOrEmpty(id);
-    
-    return await _context.Set<TEntity>()
-        .FindAsync(new object[] { id }, cancellationToken);
-}
+// In the Repository<TEntity> subclass, guard at the entry point:
+ArgumentException.ThrowIfNullOrEmpty(id);
 ```
 
 ### Step 8: Verify the Fix
@@ -370,7 +365,7 @@ public async Task<TEntity?> GetByIdAsync(
 
 ```powershell
 # Run specific test
-dotnet test --filter "GetByIdAsync_WithNullId_ShouldThrowArgumentException"
+dotnet test --filter "SelectAsync_WithNullId_ShouldThrowArgumentException"
 
 # Run all tests
 dotnet test
@@ -391,10 +386,10 @@ public async Task<User> ProcessUserAsync(User user, CancellationToken cancellati
     // Validate early
     ArgumentNullException.ThrowIfNull(user);
     ArgumentException.ThrowIfNullOrEmpty(user.Id);
-    
+
     // Log for debugging
     _logger.LogDebug("Processing user {UserId}", user.Id);
-    
+
     try
     {
         return await _repository.SaveAsync(user, cancellationToken);

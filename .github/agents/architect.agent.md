@@ -31,11 +31,12 @@ When given a feature request or problem:
 
 2. **Identify constraints**:
    - Performance requirements
-   - Compatibility requirements (.NET 8)
+   - Compatibility requirements (.NET 10)
    - Security requirements
    - Timeline constraints
 
 3. **Research existing solutions**:
+   - **Read the relevant ADR(s) in `docs/adr/`** — every component area has a decision record that documents the rationale, chosen patterns, known limitations, and rejected alternatives. The [ADR index](../../docs/adr/README.md) maps component areas to ADR numbers.
    - Search the xSDK codebase for similar patterns
    - Review existing data providers
    - Check for similar extension patterns
@@ -57,11 +58,12 @@ Design a solution that follows xSDK principles:
 
 **Repository Pattern** (for data access):
 ```
-IDataStore<TEntity>
-    └─ ProviderDataStore<TEntity>
-        ├─ EntityFrameworkDataStore<TEntity>
-        ├─ MongoDbDataStore<TEntity>
-        └─ FlatFileDataStore<TEntity>
+IRepository
+    └─ Repository<TEntity>
+        ├─ EntityFrameworkRepository<TDbContext, TEntity>
+        ├─ NoSqlRepository<TEntity>   (LiteDB)
+        ├─ FlatFileRepository<TEntity>
+        └─ ReadOnlyVaultRepository / VaultRepository
 ```
 
 **Options Pattern** (for configuration):
@@ -71,9 +73,13 @@ Services
         └─ Provider-specific options
 ```
 
-**Extension Methods** (for DI):
+**DI Registration** (via IDatalayerBuilder):
 ```
-IServiceCollection.Add{Feature}<TEntity>(Action<Options>)
+services.AddDatalayer(datalayer =>
+{
+    datalayer.Use{Provider}(name, Action<{Provider}DatabaseSetup>)
+    datalayer.MapRepository<IMyRepository, MyRepository>(dataProviders[])
+})
 ```
 
 **Dependency Injection**:
@@ -103,13 +109,14 @@ Describe the architecture:
 Component Structure:
     xSdk.Data.{Provider}/
     ├── src/
-    │   ├── {Provider}DataStore.cs          (Implementation)
-    │   ├── {Provider}DataStoreOptions.cs   (Configuration)
-    │   ├── I{Provider}DataStore.cs         (Interface, if needed)
+    │   ├── {Provider}Database.cs                (IDatabase implementation)
+    │   ├── {Provider}ConnectionBuilder.cs        (IConnectionBuilder implementation)
+    │   ├── {Provider}DatabaseSetup.cs            (IDatabaseSetup implementation)
+    │   ├── {Provider}Repository.cs               (Repository<TEntity> subclass)
     │   └── Extensions/
-    │       └── ServiceCollectionExtensions.cs
+    │       └── IDatalayerBuilderExtensions.cs
     └── tests/
-        └── {Provider}DataStoreTests.cs
+        └── {Provider}RepositoryTests.cs
 ```
 
 Explain key design decisions:
@@ -162,32 +169,30 @@ Break implementation into phases:
 Design the public API:
 
 ```csharp
-// Core interface
-public interface IDataStore<TEntity> where TEntity : class
+// Repository implementation — extend the base Repository<TEntity>
+public class {Provider}Repository<TEntity> : Repository<TEntity>
+    where TEntity : class, IEntity
 {
-    Task<TEntity?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
-    Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
-    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
-    Task DeleteAsync(string id, CancellationToken cancellationToken = default);
+    // InsertAsync, SelectAsync, SelectListAsync, UpdateAsync, UpsertAsync, RemoveAsync
+    // all routed through ExecuteInternalAsync for provider-specific execution
 }
 
-// Configuration options
-public class {Provider}DataStoreOptions
+// Provider setup — extend DatabaseSetup
+public class {Provider}DatabaseSetup : DatabaseSetup
 {
     public string ConnectionString { get; set; } = string.Empty;
-    public int TimeoutSeconds { get; set; } = 30;
-    public bool EnableCaching { get; set; } = false;
+    // provider-specific properties
 }
 
-// DI extension
-public static IServiceCollection Add{Provider}DataStore<TEntity>(
-    this IServiceCollection services,
-    Action<{Provider}DataStoreOptions>? configure = null)
-    where TEntity : class
+// DI registration via IDatalayerBuilder
+services.AddDatalayer(datalayer =>
 {
-    // Implementation
-}
+    datalayer.Use{Provider}("MyDatabase", config =>
+    {
+        config.ConnectionString = "...";
+    });
+    datalayer.MapRepository<IMyRepository, MyRepository>("MyDatabase");
+});
 ```
 
 ### 5. Consider Cross-Cutting Concerns
@@ -249,7 +254,7 @@ Decorator pattern: wrap existing IDataStore with caching layer
 
 ```csharp
 services.AddEntityFrameworkDataStore<AppDbContext, User>();
-services.AddRedisCaching<User>(options => 
+services.AddRedisCaching<User>(options =>
 {
     options.ConnectionString = redisConnection;
     options.DefaultTTL = TimeSpan.FromMinutes(10);

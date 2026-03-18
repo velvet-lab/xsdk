@@ -15,6 +15,7 @@ Before writing tests:
 3. **Identify dependencies**: What external dependencies does it have?
 4. **Review edge cases**: What are the boundary conditions and error scenarios?
 5. **Check existing tests**: Look for existing test patterns in the project
+6. **Check the relevant ADR**: If testing a data provider or repository, read [ADR-005](../../docs/adr/ADR-005-repository-pattern-with-factory.md) and [ADR-006](../../docs/adr/ADR-006-provider-agnostic-data-layer.md). For demo/fake mode behavior, see [ADR-012](../../docs/adr/ADR-012-demo-fake-repository-mode.md). ADR Consequences/Negative sections list known limitations that are intentional — do not write tests that assert against documented trade-offs.
 
 ## Step 2: Determine Test Scope
 
@@ -58,7 +59,7 @@ public class EntityFrameworkDataStoreTests : IDisposable
         var options = new DbContextOptionsBuilder<TestDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-        
+
         _context = new TestDbContext(options);
         _store = new EntityFrameworkDataStore<TestEntity>(_context);
     }
@@ -95,9 +96,9 @@ public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
 
     var result = await _store.GetByIdAsync(entityId);
 
-    result.Should().NotBeNull();
-    result.Id.Should().Be(entityId);
-    result.Name.Should().Be("Test");
+    Assert.NotNull(result);
+    Assert.Equal(entityId, result.Id);
+    Assert.Equal("Test", result.Name);
 }
 ```
 
@@ -115,12 +116,12 @@ public async Task SaveAsync_WithValidEntity_SavesSuccessfully()
 
     var result = await _store.SaveAsync(entity);
 
-    result.Should().NotBeNull();
-    result.Id.Should().Be("1");
-    
+    Assert.NotNull(result);
+    Assert.Equal("1", result.Id);
+
     var saved = await _context.Entities.FindAsync("1");
-    saved.Should().NotBeNull();
-    saved.Name.Should().Be("New Entity");
+    Assert.NotNull(saved);
+    Assert.Equal("New Entity", saved.Name);
 }
 ```
 
@@ -173,7 +174,7 @@ public async Task GetAllAsync_WhenNoEntities_ReturnsEmptyCollection()
 {
     var result = await _store.GetAllAsync();
 
-    result.Should().BeEmpty();
+    Assert.Empty(result);
 }
 
 [Fact]
@@ -187,7 +188,7 @@ public async Task SearchAsync_WithEmptySearchTerm_ReturnsAllEntities()
 
     var result = await _store.SearchAsync(string.Empty);
 
-    result.Should().HaveCount(2);
+    Assert.Equal(2, result.Count());
 }
 ```
 
@@ -202,12 +203,12 @@ Use `[Theory]` for testing multiple scenarios:
 [InlineData("valid@email.com", true)]
 [InlineData("invalid-email", false)]
 public void IsValidEmail_WithVariousInputs_ReturnsExpectedResult(
-    string email, 
+    string email,
     bool expected)
 {
     var result = EmailValidator.IsValid(email);
 
-    result.Should().Be(expected);
+    Assert.Equal(expected, result);
 }
 ```
 
@@ -227,8 +228,8 @@ public async Task SaveAsync_WithValidUsers_SavesSuccessfully(User user)
 {
     var result = await _store.SaveAsync(user);
 
-    result.Should().NotBeNull();
-    result.Id.Should().Be(user.Id);
+    Assert.NotNull(result);
+    Assert.Equal(user.Id, result.Id);
 }
 ```
 
@@ -255,7 +256,7 @@ public async Task SaveAsync_WithCancellationToken_PropagatesToken()
 
     var result = await _store.SaveAsync(entity, cts.Token);
 
-    result.Should().NotBeNull();
+    Assert.NotNull(result);
 }
 ```
 
@@ -266,15 +267,15 @@ Use mocking for external dependencies:
 ```csharp
 public class UserServiceTests
 {
-    private readonly IUserRepository _mockRepository;
-    private readonly ILogger<UserService> _mockLogger;
+    private readonly Mock<IUserRepository> _mockRepository;
+    private readonly Mock<ILogger<UserService>> _mockLogger;
     private readonly UserService _service;
 
     public UserServiceTests()
     {
-        _mockRepository = Substitute.For<IUserRepository>();
-        _mockLogger = Substitute.For<ILogger<UserService>>();
-        _service = new UserService(_mockRepository, _mockLogger);
+        _mockRepository = new Mock<IUserRepository>();
+        _mockLogger = new Mock<ILogger<UserService>>();
+        _service = new UserService(_mockRepository.Object, _mockLogger.Object);
     }
 
     [Fact]
@@ -282,44 +283,20 @@ public class UserServiceTests
     {
         var userId = "123";
         var expectedUser = new User { Id = userId, Name = "John" };
-        _mockRepository.GetByIdAsync(userId, Arg.Any<CancellationToken>())
-            .Returns(expectedUser);
+        _mockRepository
+            .Setup(r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expectedUser);
 
         var result = await _service.GetUserAsync(userId);
 
-        result.Should().Be(expectedUser);
-        await _mockRepository.Received(1)
-            .GetByIdAsync(userId, Arg.Any<CancellationToken>());
+        Assert.Equal(expectedUser, result);
+        _mockRepository.Verify(
+            r => r.GetByIdAsync(userId, It.IsAny<CancellationToken>()), Times.Once);
     }
 }
 ```
 
-## Step 6: Use FluentAssertions
-
-Prefer FluentAssertions when available:
-
-```csharp
-// Instead of:
-Assert.NotNull(result);
-Assert.Equal("expected", result.Name);
-Assert.True(result.IsActive);
-
-// Use:
-result.Should().NotBeNull();
-result.Name.Should().Be("expected");
-result.IsActive.Should().BeTrue();
-
-// Collections:
-result.Should().HaveCount(3);
-result.Should().Contain(x => x.Id == "1");
-result.Should().BeInAscendingOrder(x => x.Name);
-
-// Exceptions:
-await action.Should().ThrowAsync<ArgumentNullException>()
-    .WithMessage("*userId*");
-```
-
-## Step 7: Test Coverage Goals
+## Step 6: Test Coverage Goals
 
 Aim for comprehensive coverage:
 
@@ -362,8 +339,7 @@ Before submitting tests:
 - [ ] Tests are independent
 - [ ] All tests pass
 - [ ] Code coverage is adequate (>80% for new code)
-- [ ] FluentAssertions used (if available)
-- [ ] Mocks used appropriately
+- [ ] Mocks used appropriately (Moq)
 - [ ] Resources properly disposed
 
 ## Common Patterns
@@ -374,16 +350,12 @@ Before submitting tests:
 [Fact]
 public void Configure_WithValidOptions_ConfiguresSuccessfully()
 {
-    var options = new DataStoreOptions
+    var setup = new EntityFrameworkDatabaseSetup
     {
-        ConnectionString = "test-connection",
-        TimeoutSeconds = 30
+        TransactionsEnabled = true
     };
 
-    var configured = Options.Create(options);
-
-    configured.Value.ConnectionString.Should().Be("test-connection");
-    configured.Value.TimeoutSeconds.Should().Be(30);
+    Assert.True(setup.TransactionsEnabled);
 }
 ```
 
@@ -391,15 +363,22 @@ public void Configure_WithValidOptions_ConfiguresSuccessfully()
 
 ```csharp
 [Fact]
-public void AddDataStore_RegistersServicesCorrectly()
+public void AddDatalayer_RegistersServicesCorrectly()
 {
     var services = new ServiceCollection();
 
-    services.AddDataStore<TestEntity>();
+    services.AddDatalayer(datalayer =>
+    {
+        datalayer.UseFlatFile("TestDb", config =>
+        {
+            config.Path = "/tmp";
+            config.FileName = "test.json";
+        });
+    });
 
     var provider = services.BuildServiceProvider();
-    var store = provider.GetService<IDataStore<TestEntity>>();
-    store.Should().NotBeNull();
+    var factory = provider.GetService<IDatalayerFactory>();
+    Assert.NotNull(factory);
 }
 ```
 
@@ -421,6 +400,5 @@ public async Task GetAllAsyncStream_ReturnsAllEntities()
         results.Add(entity);
     }
 
-    results.Should().HaveCount(2);
+    Assert.Equal(2, results.Count);
 }
-```

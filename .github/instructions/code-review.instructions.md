@@ -71,7 +71,7 @@ public async Task<User> GetUserByIdAsync(string userId, int accountLevel)
 {
     if (accountLevel > PremiumUserThreshold)
         return await _repository.GetPremiumUserAsync(userId);
-    
+
     return await _repository.GetUserAsync(userId);
 }
 ```
@@ -168,9 +168,9 @@ public async Task GetUserByIdAsync_WhenUserExists_ReturnsUser()
 
     var result = await _repository.GetByIdAsync(userId);
 
-    result.Should().NotBeNull();
-    result.Id.Should().Be(userId);
-    result.Name.Should().Be("John");
+    Assert.NotNull(result);
+    Assert.Equal(userId, result.Id);
+    Assert.Equal("John", result.Name);
 }
 ```
 

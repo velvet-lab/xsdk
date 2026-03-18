@@ -128,19 +128,23 @@ dotnet add package xSdk.Data.EntityFramework
 ## Quick Start
 
 ```csharp
-services.AddEntityFrameworkDataStore<MyDbContext, User>(options =>
+services.AddDatalayer(datalayer =>
 {
-    options.UseSqlServer(connectionString);
+    datalayer.UseEntityFramework<MyDbContext>("AppDb", config =>
+    {
+        config.TransactionsEnabled = true;
+    });
+    datalayer.MapRepository<IMyRepository, MyRepository>("AppDb");
 });
 ```
 
 ## Features
 
-- Generic repository pattern implementation
-- Async/await support throughout
-- Built-in support for pagination, filtering, and sorting
-- Transaction management
-- Change tracking integration
+- `EntityFrameworkRepository<TDbContext, TEntity>` repository implementation
+- Async/await support with `CancellationToken` propagation
+- LINQ filter helpers via protected `SelectAsync`/`SelectListAsync` overloads
+- Configurable transaction support (`TransactionsEnabled`)
+- Demo mode via `CreateFakesAsync()` override
 
 ## Configuration
 
@@ -148,12 +152,12 @@ services.AddEntityFrameworkDataStore<MyDbContext, User>(options =>
 
 ## Dependencies
 
-- Microsoft.EntityFrameworkCore 9.0+
+- Microsoft.EntityFrameworkCore 10.0+
 - xSdk.Data 1.0+
 
 ## License
 
-MIT License - see LICENSE file for details
+Apache-2.0 License - see LICENSE file for details
 ```
 
 ## Inline Comments

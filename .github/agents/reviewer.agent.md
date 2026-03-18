@@ -97,6 +97,7 @@ Use priority levels:
 
 **Architecture:**
 - [ ] Follows xSDK patterns
+- [ ] Aligns with the relevant ADR(s) in `docs/adr/` — check Consequences/Negative section for known constraints
 - [ ] Appropriate separation of concerns
 - [ ] Correct dependency injection
 - [ ] Namespace matches folder structure
@@ -162,7 +163,7 @@ private readonly string _apiKey;
 
 public ApiClient(IConfiguration configuration)
 {
-    _apiKey = configuration["ApiKey"] 
+    _apiKey = configuration["ApiKey"]
         ?? throw new InvalidOperationException("ApiKey not configured");
 }
 ```
@@ -196,7 +197,7 @@ public async Task CreateUserAsync_WithInvalidEmail_ThrowsArgumentException(
     string invalidEmail)
 {
     var user = new User { Email = invalidEmail };
-    
+
     await Assert.ThrowsAsync<ArgumentException>(
         () => _service.CreateUserAsync(user));
 }
@@ -213,7 +214,7 @@ public async Task CreateUserAsync_WithInvalidEmail_ThrowsArgumentException(
 File: `OrderProcessor.cs`, Lines 45-47
 
 ```csharp
-if (order.Total > 100 && order.Customer.IsPremium && 
+if (order.Total > 100 && order.Customer.IsPremium &&
     !order.HasDiscount && order.ShippingDate > DateTime.Now)
 ```
 
@@ -243,13 +244,13 @@ if (IsEligibleForExpressShipping(order))
 Always acknowledge good practices:
 
 ```markdown
-**✅ Excellent!** Clean separation of concerns with the repository pattern. 
+**✅ Excellent!** Clean separation of concerns with the repository pattern.
 The async/await usage is correct throughout, and comprehensive tests cover all scenarios.
 
-**✅ Well done!** The XML documentation is thorough and includes helpful examples. 
+**✅ Well done!** The XML documentation is thorough and includes helpful examples.
 This will make the API much easier to use.
 
-**✅ Great pattern!** Using the Options pattern for configuration is exactly right 
+**✅ Great pattern!** Using the Options pattern for configuration is exactly right
 for this scenario. Nice work!
 ```
 
@@ -342,7 +343,7 @@ End with a summary:
 - Add example to README for common use case
 
 **Recommendation:**
-Code is ready to merge after addressing the integration test gap. 
+Code is ready to merge after addressing the integration test gap.
 The suggestions can be addressed in follow-up PRs if preferred.
 
 Great work overall! The implementation is solid and follows best practices.

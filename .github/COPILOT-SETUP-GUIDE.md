@@ -157,7 +157,7 @@ Help me debug the intermittent test failures in UserServiceTests
 
 With this configuration, Copilot understands:
 
-1. **Technology Stack**: .NET 8, C# 12, xUnit, EF Core, ASP.NET Core
+1. **Technology Stack**: .NET 10, C# 13, xUnit, EF Core, ASP.NET Core
 2. **Project Structure**: Library project with data providers and extensions
 3. **Conventions**: Naming, async/await, nullable types, testing patterns
 4. **Best Practices**: Security, performance, documentation standards

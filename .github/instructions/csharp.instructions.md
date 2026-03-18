@@ -8,7 +8,7 @@ applyTo: '**/*.cs'
 
 ## C# and .NET Version
 
-- Project targets .NET 8.0 (see `global.json`, SDK pinned to 8.0.411)
+- Project targets .NET 10.0 (see `global.json`, SDK pinned to 10.0.200)
 - `<LangVersion>latest</LangVersion>` is set in `Directory.Build.props` — use the latest C# features available for the target framework
 - Do not change the target framework or SDK version without explicit approval
 - Write clear and concise comments for public APIs and complex logic
@@ -79,7 +79,7 @@ All async methods must follow these guidelines:
 
 ## Data Access Patterns
 
-This project provides multiple data layer abstractions:
+This project provides multiple data layer abstractions. Read [ADR-005](../../docs/adr/ADR-005-repository-pattern-with-factory.md) (Repository Pattern) and [ADR-006](../../docs/adr/ADR-006-provider-agnostic-data-layer.md) (Provider-Agnostic Data Layer) before implementing or changing data access code. The key rules:
 
 - Follow repository pattern implementations in `xSdk.Data.*` projects
 - All data access operations must be async

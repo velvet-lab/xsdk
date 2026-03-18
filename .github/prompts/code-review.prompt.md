@@ -91,6 +91,7 @@ Review the code in this order:
 
 ### Architecture Review
 - [ ] Follows established project patterns
+- [ ] Aligns with the relevant ADR(s) in `docs/adr/` — check Consequences/Negative for documented constraints
 - [ ] Namespace matches folder structure
 - [ ] Appropriate separation of concerns
 - [ ] Dependencies injected, not created directly
@@ -177,7 +178,7 @@ Add test case:
 public async Task CreateUserAsync_WhenEmailAlreadyExists_ThrowsInvalidOperationException()
 {
     await _repository.AddAsync(new User { Id = "1", Email = "test@example.com" });
-    
+
     var newUser = new User { Id = "2", Email = "test@example.com" };
 
     await Assert.ThrowsAsync<InvalidOperationException>(
@@ -211,9 +212,9 @@ if (order.Total > 100 && order.User.IsPremium && !order.HasDiscount && order.Shi
 // Extract to method:
 private bool IsEligibleForExpressProcessing(Order order)
 {
-    return order.Total > 100 
-        && order.User.IsPremium 
-        && !order.HasDiscount 
+    return order.Total > 100
+        && order.User.IsPremium
+        && !order.HasDiscount
         && order.ShipDate > DateTime.Now;
 }
 
@@ -229,13 +230,13 @@ if (IsEligibleForExpressProcessing(order))
 Always acknowledge good practices:
 
 ```markdown
-**✅ Well done!** The use of the repository pattern here is excellent. 
+**✅ Well done!** The use of the repository pattern here is excellent.
 Clean separation of concerns and proper async/await usage throughout.
 
-**✅ Great test coverage!** Comprehensive tests covering all edge cases, 
+**✅ Great test coverage!** Comprehensive tests covering all edge cases,
 including null handling and boundary conditions.
 
-**✅ Excellent documentation!** XML comments are thorough and include 
+**✅ Excellent documentation!** XML comments are thorough and include
 helpful examples for complex scenarios.
 ```
 

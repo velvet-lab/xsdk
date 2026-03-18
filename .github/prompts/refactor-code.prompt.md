@@ -20,6 +20,7 @@ Before refactoring:
    - Poor testability?
 3. **Are there tests?** Check if existing tests cover the code
 4. **What are the dependencies?** Identify what depends on this code
+5. **Is there a relevant ADR?** Check `docs/adr/` — the relevant decision record may document intentional design constraints or known trade-offs that explain why the code looks the way it does. Do not refactor away from a pattern without understanding its ADR rationale.
 
 ## Step 2: Define Refactoring Goals
 
