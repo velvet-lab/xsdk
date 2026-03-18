@@ -405,12 +405,12 @@ public async Task GetByIdAsync_WhenEntityExists_ReturnsEntity()
 {
     var store = new InMemoryDataStore<User>();
     var user = new User { Id = "1", Name = "Alice" };
-    await store.AddAsync(user);
+    await store.InsertAsync(user);
 
-    var result = await store.GetByIdAsync("1");
+    var result = await store.SelectAsync("1");
 
-    result.Should().NotBeNull();
-    result!.Name.Should().Be("Alice");
+    Assert.NotNull(result);
+    Assert.Equal("Alice", result!.Name);
 }
 ```
 

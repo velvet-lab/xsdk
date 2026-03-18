@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+using xSdk.Hosting;
+
 namespace xSdk.Extensions.Variable;
 
-public class EnvironmentSetupTests
+public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
     public void EnvironmentSetup_AppName_CanBeSet()

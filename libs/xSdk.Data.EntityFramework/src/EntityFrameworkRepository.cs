@@ -59,7 +59,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             async (dbContext) =>
             {
                 var primaryKeyValue = primaryKey.GetValue();
-                var trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id == primaryKeyValue);
+                var trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id.Equals(primaryKeyValue));
 
                 if (trackedItem != null)
                 {
@@ -104,7 +104,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             (dbContext) =>
             {
                 var primaryKeyValue = primaryKey.GetValue();
-                return dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id == primaryKeyValue, token);
+                return dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKeyValue), token);
             },
             false,
             token
@@ -136,7 +136,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             async (dbContext) =>
             {
                 var primaryKeyValue = primaryKey.GetValue();
-                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id == primaryKeyValue, token);
+                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKeyValue), token);
 
                 if (trackedItem != null)
                 {
@@ -158,7 +158,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             async (dbContext) =>
             {
                 var primaryKeyValue = entity.PrimaryKey.GetValue();
-                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id == primaryKeyValue, token);
+                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKeyValue), token);
 
                 if (trackedItem == null)
                 {
