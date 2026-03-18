@@ -33,7 +33,7 @@ public class CloudEventWebExtensionsTests(TestHostFixture _) : IClassFixture<Tes
 
         Assert.NotNull(json);
         Assert.NotEmpty(json);
-        Assert.True(json.TrimStart().StartsWith("{"));
+        Assert.StartsWith("{", json.TrimStart());
     }
 
     [Fact]
