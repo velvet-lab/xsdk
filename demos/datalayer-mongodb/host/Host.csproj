@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Testcontainers" VersionOverride="4.11.0" />
         <ProjectReference Include="..\..\..\libs\xSdk.Data.EntityFramework.MongoDB\src\xSdk.Data.EntityFramework.MongoDB.csproj" />
         <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
     </ItemGroup>
