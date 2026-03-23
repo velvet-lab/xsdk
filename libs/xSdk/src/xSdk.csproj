@@ -20,6 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Mapster" VersionOverride="10.0.3" />
+      <PackageReference Include="Microsoft.OpenApi" VersionOverride="3.5.0" />
         <ProjectReference Include="..\..\xSdk.Plugin\src\xSdk.Plugin.csproj" />
     </ItemGroup>
 
