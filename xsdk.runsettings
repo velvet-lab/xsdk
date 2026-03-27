@@ -10,6 +10,6 @@
     </RunConfiguration>
     <xUnit>
         <ParallelizeTestCollections>false</ParallelizeTestCollections>
-        <ParallelizeAssembly>false</ParallelizeAssembly>
+        <ParallelizeAssembly>false</ParallelizeAssembly>        
     </xUnit>
 </RunSettings>
