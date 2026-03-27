@@ -42,21 +42,21 @@ const string APP_NAME = "datalayer-vault";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "dv";
 
-//// Prepare Testcontainer
-//var container = new ContainerBuilder()
-//    .WithImage("packages.repo.dvint.de/docker-central-proxy/hashicorp/vault:1.18")
-//    .WithPortBinding(8200, true)
-//    .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(8200))
-//    .WithImagePullPolicy(PullPolicy.Always)
-//    .Build();
+// Prepare Testcontainer
+var container = new ContainerBuilder()
+    .WithImage("hashicorp/vault:1.18")
+    .WithPortBinding(8200, true)
+    .WithWaitStrategy(Wait.ForUnixContainer().UntilContainerIsHealthy())
+    .WithImagePullPolicy(PullPolicy.Always)
+    .Build();
 
-//await container.StartAsync();
-//var port = container.GetMappedPublicPort(8200);
-//var (stdout, stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
+await container.StartAsync();
+var port = container.GetMappedPublicPort(8200);
+var (stdout, stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
 
-//var splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-//var rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
-//var unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
+var splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+var rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
+var unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
 
 var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)

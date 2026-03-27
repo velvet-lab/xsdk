@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\xSdk.Data.Consul\src\xSdk.Data.Consul.csproj" />
+    <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+  </ItemGroup>
+
 </Project>
