@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted (extended 2026-03-27 — supersedes [ADR-013](ADR-013-nlog-logging-framework.md))
 
 ## Date
 
@@ -17,6 +17,8 @@ Modern cloud-native applications require unified observability: distributed trac
 3. Support the OTLP (OpenTelemetry Protocol) for export to tools like Jaeger, Prometheus, Grafana, Datadog, or any OTLP-compatible backend.
 4. Let plugin extensions contribute additional instrumentation (e.g., EF Core traces, HTTP client metrics).
 5. Be entirely optional — applications that do not need telemetry should not pay the cost.
+
+**Extension (2026-03-27):** NLog (ADR-013) is fully superseded. OpenTelemetry is now the sole observability stack for logging, tracing, and metrics. The `Microsoft.Extensions.Logging` abstraction (`ILogger<T>`) remains the logging API; OTel replaces NLog as the backend provider.
 
 ## Decision
 
@@ -77,6 +79,81 @@ Example — EF Core tracing is contributed by a plugin that implements `ITelemet
 
 An injectable `ITelemetryService` provides application-level access to the configured `ActivitySource` and `Meter` instances, allowing application code to create custom spans and metrics without referencing OpenTelemetry APIs directly.
 
+### Logging: Replacing NLog with ILogger\<T\> + OTel
+
+`HostLoggingManager` is rewritten to remove all NLog dependencies:
+
+```csharp
+internal static void ConfigureLogging(ILoggingBuilder builder)
+{
+    builder.ClearProviders();
+    builder.SetMinimumLevel(ConvertLogLevel(envSetup)); // using MEL LogLevel directly
+    if (Debugger.IsAttached || envSetup.IsDotNetRunningInContainer)
+        builder.AddConsole();
+    // OTLP log export is configured by TelemetryPlugin
+}
+```
+
+The `ProcessExit` hook (`LogManager.Flush/Shutdown`) is removed — `IHost.StopAsync()` provides the graceful shutdown guarantee for OTel exporters.
+
+All SDK classes migrate from `LogManager.GetCurrentClassLogger()` to `ILogger<T>` constructor injection. Static classes that only performed log-then-rethrow have their try/catch blocks removed entirely.
+
+### Tracing: Target Locations
+
+Tracing is applied at **boundary layers only** — operations with measurable latency or external dependencies. The following are the designated instrumentation points:
+
+**Priority HIGH — external I/O**
+
+| Class | Span names | Reason |
+|---|---|---|
+| `VaultRepository` / `ReadOnlyVaultRepository` | `vault.read_secret`, `vault.write_secret` | HTTP call to HashiCorp Vault |
+| `NoSqlRepository` (LiteDB) | `nosql.query`, `nosql.insert`, `nosql.update`, `nosql.delete` | File-based DB operations |
+| `HttpClientBuilder` | automatic via `AddHttpClientInstrumentation()` | All outbound HTTP |
+| `CloudEventFactory` / `CloudEventWebExtensions` | `cloudevent.publish`, `cloudevent.receive` | Event boundary |
+| `PluginItem` | `plugin.load`, `plugin.initialize` | Assembly + filesystem I/O |
+
+**Priority MEDIUM — internal boundaries worth observing**
+
+| Class | Reason |
+|---|---|
+| `FileSystemService` | File I/O that can fail |
+| `CredentialManager` / `CertAuthSetup` / `AppRoleAuthSetup` | Security operations — audit trail |
+| `VariableService` | Configuration resolution failures |
+
+**Explicitly excluded from tracing**
+
+- All `Converters.Mapper` classes (nanosecond pure functions, no I/O, no meaningful latency)
+- EF Core repositories (covered automatically via `AddEntityFrameworkCoreInstrumentation()`)
+
+### Metrics: Target Instruments
+
+Metrics are added at locations where aggregated data has operational value (alerting, dashboards, capacity planning):
+
+| Metric name | Type | Location | Operational value |
+|---|---|---|---|
+| `xsdk.repository.operations.duration` | Histogram | `NoSqlRepository`, `VaultRepository` | Latency alerting |
+| `xsdk.repository.operations.errors` | Counter | All repositories | Error rate / SLA |
+| `xsdk.plugin.load.duration` | Histogram | `PluginItem` | Plugin startup performance |
+| `xsdk.plugin.loaded.count` | UpDownCounter | Plugin system | Active plugin count |
+| `xsdk.http.requests.duration` | Histogram | `HttpClientBuilder` | automatic via instrumentation |
+| `xsdk.vault.requests.total` | Counter | `VaultRepository` | Vault call volume |
+| `xsdk.variable.resolution.failures` | Counter | `VariableService` | Configuration error detection |
+
+All custom instruments are created via `ITelemetryService.CreateCounter<T>()` / `CreateHistogram<T>()` to avoid direct references to `System.Diagnostics.Metrics` in SDK libraries.
+
+### Migration Sequence
+
+```
+1. HostLoggingManager      NLog targets → AddConsole() + OTel logging
+2. TelemetryConfigurator   Remove NLog circular dependency (static _logger)
+3. Static SDK classes      Remove log-then-rethrow try/catch blocks
+4. DI-managed classes      ILogger<T> constructor injection
+5. Repository layer        Add Tracing + Metrics via ITelemetryService
+6. HttpClientBuilder       AddHttpClientInstrumentation() in TelemetryPlugin
+7. Plugin system           Tracing for load/initialize
+8. Host.cs / TestHost      Remove LogManager.Flush/Shutdown hooks
+```
+
 ## Consequences
 
 ### Positive
@@ -90,5 +167,7 @@ An injectable `ITelemetryService` provides application-level access to the confi
 ### Negative
 
 - OTLP exporter is disabled by default (`IsOtlpExporterDisabled = true`), requiring explicit activation; this is easy to forget in production deployments.
-- The logging configuration (`ConfigureOtlpExporter`) in `TelemetryPlugin` is always applied even when `IsLoggingDisabled == true` — this appears to be a code-level oversight that should be guarded.
+- The logging configuration (`ConfigureOtlpExporter`) in `TelemetryPlugin` is always applied even when `IsLoggingDisabled == true` — this is a known code-level oversight that must be fixed during the NLog migration.
 - OpenTelemetry SDK versions are still evolving rapidly; some packages (`OpenTelemetry.Instrumentation.EntityFrameworkCore`) are in beta.
+- Static SDK classes that cannot receive `ILogger<T>` via DI must either be refactored to non-static or forgo logging entirely — the latter is acceptable when the class is a pure function with no external dependencies.
+- The `TelemetryConfigurator` class currently uses NLog for its own internal logging, creating a circular dependency — this must be resolved by either making the class non-static with `ILogger<T>` injection or replacing the single warning with a `Console.Error.WriteLine` during bootstrap.

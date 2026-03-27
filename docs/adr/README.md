@@ -28,8 +28,8 @@ Each ADR follows this structure:
 | [ADR-010](ADR-010-vault-secret-management.md) | HashiCorp Vault as Secret Management Provider | Accepted |
 | [ADR-011](ADR-011-mongodb-via-efcore.md) | MongoDB Access via EF Core Provider | Accepted |
 | [ADR-012](ADR-012-demo-fake-repository-mode.md) | Demo Mode with In-Memory Fake Repository | Accepted |
-| [ADR-013](ADR-013-nlog-logging-framework.md) | NLog as Logging Framework | Accepted |
-| [ADR-014](ADR-014-opentelemetry-observability.md) | OpenTelemetry for Observability (Metrics, Tracing, Logging) | Accepted |
+| [ADR-013](ADR-013-nlog-logging-framework.md) | NLog as Logging Framework | Superseded by ADR-014 |
+| [ADR-014](ADR-014-opentelemetry-observability.md) | OpenTelemetry for Observability (Metrics, Tracing, Logging) | Accepted (extended 2026-03-27) |
 | [ADR-015](ADR-015-aspnetcore-web-host-extension.md) | ASP.NET Core Web Host Extension | Accepted |
 | [ADR-016](ADR-016-cloudevents-integration.md) | CloudNative.CloudEvents Integration | Accepted |
 | [ADR-017](ADR-017-spectre-console-commands.md) | Spectre.Console.Cli for Command-Line Interface | Accepted |

@@ -2,11 +2,22 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR-014](ADR-014-opentelemetry-observability.md)
 
 ## Date
 
 2026-03-17
+
+## Supersession Note (2026-03-27)
+
+NLog is being replaced by the native `Microsoft.Extensions.Logging` (MEL) abstraction with OpenTelemetry as the unified backend. The decision is driven by:
+
+1. **Tight coupling** — `LogManager.GetCurrentClassLogger()` is used in ~25 SDK classes, making the framework a cross-cutting dependency across all libraries.
+2. **Redundancy** — ADR-014 already provides OTLP log export via OpenTelemetry. Running NLog in parallel is unnecessary overhead.
+3. **Design conflict** — OTel's `ILogger<T>`-first model cannot coexist cleanly with NLog's static `LogManager` API in DI-managed contexts.
+4. **Convergence** — .NET 10's `Microsoft.Extensions.Logging` combined with OpenTelemetry covers all use cases NLog provided (console, file via providers, structured output, OTLP export) without third-party dependencies.
+
+See [ADR-014](ADR-014-opentelemetry-observability.md) for the target architecture.
 
 ## Context
 
@@ -88,3 +99,19 @@ NLog is initialized programmatically (not via `nlog.config` XML) to ensure stage
 - Direct `LogManager` static API usage throughout the codebase creates a tight coupling to NLog; replacing NLog would require changes across all SDK libraries.
 - The programmatic NLog configuration bypasses the standard `nlog.config` mechanism — experienced NLog users may find the setup unfamiliar.
 - `ConfigureSlimLogging` vs `ConfigureLogging` is a subtle distinction; using the wrong one during bootstrap leaves file logging unconfigured.
+
+## Migration Outcome
+
+The following NLog constructs are removed as part of the migration to ADR-014:
+
+| NLog construct | Replacement |
+|---|---|
+| `LogManager.GetCurrentClassLogger()` | `ILogger<T>` via constructor injection |
+| `NLog.Extensions.Logging` adapter | `builder.AddOpenTelemetry()` in `TelemetryPlugin` |
+| `ConsoleTarget` | `builder.AddConsole()` (MEL built-in) |
+| `FileTarget` + XML config | `builder.AddFile()` or structured provider |
+| `Log4JXmlTarget` (UDP NLogViewer) | removed — replaced by OTLP export |
+| `LogManager.Flush()` / `Shutdown()` | `IHost.StopAsync()` handles graceful shutdown |
+| `NLog.LogLevel` conversion | direct `Microsoft.Extensions.Logging.LogLevel` |
+
+Static classes that previously used `LogManager.GetCurrentClassLogger()` only for log-then-rethrow patterns have the try/catch removed entirely — the exception propagates unchanged to the boundary layer where it is captured by OTel tracing.
