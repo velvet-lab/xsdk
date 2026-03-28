@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
+using System.ComponentModel.Design;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
+using xSdk.Plugins.Commands;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Hosting;
 
 public static class HostExtensions
 {
-    internal static Action<IReplBuilder> ReplBuilderDelegate { get; set; }
-
     public static int RunConsole(this IHost host, string[] args) => host.RunConsoleAsync(args).GetAwaiter().GetResult();
 
     public static async Task<int> RunConsoleAsync(this IHost host, string[] args)
@@ -40,25 +43,28 @@ public static class HostExtensions
             throw new InvalidOperationException("Command application has not been configured.");
         }
 
+        // Start any hosted services before running the command application
+        var hostedServices = host.Services.GetServices<IHostedService>();
+        if (hostedServices.Any())
+        {
+            hostedServices.ToList().ForEach(hostedService => hostedService.StartAsync(CancellationToken.None).GetAwaiter().GetResult());
+        }
+
         host.RemoveConsoleLoggers();
+
+        var builder = SlimHost.Instance.PluginSystem.GetPlugin<ICommandsPluginBuilder>();
 
         var lastResult = 0;
         var replArgs = args;
         var defaultArgs = CommandlineParser.Parse(args).BackupDefaultArgs();
-        var replBuilder = new ReplBuilder();
         var isReplConsole = CommandlineParser.Parse().ContainsPattern(ConsoleCommand.Definitions.Name);
-
-        if (isReplConsole && ReplBuilderDelegate != null)
-        {
-            ReplBuilderDelegate(replBuilder);
-        }
 
         do
         {
             var currentResult = await app.RunAsync(replArgs);
             if (isReplConsole)
             {
-                System.Console.Write(replBuilder.PromptFactory());
+                System.Console.Write(builder.PromptFactory());
                 var input = System.Console.ReadLine();
 
                 if (CommandlineParser.Parse(input).AddDefaultArgs(defaultArgs).ContainsPattern(ExitCommand.Definitions.Name))
@@ -82,31 +88,13 @@ public static class HostExtensions
 
     private static IHost RemoveConsoleLoggers(this IHost host)
     {
-        var config = NLog.LogManager.Configuration;
+        System.Console.Clear();
 
-        var logNames = new List<string>();
-        foreach (var target in config.AllTargets)
-        {
-            if (target is NLog.Targets.ConsoleTarget consoleTarget)
-            {
-                logNames.Add(consoleTarget.Name);
-            }
-        }
-
-        var wasRemoved = false;
-        foreach (var logName in logNames)
-        {
-            if (!string.IsNullOrEmpty(logName))
-            {
-                wasRemoved = true;
-                LogManager.Configuration.RemoveTarget(logName);
-            }
-        }
-
-        if (wasRemoved)
-        {
-            LogManager.ReconfigExistingLoggers();
-        }
+        // Alle konfigurierten Provider (OTel, Console, ...) bleiben erhalten.
+        // Nur der globale MinLevel wird auf Warning gesetzt, damit die Console
+        // im REPL-Modus nicht mit Info-Meldungen überfüllt wird.
+        var filterOptions = host.Services.GetRequiredService<IOptions<LoggerFilterOptions>>();
+        filterOptions.Value.MinLevel = LogLevel.Warning;
 
         return host;
     }

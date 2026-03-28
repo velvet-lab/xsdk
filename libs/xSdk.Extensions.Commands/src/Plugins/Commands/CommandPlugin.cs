@@ -14,8 +14,31 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
+using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
+using xSdk.Plugins.Documentation;
 
 namespace xSdk.Plugins.Commands;
 
-internal sealed class CommandPlugin : PluginBase { }
+internal sealed class CommandPlugin : PluginBase
+{
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.TryAddSingleton<ICommandApp>(provider =>
+        {
+            var builder = SlimHost.Instance.PluginSystem.GetPlugin<ICommandsPluginBuilder>();
+
+            var app = builder.CreateApplication(services);
+            app.Configure(config =>
+            {
+                builder.Configure(config);
+            });
+
+            return app;
+        });
+    }
+}

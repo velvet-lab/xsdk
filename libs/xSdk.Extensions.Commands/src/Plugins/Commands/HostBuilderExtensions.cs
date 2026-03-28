@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Commands;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
@@ -23,16 +22,14 @@ namespace xSdk.Plugins.Commands;
 public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableCommands(this IHostBuilder builder)
-    {
-        builder.EnablePlugin<CommandPlugin>();
-
-        return builder;
-    }
+        => EnableCommands<DefaultCommandsPluginBuilder>(builder);
 
     public static IHostBuilder EnableCommands<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : ICommandLinePluginBuilder
+        where TPluginBuilder : ICommandsPluginBuilder
     {
-        builder.EnableCommands().EnablePlugin<TPluginBuilder>();
+        builder
+            .EnablePlugin<CommandPlugin>()
+            .EnablePlugin<TPluginBuilder>();
 
         return builder;
     }
