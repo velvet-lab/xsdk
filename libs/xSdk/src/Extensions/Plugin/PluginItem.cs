@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Extensions.Plugin;
 
 internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin)
 {
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<PluginItem>();
 
     private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;
@@ -53,7 +54,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     {
         if (weikioPlugin != null && _concretePlugin is PluginDescription description)
         {
-            _logger.Info("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
+            _logger.LogInformation("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
 
             description.Name = weikioPlugin.Name;
             description.Version = weikioPlugin.Version;

@@ -15,15 +15,16 @@
  */
 
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using NLog;
 using xSdk.Data.Converters.Json;
+using xSdk.Hosting;
 
 namespace xSdk.Data;
 
 public static class JsonHelper
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     public static bool IsJson(string data)
     {
@@ -56,7 +57,7 @@ public static class JsonHelper
 
         try
         {
-            _logger.Info("Try to merge States");
+            _logger.LogInformation("Try to merge States");
 
             if (string.IsNullOrEmpty(income))
                 income = "{}";
@@ -80,7 +81,7 @@ public static class JsonHelper
         }
         catch
         {
-            _logger.Warn("States could not merged.");
+            _logger.LogWarning("States could not merged.");
         }
 
         return result.ToString(Newtonsoft.Json.Formatting.None);
@@ -90,7 +91,7 @@ public static class JsonHelper
 
     public static System.Text.Json.JsonSerializerOptions GetSerializerOptions(bool compact)
     {
-        _logger.Trace("Create new Json Serializer Options");
+        _logger.LogTrace("Create new Json Serializer Options");
 
         var options = new System.Text.Json.JsonSerializerOptions();
         return ConfigureSerializerOptions(options, compact);
@@ -101,7 +102,7 @@ public static class JsonHelper
 
     public static JsonSerializerOptions ConfigureSerializerOptions(this System.Text.Json.JsonSerializerOptions setup, bool compact)
     {
-        _logger.Trace("Create new Json Serializer Options");
+        _logger.LogTrace("Create new Json Serializer Options");
 
         setup.AllowTrailingCommas = true;
         setup.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;

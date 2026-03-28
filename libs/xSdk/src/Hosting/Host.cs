@@ -16,7 +16,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
@@ -46,6 +45,10 @@ public static partial class Host
                     .AddPluginServices()
                     .AddVariableServices();
 
+                // Add initializer for Logger Factory.
+                services
+                    .AddHostedService<LoggerFactoryInitializer>();
+
                 SlimHostInternal.Instance.PluginSystem
                     .Invoke<PluginBase>(x => x.ConfigureServices(services));
             })
@@ -54,13 +57,6 @@ public static partial class Host
                 SlimHostInternal.Instance.PluginSystem
                     .Invoke<HostPluginBase>(x => x.ConfigureServices(context, services));
             });
-
-        // Shutdown the logger
-        AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
-        {
-            LogManager.Flush();
-            LogManager.Shutdown();
-        };
 
         return builder;
     }

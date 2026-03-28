@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-using NLog;
+
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
 public static partial class AuthenticationBuilderExtensions
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 }

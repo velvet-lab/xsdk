@@ -6,8 +6,7 @@
         <ProjectGuid>31310438-E3D0-4861-9996-D4B24A8FF3F1</ProjectGuid>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="NLog" />
+    <ItemGroup>        
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
     </ItemGroup>

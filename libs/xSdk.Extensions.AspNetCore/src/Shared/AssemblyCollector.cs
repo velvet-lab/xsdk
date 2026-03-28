@@ -15,7 +15,7 @@
  */
 
 using System.Reflection;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
 using xSdk.Hosting;
 
@@ -23,21 +23,21 @@ namespace xSdk.Shared;
 
 internal static class AssemblyCollector
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
     private static List<Assembly>? _assemblies;
 
     internal static List<Assembly> Collect()
     {
-        _logger.Info("Collect loaded Assemblies");
+        _logger.LogInformation("Collect loaded Assemblies");
 
         if (_assemblies == null || _assemblies.Count == 0)
         {
             _assemblies = new List<Assembly>();
 
-            _logger.Debug("Add assemblies from executing folder");
+            _logger.LogDebug("Add assemblies from executing folder");
             AddAssembliesFromExecutingFolder(_assemblies);
 
-            _logger.Debug("Add assemblies from loaded plugins");
+            _logger.LogDebug("Add assemblies from loaded plugins");
             var plugins = SlimHost.Instance.PluginSystem.GetPlugins();
             foreach (var plugin in plugins)
             {
@@ -57,7 +57,7 @@ internal static class AssemblyCollector
         {
             assemblies.Add(assembly);
 
-            _logger.Debug("Add referenced Assemblies for found Assemblies");
+            _logger.LogDebug("Add referenced Assemblies for found Assemblies");
             AddReferencedAssemblies(assemblies, assembly);
         }
     }

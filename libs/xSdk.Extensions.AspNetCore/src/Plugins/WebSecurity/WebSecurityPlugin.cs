@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
@@ -33,7 +34,7 @@ public class WebSecurityPlugin : WebHostPluginBase
 
         if (isCorsEnabled)
         {
-            Logger.Info("Cors is enabled. Configure further security options");
+            Logger.LogInformation("Cors is enabled. Configure further security options");
             services.AddCors(cors =>
                 cors.AddDefaultPolicy(policy =>
                     policy
@@ -68,7 +69,7 @@ public class WebSecurityPlugin : WebHostPluginBase
             app.UseDeveloperExceptionPage();
         }
 
-        Logger.Debug("Enabled Cookie Policy");
+        Logger.LogDebug("Enabled Cookie Policy");
         app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax, Secure = CookieSecurePolicy.Always });
 
         Build(app);
@@ -93,7 +94,7 @@ public class WebSecurityPlugin : WebHostPluginBase
         // KnownNetworks und KnownProxies werden geleert, damit der Forwarded Header
         // unabhängig vom vorgelagerten Proxy akzeptiert wird.
 
-        Logger.Debug("Configure Forwarded Headers");
+        Logger.LogDebug("Configure Forwarded Headers");
         var fordwardedHeaderOptions = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
         fordwardedHeaderOptions.KnownNetworks.Clear();
         fordwardedHeaderOptions.KnownProxies.Clear();
@@ -102,7 +103,7 @@ public class WebSecurityPlugin : WebHostPluginBase
 
     private void Build(IApplicationBuilder app)
     {
-        Logger.Debug("Configure HSTS");
+        Logger.LogDebug("Configure HSTS");
         app.UseHsts()
             .UseReferrerPolicy(_ =>
             {
@@ -114,7 +115,7 @@ public class WebSecurityPlugin : WebHostPluginBase
     {
         var origins = GetOrigins();
 
-        Logger.Debug("Configure Security Headers");
+        Logger.LogDebug("Configure Security Headers");
         app.UseXXssProtection(options => options.EnabledWithBlockMode());
         app.UseXContentTypeOptions();
 
@@ -200,7 +201,7 @@ public class WebSecurityPlugin : WebHostPluginBase
         if (additionalOrigins.Any())
             origins = origins.Concat(additionalOrigins);
 
-        Logger.Info("Cors Origins configured: {0}", string.Join(", ", origins));
+        Logger.LogInformation("Cors Origins configured: {0}", string.Join(", ", origins));
 
         return origins.ToArray();
     }

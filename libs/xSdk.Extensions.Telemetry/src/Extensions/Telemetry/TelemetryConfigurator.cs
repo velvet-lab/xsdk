@@ -22,6 +22,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using xSdk.Extensions.Variable;
+using xSdk.Hosting;
 
 namespace xSdk.Extensions.Telemetry;
 
@@ -31,7 +32,7 @@ public static class TelemetryConfigurator
     //private static TelemetrySetup _telemetrySetup;
     //private static ResourceBuilder _resourceBuilder;
 
-    private static readonly NLog.ILogger _logger = NLog.LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     private enum TelemetryType
     {
@@ -129,7 +130,7 @@ public static class TelemetryConfigurator
             return true;
         }
 
-        _logger.Warn("Telemetry is enabled, but endpoint and token is missing. MaaS Observability is not possible.");
+        _logger.LogWarning("Telemetry is enabled, but endpoint and token is missing. MaaS Observability is not possible.");
 
         return false;
     }

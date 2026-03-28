@@ -36,9 +36,6 @@
     <PackageVersion Include="Microsoft.OpenApi" Version="[2.7.0, 3.0.0)" />
     <PackageVersion Include="MongoDB.Bson" Version="3.7.1" />
     <PackageVersion Include="MongoDB.EntityFrameworkCore" Version="10.0.1" />
-    <PackageVersion Include="NLog" Version="6.1.1" />
-    <PackageVersion Include="NLog.Extensions.Logging" Version="6.1.2" />
-    <PackageVersion Include="NLog.Targets.Network" Version="6.0.4" />
     <PackageVersion Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OpenTelemetry" Version="1.15.1" />

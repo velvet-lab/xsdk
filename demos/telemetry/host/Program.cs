@@ -16,8 +16,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Demos;
+using xSdk.Hosting;
 
 const string APP_NAME = "telemetry";
 const string APP_COMPANY = "xdemos";
@@ -36,6 +37,6 @@ var host = xSdk.Hosting.Host
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
-logger.Info("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

@@ -16,6 +16,7 @@
 
 using System.Linq.Expressions;
 using LiteDB;
+using Microsoft.Extensions.Logging;
 using xSdk.Data.Converters.Bson;
 
 namespace xSdk.Data;
@@ -24,13 +25,13 @@ public partial class NoSqlRepository<TEntity>
 {
     public override Task<TEntity?> SelectAsync(IPrimaryKey primaryKey, CancellationToken token = default)
     {
-        _logger.Trace("Get Entity by '{0}'...", primaryKey);
+        _logger.LogTrace("Get Entity by '{0}'...", primaryKey);
         return ExecuteInternalAsync(col => col.FindByIdAsync(BsonValueConverter.Convert(primaryKey.GetValue<ObjectId>())), false, token);
     }
 
     public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default)
     {
-        _logger.Trace("Get all Entities ...");
+        _logger.LogTrace("Get all Entities ...");
         return ExecuteInternalAsync(col => col.FindAllAsync(), false, token);
     }
 
@@ -38,7 +39,7 @@ public partial class NoSqlRepository<TEntity>
 
     protected Task<TEntity> SelectAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default)
     {
-        _logger.Trace("Get Entity");
+        _logger.LogTrace("Get Entity");
         return ExecuteInternalAsync(col => col.FindAllAsync(), false, token).ContinueWith(task => task.Result.SingleOrDefault(filter.Compile()), token);
     }
 
@@ -46,7 +47,7 @@ public partial class NoSqlRepository<TEntity>
 
     protected Task<IEnumerable<TEntity>> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default)
     {
-        _logger.Trace("Get Entities by predicate");
+        _logger.LogTrace("Get Entities by predicate");
 
         return ExecuteInternalAsync(col => col.FindAllAsync(), false, token)
             .ContinueWith(

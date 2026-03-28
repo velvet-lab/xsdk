@@ -11,8 +11,6 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="NLog.Extensions.Logging" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="NLog.Targets.Network" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Weikio.PluginFramework" PrivateAssets="contentfiles;analyzers;build;compile" />

@@ -15,6 +15,7 @@
  */
 
 using LiteDB;
+using Microsoft.Extensions.Logging;
 using xSdk.Data.Converters.Bson;
 
 namespace xSdk.Data;
@@ -92,7 +93,7 @@ public partial class NoSqlRepository<TEntity>
         }
         catch (Exception ex)
         {
-            _logger.Fatal(ex, "A Error occurred while execute a Command the Database");
+            _logger.LogCritical(ex, "A Error occurred while execute a Command the Database");
         }
 
         return result;

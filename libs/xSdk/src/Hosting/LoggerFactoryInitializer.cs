@@ -16,16 +16,21 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using xSdk.Demos;
-using xSdk.Hosting;
 
-const string APP_NAME = "plugin";
-const string APP_COMPANY = "xdemos";
-const string APP_PREFIX = "pl";
+namespace xSdk.Hosting;
 
-var host = xSdk.Hosting.Host.CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX).EnablePlugin<MyPlugin>().Build();
+/// <summary>
+/// Hosted service that initializes <see cref="LogManager"/> once the DI container is ready.
+/// </summary>
+internal sealed class LoggerFactoryInitializer(ILoggerFactory factory) : IHostedService
+{
+    /// <inheritdoc/>
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        LogManager.Initialize(factory);
+        return Task.CompletedTask;
+    }
 
-var logger = LogManager.GetCurrentClassLogger();
-logger.LogInformation("Starting {AppName}", APP_NAME);
-
-await host.RunAsync();
+    /// <inheritdoc/>
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+}

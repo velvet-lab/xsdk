@@ -19,15 +19,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable.Attributes;
+using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Extensions.Variable;
 
 public abstract class Setup : ISetup
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<Setup>();
 
     private readonly ICollection<ValidationResult> _validationResults = new Collection<ValidationResult>();
     private VariableService _variableService;
@@ -45,8 +46,8 @@ public abstract class Setup : ISetup
 
         var currentType = this.GetType();
 
-        _logger.Info("Validate Setup '{0}'", currentType.FullName);
-        _logger.Trace("Validate Annotations for Setup '{0}'", currentType.FullName);
+        _logger.LogInformation("Validate Setup '{0}'", currentType.FullName);
+        _logger.LogTrace("Validate Annotations for Setup '{0}'", currentType.FullName);
         if (!this.ValidateAnnotations(out ICollection<ValidationResult> annotationResults))
         {
             isValid = annotationResults.ValidateResults();
@@ -54,7 +55,7 @@ public abstract class Setup : ISetup
 
         if (isValid)
         {
-            _logger.Trace("Validate Setup '{0}'", currentType.FullName);
+            _logger.LogTrace("Validate Setup '{0}'", currentType.FullName);
             ValidateSetup();
 
             isValid = Results.ValidateResults();

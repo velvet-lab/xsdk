@@ -15,7 +15,8 @@
  */
 
 using LiteDB.Async;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
 
 namespace xSdk.Data;
 
@@ -23,7 +24,7 @@ public partial class NoSqlRepository<TEntity> : Repository<TEntity>
     where TEntity : class, IEntity
 {
     private readonly object _syncObject = new();
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<NoSqlRepository<TEntity>>();
 
     private async Task<TResult> ExecuteInternalAsync<TResult>(
         Func<ILiteCollectionAsync<TEntity>, Task<TResult>> func,
@@ -63,7 +64,7 @@ public partial class NoSqlRepository<TEntity> : Repository<TEntity>
         }
         catch (Exception ex)
         {
-            _logger.Warn(ex, "A Error occurred while execute a Operation with Transactionon the Database");
+            _logger.LogWarning(ex, "A Error occurred while execute a Operation with Transactionon the Database");
 
             if (withTransaction && transactionDatabase != null)
                 await transactionDatabase.RollbackAsync();
@@ -84,7 +85,7 @@ public partial class NoSqlRepository<TEntity> : Repository<TEntity>
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Indicies could not updated for Entity '{0}'", typeof(TEntity).FullName);
+                _logger.LogError(ex, "Indicies could not updated for Entity '{0}'", typeof(TEntity).FullName);
             }
         }
     }

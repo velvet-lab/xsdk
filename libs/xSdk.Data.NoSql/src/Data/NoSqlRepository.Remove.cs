@@ -16,6 +16,7 @@
 
 using System.Linq.Expressions;
 using LiteDB;
+using Microsoft.Extensions.Logging;
 using xSdk.Data.Converters.Bson;
 
 namespace xSdk.Data;
@@ -24,7 +25,7 @@ public partial class NoSqlRepository<TEntity>
 {
     public override Task<bool> RemoveAsync(IPrimaryKey primaryKey, CancellationToken token = default)
     {
-        _logger.Trace("Remove Entity '{0}'", primaryKey);
+        _logger.LogTrace("Remove Entity '{0}'", primaryKey);
         return ExecuteInternalAsync(col => col.DeleteAsync(BsonValueConverter.Convert(primaryKey.GetValue<ObjectId>())), true, token);
     }
 
@@ -32,7 +33,7 @@ public partial class NoSqlRepository<TEntity>
 
     public override async Task<int> RemoveAsync(IEnumerable<IPrimaryKey> primaryKeys, CancellationToken token = default)
     {
-        _logger.Trace("Remove Entities ...");
+        _logger.LogTrace("Remove Entities ...");
 
         var deleted = 0;
         foreach (var primaryKey in primaryKeys)

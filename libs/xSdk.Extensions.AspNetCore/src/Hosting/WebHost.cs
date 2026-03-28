@@ -16,7 +16,7 @@
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Variable;
 
@@ -24,7 +24,7 @@ namespace xSdk.Hosting;
 
 public static partial class WebHost
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
 
@@ -38,7 +38,7 @@ public static partial class WebHost
             .Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix)
             .ConfigureWebHostDefaults(webHostBuilder =>
             {
-                _logger.Debug("Configuring WebHostBuilder");
+                _logger.LogDebug("Configuring WebHostBuilder");
 
                 var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
                 var stage = envSetup.Stage;
@@ -70,8 +70,8 @@ public static partial class WebHost
 
     private static string GetContentRoot(EnvironmentSetup envSetup)
     {
-        _logger.Debug(envSetup.IsDemo ? "Demo Mode" : "Production Mode");
-        _logger.Debug("Try to get Content Root");
+        _logger.LogDebug(envSetup.IsDemo ? "Demo Mode" : "Production Mode");
+        _logger.LogDebug("Try to get Content Root");
 
         var root = envSetup.ContentRoot;
         if (envSetup.IsDemo)
@@ -83,7 +83,7 @@ public static partial class WebHost
         {
             try
             {
-                _logger.Trace("Content root does not exist, creating it");
+                _logger.LogTrace("Content root does not exist, creating it");
                 Directory.CreateDirectory(root);
             }
             catch

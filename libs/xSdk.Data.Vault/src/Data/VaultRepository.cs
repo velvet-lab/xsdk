@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using NLog;
+using Microsoft.Extensions.Logging;
 using VaultSharp;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
@@ -23,7 +23,7 @@ namespace xSdk.Data;
 
 internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultRepository
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<VaultRepository>();
 
     public async Task<bool> AddSecretAsync(string? mountPoint, string path, Dictionary<string, object> data, CancellationToken token = default)
     {
@@ -43,7 +43,7 @@ internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultReposito
         }
         catch (Exception ex)
         {
-            _logger.Fatal(ex, "A Error occured while Vault will readed");
+            _logger.LogCritical(ex, "A Error occured while Vault will readed");
             throw;
         }
 

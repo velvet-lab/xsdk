@@ -15,7 +15,8 @@
  */
 
 using System.Collections.Concurrent;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Data;
@@ -23,7 +24,7 @@ namespace xSdk.Data;
 public abstract class Database : IDatabase
 {
     private static ConcurrentDictionary<string, object> _connections;
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<Database>();
 
     private IDatabaseSetup _setup;
     private string _name;
@@ -61,7 +62,7 @@ public abstract class Database : IDatabase
 
     public void Close()
     {
-        _logger.Trace("Try to close Database");
+        _logger.LogTrace("Try to close Database");
 
         if (_connections.Any())
         {
@@ -84,7 +85,7 @@ public abstract class Database : IDatabase
     {
         object connection = default;
 
-        _logger.Trace("Try to open Database for Connection '{0}'", typeof(TConnection));
+        _logger.LogTrace("Try to open Database for Connection '{0}'", typeof(TConnection));
         ConnectionBuilder builder = _connectionStringBuilder as ConnectionBuilder;
 
         if (persistConnection)
@@ -116,7 +117,7 @@ public abstract class Database : IDatabase
 
     internal void Configure(IConnectionBuilder connectionStringBuilder, InternalDatabaseSetup setup)
     {
-        _logger.Trace("Configure new Database");
+        _logger.LogTrace("Configure new Database");
 
         _connectionStringBuilder = connectionStringBuilder;
         _setup = setup.Setup;

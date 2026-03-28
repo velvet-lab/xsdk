@@ -17,7 +17,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
@@ -214,10 +213,6 @@ public class TestHostFixture : IDisposable
         if (disposing)
         {
             RestoreDemoMode();
-
-            // Dispose managed state (managed objects).
-            LogManager.Flush();
-            LogManager.Shutdown();
 
             _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             _host?.Dispose();

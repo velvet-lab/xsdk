@@ -6,8 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-        <PackageReference Include="NLog" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />        
     </ItemGroup>
 
     <ItemGroup>

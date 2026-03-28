@@ -15,7 +15,8 @@
  */
 
 using System.Net.Http.Handlers;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk;
 using xSdk.Hosting;
 using xSdk.Shared;
 
@@ -23,7 +24,7 @@ namespace xSdk.Extensions.Web;
 
 public static class HttpClientBuilder
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
 
     public static HttpClient CreateHttpClient(Uri? baseUrl)

@@ -18,7 +18,6 @@
         <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="MongoDB.Bson" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Process" PrivateAssets="contentfiles;analyzers;build;compile" />

@@ -16,9 +16,10 @@
 
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
+using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Data;
@@ -26,7 +27,7 @@ namespace xSdk.Data;
 [VariablePrefix("CertAuth")]
 public class CertAuthSetup : Setup
 {
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<CertAuthSetup>();
 
     [Variable(
         name: Definitions.Certificate.Name,
@@ -65,14 +66,14 @@ public class CertAuthSetup : Setup
             var cert = this.Certificate;
             if (Base64Helper.IsBase64(cert))
             {
-                _logger.Info("Converting base64 encoded certificate to PEM format.");
+                _logger.LogInformation("Converting base64 encoded certificate to PEM format.");
                 cert = Base64Helper.ConvertFromBase64(cert);
             }
 
             var key = this.Key;
             if (Base64Helper.IsBase64(key))
             {
-                _logger.Info("Converting base64 encoded key to PEM format.");
+                _logger.LogInformation("Converting base64 encoded key to PEM format.");
                 key = Base64Helper.ConvertFromBase64(key);
             }
 

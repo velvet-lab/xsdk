@@ -15,7 +15,7 @@
  */
 
 using System.Text.Json;
-using NLog;
+using Microsoft.Extensions.Logging;
 using VaultSharp;
 using VaultSharp.V1.Commons;
 using xSdk.Extensions.Variable;
@@ -26,7 +26,7 @@ namespace xSdk.Data;
 
 internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepository
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<ReadOnlyVaultRepository>();
 
     protected override VaultDatabase Database => base.Database as VaultDatabase;
 
@@ -95,7 +95,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
         }
         catch (Exception ex)
         {
-            _logger.Fatal(ex, "A Error occured while Vault will readed");
+            _logger.LogCritical(ex, "A Error occured while Vault will readed");
             throw;
         }
 

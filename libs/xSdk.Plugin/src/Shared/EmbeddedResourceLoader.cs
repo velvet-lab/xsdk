@@ -15,13 +15,15 @@
  */
 
 using System.Reflection;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk;
+using xSdk.Hosting;
 
 namespace xSdk.Shared;
 
 public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<EmbeddedResourceLoader>();
 
     private readonly Assembly _assembly = assembly;
     private readonly string _namespace = @namespace;
@@ -41,7 +43,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             }
             else
             {
-                _logger.Trace("Resource '{0}' not found in Assembly", resourceName);
+                _logger.LogTrace("Resource '{0}' not found in Assembly", resourceName);
             }
         }
 
@@ -63,7 +65,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             }
             else
             {
-                _logger.Trace("Resource '{0}' not found in Assembly", resourceName);
+                _logger.LogTrace("Resource '{0}' not found in Assembly", resourceName);
             }
         }
 
@@ -72,7 +74,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 
     private static string FormatResourceName(string resourceNamespace, string resourceName)
     {
-        _logger.Trace($"Create resource name for '{0}'", resourceName);
+        _logger.LogTrace("Create resource name for '{0}'", resourceName);
 
         string fileName = "";
         if (resourceName.IndexOf("/") > -1)
@@ -102,7 +104,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
         });
 
         var result = $"{resourceNamespace}.{items.Aggregate((a, b) => a + "." + b)}{fileName}";
-        _logger.Trace($"Resourcename for '{0}' is '{1}'", resourceName, result);
+        _logger.LogTrace("Resourcename for '{0}' is '{1}'", resourceName, result);
 
         return result;
     }

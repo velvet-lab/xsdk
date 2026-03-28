@@ -16,10 +16,11 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Data;
 using xSdk.Demos.Data;
 using xSdk.Demos.Hosting;
+using xSdk.Hosting;
 
 const string APP_NAME = "datalayer-nosql";
 const string APP_COMPANY = "xdemos";
@@ -54,6 +55,6 @@ var host = xSdk
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
-logger.Info("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
@@ -72,14 +73,14 @@ internal sealed class AuthenticationPlugin : WebHostPluginBase
 
     private void EnableMultiAuth(PolicySchemeOptions options)
     {
-        Logger.Trace("Try to find the correct authentication for incomming request");
+        Logger.LogTrace("Try to find the correct authentication for incomming request");
         options.ForwardDefaultSelector = context =>
         {
             string? scheme = null;
             TryRetrieveAuthenticationScheme(context, out scheme);
             if (!string.IsNullOrEmpty(scheme))
             {
-                Logger.Trace($"Found the correct authentication for incomming request: {scheme}");
+                Logger.LogTrace($"Found the correct authentication for incomming request: {scheme}");
                 return scheme;
             }
 
@@ -88,13 +89,13 @@ internal sealed class AuthenticationPlugin : WebHostPluginBase
             {
                 if (authorizationHeader.StartsWith(AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Header))
                 {
-                    Logger.Trace("API Key Auth is requested");
+                    Logger.LogTrace("API Key Auth is requested");
                     return AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Scheme;
                 }
             }
 
             // Default Api Auth Scheme
-            Logger.Trace("API Key Auth is requested");
+            Logger.LogTrace("API Key Auth is requested");
             return AuthenticationDefaults.ApiKeyAuth.InHeader.Scheme;
         };
     }

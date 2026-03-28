@@ -17,14 +17,16 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk;
 using xSdk.Data;
+using xSdk.Hosting;
 
 namespace xSdk.Security;
 
 public static class CryptoTool
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     private static readonly object _lockObject = new object();
 
@@ -32,7 +34,7 @@ public static class CryptoTool
     {
         try
         {
-            _logger.Debug("Encrypt data");
+            _logger.LogDebug("Encrypt data");
 
             var dataAsJson = JsonSerializer.Serialize(data, JsonHelper.GetSerializerOptions());
             var dataAsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataAsJson));
@@ -64,7 +66,7 @@ public static class CryptoTool
         }
         catch (Exception ex)
         {
-            _logger.Error("The encryption failed. {0}", ex);
+            _logger.LogError("The encryption failed. {0}", ex);
             throw;
         }
     }
@@ -75,7 +77,7 @@ public static class CryptoTool
 
         try
         {
-            _logger.Debug("Decrypt data");
+            _logger.LogDebug("Decrypt data");
 
             lock (_lockObject)
             {
@@ -114,7 +116,7 @@ public static class CryptoTool
         }
         catch (Exception ex)
         {
-            _logger.Error("The decryption failed. {0}", ex);
+            _logger.LogError("The decryption failed. {0}", ex);
             throw;
         }
 

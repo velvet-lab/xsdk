@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.Json;
 using xSdk.Data;
 using xSdk.Shared;
+using xSdk.Hosting;
 
 namespace xSdk.Extensions.Web;
 
 public static class RestClientBuilder
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     public static IRestClient CreateRestClient(Uri baseUrl)
         => CreateRestClientWithHandler(baseUrl, default, default, default, default);
@@ -117,7 +119,7 @@ public static class RestClientBuilder
         IProgress<double>? progress = default
     )
     {
-        _logger.Trace("Create rest api client");
+        _logger.LogTrace("Create rest api client");
 
         var restOptions = new RestClientOptions(baseUrl);
 

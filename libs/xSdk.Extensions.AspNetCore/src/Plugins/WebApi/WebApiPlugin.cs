@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using xSdk.Data;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
@@ -36,13 +37,13 @@ public class WebApiPlugin : WebHostPluginBase
 
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        Logger.Trace("Load Setups for Web Host Builder");
+        Logger.LogTrace("Load Setups for Web Host Builder");
         services
             // Add Context Accessor
             .AddHttpContextAccessor()
             .AddProblemDetails(_ =>
             {
-                Logger.Debug("Configure Problem Details");
+                Logger.LogDebug("Configure Problem Details");
                 var currentStage = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>().Stage;
 
                 _.IncludeExceptionDetails = (ctx, ex) =>
@@ -60,7 +61,7 @@ public class WebApiPlugin : WebHostPluginBase
             // Add Routing
             .AddRouting(_ =>
             {
-                Logger.Debug("Configure Routing");
+                Logger.LogDebug("Configure Routing");
                 _.LowercaseUrls = true;
                 _.LowercaseQueryStrings = true;
                 _.SuppressCheckForUnhandledSecurityMetadata = false;
@@ -69,7 +70,7 @@ public class WebApiPlugin : WebHostPluginBase
         var mvcBuilder = services
             .AddControllers(_ =>
             {
-                Logger.Debug("Configure Mvc");
+                Logger.LogDebug("Configure Mvc");
                 _.InputFormatters.Add(new PlainTextFormatter());
                 _.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
@@ -77,7 +78,7 @@ public class WebApiPlugin : WebHostPluginBase
             })
             .AddJsonOptions(_ =>
             {
-                Logger.Debug("Configure Json");
+                Logger.LogDebug("Configure Json");
                 _.JsonSerializerOptions.ConfigureSerializerOptions();
             });
 
@@ -85,7 +86,7 @@ public class WebApiPlugin : WebHostPluginBase
         services
             .AddApiVersioning(_ =>
             {
-                Logger.Debug("Enabled Api Versioning");
+                Logger.LogDebug("Enabled Api Versioning");
 
                 // Add the headers "api-supported-versions" and "api-deprecated-versions"
                 // This is better for discoverability
@@ -113,15 +114,15 @@ public class WebApiPlugin : WebHostPluginBase
                 _.SubstituteApiVersionInUrl = true;
             });
 
-        Logger.Debug("Enabled Endpoints for API Explorer");
+        Logger.LogDebug("Enabled Endpoints for API Explorer");
         services.AddEndpointsApiExplorer();
 
         var assemblies = AssemblyCollector.Collect();
 
-        Logger.Debug("Add Fluent Validation");
+        Logger.LogDebug("Add Fluent Validation");
         services.AddValidatorsFromAssemblies(assemblies);
 
-        Logger.Debug("Add Application Parts");
+        Logger.LogDebug("Add Application Parts");
         foreach (var assembly in assemblies)
         {
             mvcBuilder.AddApplicationPart(assembly);
@@ -130,7 +131,7 @@ public class WebApiPlugin : WebHostPluginBase
 
     public override void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app)
     {
-        Logger.Debug("Load Environtment Setup");
+        Logger.LogDebug("Load Environtment Setup");
         var envSetup = app.ApplicationServices.GetRequiredService<IVariableService>().GetSetup<IEnvironmentSetup>();
 
         if (envSetup != null && envSetup.Stage == Stage.Development)
@@ -138,7 +139,7 @@ public class WebApiPlugin : WebHostPluginBase
             app.UseDeveloperExceptionPage();
         }
 
-        Logger.Debug("Enabled HTTPS Redirection");
+        Logger.LogDebug("Enabled HTTPS Redirection");
         app.UseHttpsRedirection();
 
         app.UseRouting();

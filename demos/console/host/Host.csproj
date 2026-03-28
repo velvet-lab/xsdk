@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" />
         <PackageReference Include="Spectre.Console.Cli" />
     </ItemGroup>
 

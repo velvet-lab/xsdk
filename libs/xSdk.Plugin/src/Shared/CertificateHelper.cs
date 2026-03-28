@@ -18,13 +18,15 @@ using System.Diagnostics;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk;
+using xSdk.Hosting;
 
 namespace xSdk.Shared;
 
 public static class CertificateHelper
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
     public static IEnumerable<X509Certificate> ImportFromString(string certificates)
     {
@@ -51,7 +53,7 @@ public static class CertificateHelper
                 foreach (var status in chain.ChainStatus)
                 {
                     //validation errors here
-                    _logger.Error(status.StatusInformation);
+                    _logger.LogError("{StatusInformation}", status.StatusInformation);
                 }
             }
         }

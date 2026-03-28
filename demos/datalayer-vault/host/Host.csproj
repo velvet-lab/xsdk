@@ -5,8 +5,7 @@
         <ProjectGuid>da82c13d-1ddd-456e-a48c-8c7af4a81cf3</ProjectGuid>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="NLog" />
+    <ItemGroup>        
         <PackageReference Include="Testcontainers" />
     </ItemGroup>
 

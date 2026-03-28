@@ -32,7 +32,7 @@ internal partial class TelemetryService(EnvironmentSetup envSetup, ILogger<Telem
 
     public Meter MainMeter => CreateMainMeter();
 
-#nullable enable
+
     public Activity? StartActivity(ActivityKind kind = ActivityKind.Internal, [CallerMemberName] string name = "")
     {
         var source = CreateMainActivitySource();
@@ -45,8 +45,6 @@ internal partial class TelemetryService(EnvironmentSetup envSetup, ILogger<Telem
 
         return activity;
     }
-
-#nullable disable
 
     public Counter<T> CreateCounter<T>(string name, string unit = null, string description = null)
         where T : struct => CreateInstrument<Counter<T>, T>(meter => meter.CreateCounter<T>(name, unit, description));

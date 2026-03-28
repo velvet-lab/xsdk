@@ -9,8 +9,7 @@
         <Description>xSdk.Data.Vault - Vault provider integration for the xSdk data layer.</Description>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
+    <ItemGroup>        
         <PackageReference Include="VaultSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 

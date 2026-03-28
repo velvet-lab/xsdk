@@ -16,7 +16,8 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable;
 
@@ -63,7 +64,7 @@ public static class SetupExtensions
             {
                 if (result.MemberNames != null && result.MemberNames.Any())
                 {
-                    _logger.Warn(
+                    _logger.LogWarning(
                         "Implementation is not valid for Member '{0}'. (Reason: {1})",
                         result.MemberNames.Aggregate((a, b) => a + ", " + b),
                         result.ErrorMessage
@@ -71,7 +72,7 @@ public static class SetupExtensions
                 }
                 else
                 {
-                    _logger.Warn("Implementation is not valid. (Reason: {0})", result.ErrorMessage);
+                    _logger.LogWarning("Implementation is not valid. (Reason: {0})", result.ErrorMessage);
                 }
 
                 return false;

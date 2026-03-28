@@ -17,6 +17,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
@@ -28,7 +29,7 @@ public class DataProtectionPlugin : PluginBase
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        Logger.Info("Configure DataProtection");
+        Logger.LogInformation("Configure DataProtection");
 
         var setup = SlimHost.Instance.VariableSystem.GetSetup<DataProtectionSetup>();
 
@@ -60,7 +61,7 @@ public class DataProtectionPlugin : PluginBase
 
     private string GetKeyFolder()
     {
-        Logger.Info("Try to get Key Folder for Data Protection");
+        Logger.LogInformation("Try to get Key Folder for Data Protection");
 
         string? keyFolder = null;
         if (Debugger.IsAttached)
@@ -80,7 +81,7 @@ public class DataProtectionPlugin : PluginBase
             }
             catch
             {
-                Logger.Warn("KeyFolder '{0}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
+                Logger.LogWarning("KeyFolder '{0}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
 
                 keyFolder = SlimHost.Instance.FileSystem.User.Data.GetFullPath("/keys");
                 if (!Directory.Exists(keyFolder))

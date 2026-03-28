@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Demos;
 using xSdk.Demos.Hosting;
 using xSdk.Extensions.IO;
@@ -49,6 +49,6 @@ var host = xSdk
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
-logger.Info("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

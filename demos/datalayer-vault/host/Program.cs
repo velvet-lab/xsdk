@@ -32,7 +32,7 @@ using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Images;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk;
 using xSdk.Data;
 using xSdk.Demos.Hosting;
@@ -113,6 +113,6 @@ var host = xSdk.Hosting.Host
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
-logger.Info("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

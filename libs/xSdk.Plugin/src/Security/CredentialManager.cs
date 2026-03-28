@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-using NLog;
+using Microsoft.Extensions.Logging;
+using xSdk;
 using xSdk.Hosting;
 
 namespace xSdk.Security;
@@ -32,7 +33,7 @@ public static class CredentialManager
     public static TCredentials LoadCredentials<TCredentials>(string context)
         where TCredentials : Credentials, new()
     {
-        _logger.Info("Try to load encrypted credentials");
+        _logger.LogInformation("Try to load encrypted credentials");
 
         var credsFile = GetCredsFileName(context);
         if (File.Exists(credsFile))
@@ -41,7 +42,7 @@ public static class CredentialManager
         }
         else
         {
-            _logger.Warn("No saved credentials found");
+            _logger.LogWarning("No saved credentials found");
         }
         return new TCredentials();
     }
@@ -59,7 +60,7 @@ public static class CredentialManager
         }
         catch (Exception ex)
         {
-            _logger.Warn("Credentials could not saved. (Reason: {0})", ex.Message);
+            _logger.LogWarning("Credentials could not saved. (Reason: {0})", ex.Message);
         }
     }
 
@@ -67,7 +68,7 @@ public static class CredentialManager
 
     public static void Reset(string context)
     {
-        _logger.Info("Reset encrypted credentials");
+        _logger.LogInformation("Reset encrypted credentials");
         var credsFile = GetCredsFileName(context);
         if (File.Exists(credsFile))
         {

@@ -17,8 +17,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Demos.Builders;
+using xSdk.Hosting;
 using xSdk.Plugins.Authentication;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.DataProtection;
@@ -46,6 +47,6 @@ var host = xSdk
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
-logger.Info("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

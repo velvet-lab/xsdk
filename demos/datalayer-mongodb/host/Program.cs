@@ -18,18 +18,19 @@ using DotNet.Testcontainers.Builders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-using NLog;
 using Testcontainers.MongoDb;
 using xSdk.Data;
 using xSdk.Demos.Data;
 using xSdk.Demos.Hosting;
+using xSdk.Hosting;
 
 const string APP_NAME = "datalayer-mongodb";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "dn";
 
-Logger logger = null;
+ILogger logger = null;
 
 var mongoDbContainer = new MongoDbBuilder()
     .WithImage("mongo:8.0")
@@ -52,7 +53,7 @@ var host = xSdk
                 .AddDbContextFactory<SampleDbContext>(options =>
                 {
                     var connectionString = mongoDbContainer.GetConnectionString();
-                    logger?.Info("MongoDB ConnectionString: {ConnectionString}", connectionString);
+                    logger?.LogInformation("MongoDB ConnectionString: {ConnectionString}", connectionString);
 
                     var client = new MongoClient(connectionString);
 
@@ -79,6 +80,6 @@ var host = xSdk
     .Build();
 
 logger = LogManager.GetCurrentClassLogger();
-logger.Info("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

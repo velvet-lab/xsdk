@@ -15,7 +15,7 @@
  */
 
 using System.Text.Json.Serialization;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
@@ -24,8 +24,6 @@ namespace xSdk.Data;
 [VariablePrefix("AppRoleAuth")]
 public class AppRoleAuthSetup : Setup
 {
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-
     [Variable(
         name: Definitions.RoleId.Name,
         template: Definitions.RoleId.Template,
