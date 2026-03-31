@@ -16,7 +16,7 @@
 
 using xSdk.Extensions.IO;
 
-namespace xSdk.Plugin.Tests.Extensions.IO;
+namespace xSdk.Extensions.IO;
 
 public class FileSystemHelperTests
 {

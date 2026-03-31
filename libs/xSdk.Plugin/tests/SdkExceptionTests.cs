@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace xSdk.Plugin.Tests;
+namespace xSdk;
 
 public class SdkExceptionTests
 {

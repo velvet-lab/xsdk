@@ -17,7 +17,7 @@
 using System.Text.Json;
 using xSdk.Data;
 
-namespace xSdk.Plugin.Tests.Data;
+namespace xSdk.Data;
 
 public class JsonHelperTests
 {

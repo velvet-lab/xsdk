@@ -16,7 +16,7 @@
 
 using xSdk.Shared;
 
-namespace xSdk.Plugin.Tests.Shared;
+namespace xSdk.Shared;
 
 public class NetworkToolsTests
 {

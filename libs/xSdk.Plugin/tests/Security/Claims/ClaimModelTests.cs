@@ -17,7 +17,7 @@
 using System.Security.Claims;
 using xSdk.Security.Claims;
 
-namespace xSdk.Plugin.Tests.Security.Claims;
+namespace xSdk.Security.Claims;
 
 public class ClaimModelTests
 {

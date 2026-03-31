@@ -31,7 +31,7 @@ public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHos
             .ConfigureServices((context, services) => services.AddPluginServices());
 
         var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<CommandPlugin>();
+        var plugin = service.GetPlugin<CommandPluginHost>();
 
         Assert.NotNull(plugin);
     }

@@ -18,7 +18,7 @@ using System.Security.Claims;
 using xSdk.Extensions.Authentication;
 using xSdk.Security.Claims;
 
-namespace xSdk.Plugin.Tests.Extensions.Authentication;
+namespace xSdk.Extensions.Authentication;
 
 public class ClaimsPrincipalExtensionsTests
 {

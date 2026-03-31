@@ -16,7 +16,7 @@
 
 using xSdk.Extensions.Commands;
 
-namespace xSdk.Plugin.Tests.Extensions.Commands;
+namespace xSdk.Extensions.Commands;
 
 public class CommandlineParserTests
 {

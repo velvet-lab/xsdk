@@ -17,7 +17,7 @@
 using System.Reflection;
 using xSdk.Shared;
 
-namespace xSdk.Plugin.Tests.Shared;
+namespace xSdk.Shared;
 
 public class EmbeddedResourceLoaderTests
 {

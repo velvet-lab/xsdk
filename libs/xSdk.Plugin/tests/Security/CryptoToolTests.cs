@@ -16,7 +16,7 @@
 
 using xSdk.Security;
 
-namespace xSdk.Plugin.Tests.Security;
+namespace xSdk.Security;
 
 public class CryptoToolTests : IDisposable
 {

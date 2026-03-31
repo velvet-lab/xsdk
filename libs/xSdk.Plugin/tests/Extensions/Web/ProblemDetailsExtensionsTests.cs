@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 using xSdk.Extensions.Web;
 
-namespace xSdk.Plugin.Tests.Extensions.Web;
+namespace xSdk.Extensions.Web;
 
 file class TestController : ControllerBase
 {

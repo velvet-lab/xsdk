@@ -17,7 +17,7 @@
 using System.Text;
 using xSdk.Shared;
 
-namespace xSdk.Plugin.Tests.Shared;
+namespace xSdk.Shared;
 
 public class Base64HelperTests
 {

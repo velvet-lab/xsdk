@@ -16,7 +16,7 @@
 
 using xSdk.Data.Converters.Mapper;
 
-namespace xSdk.Plugin.Tests.Data.Converters.Mapper;
+namespace xSdk.Data.Converters.Mapper;
 
 public class GuidConverterTests
 {

@@ -16,7 +16,7 @@
 
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugin.Tests.Extensions.Variable.Attributes;
+namespace xSdk.Extensions.Variable.Attributes;
 
 public class VariableAttributeTests
 {

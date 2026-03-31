@@ -17,7 +17,7 @@
 using System.Security.Claims;
 using xSdk.Extensions.Authentication;
 
-namespace xSdk.Plugin.Tests.Extensions.Authentication;
+namespace xSdk.Extensions.Authentication;
 
 public class ConcreteApiKeyTests
 {

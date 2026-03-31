@@ -17,7 +17,7 @@
 using System.ComponentModel.DataAnnotations;
 using xSdk.Data.Annotations;
 
-namespace xSdk.Plugin.Tests.Data.Annotations;
+namespace xSdk.Data.Annotations;
 
 public class DataAnnotationAttributeTests
 {

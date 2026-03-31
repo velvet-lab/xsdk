@@ -66,7 +66,7 @@ public class ApiKeySetupTests(TestHostFixture fixture) : IClassFixture<TestHostF
             .ConfigureServices((context, services) => services.AddPluginServices());
 
         var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<AuthenticationPlugin>();
+        var plugin = service.GetPlugin<AuthenticationPluginHost>();
 
         Assert.NotNull(plugin);
     }

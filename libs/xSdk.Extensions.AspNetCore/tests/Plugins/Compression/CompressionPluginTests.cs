@@ -30,7 +30,7 @@ public class CompressionPluginTests(TestHostFixture fixture) : IClassFixture<Tes
             .ConfigureServices((context, services) => services.AddPluginServices());
 
         var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<CompressionPlugin>();
+        var plugin = service.GetPlugin<CompressionPluginHost>();
 
         Assert.NotNull(plugin);
     }

@@ -17,7 +17,7 @@
 using System.Text.Json;
 using xSdk.Data.Converters.Json;
 
-namespace xSdk.Plugin.Tests.Data.Converters.Json;
+namespace xSdk.Data.Converters.Json;
 
 public class StageConverterTests
 {

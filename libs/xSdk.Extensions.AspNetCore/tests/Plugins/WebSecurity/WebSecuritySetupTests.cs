@@ -39,7 +39,7 @@ public class WebSecuritySetupTests(TestHostFixture fixture) : IClassFixture<Test
             .ConfigureServices((context, services) => services.AddPluginServices());
 
         var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<WebSecurityPlugin>();
+        var plugin = service.GetPlugin<WebSecurityPluginHost>();
 
         Assert.NotNull(plugin);
     }

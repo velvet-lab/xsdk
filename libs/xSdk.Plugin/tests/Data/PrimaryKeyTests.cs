@@ -16,7 +16,7 @@
 
 using xSdk.Data;
 
-namespace xSdk.Plugin.Tests.Data;
+namespace xSdk.Data;
 
 public class PrimaryKeyTests
 {

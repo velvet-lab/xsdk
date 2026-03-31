@@ -30,7 +30,7 @@ public class WebApiPluginTests(TestHostFixture fixture) : IClassFixture<TestHost
             .ConfigureServices((context, services) => services.AddPluginServices());
 
         var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<WebApiPlugin>();
+        var plugin = service.GetPlugin<WebApiPluginHost>();
 
         Assert.NotNull(plugin);
     }

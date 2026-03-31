@@ -41,7 +41,7 @@ public class DocumentationPluginTests : IClassFixture<TestHostFixture>
     [Fact]
     public void CreatePlugin()
     {
-        var plugin = _service.GetPlugin<DocumentationPlugin>();
+        var plugin = _service.GetPlugin<DocumentationPluginHost>();
 
         Assert.NotNull(plugin);
     }
