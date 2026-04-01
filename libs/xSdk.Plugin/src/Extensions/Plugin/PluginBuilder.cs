@@ -14,6 +14,27 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Variable;
+using xSdk.Hosting;
+
 namespace xSdk.Extensions.Plugin;
 
-public abstract class PluginBuilderBase : PluginDescription, IPluginBuilder { }
+public abstract class PluginBuilder : PluginDescription, IPluginBuilder
+{
+    protected TSetup LoadSetup<TSetup>()
+        where TSetup : class, ISetup
+    {
+        var setup = SlimHost.Instance.VariableSystem.GetSetup<TSetup>();
+
+        setup.Validate();
+
+        return setup;
+    }
+}
+
+public abstract class PluginBuilder<TSetup> : PluginBuilder, IPluginBuilder<TSetup>
+    where TSetup : class, ISetup
+{
+    protected TSetup LoadSetup()
+        => this.LoadSetup<TSetup>();
+}
