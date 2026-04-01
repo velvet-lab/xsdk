@@ -37,7 +37,8 @@ public abstract class DatabaseSetup : IDatabaseSetup
 
     public void Initialize() { }
 
-    public void Validate() => Validate(true);
+    public void Validate()
+        => Validate(false);
 
     public void Validate(bool throwIfFails)
     {
@@ -51,6 +52,15 @@ public abstract class DatabaseSetup : IDatabaseSetup
                 throw new SdkException("Database Setup is not valid");
             }
         }
+    }
+
+    public bool IsValid()
+        => IsValid(false);
+
+    public bool IsValid(bool throwIfFails)
+    {
+        Validate(throwIfFails);
+        return Results == null || !Results.Any();
     }
 
     protected virtual void ValidateSetup() { }

@@ -18,7 +18,7 @@ using xSdk.Shared;
 
 namespace xSdk.Extensions.Variable.Providers;
 
-internal sealed class SystemProvider : VariableProviderBase
+internal sealed class EnvironmentProvider : VariableProviderBase
 {
     protected override bool ExistsVariable(IVariable variable)
     {

@@ -38,7 +38,8 @@ public abstract class Setup : ISetup
 
     public ICollection<ValidationResult> Results => _validationResults;
 
-    public void Validate() => Validate(true);
+    public void Validate()
+        => Validate(true);
 
     public void Validate(bool throwIfFails)
     {
@@ -65,6 +66,15 @@ public abstract class Setup : ISetup
         {
             throw new SdkException(string.Format("Setup '{0}' not valid.", currentType.FullName));
         }
+    }
+
+    public bool IsValid()
+        => IsValid(false);    
+        
+    public bool IsValid(bool throwIfFails)
+    {
+        Validate(throwIfFails);        
+        return Results == null || !Results.Any();
     }
 
     internal void InitializeInternal(VariableService service)

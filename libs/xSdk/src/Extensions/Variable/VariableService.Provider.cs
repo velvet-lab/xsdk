@@ -43,7 +43,7 @@ internal partial class VariableService
         _systemProviders = new Dictionary<string, VariableProvider>
         {
             { nameof(FileProvider), new FileProvider() },
-            { nameof(SystemProvider), new SystemProvider() },
+            { nameof(EnvironmentProvider), new EnvironmentProvider() },
             { nameof(CommandlineProvider), new CommandlineProvider() },
             { nameof(FallbackProvider), new FallbackProvider() },
             { nameof(MemoryProvider), new MemoryProvider() },
@@ -64,7 +64,7 @@ internal partial class VariableService
         return Providers
             .Where(x =>
                 string.Compare(x.Key, nameof(FileProvider), true) == 0
-                || string.Compare(x.Key, nameof(SystemProvider), true) == 0
+                || string.Compare(x.Key, nameof(EnvironmentProvider), true) == 0
                 || string.Compare(x.Key, nameof(CommandlineProvider), true) == 0
                 || string.Compare(x.Key, nameof(OptionProvider), true) == 0
                 || string.Compare(x.Key, nameof(MemoryProvider), true) == 0
@@ -127,7 +127,7 @@ internal partial class VariableService
                 if (!Providers[nameof(CommandlineProvider)].TryReadVariable(variable, out value))
                 {
                     // then from System Environment
-                    if (!Providers[nameof(SystemProvider)].TryReadVariable(variable, out value))
+                    if (!Providers[nameof(EnvironmentProvider)].TryReadVariable(variable, out value))
                     {
                         // then from File
                         if (!Providers[nameof(FileProvider)].TryReadVariable(variable, out value))
