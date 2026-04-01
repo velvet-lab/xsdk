@@ -20,7 +20,7 @@ using xSdk.Plugins.DataProtection;
 
 namespace xSdk.Demos.Builders;
 
-internal class DataProtectionPluginBuilder : PluginBuilderBase, IDataProtectionPluginBuilder
+internal class DataProtectionPluginBuilder : PluginBuilder, IDataProtectionPluginBuilder
 {
     public void ConfigureDataProtection(IDataProtectionBuilder builder) { }
 }

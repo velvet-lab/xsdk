@@ -18,6 +18,6 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Proxy;
 
-internal class DefaultProxyPluginBuilder : PluginBuilderBase
+internal class DefaultProxyPluginBuilder : PluginBuilder
 {
 }

@@ -22,7 +22,7 @@ using xSdk.Plugins.Authentication;
 
 namespace xSdk.Demos.Builders;
 
-internal class AuthenticationPluginBuilder : PluginBuilderBase, IAuthenticationPluginBuilder
+internal class AuthenticationPluginBuilder : PluginBuilder, IAuthenticationPluginBuilder
 {
     // Global Constants for an easier handling
     public const string Policy_OnlyRead = "OnlyRead";

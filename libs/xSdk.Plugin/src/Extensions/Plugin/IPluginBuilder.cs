@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Variable;
+
 namespace xSdk.Extensions.Plugin;
 
 public interface IPluginBuilder : IPluginDescription { }
+
+public interface IPluginBuilder<TSetup> : IPluginBuilder
+    where TSetup : class, ISetup
+{
+
+}

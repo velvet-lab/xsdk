@@ -25,7 +25,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Telemetry;
 
-internal class DefaultTelemetryPluginBuilder : PluginBuilderBase, ITelemetryPluginBuilder
+internal class DefaultTelemetryPluginBuilder : PluginBuilder<TelemetrySetup>, ITelemetryPluginBuilder
 {
     public void ConfigureLoggingProvider(LoggerProviderBuilder builder)
     {
@@ -42,7 +42,7 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilderBase, ITelemetryPlug
 
     public void ConfigureMetrics(MeterProviderBuilder builder)
     {
-        var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
+        var envSetup = LoadSetup<EnvironmentSetup>();
 
         builder
             .AddMeter(envSetup.ServiceFullName)

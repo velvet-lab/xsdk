@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 
@@ -23,20 +24,22 @@ namespace xSdk.Hosting;
 
 public abstract class PluginHost : PluginDescription, IPluginHost
 {
+    protected ILogger Logger => LogManager.GetCurrentClassLogger();
+
+    protected IEnvironmentSetup Environment => this.LoadSetup<IEnvironmentSetup>();
+
+
     public virtual void ConfigureServices(IServiceCollection services) { }
 
     public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
-
-    public TSetup LoadSetup<TSetup>()
+    
+    protected TSetup LoadSetup<TSetup>()
         where TSetup : class, ISetup
-        => SlimHost.Instance.VariableSystem.GetSetup<TSetup>();
+        => SetupLoader.Load<TSetup>();
 }
 
 public abstract class PluginHost<TSetup> : PluginHost, IPluginHost<TSetup>
-    where TSetup : class, ISetup, new()
+    where TSetup : class, ISetup
 {
-    public TSetup Setup
-    {
-        get => this.LoadSetup<TSetup>();
-    }
+    protected TSetup Setup => this.LoadSetup<TSetup>();
 }

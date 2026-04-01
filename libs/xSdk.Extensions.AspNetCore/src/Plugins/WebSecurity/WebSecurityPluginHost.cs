@@ -25,14 +25,11 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
-internal sealed class WebSecurityPluginHost : WebPluginHost
+internal sealed class WebSecurityPluginHost : WebPluginHost<WebSecuritySetup>
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        var securitySetup = SlimHost.Instance.VariableSystem.GetSetup<WebSecuritySetup>();
-        var isCorsEnabled = securitySetup != null && !string.IsNullOrEmpty(securitySetup.Origins);
-
-        if (isCorsEnabled)
+        if (Setup.IsCorsEnabled)
         {
             Logger.LogInformation("Cors is enabled. Configure further security options");
             services.AddCors(cors =>
@@ -58,9 +55,6 @@ internal sealed class WebSecurityPluginHost : WebPluginHost
 
     public override void Configure(WebHostBuilderContext context, IApplicationBuilder app)
     {
-        var securitySetup = SlimHost.Instance.VariableSystem.GetSetup<WebSecuritySetup>();
-        var isCorsEnabled = securitySetup != null && !string.IsNullOrEmpty(securitySetup.Origins);
-
         PreBuild(app);
 
         var stage = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>().Stage;
@@ -76,7 +70,7 @@ internal sealed class WebSecurityPluginHost : WebPluginHost
 
         app.UseStaticFiles();
 
-        if (isCorsEnabled)
+        if (Setup.IsCorsEnabled)
             app.UseCors();
 
         PostBuild(app);

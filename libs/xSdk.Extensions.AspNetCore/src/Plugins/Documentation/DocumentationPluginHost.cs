@@ -24,7 +24,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
-internal sealed class DocumentationPluginHost : WebPluginHost
+internal sealed class DocumentationPluginHost : WebPluginHost<DocumentationSetup>
 {
     private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
     {
@@ -43,10 +43,10 @@ internal sealed class DocumentationPluginHost : WebPluginHost
         var descriptionProvider = services
             .BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
-        var setup = SlimHost.Instance.VariableSystem.GetSetup<DocumentationSetup>();
+
         var docPluginBuilder = SlimHost.Instance.PluginSystem.GetPlugin<IDocumentationPluginBuilder>();
 
-        if (setup.Enabled)
+        if (Setup.Enabled)
         {
             foreach (var description in descriptionProvider.ApiVersionDescriptions)
             {

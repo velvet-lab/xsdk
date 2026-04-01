@@ -20,7 +20,7 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Documentation.Mocks;
 
-internal class DocumentationPluginBuilderMock : PluginBuilderBase, IDocumentationPluginBuilder
+internal class DocumentationPluginBuilderMock : PluginBuilder, IDocumentationPluginBuilder
 {
     public OpenApiInfo CreateApiInfo(ApiVersionDescription description)
     {

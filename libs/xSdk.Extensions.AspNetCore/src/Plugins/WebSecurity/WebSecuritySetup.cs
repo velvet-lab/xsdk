@@ -32,6 +32,8 @@ public sealed class WebSecuritySetup : Setup, IWebSecuritySetup
         set => SetValue(Definitions.Origins.Name, value);
     }
 
+    public bool IsCorsEnabled => !string.IsNullOrEmpty(this.Origins);
+
     public static class Definitions
     {
         public static class Origins

@@ -26,7 +26,7 @@ using Yarp.Telemetry.Consumption;
 
 namespace xSdk.Plugins.Proxy;
 
-internal class TelemetryPluginBuilder : PluginBuilderBase, ITelemetryPluginBuilder
+internal class TelemetryPluginBuilder : PluginBuilder, ITelemetryPluginBuilder
 {
     public void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options) { }
 

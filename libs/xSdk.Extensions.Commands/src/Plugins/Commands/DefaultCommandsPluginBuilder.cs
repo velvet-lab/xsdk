@@ -24,24 +24,18 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
-internal class DefaultCommandsPluginBuilder : PluginBuilderBase, ICommandsPluginBuilder
+internal class DefaultCommandsPluginBuilder : PluginBuilder, ICommandsPluginBuilder
 {
-    private const string Prompt = ">";
-    private readonly EnvironmentSetup _environmentSetup;
-
-    public DefaultCommandsPluginBuilder()
-    {
-        this._environmentSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-    }
+    private const string Prompt = ">";    
 
     public Func<string> PromptFactory => () =>
     {
-        return string.Format("{0} {1} ", _environmentSetup.AppName, Prompt);
+        return string.Format("{0} {1} ", Environment.AppName, Prompt);
     };
 
     public void Configure(IConfigurator setup)
     {
-        setup.SetApplicationName(_environmentSetup.AppName);
+        setup.SetApplicationName(Environment.AppName);
 
         setup.AddVariableCommands();
 

@@ -25,28 +25,24 @@ using xSdk.Shared;
 
 namespace xSdk.Plugins.DataProtection;
 
-internal sealed class DataProtectionPluginHost : PluginHost
+internal sealed class DataProtectionPluginHost : PluginHost<DataProtectionSetup>
 {
     public override void ConfigureServices(IServiceCollection services)
     {
         Logger.LogInformation("Configure DataProtection");
 
-        var setup = SlimHost.Instance.VariableSystem.GetSetup<DataProtectionSetup>();
-
-        setup.Validate();
-
         IDataProtectionBuilder? builder = null;
-        if (!string.IsNullOrEmpty(setup.ApplicationDiscriminator))
-            builder = services.AddDataProtection(_ => _.ApplicationDiscriminator = setup.ApplicationDiscriminator);
+        if (!string.IsNullOrEmpty(Setup.ApplicationDiscriminator))
+            builder = services.AddDataProtection(_ => _.ApplicationDiscriminator = Setup.ApplicationDiscriminator);
         else
             builder = services.AddDataProtection();
 
-        if (!string.IsNullOrEmpty(setup.ApplicationName))
-            builder.SetApplicationName(setup.ApplicationName);
+        if (!string.IsNullOrEmpty(Setup.ApplicationName))
+            builder.SetApplicationName(Setup.ApplicationName);
 
-        if (!string.IsNullOrEmpty(setup.KeyLifetime))
+        if (!string.IsNullOrEmpty(Setup.KeyLifetime))
         {
-            if (TimeSpanParser.TryParse(setup.KeyLifetime, out TimeSpan result))
+            if (TimeSpanParser.TryParse(Setup.KeyLifetime, out TimeSpan result))
             {
                 builder.SetDefaultKeyLifetime(result);
             }

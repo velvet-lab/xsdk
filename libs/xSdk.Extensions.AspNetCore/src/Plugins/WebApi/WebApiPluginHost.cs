@@ -132,9 +132,7 @@ internal sealed class WebApiPluginHost : WebPluginHost
     public override void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app)
     {
         Logger.LogDebug("Load Environtment Setup");
-        var envSetup = app.ApplicationServices.GetRequiredService<IVariableService>().GetSetup<IEnvironmentSetup>();
-
-        if (envSetup != null && envSetup.Stage == Stage.Development)
+        if (Environment.Stage == Stage.Development)
         {
             app.UseDeveloperExceptionPage();
         }

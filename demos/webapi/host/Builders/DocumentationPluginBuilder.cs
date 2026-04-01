@@ -21,7 +21,7 @@ using xSdk.Plugins.Documentation;
 
 namespace xSdk.Demos.Builders;
 
-public class DocumentationPluginBuilder : PluginBuilderBase, IDocumentationPluginBuilder
+public class DocumentationPluginBuilder : PluginBuilder, IDocumentationPluginBuilder
 {
     public OpenApiInfo CreateApiInfo(ApiVersionDescription description)
     {

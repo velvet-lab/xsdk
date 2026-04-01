@@ -23,7 +23,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
@@ -32,9 +31,6 @@ internal sealed class AuthenticationPluginHost : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        var apiKeySetup = SlimHost.Instance.VariableSystem.GetSetup<ApiKeySetup>();
-        var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-
         var authBuilder = services
             // Add Auth
             .AddAuthentication(_ =>

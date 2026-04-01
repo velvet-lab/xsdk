@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
@@ -21,15 +22,14 @@ namespace xSdk.Extensions.Plugin;
 
 public abstract class PluginBuilder : PluginDescription, IPluginBuilder
 {
+    protected ILogger Logger { get => LogManager.GetCurrentClassLogger(); }
+
+    protected IEnvironmentSetup Environment { get => this.LoadSetup<IEnvironmentSetup>(); }
+
+
     protected TSetup LoadSetup<TSetup>()
         where TSetup : class, ISetup
-    {
-        var setup = SlimHost.Instance.VariableSystem.GetSetup<TSetup>();
-
-        setup.Validate();
-
-        return setup;
-    }
+        => SetupLoader.Load<TSetup>();
 }
 
 public abstract class PluginBuilder<TSetup> : PluginBuilder, IPluginBuilder<TSetup>
