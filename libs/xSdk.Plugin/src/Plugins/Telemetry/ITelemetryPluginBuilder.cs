@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-using OpenTelemetry.Instrumentation.EntityFrameworkCore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.Telemetry;
+namespace xSdk.Plugins.Telemetry;
 
 public interface ITelemetryPluginBuilder : IPluginBuilder
 {
-    void ConfigureEntityFrameworkInstrumentation(EntityFrameworkInstrumentationOptions options) { }
+    void ConfigureLoggingProvider(LoggerProviderBuilder builder);
 
-    void ConfigureLogging(OpenTelemetryLoggerOptions builder) { }
+    void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options);
 
-    void ConfigureMetrics(MeterProviderBuilder builder) { }
+    void ConfigureMetrics(MeterProviderBuilder builder);
 
-    void ConfigureTracing(TracerProviderBuilder builder) { }
+    void ConfigureTracing(TracerProviderBuilder builder);
 }

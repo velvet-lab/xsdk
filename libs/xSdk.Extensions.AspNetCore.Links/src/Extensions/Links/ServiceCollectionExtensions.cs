@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
+using xSdk.Plugins.Links;
 
 namespace xSdk.Extensions.Links;
 
@@ -29,7 +30,7 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<ILinksService>(provider =>
         {
             var options = new LinksOptions();
-            SlimHost.Instance.PluginSystem.Invoke<ILinksPluginBuilder>(x => x.ConfigureLinks(options));
+            SlimHost.Instance.PluginSystem.ConfigurePlugin<ILinksPluginBuilder>(x => x.ConfigureLinks(options));
 
             var service = ActivatorUtilities.CreateInstance<LinksService>(provider, options);
 

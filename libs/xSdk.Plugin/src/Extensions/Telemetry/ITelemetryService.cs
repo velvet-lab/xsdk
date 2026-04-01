@@ -18,7 +18,7 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
 
-namespace xSdk;
+namespace xSdk.Extensions.Telemetry;
 
 public interface ITelemetryService
 {
