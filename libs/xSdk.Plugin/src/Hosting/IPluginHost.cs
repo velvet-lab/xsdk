@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
-namespace xSdk.Extensions.Plugin;
+using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Variable;
+
+namespace xSdk.Hosting;
 
 public interface IPluginHost : IPluginDescription { }
+
+public interface IPluginHost<TSetup> : IPluginHost
+    where TSetup : class, ISetup
+{
+    
+}
