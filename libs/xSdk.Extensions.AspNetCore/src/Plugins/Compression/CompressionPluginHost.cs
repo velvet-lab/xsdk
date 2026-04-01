@@ -15,21 +15,21 @@
  */
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
-using xSdk.Extensions.Plugin;
+using xSdk.Hosting;
 
-namespace xSdk.Hosting;
+namespace xSdk.Plugins.Compression;
 
-[CLSCompliant(false)]
-public class WebHostPluginBase : PluginDescription, IPlugin
+internal sealed class CompressionPluginHost : PluginHost
 {
-    public virtual void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) { }
-
-    public virtual void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app) { }
-
-    public virtual void Configure(WebHostBuilderContext context, IApplicationBuilder app) { }
-
-    public virtual void ConfigureEndpoint(IEndpointRouteBuilder builder) { }
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddResponseCompression(options =>
+        {
+            options.EnableForHttps = true;
+            options.Providers.Add<BrotliCompressionProvider>();
+            options.Providers.Add<GzipCompressionProvider>();
+        });
+    }
 }

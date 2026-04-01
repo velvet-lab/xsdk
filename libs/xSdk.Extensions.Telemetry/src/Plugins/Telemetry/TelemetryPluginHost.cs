@@ -1,0 +1,101 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Resources;
+using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Telemetry;
+using xSdk.Extensions.Variable;
+using xSdk.Hosting;
+
+namespace xSdk.Plugins.Telemetry;
+
+internal class TelemetryPluginHost : PluginHost
+{
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        var telemetrySetup = SlimHost.Instance.VariableSystem.GetSetup<TelemetrySetup>();
+        if (!telemetrySetup.IsDisabled)
+        {
+            services.AddTelemetryServices();
+
+            telemetrySetup.Validate();
+
+            // Create an builder
+            var telemetryBuilder = services
+                .AddOpenTelemetry()
+                .ConfigureResource(ConfigureResourceBuilder);
+
+            // Configure Tracing
+            if (!telemetrySetup.IsTracingDisabled)
+            {
+                telemetryBuilder.WithTracing(builder =>
+                {
+                    // Call tracing configuration from possible other Startups
+                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
+                });
+            }
+
+            // Configure Metrics
+            if (!telemetrySetup.IsMetricsDisabled)
+            {
+                telemetryBuilder.WithMetrics(builder =>
+                {
+                    // Call metrics configuration from possible other Startups
+                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
+                });
+            }
+
+            // Configure Logging
+            if (!telemetrySetup.IsLoggingDisabled)
+            {
+                telemetryBuilder.WithLogging(builder =>
+                {
+                    // Call logging configuration from possible other Startups
+                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder));
+                },
+                options =>
+                {
+                    // Call logging configuration from possible other Startups
+                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options));
+                });
+            }
+        }
+    }
+
+    private void ConfigureResourceBuilder(ResourceBuilder resourceBuilder)
+    {
+        var setup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
+
+        resourceBuilder
+            .AddEnvironmentVariableDetector()
+            .AddTelemetrySdk()
+            .AddContainerDetector()
+            .AddHostDetector()
+            .AddOperatingSystemDetector()
+            .AddProcessDetector()
+            .AddProcessRuntimeDetector()            
+            // .AddAttributes(resources)            
+            // .AddDetector(provider =>
+            //{
+            //    // Up2date Resources, is better than static resources
+            //    var resources = SlimHost.Instance.VariableSystem.BuildResources();
+            //    return new VariableResourceDetector(resources);
+            //})
+            .AddService(serviceName: setup.ServiceName, serviceNamespace: setup.ServiceNamespace, serviceVersion: setup.ServiceVersion);
+
+    }
+}

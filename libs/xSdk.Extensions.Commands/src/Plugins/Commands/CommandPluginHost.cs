@@ -17,14 +17,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Spectre.Console.Cli;
-using xSdk.Extensions.Commands;
-using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
-using xSdk.Plugins.Documentation;
 
 namespace xSdk.Plugins.Commands;
 
-internal sealed class CommandPlugin : PluginBase
+internal sealed class CommandPluginHost : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {

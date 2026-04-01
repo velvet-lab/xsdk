@@ -25,14 +25,14 @@ public static class HostBuilderExtensions
     {
         return hostBuilder
             .RegisterSetup<DocumentationSetup>()
-            .EnablePlugin<DocumentationPlugin>();
+            .RegisterPluginHost<DocumentationPluginHost>();
     }
 
     public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : IDocumentationPluginBuilder
+        where TPluginBuilder : class, IDocumentationPluginBuilder
     {
         return hostBuilder
             .EnableDocumentation()
-            .EnablePlugin<TPluginBuilder>();
+            .RegisterPluginBuilder<TPluginBuilder>();
     }
 }

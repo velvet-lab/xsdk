@@ -16,7 +16,7 @@
 
 namespace xSdk.Extensions.Plugin;
 
-public interface IPluginDescription
+public interface IPluginDescription : IPlugin
 {
     string? Name { get; }
 

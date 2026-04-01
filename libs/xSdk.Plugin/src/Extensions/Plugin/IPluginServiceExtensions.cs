@@ -18,10 +18,34 @@ namespace xSdk.Extensions.Plugin;
 
 public static class IPluginServiceExtensions
 {
-    public static bool Invoke<TPlugin>(this IPluginService pluginService, Action<TPlugin> factory)
+    public static bool ConfigureHost<TPluginHost>(this IPluginService pluginService, Action<TPluginHost> factory)
+        where TPluginHost : IPluginHost
     {
-        var plugins = pluginService.GetPlugins<TPlugin>();
+        var plugins = pluginService
+            .GetPlugins<TPluginHost>()
+            .Cast<PluginDescription>()
+            .OrderBy(p => p.Order)
+            .Cast<TPluginHost>()
+            .ToList();
+
         foreach (var plugin in plugins)
+        {
+            factory?.Invoke(plugin);
+        }
+        return plugins.Any();
+    }
+
+    public static bool ConfigurePlugin<TPluginBuilder>(this IPluginService pluginService, Action<TPluginBuilder> factory)
+        where TPluginBuilder: IPluginBuilder
+    {
+        var plugins = pluginService
+            .GetPlugins<TPluginBuilder>()
+            .Cast<PluginDescription>()
+            .OrderBy(p => p.Order)
+            .Cast<TPluginBuilder>()
+            .ToList();
+
+        foreach (TPluginBuilder plugin in plugins)
         {
             factory?.Invoke(plugin);
         }

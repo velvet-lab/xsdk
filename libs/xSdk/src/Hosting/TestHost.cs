@@ -55,22 +55,26 @@ public static partial class TestHost
                     .AddHostedService<LoggerFactoryInitializer>();
 
                 SlimHostInternal.Instance.PluginSystem
-                    .Invoke<PluginBase>(x => x.ConfigureServices(services));
+                    .ConfigureHost<PluginHost>(x => x.ConfigureServices(services));
             })
             .ConfigureServices((context, services) =>
             {
                 SlimHostInternal.Instance.PluginSystem
-                    .Invoke<HostPluginBase>(x => x.ConfigureServices(context, services));
+                    .ConfigureHost<PluginHost>(x => x.ConfigureServices(context, services));
             })
             .ConfigureWebHost(webhostBuilder =>
             {
-                webhostBuilder.ConfigureServices(
-                    (context, services) =>
+                webhostBuilder
+                    .ConfigureServices(services => {
+                        SlimHostInternal.Instance.PluginSystem
+                            .ConfigureHost<WebPluginHost>(x => x.ConfigureServices(services));
+                    })
+
+                    .ConfigureServices((context, services) =>
                     {
                         SlimHostInternal.Instance.PluginSystem
-                            .Invoke<WebHostPluginBase>(x => x.ConfigureServices(context, services));
-                    }
-                );
+                            .ConfigureHost<WebPluginHost>(x => x.ConfigureServices(context, services));
+                    });
             });
 
         return builder;

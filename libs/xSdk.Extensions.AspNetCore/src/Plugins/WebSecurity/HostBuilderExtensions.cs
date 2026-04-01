@@ -25,17 +25,17 @@ public static class HostBuilderExtensions
     {
         builder
             .RegisterSetup<WebSecuritySetup>()
-            .EnablePlugin<WebSecurityPlugin>();
+            .RegisterPluginHost<WebSecurityPluginHost>();
 
         return builder;
     }
 
     public static IHostBuilder EnableWebSecurity<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : IWebSecurityPluginBuilder
+        where TPluginBuilder : class, IWebSecurityPluginBuilder
     {
         builder
             .EnableWebSecurity()
-            .EnablePlugin<TPluginBuilder>();
+            .RegisterPluginBuilder<TPluginBuilder>();
 
         return builder;
     }

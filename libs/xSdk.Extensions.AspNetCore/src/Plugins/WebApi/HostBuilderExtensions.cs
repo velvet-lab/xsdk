@@ -24,17 +24,17 @@ public static class HostBuilderExtensions
     public static IHostBuilder EnableWebApi(this IHostBuilder builder)
     {
         builder
-            .EnablePlugin<WebApiPlugin>();
+            .RegisterPluginHost<WebApiPluginHost>();
 
         return builder;
     }
 
     public static IHostBuilder EnableWebApi<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : IWebApiPluginBuilder
+        where TPluginBuilder : class, IWebApiPluginBuilder
     {
         builder
             .EnableWebApi()
-            .EnablePlugin<TPluginBuilder>();
+            .RegisterPluginBuilder<TPluginBuilder>();
 
         return builder;
     }

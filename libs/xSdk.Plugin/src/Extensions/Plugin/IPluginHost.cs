@@ -14,24 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Hosting;
-using xSdk.Hosting;
+namespace xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Links;
-
-public static class HostBuilderExtensions
-{
-    public static IHostBuilder EnableLinks(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder
-            .RegisterPluginHost<LinksPluginHost>();
-    }
-
-    public static IHostBuilder EnableLinks<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : class, ILinksPluginBuilder
-    {
-        return hostBuilder
-            .EnableLinks()
-            .RegisterPluginBuilder<TPluginBuilder>();
-    }
-}
+public interface IPluginHost : IPluginDescription { }

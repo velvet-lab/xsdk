@@ -31,7 +31,7 @@ using xSdk.Shared;
 
 namespace xSdk.Plugins.WebApi;
 
-public class WebApiPlugin : WebHostPluginBase
+internal sealed class WebApiPluginHost : WebPluginHost
 {
     protected override int Order => 50;
 
@@ -74,7 +74,7 @@ public class WebApiPlugin : WebHostPluginBase
                 _.InputFormatters.Add(new PlainTextFormatter());
                 _.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
-                SlimHost.Instance.PluginSystem.Invoke<IWebApiPluginBuilder>(x => x.ConfigureMvc(_));
+                SlimHost.Instance.PluginSystem.ConfigurePlugin<IWebApiPluginBuilder>(x => x.ConfigureMvc(_));
             })
             .AddJsonOptions(_ =>
             {

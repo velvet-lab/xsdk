@@ -28,7 +28,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
-internal sealed class AuthenticationPlugin : WebHostPluginBase
+internal sealed class AuthenticationPluginHost : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
@@ -47,7 +47,7 @@ internal sealed class AuthenticationPlugin : WebHostPluginBase
 
         // API Key Auth is always needed for the default Multi Auth Scheme
         authBuilder.AddApiKeyAuth();
-        SlimHost.Instance.PluginSystem.Invoke<IAuthenticationPluginBuilder>(x => x.ConfigureAuthentication(authBuilder));
+        SlimHost.Instance.PluginSystem.ConfigurePlugin<IAuthenticationPluginBuilder>(x => x.ConfigureAuthentication(authBuilder));
 
         // Add Client defined Policies
         services.AddAuthorization(_ =>
@@ -61,7 +61,7 @@ internal sealed class AuthenticationPlugin : WebHostPluginBase
             //    .RequireAuthenticatedUser()
             //    .Build();
 
-            SlimHost.Instance.PluginSystem.Invoke<IAuthenticationPluginBuilder>(x => x.ConfigureAuthorization(_));
+            SlimHost.Instance.PluginSystem.ConfigurePlugin<IAuthenticationPluginBuilder>(x => x.ConfigureAuthorization(_));
         });
     }
 
@@ -103,7 +103,7 @@ internal sealed class AuthenticationPlugin : WebHostPluginBase
     private void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme)
     {
         string? result = null;
-        SlimHost.Instance.PluginSystem.Invoke<IAuthenticationPluginBuilder>(x => x.TryRetrieveAuthenticationScheme(context, out result));
+        SlimHost.Instance.PluginSystem.ConfigurePlugin<IAuthenticationPluginBuilder>(x => x.TryRetrieveAuthenticationScheme(context, out result));
 
         scheme = result;
     }

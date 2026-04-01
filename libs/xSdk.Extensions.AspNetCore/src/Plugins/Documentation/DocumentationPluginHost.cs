@@ -24,7 +24,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
-internal sealed class DocumentationPlugin : WebHostPluginBase
+internal sealed class DocumentationPluginHost : WebPluginHost
 {
     private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
     {

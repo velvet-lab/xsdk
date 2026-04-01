@@ -23,12 +23,16 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableDataProtection(this IHostBuilder hostBuilder)
     {
-        return hostBuilder.RegisterSetup<DataProtectionSetup>().EnablePlugin<DataProtectionPlugin>();
+        return hostBuilder
+            .RegisterSetup<DataProtectionSetup>()
+            .RegisterPluginHost<DataProtectionPluginHost>();
     }
 
     public static IHostBuilder EnableDataProtection<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : IDataProtectionPluginBuilder
+        where TPluginBuilder : class, IDataProtectionPluginBuilder
     {
-        return hostBuilder.EnableDataProtection().EnablePlugin<TPluginBuilder>();
+        return hostBuilder
+            .EnableDataProtection()
+            .RegisterPluginBuilder<TPluginBuilder>();
     }
 }

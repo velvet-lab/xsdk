@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Mvc;
-using xSdk.Extensions.CloudEvents;
-using xSdk.Hosting;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.CloudEvents;
+namespace xSdk.Plugins.Proxy;
 
-internal class CloudEventPlugin : WebHostPluginBase
+internal class DefaultProxyPluginBuilder : PluginBuilderBase
 {
-    public void ConfigureMvc(MvcOptions options)
-    {
-        var formatter = CloudEventFactory.CreateFormatter();
-        options.InputFormatters.Insert(0, new CloudEventJsonInputFormatter(formatter));
-    }
 }

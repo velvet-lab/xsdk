@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
-using xSdk.Extensions.Links;
+using Microsoft.Extensions.Hosting;
 using xSdk.Hosting;
+using xSdk.Plugins.Proxy;
+using xSdk.Plugins.Telemetry;
 
-namespace xSdk.Plugins.Links;
+namespace xSdk.Plugins.Proxy;
 
-internal class LinksPlugin : PluginBase
+public static class HostBuilderExtensions
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public static IHostBuilder EnableProxy(this IHostBuilder builder)
+        => builder.EnableProxy<DefaultProxyPluginBuilder>();
+
+    public static IHostBuilder EnableProxy<TPluginBuilder>(this IHostBuilder builder)
+        where TPluginBuilder : class
     {
-        services
-            .AddLinksService();
+        builder
+            .RegisterPluginHost<ProxyPluginHost>()
+            .RegisterPluginBuilder<TelemetryPluginBuilder>();
+
+        return builder;
     }
 }

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
-using xSdk.Extensions.Plugin;
+using Microsoft.AspNetCore.Mvc;
+using xSdk.Extensions.CloudEvents;
+using xSdk.Hosting;
 
-namespace xSdk.Hosting;
+namespace xSdk.Plugins.CloudEvents;
 
-public abstract class PluginBase : PluginDescription, IPlugin
+internal class CloudEventPluginHost : WebPluginHost
 {
-    public virtual void ConfigureServices(IServiceCollection services) { }
+    public void ConfigureMvc(MvcOptions options)
+    {
+        var formatter = CloudEventFactory.CreateFormatter();
+        options.InputFormatters.Insert(0, new CloudEventJsonInputFormatter(formatter));
+    }
 }

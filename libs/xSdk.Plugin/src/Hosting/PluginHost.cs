@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
-using xSdk.Hosting;
+using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Compression;
+namespace xSdk.Hosting;
 
-public class CompressionPlugin : PluginBase
+public abstract class PluginHost : PluginDescription, IPluginHost
 {
-    public override void ConfigureServices(IServiceCollection services)
-    {
-        services.AddResponseCompression(options =>
-        {
-            options.EnableForHttps = true;
-            options.Providers.Add<BrotliCompressionProvider>();
-            options.Providers.Add<GzipCompressionProvider>();
-        });
-    }
+    public virtual void ConfigureServices(IServiceCollection services) { }
+
+    public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
 }

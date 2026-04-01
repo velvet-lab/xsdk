@@ -50,12 +50,12 @@ public static partial class Host
                     .AddHostedService<LoggerFactoryInitializer>();
 
                 SlimHostInternal.Instance.PluginSystem
-                    .Invoke<PluginBase>(x => x.ConfigureServices(services));
+                    .ConfigureHost<PluginHost>(x => x.ConfigureServices(services));
             })
             .ConfigureServices((context, services) =>
             {
                 SlimHostInternal.Instance.PluginSystem
-                    .Invoke<HostPluginBase>(x => x.ConfigureServices(context, services));
+                    .ConfigureHost<PluginHost>(x => x.ConfigureServices(context, services));
             });
 
         return builder;

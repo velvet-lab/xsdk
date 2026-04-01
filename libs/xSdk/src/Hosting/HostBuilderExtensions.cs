@@ -22,20 +22,34 @@ namespace xSdk.Hosting;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnablePlugin<TPlugin>(this IHostBuilder builder)
+    public static IHostBuilder RegisterPluginHost<TPluginHost>(this IHostBuilder builder)
+        where TPluginHost : class, IPluginHost
     {
-        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPlugin>();
+        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginHost>();
         return builder;
     }
 
-    public static IHostBuilder EnablePlugin<TPlugin, TPluginBuilder>(this IHostBuilder builder)
-        where TPlugin : IPlugin
-        where TPluginBuilder : IPluginBuilder
+    public static IHostBuilder RegisterPluginBuilder<TPluginHost>(this IHostBuilder builder)
+        where TPluginHost : class, IPluginBuilder
     {
-        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPlugin>();
-        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginBuilder>();
+        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginHost>();
         return builder;
     }
+
+    //public static IHostBuilder EnablePlugin<TPluginBuilder>(this IHostBuilder builder)
+    //{
+    //    SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginBuilder>();
+    //    return builder;
+    //}
+
+    //public static IHostBuilder EnablePlugin<TPluginBuilder, TPluginBuilder>(this IHostBuilder builder)
+    //    where TPluginBuilder : IPlugin
+    //    where TPluginBuilder : IPluginBuilder
+    //{
+    //    SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginBuilder>();
+    //    SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginBuilder>();
+    //    return builder;
+    //}
 
     public static IHostBuilder RegisterSetup<TSetup>(this IHostBuilder builder)
         where TSetup : class, ISetup, new()

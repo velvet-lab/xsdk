@@ -23,10 +23,13 @@ internal partial class PluginService(IFileSystemService fsService, ILogger<Plugi
 {
     private readonly List<PluginItem> _plugins = new();
 
-    public Task<TPlugin?> GetPluginAsync<TPlugin>(CancellationToken token = default) =>
-        GetPluginsAsync<TPlugin>(token).ContinueWith(task => task.Result.FirstOrDefault());
+    public Task<TPlugin?> GetPluginAsync<TPlugin>(CancellationToken token = default)
+        where TPlugin : IPlugin
+        => GetPluginsAsync<TPlugin>(token)
+        .ContinueWith(task => task.Result.FirstOrDefault());
 
     public async Task<IList<TPlugin>> GetPluginsAsync<TPlugin>(CancellationToken token = default)
+        where TPlugin : IPlugin
     {
         var searchResult = new List<PluginItem>();
 

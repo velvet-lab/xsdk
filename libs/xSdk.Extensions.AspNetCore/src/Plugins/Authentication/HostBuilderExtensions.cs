@@ -23,15 +23,15 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableAuthentication(this IHostBuilder hostBuilder)
     {
-        hostBuilder.RegisterSetup<ApiKeySetup>().EnablePlugin<AuthenticationPlugin>();
+        hostBuilder.RegisterSetup<ApiKeySetup>().RegisterPluginHost<AuthenticationPluginHost>();
 
         return hostBuilder;
     }
 
     public static IHostBuilder EnableAuthentication<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : IAuthenticationPluginBuilder
+        where TPluginBuilder : class, IAuthenticationPluginBuilder
     {
-        hostBuilder.EnableAuthentication().EnablePlugin<TPluginBuilder>();
+        hostBuilder.EnableAuthentication().RegisterPluginBuilder<TPluginBuilder>();
 
         return hostBuilder;
     }

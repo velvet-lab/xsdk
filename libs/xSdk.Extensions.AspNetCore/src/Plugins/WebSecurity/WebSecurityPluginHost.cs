@@ -25,7 +25,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
-public class WebSecurityPlugin : WebHostPluginBase
+internal sealed class WebSecurityPluginHost : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {

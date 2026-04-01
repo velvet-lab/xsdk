@@ -15,12 +15,16 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Links;
+using xSdk.Hosting;
 
-namespace xSdk.Hosting;
+namespace xSdk.Plugins.Links;
 
-public class HostPluginBase : PluginDescription, IPlugin
+internal class LinksPluginHost : PluginHost
 {
-    public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services
+            .AddLinksService();
+    }
 }

@@ -25,7 +25,7 @@ using xSdk.Shared;
 
 namespace xSdk.Plugins.DataProtection;
 
-public class DataProtectionPlugin : PluginBase
+internal sealed class DataProtectionPluginHost : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -52,7 +52,7 @@ public class DataProtectionPlugin : PluginBase
             }
         }
 
-        if (!SlimHost.Instance.PluginSystem.Invoke<IDataProtectionPluginBuilder>(x => x.ConfigureDataProtection(builder)))
+        if (!SlimHost.Instance.PluginSystem.ConfigurePlugin<IDataProtectionPluginBuilder>(x => x.ConfigureDataProtection(builder)))
         {
             var keysLocation = GetKeyFolder();
             builder.PersistKeysToFileSystem(new DirectoryInfo(keysLocation));
