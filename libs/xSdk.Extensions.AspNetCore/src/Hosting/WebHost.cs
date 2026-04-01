@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
@@ -54,7 +55,10 @@ public static partial class WebHost
                     // Enabled detailed Errors if in Development Mode
                     .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
                     // Configure Services
-                    .ConfigureServices(ConfigureWebHostServicesWithContext)
+                    .ConfigureServices((context, services) =>
+                    {
+                        SlimHost.Instance.PluginSystem.ConfigureHost<WebPluginHost>(x => x.ConfigureServices(context, services));
+                    })
                     // Load Middlewares
                     .Configure(ConfigureApplicationWithContext)
                     // Configure Kestrel

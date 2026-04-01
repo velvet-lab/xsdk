@@ -26,7 +26,7 @@ public static partial class WebHost
     {
         _logger.LogInformation("Configuring application services");
 
-        var plugins = SlimHost.Instance.PluginSystem.GetPlugins<WebHostPluginBase>();
+        var plugins = SlimHost.Instance.PluginSystem.GetPlugins<WebPluginHost>();
 
         // Only the first Plugin needs to configure defaults
         var firstPlugin = plugins.FirstOrDefault();
