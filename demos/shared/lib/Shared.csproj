@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="OpenTelemetry.Instrumentation.Process" />
         <ProjectReference Include="..\..\..\libs\xSdk.Data\src\xSdk.Data.csproj" />
     </ItemGroup>
 </Project>

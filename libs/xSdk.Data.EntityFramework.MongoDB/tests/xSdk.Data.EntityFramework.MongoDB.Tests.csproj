@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Testcontainers" />
         <Using Include="Xunit" />
     </ItemGroup>
 
