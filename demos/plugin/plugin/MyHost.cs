@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 
 namespace xSdk.Demos;
 
-internal class PluginHost(ILogger<PluginHost> _logger) : IHostedService
+internal class MyHost(ILogger<MyHost> _logger) : IHostedService
 {
     public Task StartAsync(CancellationToken cancellationToken)
     {

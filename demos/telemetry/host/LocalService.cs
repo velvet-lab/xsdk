@@ -17,6 +17,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Telemetry;
 
 namespace xSdk.Demos;
 

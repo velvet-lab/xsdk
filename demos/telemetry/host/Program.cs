@@ -19,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
 using xSdk.Hosting;
+using xSdk.Plugins.Telemetry;
 
 const string APP_NAME = "telemetry";
 const string APP_COMPANY = "xdemos";
@@ -26,6 +27,7 @@ const string APP_PREFIX = "te";
 
 var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+    .EnableTelemetry()
     .ConfigureServices((context, services) =>
     {
         services

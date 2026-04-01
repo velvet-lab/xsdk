@@ -20,7 +20,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Demos;
 
-public class MyPlugin : PluginBase
+public class MyPluginHost : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
@@ -28,6 +28,6 @@ public class MyPlugin : PluginBase
 
         // Wir fügen am besten einen Host hinzu, wenn dieser gestartet wird, dann ist das Framework komplett geladen
         Logger.LogInformation("Add hosted Service");
-        services.AddHostedService<PluginHost>();
+        services.AddHostedService<MyHost>();
     }
 }
