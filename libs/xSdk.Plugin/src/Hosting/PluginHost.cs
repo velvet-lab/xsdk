@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
@@ -25,4 +26,17 @@ public abstract class PluginHost : PluginDescription, IPluginHost
     public virtual void ConfigureServices(IServiceCollection services) { }
 
     public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
+
+    public TSetup LoadSetup<TSetup>()
+        where TSetup : class, ISetup
+        => SlimHost.Instance.VariableSystem.GetSetup<TSetup>();
+}
+
+public abstract class PluginHost<TSetup> : PluginHost, IPluginHost<TSetup>
+    where TSetup : class, ISetup, new()
+{
+    public TSetup Setup
+    {
+        get => this.LoadSetup<TSetup>();
+    }
 }

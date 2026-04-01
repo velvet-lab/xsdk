@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Hosting;
+
 namespace xSdk.Extensions.Plugin;
 
 public static class IPluginServiceExtensions

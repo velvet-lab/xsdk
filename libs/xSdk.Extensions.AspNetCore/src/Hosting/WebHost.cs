@@ -55,6 +55,12 @@ public static partial class WebHost
                     // Enabled detailed Errors if in Development Mode
                     .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
                     // Configure Services
+                    .ConfigureServices((services) =>
+                    {
+                        SlimHost.Instance.PluginSystem.ConfigureHost<WebPluginHost>(x => x.ConfigureServices(services));
+                    })
+
+                    // Configure Services
                     .ConfigureServices((context, services) =>
                     {
                         SlimHost.Instance.PluginSystem.ConfigureHost<WebPluginHost>(x => x.ConfigureServices(context, services));
