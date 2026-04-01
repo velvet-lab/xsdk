@@ -45,7 +45,7 @@ internal partial class TelemetryService : ITelemetryService
     {
         var source = CreateMainActivitySource();
 
-        var activity = source.StartActivity(name, kind);        
+        var activity = source.StartActivity(name, kind);
         if (activity == null)
         {
             throw new SdkException("Activity could not started");

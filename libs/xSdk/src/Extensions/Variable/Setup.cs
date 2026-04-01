@@ -69,11 +69,11 @@ public abstract class Setup : ISetup
     }
 
     public bool IsValid()
-        => IsValid(false);    
-        
+        => IsValid(false);
+
     public bool IsValid(bool throwIfFails)
     {
-        Validate(throwIfFails);        
+        Validate(throwIfFails);
         return Results == null || !Results.Any();
     }
 

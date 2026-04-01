@@ -15,13 +15,13 @@
  */
 
 using Microsoft.Extensions.Logging;
-using xSdk;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.Json;
+using xSdk;
 using xSdk.Data;
-using xSdk.Shared;
 using xSdk.Hosting;
+using xSdk.Shared;
 
 namespace xSdk.Extensions.Web;
 

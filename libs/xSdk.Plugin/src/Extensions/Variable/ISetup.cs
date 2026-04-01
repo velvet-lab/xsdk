@@ -26,7 +26,7 @@ public interface ISetup
 
     bool IsValid(bool throwIfFails);
 
-    void Validate();         
+    void Validate();
 
     void Validate(bool throwIfFails);
 }

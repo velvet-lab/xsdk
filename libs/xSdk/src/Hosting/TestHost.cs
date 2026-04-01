@@ -65,7 +65,8 @@ public static partial class TestHost
             .ConfigureWebHost(webhostBuilder =>
             {
                 webhostBuilder
-                    .ConfigureServices(services => {
+                    .ConfigureServices(services =>
+                    {
                         SlimHostInternal.Instance.PluginSystem
                             .ConfigureHost<WebPluginHost>(x => x.ConfigureServices(services));
                     })

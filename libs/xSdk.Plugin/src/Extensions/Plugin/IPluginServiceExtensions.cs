@@ -36,7 +36,7 @@ public static class IPluginServiceExtensions
     }
 
     public static bool ConfigurePlugin<TPluginBuilder>(this IPluginService pluginService, Action<TPluginBuilder> factory)
-        where TPluginBuilder: IPluginBuilder
+        where TPluginBuilder : IPluginBuilder
     {
         var plugins = pluginService
             .GetPlugins<TPluginBuilder>()

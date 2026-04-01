@@ -121,7 +121,7 @@ public static class TelemetryConfigurator
         //        }
         //    }
         //}
-    }    
+    }
 
     private static void Configure(OtlpExporterOptions options, TelemetrySetup telemetrySetup)
     {

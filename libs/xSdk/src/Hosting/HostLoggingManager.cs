@@ -36,7 +36,7 @@ internal static class HostLoggingManager
             : SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
 
         var logLevel = ConvertLogLevel(envSetup.LogLevel);
-        builder.SetMinimumLevel(logLevel);       
+        builder.SetMinimumLevel(logLevel);
     }
 
     internal static void ResetLogger(ILoggingBuilder? builder = default)
@@ -47,13 +47,13 @@ internal static class HostLoggingManager
     private static LogLevel ConvertLogLevel(string? logLevel) =>
         logLevel?.ToLowerInvariant() switch
         {
-            "off"   => LogLevel.None,
+            "off" => LogLevel.None,
             "fatal" => LogLevel.Critical,
             "error" => LogLevel.Error,
-            "warn"  => LogLevel.Warning,
-            "info"  => LogLevel.Information,
+            "warn" => LogLevel.Warning,
+            "info" => LogLevel.Information,
             "debug" => LogLevel.Debug,
             "trace" => LogLevel.Trace,
-            _       => LogLevel.Information,
+            _ => LogLevel.Information,
         };
 }

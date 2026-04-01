@@ -87,7 +87,7 @@ internal class TelemetryPluginHost : PluginHost
             .AddHostDetector()
             .AddOperatingSystemDetector()
             .AddProcessDetector()
-            .AddProcessRuntimeDetector()            
+            .AddProcessRuntimeDetector()
             // .AddAttributes(resources)            
             // .AddDetector(provider =>
             //{

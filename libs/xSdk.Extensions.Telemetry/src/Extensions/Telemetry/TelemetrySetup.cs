@@ -191,7 +191,7 @@ public sealed class TelemetrySetup : Setup
             public const string Template = "--enable-console";
             public const string HelpText = "Enables Console Output";
             public const bool DefaultValue = false;
-        }        
+        }
 
         public static class Endpoint
         {

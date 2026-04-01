@@ -11,7 +11,7 @@ namespace xSdk.Plugins.Commands;
 internal class DefaultCommandsPluginBuilder : PluginBuilderBase, ICommandsPluginBuilder
 {
     private const string Prompt = ">";
-    private EnvironmentSetup _environmentSetup;
+    private readonly EnvironmentSetup _environmentSetup;
 
     public DefaultCommandsPluginBuilder()
     {

@@ -16,9 +16,10 @@ internal class TelemetryPluginBuilder : PluginBuilderBase, ITelemetryPluginBuild
 
     public void ConfigureLoggingProvider(LoggerProviderBuilder builder) { }
 
-    public void ConfigureMetrics(MeterProviderBuilder builder) {
+    public void ConfigureMetrics(MeterProviderBuilder builder)
+    {
 
-        
+
     }
 
     public void ConfigureTracing(TracerProviderBuilder builder) { }

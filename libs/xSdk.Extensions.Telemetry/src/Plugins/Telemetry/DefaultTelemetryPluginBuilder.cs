@@ -15,7 +15,7 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilderBase, ITelemetryPlug
     {
         builder
             .AddConsoleExporter()
-            .AddOtlpExporter(ConfigureOtlpExporter);        
+            .AddOtlpExporter(ConfigureOtlpExporter);
     }
 
     public void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options)
@@ -41,7 +41,7 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilderBase, ITelemetryPlug
 
     public void ConfigureTracing(TracerProviderBuilder builder)
     {
-        var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();        
+        var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
         builder
             .AddSource(envSetup.ServiceFullName)
             .AddAspNetCoreInstrumentation()
@@ -57,7 +57,7 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilderBase, ITelemetryPlug
     {
         var telemetrySetup = SlimHost.Instance.VariableSystem.GetSetup<TelemetrySetup>();
         if (telemetrySetup.IsValid(true))
-        {            
+        {
             // Adding the OtlpExporter creates a GrpcChannel.
             // This switch must be set before creating a GrpcChannel when calling an insecure gRPC service.
             // See: https://docs.microsoft.com/aspnet/core/grpc/troubleshoot#call-insecure-grpc-services-with-net-core-client
@@ -69,5 +69,5 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilderBase, ITelemetryPlug
 
 
         }
-    }   
+    }
 }
