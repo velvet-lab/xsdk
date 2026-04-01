@@ -22,7 +22,11 @@ public interface ISetup
 {
     ICollection<ValidationResult> Results { get; }
 
-    void Validate();
+    bool IsValid();
+
+    bool IsValid(bool throwIfFails);
+
+    void Validate();         
 
     void Validate(bool throwIfFails);
 }

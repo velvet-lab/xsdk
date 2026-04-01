@@ -3,6 +3,7 @@ using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
+using xSdk.Extensions.Variable.Commands;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
@@ -25,6 +26,8 @@ internal class DefaultCommandsPluginBuilder : PluginBuilderBase, ICommandsPlugin
     public void Configure(IConfigurator setup)
     {
         setup.SetApplicationName(_environmentSetup.AppName);
+
+        setup.AddVariableCommands();
 
         setup.AddCommand<ConsoleCommand>(ConsoleCommand.Definitions.Name);
         setup.AddCommand<ClearCommand>(ClearCommand.Definitions.Name);

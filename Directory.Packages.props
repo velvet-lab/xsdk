@@ -33,17 +33,31 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery.Yarp" Version="10.4.0" />      
     <PackageVersion Include="Microsoft.OpenApi" Version="[2.7.0, 3.0.0)" />
     <PackageVersion Include="MongoDB.Bson" Version="3.7.1" />
     <PackageVersion Include="MongoDB.EntityFrameworkCore" Version="10.0.1" />
     <PackageVersion Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="OpenTelemetry" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.15.1" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Enrichment.Http" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Enrichment.AspNetCore" Version="1.15.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="0.5.0-beta.4" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EventCounters" Version="1.15.0-alpha.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.15.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.StackExchangeRedis" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Resources.Container" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Resources.Host" Version="1.15.0-beta.2" />
+    <PackageVersion Include="OpenTelemetry.Resources.ProcessRuntime" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Resources.Process" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Resources.OperatingSystem" Version="1.15.0-beta.1" />
     <PackageVersion Include="RestSharp" Version="114.0.0" />
     <PackageVersion Include="SemanticVersioning" Version="3.0.0" />
     <PackageVersion Include="Sewer56.Update" Version="4.0.2" />
@@ -54,6 +68,8 @@
     <PackageVersion Include="Weikio.PluginFramework" Version="1.5.1" />
     <PackageVersion Include="Weikio.PluginFramework.Abstractions" Version="1.5.1" />
     <PackageVersion Include="YamlDotNet" Version="16.3.0" />
+    <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
+    <PackageVersion Include="Yarp.Telemetry.Consumption" Version="2.3.0" />      
     <PackageVersion Include="Zio" Version="0.22.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(IsTestProject)' == 'true' OR '$(IsDemoProject)' == 'true'">

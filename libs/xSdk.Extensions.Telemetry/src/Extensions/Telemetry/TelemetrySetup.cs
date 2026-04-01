@@ -16,6 +16,7 @@
 
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
+using xSdk.Plugins.Telemetry;
 
 namespace xSdk.Extensions.Telemetry;
 
@@ -73,13 +74,6 @@ public sealed class TelemetrySetup : Setup
         set => this.SetValue(Definitions.ConsoleEnabled.Name, value);
     }
 
-    [Variable(name: Definitions.Token.Name, template: Definitions.Token.Template, helpText: Definitions.Token.HelpText)]
-    public string Token
-    {
-        get => this.ReadValue<string>(Definitions.Token.Name);
-        set => this.SetValue(Definitions.Token.Name, value);
-    }
-
     [Variable(
         name: Definitions.Endpoint.Name,
         template: Definitions.Endpoint.Template,
@@ -133,18 +127,12 @@ public sealed class TelemetrySetup : Setup
     protected override void ValidateSetup()
     {
         this.ValidateMember(
-            x => !x.IsDisabled && !x.IsOtlpExporterDisabled && string.IsNullOrEmpty(x.Token),
-            "No token given to authenticate against MaaS endpoint",
-            Definitions.Token.Name
-        );
-
-        this.ValidateMember(
             x => !x.IsDisabled && !x.IsOtlpExporterDisabled && string.IsNullOrEmpty(x.Endpoint),
             "No MaaS endpoint configured",
             Definitions.Endpoint.Name
         );
 
-        if (!string.IsNullOrEmpty(Token) && !string.IsNullOrEmpty(Endpoint))
+        if (!string.IsNullOrEmpty(Endpoint))
         {
             IsOtlpExporterDisabled = false;
         }
@@ -203,21 +191,14 @@ public sealed class TelemetrySetup : Setup
             public const string Template = "--enable-console";
             public const string HelpText = "Enables Console Output";
             public const bool DefaultValue = false;
-        }
-
-        public static class Token
-        {
-            public const string Name = "maas-token";
-            public const string Template = "--maas-token <token>";
-            public const string HelpText = "Token to authenticate the application in MaaS environments";
-        }
+        }        
 
         public static class Endpoint
         {
             public const string Name = "maas-endpoint";
             public const string Template = "--maas-endpoint <endpoint>";
             public const string HelpText = "gRpc Endpoit where MaaS lives.";
-            public const string DefaultValue = "https://otel-collector.monitoring.dvint.de:4317";
+            public const string DefaultValue = "http://localhost:4317";
         }
 
         public static class LogLevel

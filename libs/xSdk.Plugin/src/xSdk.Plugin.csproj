@@ -19,9 +19,6 @@
         <PackageReference Include="MongoDB.Bson" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="RestSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
@@ -33,5 +30,9 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>xSdk</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Plugins\Proxy\" />
     </ItemGroup>
 </Project>

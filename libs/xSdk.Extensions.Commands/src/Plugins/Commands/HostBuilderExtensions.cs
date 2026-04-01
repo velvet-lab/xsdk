@@ -25,11 +25,11 @@ public static class HostBuilderExtensions
         => EnableCommands<DefaultCommandsPluginBuilder>(builder);
 
     public static IHostBuilder EnableCommands<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : ICommandsPluginBuilder
+        where TPluginBuilder : class, ICommandsPluginBuilder
     {
         builder
-            .EnablePlugin<CommandPlugin>()
-            .EnablePlugin<TPluginBuilder>();
+            .RegisterPluginHost<CommandPluginHost>()
+            .RegisterPluginBuilder<TPluginBuilder>();
 
         return builder;
     }

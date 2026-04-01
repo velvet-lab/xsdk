@@ -121,19 +121,7 @@ public static class TelemetryConfigurator
         //        }
         //    }
         //}
-    }
-
-    private static bool IsOtlpEndpointSetupValid(TelemetrySetup telemetrySetup)
-    {
-        if (!string.IsNullOrEmpty(telemetrySetup.Endpoint) && !string.IsNullOrEmpty(telemetrySetup.Token))
-        {
-            return true;
-        }
-
-        _logger.LogWarning("Telemetry is enabled, but endpoint and token is missing. MaaS Observability is not possible.");
-
-        return false;
-    }
+    }    
 
     private static void Configure(OtlpExporterOptions options, TelemetrySetup telemetrySetup)
     {
@@ -144,6 +132,6 @@ public static class TelemetryConfigurator
 
         options.Protocol = OtlpExportProtocol.Grpc;
         options.Endpoint = new Uri(telemetrySetup.Endpoint);
-        options.Headers = $"OTEL_KEY={telemetrySetup.Token}";
+        // options.Headers = $"OTEL_KEY={telemetrySetup.Token}";
     }
 }

@@ -23,21 +23,29 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.Telemetry;
 
-internal partial class TelemetryService(EnvironmentSetup envSetup, ILogger<TelemetryService> logger) : ITelemetryService
+internal partial class TelemetryService : ITelemetryService
 {
     private ActivitySource? _mainActivitySource;
     private Meter? _mainMeter;
+    private readonly EnvironmentSetup _envSetup;
+    private readonly ILogger<TelemetryService> _logger;
 
     public ActivitySource MainActivitySource => CreateMainActivitySource();
 
     public Meter MainMeter => CreateMainMeter();
+
+    public TelemetryService(IVariableService variableService, ILogger<TelemetryService> logger)
+    {
+        this._envSetup = variableService.GetSetup<EnvironmentSetup>();
+        this._logger = logger;
+    }
 
 
     public Activity? StartActivity(ActivityKind kind = ActivityKind.Internal, [CallerMemberName] string name = "")
     {
         var source = CreateMainActivitySource();
 
-        var activity = source.StartActivity(name, kind);
+        var activity = source.StartActivity(name, kind);        
         if (activity == null)
         {
             throw new SdkException("Activity could not started");
@@ -66,30 +74,12 @@ internal partial class TelemetryService(EnvironmentSetup envSetup, ILogger<Telem
     public ObservableGauge<T> CreateObservableGauge<T>(string name, Func<T> observeValue, string unit = null, string description = null)
         where T : struct => CreateObservableInstrument<ObservableGauge<T>, T>(meter => meter.CreateObservableGauge(name, observeValue, unit, description));
 
-    internal static ResourceBuilder CreateResourceBuilder(IVariableService variableService)
-    {
-        var setup = variableService.GetSetup<EnvironmentSetup>();
-
-        return ResourceBuilder
-            .CreateDefault()
-            .AddEnvironmentVariableDetector()
-            .AddTelemetrySdk()
-            //.AddAttributes(resources)
-            .AddDetector(provider =>
-            {
-                // Up2date Resources, is better than static resources
-                var resources = variableService.BuildResources();
-                return new VariableResourceDetector(resources);
-            })
-            .AddService(serviceName: setup.ServiceName, serviceNamespace: setup.ServiceNamespace, serviceVersion: setup.ServiceVersion);
-    }
-
     private ActivitySource CreateMainActivitySource()
     {
         if (_mainActivitySource == null)
         {
-            logger.LogInformation("Create main activity source for tracing");
-            _mainActivitySource = new ActivitySource(envSetup.ServiceFullName, envSetup.ServiceVersion);
+            _logger.LogInformation("Create main activity source for tracing");
+            _mainActivitySource = new ActivitySource(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
         }
 
         return _mainActivitySource;
@@ -99,8 +89,8 @@ internal partial class TelemetryService(EnvironmentSetup envSetup, ILogger<Telem
     {
         if (_mainMeter == null)
         {
-            logger.LogInformation("Create main meter for metrics");
-            _mainMeter = new Meter(envSetup.ServiceFullName, envSetup.ServiceVersion);
+            _logger.LogInformation("Create main meter for metrics");
+            _mainMeter = new Meter(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
         }
 
         return _mainMeter;
