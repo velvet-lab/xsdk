@@ -22,7 +22,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
-using xSdk.Plugins.Commands;
 
 namespace xSdk.Hosting;
 

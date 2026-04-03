@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Commands;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;

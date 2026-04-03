@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;

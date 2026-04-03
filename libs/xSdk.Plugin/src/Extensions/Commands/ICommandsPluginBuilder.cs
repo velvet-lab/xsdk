@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Commands;
+namespace xSdk.Extensions.Commands;
 
 public interface ICommandsPluginBuilder : IPluginBuilder
 {
