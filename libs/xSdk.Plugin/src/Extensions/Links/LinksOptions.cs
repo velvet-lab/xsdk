@@ -16,7 +16,7 @@
 
 namespace xSdk.Extensions.Links;
 
-public interface IPolicy
+public class LinksOptions
 {
-    List<RoutedLink> Links { get; }
+    public List<IPolicy> Policies { get; } = new List<IPolicy>();
 }

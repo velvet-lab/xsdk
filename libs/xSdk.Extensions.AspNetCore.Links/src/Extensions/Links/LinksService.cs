@@ -74,12 +74,19 @@ internal sealed partial class LinksService(LinksOptions options, IHttpContextAcc
         {
             foreach (var link in policy.Links)
             {
+                RoutedLink? linkInstance = link as RoutedLink;
+
+                if(linkInstance == null)
+                {
+                    continue;
+                }
+
                 if (string.Compare(link.MethodName, description.MethodName, StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    link.Model = model;
-                    link.Description = description;
-                    link.Context = context;
-                    return link;
+                    linkInstance.Model = model;
+                    linkInstance.Description = description;
+                    linkInstance.Context = context;
+                    return linkInstance;
                 }
             }
         }

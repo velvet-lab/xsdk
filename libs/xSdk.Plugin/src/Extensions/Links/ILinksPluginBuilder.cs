@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Links;
 
 /*
  * Copyright 2026 Roland Breitschaft
@@ -34,7 +33,7 @@ using xSdk.Extensions.Links;
 
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Links;
+namespace xSdk.Extensions.Links;
 
 public interface ILinksPluginBuilder : IPluginBuilder
 {

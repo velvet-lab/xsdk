@@ -21,5 +21,5 @@ namespace xSdk.Extensions.Links;
 public sealed class Policy<TModel> : IPolicy
     where TModel : IModel
 {
-    public List<RoutedLink> Links { get; } = new List<RoutedLink>();
+    public List<IRoutedLink> Links { get; } = new List<IRoutedLink>();
 }

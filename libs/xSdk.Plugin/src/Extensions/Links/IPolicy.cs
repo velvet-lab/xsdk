@@ -16,7 +16,7 @@
 
 namespace xSdk.Extensions.Links;
 
-public class LinksOptions
+public interface IPolicy
 {
-    internal List<IPolicy> Policies { get; } = new List<IPolicy>();
+    List<IRoutedLink> Links { get; }
 }

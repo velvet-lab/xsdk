@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
-using xSdk.Plugins.Links;
 
 namespace xSdk.Extensions.Links;
 
