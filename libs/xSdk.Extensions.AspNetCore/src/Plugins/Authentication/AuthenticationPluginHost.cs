@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 

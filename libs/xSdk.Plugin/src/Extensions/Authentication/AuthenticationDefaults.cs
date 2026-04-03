@@ -16,7 +16,7 @@
 
 using AspNetCore.Authentication.ApiKey;
 
-namespace xSdk.Plugins.Authentication;
+namespace xSdk.Extensions.Authentication;
 
 public static class AuthenticationDefaults
 {

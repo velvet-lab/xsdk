@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Authentication;
+namespace xSdk.Extensions.Authentication;
 
 [CLSCompliant(false)]
 public interface IAuthenticationPluginBuilder : IPluginBuilder
