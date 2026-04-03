@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\xSdk.Plugin\src\xSdk.Plugin.csproj" />
+        <ProjectReference Include="..\..\xSdk.Core\src\xSdk.Core.csproj" />
     </ItemGroup>
 
 </Project>
