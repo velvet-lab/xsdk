@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <IsPackable>false</IsPackable>
@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\xSdk.Plugin.csproj" />
+        <ProjectReference Include="..\src\xSdk.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
