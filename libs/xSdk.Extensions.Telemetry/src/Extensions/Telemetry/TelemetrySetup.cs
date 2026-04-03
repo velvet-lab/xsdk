@@ -16,7 +16,6 @@
 
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Plugins.Telemetry;
 
 namespace xSdk.Extensions.Telemetry;
 

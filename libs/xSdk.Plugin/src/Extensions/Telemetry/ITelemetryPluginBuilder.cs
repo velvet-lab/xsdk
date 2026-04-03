@@ -19,7 +19,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Telemetry;
+namespace xSdk.Extensions.Telemetry;
 
 public interface ITelemetryPluginBuilder : IPluginBuilder
 {
