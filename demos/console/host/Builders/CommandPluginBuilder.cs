@@ -19,9 +19,9 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
-using xSdk.Plugins.Commands;
 
 namespace xSdk.Demos.Builders;
 

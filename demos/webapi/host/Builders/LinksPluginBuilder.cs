@@ -18,7 +18,6 @@ using xSdk.Demos.Controllers.v3;
 using xSdk.Demos.Data;
 using xSdk.Extensions.Links;
 using xSdk.Extensions.Plugin;
-using xSdk.Plugins.Links;
 
 namespace xSdk.Demos.Builders;
 
