@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -85,5 +86,31 @@ public static class ProblemDetailsExtensions
             problem.Detail = details;
 
         return new NotFoundObjectResult(problem);
+    }
+
+    public static BadRequestObjectResult NotAcceptableAsProblem(this ControllerBase controller, ValidationResult result)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Title = "Model validation Error",
+            Status = StatusCodes.Status406NotAcceptable,
+            Instance = controller.HttpContext.Request.Path,
+            Detail = result.ToString(Environment.NewLine)
+        };
+
+        return new BadRequestObjectResult(problemDetails);
+    }
+
+    public static BadRequestObjectResult NotAcceptableAsProblem(this ControllerBase controller, string message)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Title = "Request is not acceptable",
+            Status = StatusCodes.Status406NotAcceptable,
+            Instance = controller.HttpContext.Request.Path,
+            Detail = message
+        };
+
+        return new BadRequestObjectResult(problemDetails);
     }
 }

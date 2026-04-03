@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
@@ -14,6 +14,7 @@
         <PackageReference Include="Asp.Versioning.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" PrivateAssets="contentfiles;analyzers;build" />
         <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="MongoDB.Bson" PrivateAssets="contentfiles;analyzers;build;compile" />
@@ -33,6 +34,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Plugins\Authentication\" />
+      <Folder Include="Plugins\Commands\" />
+      <Folder Include="Plugins\Links\" />
       <Folder Include="Plugins\Proxy\" />
+      <Folder Include="Plugins\Telemetry\" />
     </ItemGroup>
 </Project>
