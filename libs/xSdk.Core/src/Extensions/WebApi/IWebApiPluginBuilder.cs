@@ -17,7 +17,7 @@
 using Microsoft.AspNetCore.Mvc;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.WebApi;
+namespace xSdk.Extensions.WebApi;
 
 public interface IWebApiPluginBuilder : IPluginBuilder
 {

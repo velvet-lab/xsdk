@@ -18,7 +18,7 @@ using Asp.Versioning.ApiExplorer;
 using Microsoft.OpenApi;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.Documentation;
+namespace xSdk.Extensions.Documentation;
 
 public interface IDocumentationPluginBuilder : IPluginBuilder
 {

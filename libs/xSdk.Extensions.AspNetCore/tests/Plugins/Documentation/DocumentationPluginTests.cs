@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;

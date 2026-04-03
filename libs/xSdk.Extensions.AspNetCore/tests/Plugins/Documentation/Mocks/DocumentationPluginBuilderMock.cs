@@ -16,6 +16,7 @@
 
 using Asp.Versioning.ApiExplorer;
 using Microsoft.OpenApi;
+using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Documentation.Mocks;

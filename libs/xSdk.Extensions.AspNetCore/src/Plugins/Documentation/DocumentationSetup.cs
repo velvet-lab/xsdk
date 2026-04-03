@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 

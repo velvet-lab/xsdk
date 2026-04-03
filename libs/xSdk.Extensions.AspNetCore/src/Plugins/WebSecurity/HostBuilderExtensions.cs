@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.WebSecurity;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;

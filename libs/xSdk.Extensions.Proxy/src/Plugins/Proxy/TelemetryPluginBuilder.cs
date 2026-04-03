@@ -21,7 +21,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using xSdk.Extensions.Plugin;
-using xSdk.Plugins.Telemetry;
+using xSdk.Extensions.Telemetry;
 using Yarp.Telemetry.Consumption;
 
 namespace xSdk.Plugins.Proxy;

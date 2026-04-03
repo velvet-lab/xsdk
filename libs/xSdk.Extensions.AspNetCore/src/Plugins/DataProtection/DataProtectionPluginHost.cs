@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;

@@ -32,12 +32,4 @@
             <_Parameter1>xSdk</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Plugins\Authentication\" />
-      <Folder Include="Plugins\Commands\" />
-      <Folder Include="Plugins\Links\" />
-      <Folder Include="Plugins\Proxy\" />
-      <Folder Include="Plugins\Telemetry\" />
-    </ItemGroup>
 </Project>

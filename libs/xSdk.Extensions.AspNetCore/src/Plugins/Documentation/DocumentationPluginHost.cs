@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
+using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;

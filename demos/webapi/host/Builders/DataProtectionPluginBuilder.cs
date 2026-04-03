@@ -15,8 +15,8 @@
  */
 
 using Microsoft.AspNetCore.DataProtection;
+using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Plugin;
-using xSdk.Plugins.DataProtection;
 
 namespace xSdk.Demos.Builders;
 

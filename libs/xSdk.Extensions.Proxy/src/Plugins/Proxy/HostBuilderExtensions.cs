@@ -16,8 +16,7 @@
 
 using Microsoft.Extensions.Hosting;
 using xSdk.Hosting;
-using xSdk.Plugins.Proxy;
-using xSdk.Plugins.Telemetry;
+
 
 namespace xSdk.Plugins.Proxy;
 

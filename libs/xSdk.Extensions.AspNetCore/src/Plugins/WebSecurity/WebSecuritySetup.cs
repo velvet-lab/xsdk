@@ -16,6 +16,7 @@
 
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
+using xSdk.Extensions.WebSecurity;
 
 namespace xSdk.Plugins.WebSecurity;
 

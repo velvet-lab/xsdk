@@ -26,6 +26,7 @@ using Microsoft.Extensions.Logging;
 using xSdk.Data;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
+using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
 using xSdk.Shared;
 
