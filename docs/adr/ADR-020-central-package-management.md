@@ -10,9 +10,9 @@ Accepted
 
 ## Context
 
-The xSDK consists of 13+ library projects and multiple demo/test projects. Without centralized version management, each project specifies its own package versions, which leads to:
+The xSDK consists of 14 library projects and multiple demo/test projects. Without centralized version management, each project specifies its own package versions, which leads to:
 
-- Version skew between projects (e.g., `xSdk.Data` uses `Mapster 7.3` while `xSdk.Data.EntityFramework` uses `Mapster 7.4`).
+- Version skew between projects (e.g., `xSdk.Data` uses `Mapster 10.0.5` while `xSdk.Data.EntityFramework` uses `Mapster 10.0.6`).
 - Upgrade sprawl — bumping a package requires editing every `.csproj` file.
 - Inconsistent transitive resolution, causing runtime binding failures.
 
@@ -25,7 +25,7 @@ All NuGet package versions are managed centrally via `Directory.Packages.props` 
   <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 </PropertyGroup>
 <ItemGroup>
-  <PackageVersion Include="Mapster" Version="7.4.0" />
+  <PackageVersion Include="Mapster" Version="10.0.6" />
   <PackageVersion Include="LiteDB.Async" Version="0.1.8" />
   <!-- ... all packages declared here ... -->
 </ItemGroup>

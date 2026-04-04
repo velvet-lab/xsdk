@@ -20,14 +20,15 @@ The SDK is split into independently deployable NuGet packages, each with a clear
 
 | Package | Responsibility |
 |---|---|
-| `xSdk.Plugin` | Cross-cutting primitives: `ISlimHost`, `PluginBase`, `SlimHostBase`, `SlimHostBuilder`, `SdkException`, `Stage`, `SemVer` — no host runtime dependency |
-| `xSdk` | Core host bootstrap: `Host.CreateBuilder`, `SlimHostInternal`, configuration loading, logging setup, `FileSystemService`, `PluginService`, `VariableService` |
+| `xSdk.Core` | Foundation primitives: `ISlimHost`, `SlimHostBase`, `SlimHostBuilder`, `SdkException`, `Stage`, `SemVer`, all cross-cutting interfaces (`IPlugin`, `IRepository`, `IEntity`, `ISetup`, `IVariable`, `IFileSystemService`, …) — minimal runtime dependencies (see [ADR-024](ADR-024-xsdk-core-foundation-layer.md)) |
+| `xSdk` | Host layer: `Host.CreateBuilder`, `SlimHostInternal`, configuration loading, `FileSystemService`, `PluginService`, `VariableService`, Weikio plugin wiring |
 | `xSdk.Data` | Provider-agnostic data layer: `IDatabase`, `IRepository<TEntity>`, `DatalayerFactory`, `DatalayerBuilder`, `MappingFactory`, `FakeRepository` |
-| `xSdk.Data.EntityFramework` | EF Core provider implementation |
+| `xSdk.Data.EntityFramework` | EF Core relational provider implementation |
 | `xSdk.Data.EntityFramework.MongoDB` | MongoDB EF Core context extension |
 | `xSdk.Data.FlatFile` | JsonFlatFileDataStore provider |
 | `xSdk.Data.NoSql` | LiteDB embedded NoSQL provider |
 | `xSdk.Data.Vault` | HashiCorp Vault KV secret store provider |
+| `xSdk.Data.Consul` | HashiCorp Consul service-discovery & key/value configuration provider (see [ADR-025](ADR-025-consul-data-provider.md)) |
 | `xSdk.Extensions.AspNetCore` | Web host extensions, controllers, Kestrel configuration, security |
 | `xSdk.Extensions.AspNetCore.Links` | Hypermedia links for REST APIs |
 | `xSdk.Extensions.CloudEvents` | CloudNative.CloudEvents ASP.NET Core integration |
@@ -41,7 +42,7 @@ libs/{LibraryName}/
 └── tests/ ← unit tests
 ```
 
-`xSdk.Plugin` contains only abstractions and is dependency-free. All other libraries reference it. This inverted dependency prevents cycles and allows external plugins to depend only on the slim abstractions package.
+`xSdk.Core` contains all cross-cutting abstractions and is the lowest-level dependency. All other libraries reference it. This inverted dependency prevents cycles and allows external plugins to depend only on the slim abstractions package.
 
 ## Consequences
 
@@ -55,6 +56,6 @@ libs/{LibraryName}/
 
 ### Negative
 
-- More projects to maintain and keep in sync.
+- More projects to maintain and keep in sync (currently 14 library projects).
 - Cross-library integration changes require coordinating multiple packages.
 - Central Package Management (`Directory.Packages.props`) is required to avoid version skew.

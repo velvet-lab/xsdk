@@ -496,6 +496,8 @@ All significant design decisions are documented in [`docs/adr/`](docs/adr/). Eac
 | [ADR-021](docs/adr/ADR-021-semver-version-validation.md) | SemVer Version Validation |
 | [ADR-022](docs/adr/ADR-022-weikio-plugin-framework.md) | Weikio Plugin Framework |
 | [ADR-023](docs/adr/ADR-023-aspnetcore-links-hypermedia.md) | ASP.NET Core Links / Hypermedia |
+| [ADR-024](docs/adr/ADR-024-xsdk-core-foundation-layer.md) | xSdk.Core as Unified Foundation Layer |
+| [ADR-025](docs/adr/ADR-025-consul-data-provider.md) | HashiCorp Consul as Service-Discovery and Configuration Provider |
 
 ---
 

@@ -39,3 +39,5 @@ Each ADR follows this structure:
 | [ADR-021](ADR-021-semver-version-validation.md) | Semantic Versioning for Plugin Compatibility | Accepted |
 | [ADR-022](ADR-022-weikio-plugin-framework.md) | Weikio.PluginFramework for Runtime Plugin Loading | Accepted |
 | [ADR-023](ADR-023-aspnetcore-links-hypermedia.md) | Hypermedia Links Extension for REST APIs | Accepted |
+| [ADR-024](ADR-024-xsdk-core-foundation-layer.md) | xSdk.Core as Unified Foundation Layer | Accepted |
+| [ADR-025](ADR-025-consul-data-provider.md) | HashiCorp Consul as Service-Discovery and Configuration Provider | Accepted |

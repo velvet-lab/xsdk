@@ -15,7 +15,7 @@ Many subsystems throughout the SDK need access to shared services before the ful
 - The `Variable`/`Setup` system must read configuration before DI is complete.
 - `FileSystemService` is required during configuration loading.
 - `PluginService` must register plugins before `IHostBuilder.ConfigureServices` runs.
-- Logging (`NLog`) must be configured before any library code is called.
+- Logging must be initialized before any library code is called (previously NLog; now `Microsoft.Extensions.Logging` via OpenTelemetry — see [ADR-013](ADR-013-nlog-logging-framework.md) and [ADR-014](ADR-014-opentelemetry-observability.md)).
 
 Using `IServiceProvider` directly at this stage is not possible because the DI container has not yet been built. Passing these services through explicit constructor chains would create complex setup ceremony for consumers.
 
@@ -38,6 +38,8 @@ ISlimHost                  ← interface (in xSdk.Plugin, no runtime deps)
 | `FileSystem` | `IFileSystemService` | Platform-agnostic file I/O |
 | `VariableSystem` | `IVariableService` | Configuration and setup access |
 | `PluginSystem` | `IPluginService` | Plugin catalog management |
+
+All three interfaces are defined in `xSdk.Core` (see [ADR-024](ADR-024-xsdk-core-foundation-layer.md)), which carries no host-runtime dependency.
 
 `SlimHostInternal.Initialize` follows a two-phase build:
 
@@ -68,7 +70,7 @@ Host.CreateBuilder(args, appName, appCompany, appPrefix)
 - Single, globally accessible entry point to core services — no constructor injection required at early bootstrap stages.
 - Enables Configuration loading to use the `FileSystemService` and `VariableService` before DI is built.
 - Test isolation via dedicated test initialization path.
-- `xSdk.Plugin` defines `ISlimHost` without any dependency on Microsoft.Extensions.Hosting, allowing external plugin assemblies to reference only slim abstractions.
+- `xSdk.Core` defines `ISlimHost` without any dependency on Microsoft.Extensions.Hosting, allowing external plugin assemblies to reference only slim abstractions.
 
 ### Negative
 
