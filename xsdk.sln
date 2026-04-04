@@ -38,7 +38,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Commands", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.CloudEvents", "libs\xSdk.Extensions.CloudEvents\src\xSdk.Extensions.CloudEvents.csproj", "{4D32F769-9038-4364-9396-8616B8E6FD47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Plugin", "libs\xSdk.Plugin\src\xSdk.Plugin.csproj", "{3AEC1FCB-5EA9-4F74-B2A1-8A0C9A7B6102}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Core", "libs\xSdk.Core\src\xSdk.Core.csproj", "{3AEC1FCB-5EA9-4F74-B2A1-8A0C9A7B6102}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.EntityFramework.Tests", "libs\xSdk.Data.EntityFramework\tests\xSdk.Data.EntityFramework.Tests.csproj", "{1FCB90B5-C30E-4112-AB51-EFFF0056B654}"
 EndProject
@@ -62,7 +62,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.Vault", "libs\xSd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.Vault.Tests", "libs\xSdk.Data.Vault\tests\xSdk.Data.Vault.Tests.csproj", "{9C35A693-B1A4-2C50-F9D3-72F1A503146C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Plugin.Tests", "libs\xSdk.Plugin\tests\xSdk.Plugin.Tests.csproj", "{13753187-3110-9BA0-5A86-C7B09223E62D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Core.Tests", "libs\xSdk.Core\tests\xSdk.Core.Tests.csproj", "{13753187-3110-9BA0-5A86-C7B09223E62D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.CloudEvents.Tests", "libs\xSdk.Extensions.CloudEvents\tests\xSdk.Extensions.CloudEvents.Tests.csproj", "{2A12887B-139F-EC24-8122-EED09CD80EB3}"
 EndProject
