@@ -29,6 +29,6 @@ var host = xSdk.Hosting.Host
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
-logger.LogInformation("Starting {AppName}", APP_NAME);
+logger.LogInformation("Starting {Name}", APP_NAME);
 
 await host.RunAsync();
