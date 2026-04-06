@@ -33,7 +33,7 @@ public class Variable : IVariable
 
         ValueType = valueType;
 
-        _applicationPrefix = SlimHost.Instance.AppPrefix;
+        _applicationPrefix = "none";// SlimHost.Instance.AppPrefix;
     }
 
     public string Name { get; private set; }
@@ -90,7 +90,7 @@ public class Variable : IVariable
 
     internal virtual Variable SetDefaultValue(object defaultValue) => this;
 
-    public override int GetHashCode() => ObjectHelper.CreateHashCode(this.ToString());
+    public override int GetHashCode() => ObjectHelper.CreateHashCode(ToString());
 
     public override string ToString() => CreateKey(false, false);
 
@@ -197,7 +197,7 @@ public sealed partial class Variable<TType> : Variable
     {
         try
         {
-            if (defaultValue.GetType() != this.ValueType)
+            if (defaultValue.GetType() != ValueType)
             {
                 throw new SdkException("Value Type is different from Variable Type");
             }

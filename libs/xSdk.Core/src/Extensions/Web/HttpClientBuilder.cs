@@ -78,17 +78,18 @@ public static class HttpClientBuilder
             client.BaseAddress = baseUrl;
 
         string? userAgent = string.Empty;
-        string? appPrefix = SlimHost.Instance.AppPrefix;
-        string? appVersion = SlimHost.Instance.AppVersion;
+        throw new NotImplementedException();
+        //string? appPrefix = SlimHost.Instance.AppPrefix;
+        //string? appVersion = SlimHost.Instance.AppVersion;
 
-        if (!string.IsNullOrEmpty(appPrefix) && !string.IsNullOrEmpty(appVersion))
-        {
-            userAgent = $"{appPrefix.ToUpper()} {appVersion}";
-        }
+        //if (!string.IsNullOrEmpty(appPrefix) && !string.IsNullOrEmpty(appVersion))
+        //{
+        //    userAgent = $"{appPrefix.ToUpper()} {appVersion}";
+        //}
 
-        if (!string.IsNullOrEmpty(userAgent))
-        {
-            client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent);
-        }
+        //if (!string.IsNullOrEmpty(userAgent))
+        //{
+        //    client.DefaultRequestHeaders.UserAgent.TryParseAdd(userAgent);
+        //}
     }
 }

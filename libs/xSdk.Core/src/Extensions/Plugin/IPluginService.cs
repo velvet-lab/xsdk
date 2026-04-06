@@ -28,7 +28,8 @@ public interface IPluginService
         where TPlugin : IPlugin
         => GetPluginsAsync<TPlugin>().ConfigureAwait(false).GetAwaiter().GetResult();
 
-    IList<IPlugin> GetPlugins() => GetPluginsAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+    IList<IPlugin> GetPlugins()
+        => GetPluginsAsync().ConfigureAwait(false).GetAwaiter().GetResult();
 
     Task<TPlugin?> GetPluginAsync<TPlugin>(CancellationToken token = default)
         where TPlugin : IPlugin;
@@ -36,9 +37,11 @@ public interface IPluginService
     Task<IList<TPlugin>> GetPluginsAsync<TPlugin>(CancellationToken token = default)
         where TPlugin : IPlugin;
 
-    Task<IList<IPlugin>> GetPluginsAsync(CancellationToken token = default) => GetPluginsAsync<IPlugin>(token);
+    Task<IList<IPlugin>> GetPluginsAsync(CancellationToken token = default)
+        => GetPluginsAsync<IPlugin>(token);
 
-    void AddPlugin(Type pluginType) => AddPluginAsync(pluginType).ConfigureAwait(false).GetAwaiter().GetResult();
+    void AddPlugin(Type pluginType)
+        => AddPluginAsync(pluginType).ConfigureAwait(false).GetAwaiter().GetResult();
 
     void AddPlugin<TPlugin>()
         where TPlugin : IPlugin
@@ -50,15 +53,25 @@ public interface IPluginService
         where TPlugin : IPlugin
         => AddPluginAsync(typeof(TPlugin), token);
 
-    void AddPluginsFrom<TSource>() => AddPluginsFromAsync<TSource>().ConfigureAwait(false).GetAwaiter().GetResult();
+    void AddPluginsFrom<TSource>()
+        => AddPluginsFromAsync<TSource>().ConfigureAwait(false).GetAwaiter().GetResult();
 
-    void AddPluginsFrom(Assembly sourceAssembly) => AddPluginsFromAsync(sourceAssembly).ConfigureAwait(false).GetAwaiter().GetResult();
+    void AddPluginsFrom(Assembly sourceAssembly)
+        => AddPluginsFromAsync(sourceAssembly).ConfigureAwait(false).GetAwaiter().GetResult();
 
-    Task AddPluginsFromAsync<TSource>(CancellationToken token = default) => AddPluginsFromAsync(typeof(TSource).Assembly, token);
+    void AddPluginsFrom(Assembly[] sourceAssemblies)
+        => AddPluginsFromAsync(sourceAssemblies).ConfigureAwait(false).GetAwaiter().GetResult();
 
-    Task AddPluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default);
+    Task AddPluginsFromAsync<TSource>(CancellationToken token = default)
+        => AddPluginsFromAsync(typeof(TSource).Assembly, token);
 
-    void RemovePlugin(Type pluginType) => RemovePluginAsync(pluginType).ConfigureAwait(false).GetAwaiter().GetResult();
+    Task AddPluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+        => AddPluginsFromAsync(new[] { sourceAssembly }, token);
+
+    Task AddPluginsFromAsync(Assembly[] sourceAssemblies, CancellationToken token = default);
+
+    void RemovePlugin(Type pluginType)
+        => RemovePluginAsync(pluginType).ConfigureAwait(false).GetAwaiter().GetResult();
 
     void RemovePlugin<TPlugin>()
         where TPlugin : IPlugin
@@ -70,11 +83,20 @@ public interface IPluginService
         where TPlugin : IPlugin
         => RemovePluginAsync(typeof(TPlugin), token);
 
-    void RemovePluginsFrom<TSource>() => RemovePluginsFromAsync<TSource>().ConfigureAwait(false).GetAwaiter().GetResult();
+    void RemovePluginsFrom<TSource>()
+        => RemovePluginsFromAsync<TSource>().ConfigureAwait(false).GetAwaiter().GetResult();
 
-    void RemovePluginsFrom(Assembly sourceAssembly) => RemovePluginsFromAsync(sourceAssembly).ConfigureAwait(false).GetAwaiter().GetResult();
+    void RemovePluginsFrom(Assembly sourceAssembly)
+        => RemovePluginsFromAsync(new[] { sourceAssembly }).ConfigureAwait(false).GetAwaiter().GetResult();
 
-    Task RemovePluginsFromAsync<TSource>(CancellationToken token = default) => RemovePluginsFromAsync(typeof(TSource).Assembly, token);
+    void RemovePluginsFrom(Assembly[] sourceAssemblies)
+        => RemovePluginsFromAsync(sourceAssemblies).ConfigureAwait(false).GetAwaiter().GetResult();
 
-    Task RemovePluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default);
+    Task RemovePluginsFromAsync<TSource>(CancellationToken token = default)
+        => RemovePluginsFromAsync(typeof(TSource).Assembly, token);
+
+    Task RemovePluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+        => RemovePluginsFromAsync(new[] { sourceAssembly }, token);
+
+    Task RemovePluginsFromAsync(Assembly[] sourceAssemblies, CancellationToken token = default);
 }

@@ -19,14 +19,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Options;
 
-namespace xSdk.Hosting;
+namespace xSdk.Hosting.Managers;
 
 public static class HostConfigurationManager
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    internal static void LoadHostConfiguration(IConfigurationBuilder builder)
+    internal static void LoadHostConfiguration(IConfigurationBuilder builder, ApplicationOptions options)
     {
         _logger.LogInformation("Try to load Machine Configuration");
 
@@ -35,24 +36,30 @@ public static class HostConfigurationManager
 
         builder.AddEnvironmentVariables(prefix: "DOTNET_");
         builder.AddEnvironmentVariables(prefix: "ASPNET_");
-        builder.AddEnvironmentVariables(prefix: $"{SlimHostInternal.Instance.AppPrefix.ToUpperInvariant()}_");
+        builder.AddEnvironmentVariables(prefix: $"{options.Prefix.ToUpperInvariant()}_");
     }
 
-    internal static void LoadAppConfiguration(IConfigurationBuilder builder)
+    internal static void LoadAppConfiguration(IConfigurationBuilder builder, ApplicationOptions options)
     {
-        LoadAppConfiguration(null, builder);
+        LoadAppConfiguration(null, builder, options);
     }
 
-    internal static void LoadAppConfiguration(HostBuilderContext? context, IConfigurationBuilder builder)
+    internal static void LoadAppConfiguration(HostBuilderContext? context, IConfigurationBuilder builder, ApplicationOptions options)
     {
         _logger.LogInformation("Try to load Application Configuration");
 
-        var fileSystemService = new FileSystemService();
-        var root = fileSystemService.RequestFileSystemAsync(FileSystemContext.Machine).GetAwaiter().GetResult();
+        FileSystemOptions fileSystemOptions = new()
+        {
+            Company = options.Company,
+            ApplicationName = options.Name,
+        };
 
-        var configFolder = FileSystemHelper.CreateSpecificDataFolder(root, "/config");
+        FileSystemService fileSystemService = new(fileSystemOptions);
+        IFileSystemResult root = fileSystemService.RequestFileSystemAsync(FileSystemContext.Machine).GetAwaiter().GetResult();
 
-        var configFile = GetConfigFile(configFolder);
+        string configFolder = FileSystemHelper.CreateSpecificDataFolder(root, "/config");
+
+        string? configFile = GetConfigFile(configFolder);
         LoadConfigurationFile(builder, configFile, false);
 
         if (context != null)
@@ -71,7 +78,6 @@ public static class HostConfigurationManager
         }
     }
 
-
     private static void LoadConfigurationFile(IConfigurationBuilder builder, string? file, bool reloadOnChange = false)
     {
         if (!string.IsNullOrEmpty(file) && File.Exists(file))
@@ -88,9 +94,9 @@ public static class HostConfigurationManager
 
     private static string? GetConfigFile(string configFolder, string? envName = null)
     {
-        var logPostFix = "";
+        string logPostFix = "";
 
-        var configFileName = $"appsettings.json".ToLower();
+        string configFileName = $"appsettings.json".ToLower();
         if (!string.IsNullOrEmpty(envName))
         {
             configFileName = $"appsettings.{envName}.json".ToLower();
@@ -98,7 +104,7 @@ public static class HostConfigurationManager
         }
 
         _logger.LogInformation("Try to determine configuration file in folder '{0}'{1}", configFolder, logPostFix);
-        var configFile = Path.Combine(configFolder, configFileName);
+        string configFile = Path.Combine(configFolder, configFileName);
 
         if (!File.Exists(configFile))
         {

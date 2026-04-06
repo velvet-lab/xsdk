@@ -54,8 +54,9 @@ public static class FileSystemHelper
 
     public static string CreateSpecificDataFolder(FileSystemContext context, string folder)
     {
-        var root = SlimHost.Instance.FileSystem.RequestFileSystem(context);
-        return CreateSpecificDataFolder(root, folder);
+        //var root = SlimHost.Instance.FileSystem.RequestFileSystem(context);
+        //return CreateSpecificDataFolder(root, folder);
+        throw new NotImplementedException();
     }
 
     public static string CreateSpecificDataFolder(IFileSystemResult fileSystem, string folder)

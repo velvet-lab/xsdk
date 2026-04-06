@@ -27,7 +27,7 @@ public abstract class DataAnnotationAttribute : ValidationAttribute
 
     protected DataAnnotationAttribute(object value)
     {
-        this._configuredValue = value;
+        _configuredValue = value;
     }
 
     internal int GetIntValue() => (int)_configuredValue;

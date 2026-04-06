@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
@@ -24,25 +26,23 @@ namespace xSdk.Plugins.Documentation;
 
 public class DocumentationPluginTests : IClassFixture<TestHostFixture>
 {
-    private readonly IPluginService _service;
-    private readonly TestHostFixture _fixture;
+    private readonly IHost _host;    
 
     public DocumentationPluginTests(TestHostFixture fixture)
     {
-        fixture
+        _host = fixture
             .EnablePlugin(builder => builder
                 .EnableWebApi()
-                .EnableDocumentation<DocumentationPluginBuilderMock>());
-
-        _service = fixture.GetRequiredService<IPluginService>();
-
-        this._fixture = fixture;
+                .EnableDocumentation<DocumentationPluginBuilderMock>())
+            .BuildHost();
     }
 
     [Fact]
     public void CreatePlugin()
     {
-        var plugin = _service.GetPlugin<DocumentationPluginHost>();
+        var plugin = _host.Services
+            .GetRequiredService<IPluginService>()
+            .GetPlugin<DocumentationPluginHost>();
 
         Assert.NotNull(plugin);
     }
@@ -50,7 +50,9 @@ public class DocumentationPluginTests : IClassFixture<TestHostFixture>
     [Fact]
     public void GetPluginConfigurations()
     {
-        var plugins = _service.GetPlugins<IDocumentationPluginBuilder>();
+        var plugins = _host.Services
+            .GetRequiredService<IPluginService>()
+            .GetPlugins<IDocumentationPluginBuilder>();
 
         Assert.NotNull(plugins);
         Assert.Single(plugins);

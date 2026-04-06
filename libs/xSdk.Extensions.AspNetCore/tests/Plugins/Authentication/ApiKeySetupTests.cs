@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
@@ -61,11 +62,11 @@ public class ApiKeySetupTests(TestHostFixture fixture) : IClassFixture<TestHostF
     [Fact]
     public void AuthenticationPlugin_CreatedViaHostBuilder()
     {
-        fixture.Builder
-            .EnableAuthentication()
-            .ConfigureServices((context, services) => services.AddPluginServices());
+        IHost host = fixture
+            .EnablePlugin(builder => builder.EnableAuthentication())
+            .BuildHost();
 
-        var service = fixture.GetRequiredService<IPluginService>();
+        var service = host.Services.GetRequiredService<IPluginService>();
         var plugin = service.GetPlugin<AuthenticationPluginHost>();
 
         Assert.NotNull(plugin);

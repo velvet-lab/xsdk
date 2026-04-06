@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.Commands;
@@ -26,12 +27,12 @@ public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHos
     [Fact]
     public void EnableCommands_CreatesCommandPlugin()
     {
-        fixture.Builder
-            .EnableCommands()
-            .ConfigureServices((context, services) => services.AddPluginServices());
+        IHost host = fixture
+            .EnablePlugin(x => x.EnableCommands())
+            .BuildHost();
 
-        var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<CommandPluginHost>();
+        IPluginService service = host.Services.GetRequiredService<IPluginService>();
+        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
 
         Assert.NotNull(plugin);
     }

@@ -16,6 +16,8 @@
 
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 using xSdk.Security;
@@ -26,15 +28,16 @@ namespace xSdk.Extensions.IO;
 
 internal class FileSystemService : IFileSystemService
 {
-    private readonly EnvironmentSetup _envSetup;
     private static readonly ILogger _logger = LogManager.CreateLogger<FileSystemService>();
+    private readonly FileSystemOptions _options;
 
-    public FileSystemService(IVariableService variableService)
+    public FileSystemService(IOptions<FileSystemOptions> options) : this(options.Value)
+    {}
+
+    internal FileSystemService(FileSystemOptions options)
     {
-        _envSetup = variableService.GetSetup<EnvironmentSetup>();
+        _options = options;
     }
-
-    internal FileSystemService() { }
 
     public IFileSystemResult Local => RequestFileSystemAsync(FileSystemContext.Local).GetAwaiter().GetResult();
 
@@ -118,20 +121,20 @@ internal class FileSystemService : IFileSystemService
         result.Local = FileSystemHelper.GetExecutingFolder();
         result.LocalData = FileSystemHelper.GetExecutingFolder();
 
-        var companyName = SlimHost.Instance.AppCompany;
-        var appName = SlimHost.Instance.AppName;
-        if (_envSetup != null)
+        var companyName = "default";
+        var appName = "default";
+        if (_options != null)
         {
-            var contentRoot = _envSetup.ContentRoot;
+            companyName = _options.Company;
+            appName = _options.ApplicationName;
+
+            var contentRoot = _options.ContentRoot;
 
             if (!string.IsNullOrEmpty(contentRoot))
             {
                 result.Local = contentRoot;
                 result.LocalData = contentRoot;
             }
-
-            companyName = _envSetup.AppCompany;
-            appName = _envSetup.AppName;
         }
 
         var specificPath = (UPath)$"{companyName}/{appName}".ToLower();

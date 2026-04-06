@@ -31,7 +31,8 @@ public class ClaimCreator
         {
             try
             {
-                url = $"https://{SlimHost.Instance.AppCompany}.de";
+                // url = $"https://{SlimHost.Instance.AppCompany}.de";
+                throw new NotImplementedException();
             }
             catch
             {

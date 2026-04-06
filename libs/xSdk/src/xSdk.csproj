@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
@@ -10,6 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Testing" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />

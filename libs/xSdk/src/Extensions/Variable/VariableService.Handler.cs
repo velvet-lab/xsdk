@@ -23,9 +23,9 @@ internal partial class VariableService
 {
     public ConcurrentBag<IVariable> Variables { get; private set; } = new ConcurrentBag<IVariable>();
 
-    internal IVariable LoadVariable(string name) => LoadVariableInternal(name);
+    public IVariable LoadVariable(string name) => LoadVariableInternal(name);
 
-    internal void SetVariable<TValueType>(string name, TValueType value)
+    public void SetVariable<TValueType>(string name, TValueType value)
     {
         // Sets a Value for a existing Variable
         var variable = LoadVariableInternal(name);
@@ -70,8 +70,6 @@ internal partial class VariableService
         }
     }
 
-    private void ReplaceVariable(Variable variable) => ReplaceVariable<object>(variable, null, false);
-
     private void ReplaceVariable(Variable variable, bool ignoreWriteProtection) => ReplaceVariable<object>(variable, null, ignoreWriteProtection);
 
     private void ReplaceVariable<TValueType>(Variable variable, TValueType value, bool ignoreWriteProtection)
@@ -101,17 +99,6 @@ internal partial class VariableService
         {
             throw new SdkException($"Variable '{variable.Name}' could not replaced, because it does not exist");
         }
-    }
-
-    private Variable<TType> LoadVariable<TType>(string name)
-    {
-        var variable = LoadVariableInternal(name) as Variable<TType>;
-        if (variable != null)
-        {
-            return variable;
-        }
-
-        return Variable.Create<TType>(name, v => v.SetHelpText("This is a dynamic generated Variable"));
     }
 
     private IVariable LoadVariableInternal(string name)

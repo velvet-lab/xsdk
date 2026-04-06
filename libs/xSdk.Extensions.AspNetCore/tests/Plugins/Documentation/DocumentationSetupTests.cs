@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;
@@ -26,8 +28,13 @@ public class DocumentationSetupTests(TestHostFixture fixture) : IClassFixture<Te
     [Fact]
     public void DocumentationSetup_DefaultRoutePrefix_IsCorrect()
     {
-        fixture.EnablePlugin(b => b.EnableWebApi().EnableDocumentation());
-        var setup = fixture.GetRequiredService<IVariableService>().GetSetup<DocumentationSetup>();
+        IHost host = fixture
+            .EnablePlugin(b => b.EnableWebApi().EnableDocumentation())
+            .BuildHost();
+
+        var setup = host.Services
+            .GetRequiredService<IVariableService>()
+            .GetSetup<DocumentationSetup>();
 
         Assert.Equal(DocumentationSetup.Definitions.DocumentPattern.DefaultValue, setup.DocumentPattern);
     }

@@ -18,7 +18,7 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Data;
 
-public interface IDatabaseSetup : ISetup
+public interface IDatabaseSetup
 {
     IDictionary<string, string> Properties { get; }
 }

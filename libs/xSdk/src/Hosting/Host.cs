@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
+using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 
@@ -32,30 +35,55 @@ public static partial class Host
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
-        SlimHostInternal.Initialize(args, appName, appCompany, appPrefix);
+        ApplicationOptions appOptions = new()
+        {
+            Name = appName ?? ApplicationOptions.Definitions.AppName.DefaultValue,
+            Company = appCompany ?? ApplicationOptions.Definitions.AppCompany.DefaultValue,
+            Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
+        };
 
         var builder = new HostBuilder()
-            .ConfigureHostConfiguration(HostConfigurationManager.LoadHostConfiguration)
-            .ConfigureAppConfiguration(HostConfigurationManager.LoadAppConfiguration)
+            .ConfigureHostConfiguration(configBuilder =>
+            {
+                HostConfigurationManager.LoadHostConfiguration(configBuilder, appOptions);
+            })
+            .ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                HostConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions);
+            })
             .ConfigureServices(services =>
             {
                 services
-                    .AddLogging(HostLoggingManager.ConfigureLogging)
-                    .AddFileServices()
-                    .AddPluginServices()
-                    .AddVariableServices();
+                    .AddOptions<ApplicationOptions>()
+                    .Configure(options =>
+                    {
+                        options.Name = appName ?? ApplicationOptions.Definitions.AppName.DefaultValue;
+                        options.Company = appCompany ?? ApplicationOptions.Definitions.AppCompany.DefaultValue;
+                        options.Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue;
 
-                // Add initializer for Logger Factory.
+                        var validator = new ApplicationOptionsValidator();
+                        validator.ValidateAndThrow(options);
+                    });
+
                 services
-                    .AddHostedService<LoggerFactoryInitializer>();
+                    .RegisterOptions<EnvironmentOptions>(options =>
+                    {
+                        services
+                            .AddLogging(logBuilder => HostLoggingManager.ConfigureLogging(logBuilder, options));
+                    })
+                    .AddVariableServices()
+                    .AddFileServices()
+                    .AddPluginServices();
 
-                SlimHostInternal.Instance.PluginSystem
-                    .ConfigureHost<PluginHost>(x => x.ConfigureServices(services));
+                // Add initializer for the host
+                services
+                    .AddHostedService<HostInitializer>();
+
+                HostPluginManager.Instance.ConfigureHost<PluginHost>(x => x.ConfigureServices(services));
             })
             .ConfigureServices((context, services) =>
             {
-                SlimHostInternal.Instance.PluginSystem
-                    .ConfigureHost<PluginHost>(x => x.ConfigureServices(context, services));
+                HostPluginManager.Instance.ConfigureHost<PluginHost>(x => x.ConfigureServices(context, services));
             });
 
         return builder;

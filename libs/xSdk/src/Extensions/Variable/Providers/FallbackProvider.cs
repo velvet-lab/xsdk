@@ -15,11 +15,12 @@
  */
 
 using System.Runtime.InteropServices;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable.Providers;
 
-internal sealed class FallbackProvider() : VariableProviderBase
+internal sealed class FallbackProvider(ApplicationOptions options) : VariableProviderBase
 {
     protected override bool ExistsVariable(IVariable variable)
     {
@@ -41,7 +42,7 @@ internal sealed class FallbackProvider() : VariableProviderBase
     }
 
     private string CreateFileName(IVariable variable) =>
-        Path.Combine(GetDefaultProfilePath(), SlimHost.Instance.AppPrefix.ToLower(), "config", $"{variable.Name}.env");
+        Path.Combine(GetDefaultProfilePath(), options.Prefix.ToLower(), "config", $"{variable.Name}.env");
 
     private static string GetDefaultProfilePath()
     {

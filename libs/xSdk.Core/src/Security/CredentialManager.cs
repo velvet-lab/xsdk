@@ -22,10 +22,9 @@ namespace xSdk.Security;
 
 public static class CredentialManager
 {
-    private static readonly object _lockObject = new object();
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    private static string Context => GetContext();
+    private static string Context => throw new NotImplementedException(); // SlimHost.Instance.AppPrefix;
 
     public static TCredentials LoadCredentialsAsync<TCredentials>()
         where TCredentials : Credentials, new() => LoadCredentials<TCredentials>(Context);
@@ -60,7 +59,7 @@ public static class CredentialManager
         }
         catch (Exception ex)
         {
-            _logger.LogWarning("Credentials could not saved. (Reason: {0})", ex.Message);
+            _logger.LogWarning("Credentials could not saved. (Reason: {message})", ex.Message);
         }
     }
 
@@ -81,6 +80,4 @@ public static class CredentialManager
         var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         return Path.Combine(userProfile, $".{context}rc");
     }
-
-    private static string GetContext() => SlimHost.Instance.AppPrefix;
 }

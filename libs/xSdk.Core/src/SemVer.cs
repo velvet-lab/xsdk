@@ -45,33 +45,33 @@ public sealed class SemVer
 
         _version = ConvertToSemVer(_version);
 
-        this._rangeObject = new SemanticVersioning.Range(_range);
-        this._versionObject = new SemanticVersioning.Version(_version);
+        _rangeObject = new SemanticVersioning.Range(_range);
+        _versionObject = new SemanticVersioning.Version(_version);
     }
 
     public SemVer(string version, string range)
     {
         _origin = version;
 
-        this._version = version ?? throw new ArgumentNullException(nameof(version));
-        this._range = range ?? throw new ArgumentNullException(nameof(range));
+        _version = version ?? throw new ArgumentNullException(nameof(version));
+        _range = range ?? throw new ArgumentNullException(nameof(range));
 
         if (HasRangeStrings(version))
             _version = ReplaceRangeStrings(version);
 
         _version = ConvertToSemVer(_version);
 
-        this._rangeObject = new SemanticVersioning.Range(_range);
-        this._versionObject = new SemanticVersioning.Version(_version);
+        _rangeObject = new SemanticVersioning.Range(_range);
+        _versionObject = new SemanticVersioning.Version(_version);
     }
 
     private SemVer(SemanticVersioning.Version versionObject, SemanticVersioning.Range rangeObject)
     {
-        this._version = versionObject.ToString();
-        this._range = rangeObject.ToString();
+        _version = versionObject.ToString();
+        _range = rangeObject.ToString();
 
-        this._versionObject = versionObject ?? throw new ArgumentNullException(nameof(versionObject));
-        this._rangeObject = rangeObject ?? throw new ArgumentNullException(nameof(rangeObject));
+        _versionObject = versionObject ?? throw new ArgumentNullException(nameof(versionObject));
+        _rangeObject = rangeObject ?? throw new ArgumentNullException(nameof(rangeObject));
     }
 
     [JsonIgnore]
@@ -88,10 +88,10 @@ public sealed class SemVer
     public string Range => _range;
 
     [JsonIgnore]
-    public bool IsSatisfied => _rangeObject.IsSatisfied(this._versionObject);
+    public bool IsSatisfied => _rangeObject.IsSatisfied(_versionObject);
 
     [JsonIgnore]
-    public bool IsRange => HasRangeStrings(this._origin);
+    public bool IsRange => HasRangeStrings(_origin);
 
     public SemVer MaxSatisfying(IEnumerable<SemVer> versions) => MaxSatisfying(versions, false);
 
@@ -137,9 +137,9 @@ public sealed class SemVer
 
     public string ToString(bool useRange)
     {
-        var version = this.Version;
+        var version = Version;
         if (useRange)
-            version = this.Range;
+            version = Range;
 
         return version;
     }
@@ -162,12 +162,12 @@ public sealed class SemVer
     /// </returns>
     public string ToString(int fieldCount)
     {
-        var currentCount = (this.Version.Count(x => x == '.') + 1);
+        var currentCount = (Version.Count(x => x == '.') + 1);
         if (fieldCount > currentCount)
         {
             fieldCount = currentCount;
         }
-        return new Version(this.Version).ToString(fieldCount);
+        return new Version(Version).ToString(fieldCount);
     }
 
     public static bool operator ==(SemVer left, SemVer right)

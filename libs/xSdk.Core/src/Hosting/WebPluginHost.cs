@@ -28,8 +28,6 @@ public abstract class WebPluginHost : PluginDescription, IPluginHost
 {
     protected ILogger Logger => LogManager.GetCurrentClassLogger();
 
-    protected IEnvironmentSetup Environment => this.LoadSetup<IEnvironmentSetup>();
-
     public virtual void ConfigureServices(IServiceCollection services) { }
 
     public virtual void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) { }
@@ -39,14 +37,4 @@ public abstract class WebPluginHost : PluginDescription, IPluginHost
     public virtual void Configure(WebHostBuilderContext context, IApplicationBuilder app) { }
 
     public virtual void ConfigureEndpoint(IEndpointRouteBuilder builder) { }
-
-    protected TSetup LoadSetup<TSetup>()
-        where TSetup : class, ISetup
-        => SetupLoader.Load<TSetup>();
-}
-
-public abstract class WebPluginHost<TSetup> : WebPluginHost, IPluginHost<TSetup>
-    where TSetup : class, ISetup
-{
-    protected TSetup Setup => this.LoadSetup<TSetup>();
 }

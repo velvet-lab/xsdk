@@ -1,27 +1,11 @@
-/*
- * Copyright 2026 Roland Breitschaft
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Shared;
 
-namespace xSdk.Extensions.Variable;
+namespace xSdk.Extensions.Options;
 
-public sealed partial class EnvironmentSetup
+public sealed partial class EnvironmentOptions
 {
     [Variable(
         name: Definitions.MachineName.Name,
@@ -125,11 +109,11 @@ public sealed partial class EnvironmentSetup
         }
 
         MachineName = Environment.MachineName;
-        Arch = this.DetectProcessArchitecture();
+        Arch = DetectProcessArchitecture();
         Mac = NetworkTools.GetMacAddress();
         IPv4 = NetworkTools.GetLocalIPAddress();
 
-        var (osType, osName) = this.DetectOsType();
+        var (osType, osName) = DetectOsType();
         OsDescription = RuntimeInformation.OSDescription;
         OsName = osName;
         OsType = osType;
@@ -142,5 +126,152 @@ public sealed partial class EnvironmentSetup
         Commandline = Environment.CommandLine;
         Owner = Environment.UserName;
         Pid = Process.GetCurrentProcess().Id;
+    }
+
+    private static string DetectProcessArchitecture()
+    {
+        if (
+            RuntimeInformation.ProcessArchitecture == Architecture.Arm
+            || RuntimeInformation.ProcessArchitecture == Architecture.Armv6
+            || RuntimeInformation.ProcessArchitecture == Architecture.Arm64
+        )
+        {
+            if (Environment.Is64BitProcess)
+            {
+                return "arm64";
+            }
+            return "arm32";
+        }
+        else if (RuntimeInformation.ProcessArchitecture == Architecture.Ppc64le)
+        {
+            if (Environment.Is64BitProcess)
+            {
+                return "ppc64";
+            }
+            return "ppc32";
+        }
+        else if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
+        {
+            return "amd64";
+        }
+        else if (RuntimeInformation.ProcessArchitecture == Architecture.X86)
+        {
+            return "x86";
+        }
+        else if (RuntimeInformation.ProcessArchitecture == Architecture.S390x)
+        {
+            return "s390x";
+        }
+
+        throw new SdkException("Could not determine current host architecture");
+    }
+
+    private static (string, string) DetectOsType()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+        {
+            return ("freebsd", "Unix");
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            return ("linux", "Unix");
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            return ("darwin", "iOS");
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return ("windows", "Windows");
+        }
+
+        throw new SdkException("Could not determine current os platform");
+    }
+
+    private static partial class Definitions
+    {
+        public static class MachineName
+        {
+            public const string Name = "machinename";
+            public const string HelpText = "Machine name for the host";
+        }
+
+        public static class Arch
+        {
+            public const string Name = "arch";
+            public const string HelpText = "Architecture of the host";
+        }
+
+        public static class Mac
+        {
+            public const string Name = "mac";
+            public const string HelpText = "MAC Address of the host";
+        }
+
+        public static class IPv4
+        {
+            public const string Name = "ipv4";
+            public const string HelpText = "IPv4 Address of the host";
+        }
+
+        public static class OsDescription
+        {
+            public const string Name = "osdescription";
+            public const string HelpText = "Description of the Operating System";
+        }
+
+        public static class OsName
+        {
+            public const string Name = "osname";
+            public const string HelpText = "Name of the Operating System";
+        }
+
+        public static class OsType
+        {
+            public const string Name = "ostype";
+            public const string HelpText = "Type of the Operating System";
+        }
+
+        public static class OsVersion
+        {
+            public const string Name = "osversion";
+            public const string HelpText = "Version of the Operating System";
+        }
+
+        public static class FrameworkName
+        {
+            public const string Name = "frameworkname";
+            public const string HelpText = "Name of the .Net Framework";
+        }
+
+        public static class FrameworkVersion
+        {
+            public const string Name = "frameworkversion";
+            public const string HelpText = "Version of the .Net Framework";
+        }
+
+        public static class FrameworkDescription
+        {
+            public const string Name = "frameworkdescription";
+            public const string HelpText = "Description of the .Net Framework";
+        }
+
+        public static class Owner
+        {
+            public const string Name = "owner";
+            public const string HelpText = "Process owner of the current running process";
+        }
+
+        public static class Commandline
+        {
+            public const string Name = "commandline";
+            public const string HelpText = "Currently used commandline";
+        }
+
+        public static class Pid
+        {
+            public const string Name = "pid";
+            public const string HelpText = "Process PrimaryKey of the current running process";
+        }
     }
 }

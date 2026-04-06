@@ -24,7 +24,9 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableAuthentication(this IHostBuilder hostBuilder)
     {
-        hostBuilder.RegisterSetup<ApiKeySetup>().RegisterPluginHost<AuthenticationPluginHost>();
+        hostBuilder
+            .RegisterSetup<ApiKeySetup>()
+            .RegisterPluginHost<AuthenticationPluginHost>();
 
         return hostBuilder;
     }
@@ -32,7 +34,9 @@ public static class HostBuilderExtensions
     public static IHostBuilder EnableAuthentication<TPluginBuilder>(this IHostBuilder hostBuilder)
         where TPluginBuilder : class, IAuthenticationPluginBuilder
     {
-        hostBuilder.EnableAuthentication().RegisterPluginBuilder<TPluginBuilder>();
+        hostBuilder
+            .EnableAuthentication()
+            .RegisterPluginBuilder<TPluginBuilder>();
 
         return hostBuilder;
     }

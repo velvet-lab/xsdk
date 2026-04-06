@@ -35,7 +35,7 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.DataProtection;
 
-public interface IDataProtectionSetup : ISetup
+public interface IDataProtectionSetup
 {
     string ApplicationDiscriminator { get; set; }
 

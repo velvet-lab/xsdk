@@ -18,7 +18,7 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
-public interface IWebHostSetup : ISetup
+public interface IWebHostSetup
 {
     bool AllowSystemPorts { get; set; }
 

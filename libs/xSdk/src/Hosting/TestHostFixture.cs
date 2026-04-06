@@ -23,7 +23,6 @@ namespace xSdk.Hosting;
 
 public class TestHostFixture : IDisposable
 {
-    private readonly IHostBuilder _builder;
     private IHost? _host;
 
     private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
@@ -37,17 +36,8 @@ public class TestHostFixture : IDisposable
     private bool? _currentDemoMode;
     private bool _demoModeShouldEnabled;
 
-    private readonly bool _initializeShouldCalled;
-
     public TestHostFixture()
-    {
-        _builder = TestHost.CreateBuilder();
-    }
-
-    protected TestHostFixture(bool callInitialize)
-    {
-        _builder = TestHost.CreateBuilder();
-        _initializeShouldCalled = callInitialize;
+    {        
     }
 
     ~TestHostFixture()
@@ -60,70 +50,6 @@ public class TestHostFixture : IDisposable
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
-    public IHostBuilder Builder => _builder;
-
-    public IHost Host => Build();
-
-    public string AppName => SlimHostInternal.Instance.AppName;
-
-    public string AppCompany => SlimHostInternal.Instance.AppCompany;
-
-    public string AppPrefix => SlimHostInternal.Instance.AppPrefix;
-
-    public string AppVersion => SlimHostInternal.Instance.AppVersion;
-
-    public TService? GetService<TService>()
-        where TService : notnull => Host.Services.GetService<TService>();
-
-    //public TService? GetService<TService>(Action<IServiceCollection> configure)
-    //    where TService : notnull
-    //    => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetService<TService>();
-
-
-
-    public IEnumerable<TService> GetServices<TService>()
-        where TService : notnull => Host.Services.GetServices<TService>();
-
-    //public IEnumerable<TService> GetServices<TService>(Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetServices<TService>();
-
-
-
-
-    public TService GetRequiredService<TService>()
-        where TService : notnull => Host.Services.GetRequiredService<TService>();
-
-    //public TService GetRequiredService<TService>(Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetRequiredService<TService>();
-
-
-
-    public TService? GetRequiredKeyedService<TService>(object? serviceKey)
-        where TService : notnull => Host.Services.GetRequiredKeyedService<TService>(serviceKey);
-
-    //public TService? GetRequiredKeyedService<TService>(object? serviceKey, Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetRequiredKeyedService<TService>(serviceKey);
-
-
-
-
-    public TService? GetKeyedService<TService>(object? serviceKey)
-        where TService : notnull => Host.Services.GetKeyedService<TService>(serviceKey);
-
-    //public TService? GetKeyedService<TService>(object? serviceKey, Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetKeyedService<TService>(serviceKey);
-
-
-
-
-    public IEnumerable<TService> GetKeyedServices<TService>(object? serviceKey)
-        where TService : notnull => Host.Services.GetKeyedServices<TService>(serviceKey);
-
-
-    //public IEnumerable<TService> GetKeyedServices<TService>(object? serviceKey, Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetKeyedServices<TService>(serviceKey);
-
 
     public TestHostFixture ConfigureServices(Action<IServiceCollection> configure)
     {
@@ -153,50 +79,55 @@ public class TestHostFixture : IDisposable
         return this;
     }
 
-    private IHost Build()
+    public IHost BuildHost()
+        => BuildHost(false);
+
+    public IHost BuildHost(bool reinitialize)
     {
-        if (_host == null)
+        if (reinitialize)
         {
-            if (_initializeShouldCalled)
-            {
-                Initialize();
-            }
-
-            _builder
-                .ConfigureServices(
-                    (context, services) =>
-                    {
-                        foreach (var configure in _servicesDelegates)
-                        {
-                            configure?.Invoke(services);
-                        }
-
-                        foreach (var configure in _hostServicesDelegates)
-                        {
-                            configure?.Invoke(context, services);
-                        }
-                    }
-                )
-                .ConfigureWebHost(webhostBuilder =>
-                {
-                    webhostBuilder.ConfigureServices(
-                        (context, services) =>
-                        {
-                            foreach (var configure in _webhostServicesDelegates)
-                            {
-                                configure?.Invoke(context, services);
-                            }
-                        }
-                    );
-                });
-
-            foreach (var configure in builderDelegates)
-            {
-                configure?.Invoke(_builder);
-            }
-
-            _host = _builder.Build();
+            Initialize();
         }
+
+        var builder = TestHost.CreateBuilder()
+            .ConfigureServices(
+                (context, services) =>
+                {
+                    foreach (var configure in _servicesDelegates)
+                    {
+                        configure?.Invoke(services);
+                    }
+
+                    foreach (var configure in _hostServicesDelegates)
+                    {
+                        configure?.Invoke(context, services);
+                    }
+                }
+            );
+
+            //.ConfigureWebHost(webhostBuilder =>
+            //{
+            //    webhostBuilder.ConfigureServices(
+            //        (context, services) =>
+            //        {
+            //            foreach (var configure in _webhostServicesDelegates)
+            //            {
+            //                configure?.Invoke(context, services);
+            //            }
+            //        }
+            //    );
+            //});
+
+        foreach (var configure in builderDelegates)
+        {
+            configure?.Invoke(builder);
+        }
+
+        // Stop and dispose the previous host if it exists
+        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        _host?.Dispose();
+
+        _host = builder.Build();        
 
         HandleDemoMode(_demoModeShouldEnabled);
 
@@ -245,9 +176,11 @@ public class TestHostFixture : IDisposable
         return this;
     }
 
-    public void DisableDemoMode()
+    public TestHostFixture DisableDemoMode()
     {
         _demoModeShouldEnabled = false;
+
+        return this;
     }
 
     private void RestoreDemoMode()
@@ -262,11 +195,11 @@ public class TestHostFixture : IDisposable
 
     private void HandleDemoMode(bool enable)
     {
-        var setup = _host.Services.GetService<IVariableService>().GetSetup<EnvironmentSetup>();
-        if (!_currentDemoMode.HasValue)
-        {
-            _currentDemoMode = setup.IsDemo;
-        }
-        setup.IsDemo = enable;
+        //var setup = _host.Services.GetService<IVariableService>().GetSetup<EnvironmentSetup>();
+        //if (!_currentDemoMode.HasValue)
+        //{
+        //    _currentDemoMode = setup.IsDemo;
+        //}
+        //setup.IsDemo = enable;
     }
 }

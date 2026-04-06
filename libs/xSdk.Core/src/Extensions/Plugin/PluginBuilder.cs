@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Logging;
-using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.Plugin;
@@ -23,18 +22,4 @@ namespace xSdk.Extensions.Plugin;
 public abstract class PluginBuilder : PluginDescription, IPluginBuilder
 {
     protected ILogger Logger { get => LogManager.GetCurrentClassLogger(); }
-
-    protected IEnvironmentSetup Environment { get => this.LoadSetup<IEnvironmentSetup>(); }
-
-
-    protected TSetup LoadSetup<TSetup>()
-        where TSetup : class, ISetup
-        => SetupLoader.Load<TSetup>();
-}
-
-public abstract class PluginBuilder<TSetup> : PluginBuilder, IPluginBuilder<TSetup>
-    where TSetup : class, ISetup
-{
-    protected TSetup LoadSetup()
-        => this.LoadSetup<TSetup>();
 }

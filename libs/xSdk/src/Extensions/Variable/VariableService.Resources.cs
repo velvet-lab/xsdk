@@ -22,12 +22,12 @@ internal partial class VariableService
 {
     public IDictionary<string, object> BuildResources()
     {
-        var variablesWithAttributes = Variables.Cast<Variable>().Where(x => x.Attribute != null);
+        IEnumerable<Variable> variablesWithAttributes = Variables.Cast<Variable>().Where(x => x.Attribute != null);
 
-        Dictionary<string, object> resources = new Dictionary<string, object>();
+        Dictionary<string, object> resources = [];
         foreach (var variable in variablesWithAttributes)
         {
-            var value = ReadVariableValueInternal<object>(variable.Name, false, false);
+            object? value = ReadVariableValueInternal<object>(variable.Name, false, false);
             if ((value == null || TypeConverter.IsEmpty(value, variable.ValueType)) && variable.TelemetryResourceValue != null)
             {
                 value = variable.TelemetryResourceValue();
@@ -37,7 +37,7 @@ internal partial class VariableService
             {
                 if (variable.Attribute.ResourceNames != null && variable.Attribute.ResourceNames.Any())
                 {
-                    foreach (var resourceName in variable.Attribute.ResourceNames)
+                    foreach (string resourceName in variable.Attribute.ResourceNames)
                     {
                         resources.AddOrNew(resourceName, value.ToString());
                     }

@@ -67,7 +67,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
             var key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
             Key = HashTools.GetHashString(key);
-            this.Description = description;
+            Description = description;
         }
     }
 }

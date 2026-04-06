@@ -35,7 +35,7 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.WebSecurity;
 
-public interface IWebSecuritySetup : ISetup
+public interface IWebSecuritySetup
 {
     string Origins { get; set; }
 }

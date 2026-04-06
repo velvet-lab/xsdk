@@ -17,25 +17,18 @@
 using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
 
-namespace xSdk.Hosting;
+namespace xSdk.Hosting.Managers;
 
 internal static class HostLoggingManager
 {
-    internal static void ConfigureSlimLogging(ILoggingBuilder builder) => ConfigureLogging(builder, true);
-
-    internal static void ConfigureLogging(ILoggingBuilder builder) => ConfigureLogging(builder, false);
-
-    private static void ConfigureLogging(ILoggingBuilder builder, bool isSlimMode)
+    internal static void ConfigureLogging(ILoggingBuilder builder, EnvironmentOptions options)
     {
         builder.ClearProviders();
 
-        var envSetup = isSlimMode
-            ? new EnvironmentSetup()
-            : SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-
-        var logLevel = ConvertLogLevel(envSetup.LogLevel);
+        var logLevel = ConvertLogLevel(options.LogLevel);
         builder.SetMinimumLevel(logLevel);
     }
 

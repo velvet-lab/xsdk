@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
@@ -34,11 +35,11 @@ public class WebSecuritySetupTests(TestHostFixture fixture) : IClassFixture<Test
     [Fact]
     public void WebSecurityPlugin_CreatedViaHostBuilder()
     {
-        fixture.Builder
-            .EnableWebSecurity()
-            .ConfigureServices((context, services) => services.AddPluginServices());
+        IHost host = fixture
+            .EnablePlugin(builder => builder.EnableWebSecurity())
+            .BuildHost();
 
-        var service = fixture.GetRequiredService<IPluginService>();
+        var service = host.Services.GetRequiredService<IPluginService>();
         var plugin = service.GetPlugin<WebSecurityPluginHost>();
 
         Assert.NotNull(plugin);

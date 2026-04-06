@@ -23,7 +23,7 @@ namespace xSdk.Extensions.Variable;
 internal partial class VariableService
 {
     private Dictionary<string, VariableProvider> _systemProviders;
-    private readonly Dictionary<string, VariableProvider> _registeredProviders = new Dictionary<string, VariableProvider>();
+    private readonly Dictionary<string, VariableProvider> _registeredProviders = [];
 
     public void RegisterProvider(Type providerType)
     {
@@ -45,13 +45,13 @@ internal partial class VariableService
             { nameof(FileProvider), new FileProvider() },
             { nameof(EnvironmentProvider), new EnvironmentProvider() },
             { nameof(CommandlineProvider), new CommandlineProvider() },
-            { nameof(FallbackProvider), new FallbackProvider() },
+            { nameof(FallbackProvider), new FallbackProvider(_applicationOptions) },
             { nameof(MemoryProvider), new MemoryProvider() },
         };
 
         if (_config != null)
         {
-            _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config));
+            _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config, _applicationOptions));
         }
     }
 
@@ -89,25 +89,6 @@ internal partial class VariableService
 
         value = default;
         return false;
-    }
-
-    internal ConcurrentDictionary<string, object> Export()
-    {
-        var provider = Providers[nameof(MemoryProvider)];
-        if (provider != null && provider is MemoryProvider memoryProvider)
-        {
-            return memoryProvider._variables;
-        }
-        return new();
-    }
-
-    internal void Import(ConcurrentDictionary<string, object> variables)
-    {
-        var provider = Providers[nameof(MemoryProvider)];
-        if (provider != null && provider is MemoryProvider memoryProvider)
-        {
-            memoryProvider._variables = variables;
-        }
     }
 
     private TType ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable) =>

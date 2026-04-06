@@ -35,7 +35,7 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.Documentation;
 
-public interface IDocumentationSetup : ISetup
+public interface IDocumentationSetup
 {
     bool Enabled { get; set; }
 

@@ -25,9 +25,10 @@ public static class Authenticator
     public static HttpBasicAuthenticator GetAuthenticator<TCredentials>()
         where TCredentials : Credentials, new()
     {
-        var appPrefix = SlimHost.Instance.AppPrefix;
+        //var appPrefix = SlimHost.Instance.AppPrefix;
 
-        return GetAuthenticator<TCredentials>(appPrefix);
+        //return GetAuthenticator<TCredentials>(appPrefix);
+        throw new NotImplementedException();
     }
 
     public static HttpBasicAuthenticator GetAuthenticator<TCredentials>(string securityContext)
