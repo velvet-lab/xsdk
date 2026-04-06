@@ -20,6 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Mapster" />
+      <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
         <ProjectReference Include="..\..\xSdk.Plugin\src\xSdk.Plugin.csproj" />
     </ItemGroup>
 
