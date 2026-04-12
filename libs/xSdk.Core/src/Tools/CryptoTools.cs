@@ -18,13 +18,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using xSdk;
-using xSdk.Data;
 using xSdk.Hosting;
 
-namespace xSdk.Security;
+namespace xSdk.Tools;
 
-public static class CryptoTool
+public static class CryptoTools
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
@@ -36,7 +34,7 @@ public static class CryptoTool
         {
             _logger.LogDebug("Encrypt data");
 
-            var dataAsJson = JsonSerializer.Serialize(data, JsonHelper.GetSerializerOptions());
+            var dataAsJson = JsonSerializer.Serialize(data, JsonTools.GetSerializerOptions());
             var dataAsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataAsJson));
 
             lock (_lockObject)
@@ -107,7 +105,7 @@ public static class CryptoTool
                             {
                                 string decryptedMessage = decryptReader.ReadToEnd();
                                 var dataAsJson = Encoding.UTF8.GetString(Convert.FromBase64String(decryptedMessage));
-                                result = JsonSerializer.Deserialize<TData>(dataAsJson, JsonHelper.GetSerializerOptions());
+                                result = JsonSerializer.Deserialize<TData>(dataAsJson, JsonTools.GetSerializerOptions());
                             }
                         }
                     }

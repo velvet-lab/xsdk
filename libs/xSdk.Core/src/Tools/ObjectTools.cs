@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
-public static class ObjectHelper
+public static class ObjectTools
 {
     public static int CreateAutomaticHashCode(object obj)
     {

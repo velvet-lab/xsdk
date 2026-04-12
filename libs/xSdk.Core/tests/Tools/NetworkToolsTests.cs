@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Shared;
-
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public class NetworkToolsTests
 {

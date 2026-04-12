@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Security;
+using xSdk.Tools;
 
 namespace xSdk.Security;
 
@@ -37,8 +37,8 @@ public class CryptoToolTests : IDisposable
     {
         var original = new TestData("Alice", 30);
 
-        CryptoTool.Encrypt(_tempFile, original);
-        var result = CryptoTool.Decrypt<TestData>(_tempFile);
+        CryptoTools.Encrypt(_tempFile, original);
+        var result = CryptoTools.Decrypt<TestData>(_tempFile);
 
         Assert.NotNull(result);
         Assert.Equal(original.Name, result.Name);
@@ -51,8 +51,8 @@ public class CryptoToolTests : IDisposable
         const string context = "test-context";
         var original = new TestData("Bob", 25);
 
-        CryptoTool.Encrypt(_tempFile, original, context);
-        var result = CryptoTool.Decrypt<TestData>(_tempFile, context);
+        CryptoTools.Encrypt(_tempFile, original, context);
+        var result = CryptoTools.Decrypt<TestData>(_tempFile, context);
 
         Assert.NotNull(result);
         Assert.Equal(original.Name, result.Name);
@@ -64,7 +64,7 @@ public class CryptoToolTests : IDisposable
     {
         var data = new TestData("Test", 1);
 
-        CryptoTool.Encrypt(_tempFile, data);
+        CryptoTools.Encrypt(_tempFile, data);
 
         Assert.True(File.Exists(_tempFile));
     }
@@ -75,8 +75,8 @@ public class CryptoToolTests : IDisposable
         var original = "Hello, World!";
         var file = Path.Combine(_tempDirectory, "string.enc");
 
-        CryptoTool.Encrypt(file, original);
-        var result = CryptoTool.Decrypt<string>(file);
+        CryptoTools.Encrypt(file, original);
+        var result = CryptoTools.Decrypt<string>(file);
 
         Assert.Equal(original, result);
     }
@@ -86,7 +86,7 @@ public class CryptoToolTests : IDisposable
     {
         var nonExistentFile = Path.Combine(_tempDirectory, "nonexistent.enc");
 
-        Assert.Throws<FileNotFoundException>(() => CryptoTool.Decrypt<TestData>(nonExistentFile));
+        Assert.Throws<FileNotFoundException>(() => CryptoTools.Decrypt<TestData>(nonExistentFile));
     }
 
     public void Dispose()

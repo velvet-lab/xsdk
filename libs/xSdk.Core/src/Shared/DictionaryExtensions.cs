@@ -18,14 +18,19 @@ namespace xSdk.Shared;
 
 public static class DictionaryExtensions
 {
+    private static object _lock = new object();
+
     public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
     {
         if (key != null)
         {
-            if (dictionary.ContainsKey(key))
-                dictionary[key] = value;
-            else
-                dictionary.Add(key, value);
+            lock (_lock)
+            {
+                if (dictionary.ContainsKey(key))
+                    dictionary[key] = value;
+                else
+                    dictionary.Add(key, value);
+            }
         }
     }
 

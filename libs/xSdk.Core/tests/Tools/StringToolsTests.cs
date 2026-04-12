@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-using xSdk.Shared;
+namespace xSdk.Tools;
 
-namespace xSdk.Shared;
-
-public class StringHelperTests
+public class StringToolsTests
 {
     [Fact]
     public void RemoveSpecialChars_WithAlphanumericString_ReturnsUnchanged()
     {
         var input = "abc123XYZ";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal(input, result);
     }
@@ -35,7 +33,7 @@ public class StringHelperTests
     {
         var input = "Hello@World#2024!";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal("HelloWorld2024", result);
     }
@@ -45,7 +43,7 @@ public class StringHelperTests
     {
         var input = "Hello World 123";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal("HelloWorld123", result);
     }
@@ -55,7 +53,7 @@ public class StringHelperTests
     {
         var input = "Café-123-Ü";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal("Caf123", result);
     }
@@ -65,7 +63,7 @@ public class StringHelperTests
     {
         var input = string.Empty;
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal(string.Empty, result);
     }
@@ -75,7 +73,7 @@ public class StringHelperTests
     {
         var input = "@#$%^&*()!";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal(string.Empty, result);
     }
@@ -85,7 +83,7 @@ public class StringHelperTests
     {
         var input = "AbC-123-xYz";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal("AbC123xYz", result);
     }
@@ -95,7 +93,7 @@ public class StringHelperTests
     {
         var input = "test_value-123";
 
-        var result = StringHelper.RemoveSpecialChars(input);
+        var result = StringTools.RemoveSpecialChars(input);
 
         Assert.Equal("testvalue123", result);
     }

@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
+using System.Security.Cryptography;
 using System.Text;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
-public static class StringHelper
+public static class HashTools
 {
-    public static string RemoveSpecialChars(string value)
+    public static byte[] GetHash(string inputString)
     {
-        // Remove special Characters (see https://github.com/cloudevents/spec/blob/v1.0.1/spec.md)
-        var sb = new StringBuilder();
-        foreach (char c in value)
-        {
-            if (c >= '0' && c <= '9' || c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z')
-                sb.Append(c);
-        }
+        using (HashAlgorithm algorithm = SHA256.Create())
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+    }
+
+    public static string GetHashString(string inputString)
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (byte b in GetHash(inputString))
+            sb.Append(b.ToString("X2"));
+
         return sb.ToString();
     }
 }

@@ -21,16 +21,16 @@ namespace xSdk.Shared;
 /// <summary>
 /// <see cref="PropertyInfo"/> extension methods.
 /// </summary>
-public static class AtributeExtensions
+public static class AttributeExtensions
 {
-    public static TAttribute GetAttribute<TAttribute>(this Type type)
+    public static TAttribute? GetAttribute<TAttribute>(this Type type)
         where TAttribute : Attribute
     {
         var attrs = type.GetCustomAttributes(typeof(TAttribute), inherit: false);
         if (attrs != null && attrs.Length > 0)
         {
             if (attrs.Length == 1)
-                return attrs.SingleOrDefault() as TAttribute;
+                return attrs.Single() as TAttribute;
             else
                 throw new SdkException($"More than one Attribute of Type '{typeof(TAttribute)}' is given");
         }
@@ -44,14 +44,14 @@ public static class AtributeExtensions
     /// <typeparam name="TAttribute">The attribute type.</typeparam>
     /// <param name="propertyInfo">The <see cref="PropertyInfo" />.</param>
     /// <returns>The attribute, or <c>null</c>.</returns>
-    public static TAttribute GetAttribute<TAttribute>(this PropertyInfo propertyInfo)
+    public static TAttribute? GetAttribute<TAttribute>(this PropertyInfo propertyInfo)
         where TAttribute : Attribute
     {
         var attrs = propertyInfo.GetCustomAttributes(typeof(TAttribute), inherit: false);
         if (attrs != null && attrs.Length > 0)
         {
             if (attrs.Length == 1)
-                return attrs.SingleOrDefault() as TAttribute;
+                return attrs.Single() as TAttribute;
             else
                 throw new SdkException($"More than one Attribute of Type '{typeof(TAttribute)}' is given");
         }

@@ -19,7 +19,7 @@ using xSdk.Shared;
 
 namespace xSdk.Shared;
 
-public class AtributeExtensionsTests
+public class AttributeExtensionsTests
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
     private class TestAttribute(string value) : Attribute

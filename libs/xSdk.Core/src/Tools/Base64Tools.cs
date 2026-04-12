@@ -16,9 +16,9 @@
 
 using System.Text;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
-public static class Base64Helper
+public static class Base64Tools
 {
     public static string ConvertFromBase64(string encoded)
     {
