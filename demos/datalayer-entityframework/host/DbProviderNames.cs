@@ -24,6 +24,5 @@ namespace xSdk.Demos;
 
 internal class DbProviderNames
 {
-    internal const string First = "First";
     internal const string Second = "Second";
 }

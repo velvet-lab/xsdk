@@ -36,10 +36,7 @@ var host = xSdk.Hosting.Host
     {
         builder
             // Enable Entityframework
-            .UseEntityFramework<SampleDbContext>(DbProviderNames.First, config =>
-            {
-                config.TransactionsEnabled = false;
-            })
+            .UseEntityFramework<SampleDbContext>()
             // Add Repositories to the Layer
             .MapRepository<ISampleRepository, SampleRepository>();
 
