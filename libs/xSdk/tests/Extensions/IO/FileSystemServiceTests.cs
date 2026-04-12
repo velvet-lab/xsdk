@@ -21,7 +21,7 @@ namespace xSdk.Extensions.IO;
 
 public class FileSystemServiceTests : IClassFixture<TestHostFixture>
 {
-    private IFileSystemService _service;
+    private readonly IFileSystemService _service;
 
     public FileSystemServiceTests(TestHostFixture fixture)
     {

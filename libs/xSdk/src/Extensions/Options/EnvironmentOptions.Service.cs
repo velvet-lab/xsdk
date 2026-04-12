@@ -6,28 +6,28 @@ namespace xSdk.Extensions.Options;
 public sealed partial class EnvironmentOptions
 {
     [Variable(name: Definitions.ServiceName.Name, template: Definitions.ServiceName.Template, helpText: Definitions.ServiceName.HelpText)]
-    public string ServiceName
+    public string? ServiceName
     {
         get => ReadValue<string>(Definitions.ServiceName.Name);
         set => SetValue(Definitions.ServiceName.Name, value);
     }
 
     [Variable(name: Definitions.ServiceNamespace.Name, template: Definitions.ServiceNamespace.Template, helpText: Definitions.ServiceNamespace.HelpText)]
-    public string ServiceNamespace
+    public string? ServiceNamespace
     {
         get => ReadValue<string>(Definitions.ServiceNamespace.Name);
         set => SetValue(Definitions.ServiceNamespace.Name, value);
     }
 
     [Variable(name: Definitions.ServiceVersion.Name, template: Definitions.ServiceVersion.Template, helpText: Definitions.ServiceVersion.HelpText)]
-    public string ServiceVersion
+    public string? ServiceVersion
     {
         get => ReadValue<string>(Definitions.ServiceVersion.Name);
         set => SetValue(Definitions.ServiceVersion.Name, value);
     }
 
     [Variable(name: Definitions.ServiceFullName.Name, helpText: Definitions.ServiceFullName.HelpText, protect: true, hidden: true)]
-    public string ServiceFullName { get; private set; }
+    public string? ServiceFullName { get; private set; }
 
     private void InitializeService()
     {

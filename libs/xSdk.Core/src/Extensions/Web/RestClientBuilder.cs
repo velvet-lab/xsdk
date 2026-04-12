@@ -19,9 +19,9 @@ using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.Json;
 using xSdk;
-using xSdk.Data;
 using xSdk.Hosting;
 using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
 
@@ -135,7 +135,7 @@ public static class RestClientBuilder
         return new RestClient(
             httpClient,
             restOptions,
-            configureSerialization: serializer => serializer.UseSystemTextJson(JsonHelper.GetSerializerOptions())
+            configureSerialization: serializer => serializer.UseSystemTextJson(JsonTools.GetSerializerOptions())
         );
     }
 }

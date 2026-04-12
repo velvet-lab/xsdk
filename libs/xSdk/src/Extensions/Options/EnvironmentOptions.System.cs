@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Options;
 
@@ -14,16 +14,16 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public string MachineName { get; private set; }
+    public string? MachineName { get; private set; }
 
     [Variable(name: Definitions.Arch.Name, helpText: Definitions.Arch.HelpText, resourceNames: new[] { "host.arch" }, protect: true, hidden: true)]
-    public string Arch { get; private set; }
+    public string? Arch { get; private set; }
 
     [Variable(name: Definitions.IPv4.Name, helpText: Definitions.IPv4.HelpText, resourceNames: new[] { "host.ip" }, protect: true, hidden: true)]
-    public string IPv4 { get; private set; }
+    public string? IPv4 { get; private set; }
 
     [Variable(name: Definitions.Mac.Name, helpText: Definitions.Mac.HelpText, resourceNames: new[] { "host.mac" }, protect: true, hidden: true)]
-    public string Mac { get; private set; }
+    public string? Mac { get; private set; }
 
     [Variable(
         name: Definitions.OsDescription.Name,
@@ -32,13 +32,13 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public string OsDescription { get; private set; }
+    public string? OsDescription { get; private set; }
 
     [Variable(name: Definitions.OsName.Name, helpText: Definitions.OsName.HelpText, resourceNames: new[] { "os.name" }, protect: true, hidden: true)]
-    public string OsName { get; private set; }
+    public string? OsName { get; private set; }
 
     [Variable(name: Definitions.OsType.Name, helpText: Definitions.OsType.HelpText, resourceNames: new[] { "os.type" }, protect: true, hidden: true)]
-    public string OsType { get; private set; }
+    public string? OsType { get; private set; }
 
     [Variable(
         name: Definitions.OsVersion.Name,
@@ -47,7 +47,7 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public string OsVersion { get; private set; }
+    public string? OsVersion { get; private set; }
 
     [Variable(
         name: Definitions.FrameworkName.Name,
@@ -56,7 +56,7 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public string FrameworkName { get; private set; }
+    public string? FrameworkName { get; private set; }
 
     [Variable(
         name: Definitions.FrameworkVersion.Name,
@@ -65,7 +65,7 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public Version FrameworkVersion { get; private set; }
+    public Version? FrameworkVersion { get; private set; }
 
     [Variable(
         name: Definitions.FrameworkDescription.Name,
@@ -74,7 +74,7 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public string FrameworkDescription { get; private set; }
+    public string? FrameworkDescription { get; private set; }
 
     [Variable(
         name: Definitions.Commandline.Name,
@@ -83,15 +83,15 @@ public sealed partial class EnvironmentOptions
         protect: true,
         hidden: true
     )]
-    public string Commandline { get; private set; }
+    public string? Commandline { get; private set; }
 
     [Variable(name: Definitions.Owner.Name, helpText: Definitions.Owner.HelpText, resourceNames: new[] { "process.owner" }, protect: true, hidden: true)]
-    public string Owner { get; private set; }
+    public string? Owner { get; private set; }
 
     [Variable(name: Definitions.Pid.Name, helpText: Definitions.Pid.HelpText, resourceNames: new[] { "process.pid" }, protect: true, hidden: true)]
-    public int Pid { get; private set; }
+    public int? Pid { get; private set; }
 
-    public bool IsDotNetRunningInContainer { get; private set; }
+    public bool? IsDotNetRunningInContainer { get; private set; }
 
     private void InitializeSystem()
     {

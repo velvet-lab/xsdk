@@ -15,7 +15,7 @@
  */
 
 using System.Text.Json.Serialization;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk;
 
@@ -263,7 +263,7 @@ public sealed class SemVer
         return $"{tempValue}{preReleaseString}";
     }
 
-    public override int GetHashCode() => ObjectHelper.CreateAutomaticHashCode(this);
+    public override int GetHashCode() => ObjectTools.CreateAutomaticHashCode(this);
 
     public override bool Equals(object obj) => this == (SemVer)obj;
 }

@@ -17,6 +17,7 @@
 using Microsoft.Extensions.Logging;
 using xSdk;
 using xSdk.Hosting;
+using xSdk.Tools;
 
 namespace xSdk.Security;
 
@@ -37,7 +38,7 @@ public static class CredentialManager
         var credsFile = GetCredsFileName(context);
         if (File.Exists(credsFile))
         {
-            return CryptoTool.Decrypt<TCredentials>(credsFile, context);
+            return CryptoTools.Decrypt<TCredentials>(credsFile, context);
         }
         else
         {
@@ -55,7 +56,7 @@ public static class CredentialManager
         try
         {
             var credsFile = GetCredsFileName(context);
-            CryptoTool.Encrypt<TCredentials>(credsFile, credentials, context);
+            CryptoTools.Encrypt<TCredentials>(credsFile, credentials, context);
         }
         catch (Exception ex)
         {
