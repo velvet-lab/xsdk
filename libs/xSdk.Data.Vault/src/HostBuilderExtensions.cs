@@ -25,9 +25,9 @@ public static class HostBuilderExtensions
     public static IHostBuilder EnableVaultAuth(this IHostBuilder builder)
     {
         builder
-            .RegisterSetup<VaultSetup>()
+            .RegisterSetup<VaultOptions>()
             .RegisterSetup<AppRoleAuthSetup>()
-            .RegisterSetup<CertAuthSetup>();
+            .RegisterSetup<CertAuthOptions>();
 
         return builder;
     }

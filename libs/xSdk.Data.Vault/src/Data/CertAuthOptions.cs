@@ -25,9 +25,9 @@ using xSdk.Shared;
 namespace xSdk.Data;
 
 [VariablePrefix("CertAuth")]
-public class CertAuthSetup : Setup
+public class CertAuthOptions : VariableSetup
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<CertAuthSetup>();
+    private static readonly ILogger _logger = LogManager.CreateLogger<CertAuthOptions>();
 
     [Variable(
         name: Definitions.Certificate.Name,
@@ -51,12 +51,6 @@ public class CertAuthSetup : Setup
     {
         get => ReadValue<string>(Definitions.Key.Name);
         set => SetValue(Definitions.Key.Name, value);
-    }
-
-    protected override void ValidateSetup()
-    {
-        this.ValidateMember(x => string.IsNullOrEmpty(x.Certificate), "Client certificate for vault certificate auth is missing", Definitions.Certificate.Name);
-        this.ValidateMember(x => string.IsNullOrEmpty(x.Key), "Client certificate key for vault certificate auth is missing", Definitions.Key.Name);
     }
 
     public X509Certificate2? CreateCertificate()
