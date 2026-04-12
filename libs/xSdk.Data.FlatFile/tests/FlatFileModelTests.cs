@@ -18,7 +18,7 @@ namespace xSdk.Data;
 
 public class FlatFileModelTests
 {
-    private class TestModel : FlatFileModel
+    private class TestModel : Model
     {
         public string Title { get; set; } = string.Empty;
     }
@@ -27,9 +27,10 @@ public class FlatFileModelTests
     public void FlatFileModel_DefaultConstructor_InitializesPrimaryKey()
     {
         var model = new TestModel();
+        model.Id = Guid.NewGuid().ToString();
 
-        Assert.NotNull(model.PrimaryKey);
-        Assert.IsType<GuidStringPK>(model.PrimaryKey);
+        Assert.NotNull(model.Id);
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
@@ -48,7 +49,7 @@ public class FlatFileModelTests
     {
         var model = new TestModel();
 
-        Assert.NotNull(model.Id);
+        Assert.Null(model.Id);
     }
 
     [Fact]

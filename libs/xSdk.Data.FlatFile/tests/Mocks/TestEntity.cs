@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
+using xSdk.Tools;
+
 namespace xSdk.Data.Mocks;
 
 public class TestEntity : FlatFileEntity
 {
+    public TestEntity()
+    {
+        Id = PrimaryKeyTools.Generate<int>();
+    }
+
     public string Name { get; set; }
 
     public int Age { get; set; }

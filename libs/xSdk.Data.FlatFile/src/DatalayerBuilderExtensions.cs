@@ -16,16 +16,10 @@
 
 namespace xSdk.Data;
 
-public abstract class FlatFileModel : Model, IModel<GuidStringPK, string>
+public static class DatalayerBuilderExtensions
 {
-    public FlatFileModel()
-    {
-        this.PrimaryKey = new GuidStringPK();
-    }
-
-    public new string Id
-    {
-        get => PrimaryKey.GetValue<string>();
-        set => PrimaryKey.SetValue(value);
-    }
+    public static IDatabaseBuilder UseFlatFile(this IDatalayerBuilder builder, Action<FlatFileDatabaseOptions> configure) =>
+        builder.UseDatabase<FlatFileDatabase, FlatFileDatabaseOptions>(null, configure);
+    public static IDatabaseBuilder UseFlatFile(this IDatalayerBuilder builder, string? name, Action<FlatFileDatabaseOptions> configure) =>
+        builder.UseDatabase<FlatFileDatabase, FlatFileDatabaseOptions>(name, configure);
 }

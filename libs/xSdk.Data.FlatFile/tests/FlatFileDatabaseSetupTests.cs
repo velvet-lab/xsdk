@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
+using FluentValidation;
+
 namespace xSdk.Data;
 
 public class FlatFileDatabaseSetupTests
 {
+    private readonly FlatFileDatabaseOptionsValidator _validator;
+
+    public FlatFileDatabaseSetupTests()
+    {
+        _validator = new FlatFileDatabaseOptionsValidator();
+    }
+
     [Fact]
     public void FlatFileDatabaseSetup_DefaultConstructor_SetsUseLowerCamelCaseToTrue()
     {
-        var setup = new FlatFileDatabaseSetup();
+        var setup = new FlatFileDatabaseOptions();
 
         Assert.True(setup.UseLowerCamelCase);
     }
@@ -29,7 +38,7 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void FlatFileDatabaseSetup_DefaultConstructor_SetsReloadBeforeGetCollectionToFalse()
     {
-        var setup = new FlatFileDatabaseSetup();
+        var setup = new FlatFileDatabaseOptions();
 
         Assert.False(setup.ReloadBeforeGetCollection);
     }
@@ -37,7 +46,7 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void FlatFileDatabaseSetup_FilePath_CanBeSet()
     {
-        var setup = new FlatFileDatabaseSetup
+        var setup = new FlatFileDatabaseOptions
         {
             FilePath = "/tmp/test.json"
         };
@@ -48,7 +57,7 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void FlatFileDatabaseSetup_KeyProperty_CanBeSet()
     {
-        var setup = new FlatFileDatabaseSetup
+        var setup = new FlatFileDatabaseOptions
         {
             KeyProperty = "id"
         };
@@ -59,7 +68,7 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void FlatFileDatabaseSetup_EncryptionKey_CanBeSet()
     {
-        var setup = new FlatFileDatabaseSetup
+        var setup = new FlatFileDatabaseOptions
         {
             EncryptionKey = "secret-key"
         };
@@ -70,7 +79,7 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void FlatFileDatabaseSetup_UseLowerCamelCase_CanBeOverridden()
     {
-        var setup = new FlatFileDatabaseSetup
+        var setup = new FlatFileDatabaseOptions
         {
             UseLowerCamelCase = false
         };
@@ -81,7 +90,7 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void FlatFileDatabaseSetup_ReloadBeforeGetCollection_CanBeOverridden()
     {
-        var setup = new FlatFileDatabaseSetup
+        var setup = new FlatFileDatabaseOptions
         {
             ReloadBeforeGetCollection = true
         };
@@ -92,39 +101,39 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void Validate_WithEmptyFilePath_AddsValidationError()
     {
-        var setup = new FlatFileDatabaseSetup { FilePath = string.Empty };
+        var setup = new FlatFileDatabaseOptions { FilePath = string.Empty };
 
-        setup.Validate(false);
+        var results = _validator.Validate(setup);
 
-        Assert.NotEmpty(setup.Results);
+        Assert.NotEmpty(results.Errors);
     }
 
     [Fact]
     public void Validate_WithValidFilePath_NoValidationErrors()
     {
-        var setup = new FlatFileDatabaseSetup { FilePath = "mydata.json" };
+        var setup = new FlatFileDatabaseOptions { FilePath = "mydata.json" };
 
-        setup.Validate(false);
+        var results = _validator.Validate(setup);
 
-        Assert.Empty(setup.Results);
+        Assert.Empty(results.Errors);
     }
 
     [Fact]
     public void Validate_FilePathWithoutExtension_AppendsJsonExtension()
     {
-        var setup = new FlatFileDatabaseSetup { FilePath = "mydata" };
+        var setup = new FlatFileDatabaseOptions { FilePath = "mydata" };
 
-        setup.Validate(false);
+        var results = _validator.Validate(setup);
 
-        Assert.Equal("mydata.json", setup.FilePath);
+        Assert.Throws<ValidationException>(() => _validator.ValidateAndThrow(setup));
     }
 
     [Fact]
     public void Validate_FilePathAlreadyWithJsonExtension_DoesNotDoubleAppend()
     {
-        var setup = new FlatFileDatabaseSetup { FilePath = "mydata.json" };
+        var setup = new FlatFileDatabaseOptions { FilePath = "mydata.json" };
 
-        setup.Validate(false);
+        var results = _validator.Validate(setup);
 
         Assert.Equal("mydata.json", setup.FilePath);
     }
@@ -132,8 +141,8 @@ public class FlatFileDatabaseSetupTests
     [Fact]
     public void Validate_WithEmptyFilePath_ThrowsWhenRequired()
     {
-        var setup = new FlatFileDatabaseSetup { FilePath = string.Empty };
+        var setup = new FlatFileDatabaseOptions { FilePath = string.Empty };
 
-        Assert.Throws<SdkException>(() => setup.Validate(true));
+        Assert.Throws<ValidationException>(() => _validator.ValidateAndThrow(setup));
     }
 }

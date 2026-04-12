@@ -21,21 +21,7 @@ using System.Xml.Serialization;
 
 namespace xSdk.Data;
 
-public abstract class FlatFileEntity : Entity, IEntity<GuidPK, Guid>
+public abstract class FlatFileEntity : Entity<int>
 {
-    public FlatFileEntity()
-    {
-        this.PrimaryKey = new GuidPK();
-    }
-
-    [Key]
-    [Column("id")]
-    [XmlElement("id")]
-    [JsonPropertyName("id")]
-    [SoapAttribute("id")]
-    public new Guid Id
-    {
-        get => PrimaryKey.GetValue<Guid>();
-        set => PrimaryKey.SetValue(value);
-    }
+        
 }

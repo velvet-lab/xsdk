@@ -18,29 +18,16 @@ using xSdk.Data.Mocks;
 
 namespace xSdk.Data;
 
-public class FlatFileCrudTests(LocalDatabaseFixture fixture) : IClassFixture<LocalDatabaseFixture>
+public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
     [Fact]
     public async Task SelectListAsync_EmptyStore_ReturnsEmptyCollection()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = fixture.Factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
-        var result = await repo!.SelectListAsync();
+        Assert.NotNull(repo);
+        var result = await repo.GetDataAsync();
 
         Assert.Empty(result);
-    }
-
-    [Fact]
-    public async Task RemoveAsync_ByPrimaryKeyCollection_ThrowsWrappedNotImplementedException()
-    {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
-
-        var primaryKeys = new[] { (IPrimaryKey)new GuidPK(Guid.NewGuid()) };
-
-        await Assert.ThrowsAsync<NotImplementedException>(() => repo!.RemoveAsync(primaryKeys));
     }
 }

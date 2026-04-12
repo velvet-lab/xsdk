@@ -28,40 +28,42 @@ public class DatabaseFixture : DatabaseHostFixture
 
     protected override void Initialize()
     {
-        ConfigureServices(services =>
+        ConfigureBuilder(hostBuilder =>
         {
-            services.AddDatalayer(builder =>
-            {
-                var currentFolder = Path.Combine(FileSystemHelper.GetExecutingFolder(), "data", Guid.NewGuid().ToString("N"));
-                if (!Directory.Exists(currentFolder))
-                {
-                    Directory.CreateDirectory(currentFolder);
-                }
+            hostBuilder
+                .AddDatalayer(builder => {
 
-                var imageName = GetEnvironmentVariable("GENERIC_LINUX_IMAGE_NAME");
-                _container = new ContainerBuilder()
-                    .WithImage(imageName)
-                    .WithPortBinding(8080, true)
-                    .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080)))
-                    .WithAutoRemove(true)
-                    .WithBindMount(currentFolder, "/data/db")
-                    .WithImagePullPolicy(PullPolicy.Missing)
-                    .Build();
+                    var currentFolder = Path.Combine(FileSystemHelper.GetExecutingFolder(), "data", Guid.NewGuid().ToString("N"));
+                    if (!Directory.Exists(currentFolder))
+                    {
+                        Directory.CreateDirectory(currentFolder);
+                    }
 
-                _container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                    var imageName = GetEnvironmentVariable("GENERIC_LINUX_IMAGE_NAME");
+                    _container = new ContainerBuilder()
+                        .WithImage(imageName)
+                        .WithPortBinding(8080, true)
+                        .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080)))
+                        .WithAutoRemove(true)
+                        .WithBindMount(currentFolder, "/data/db")
+                        .WithImagePullPolicy(PullPolicy.Missing)
+                        .Build();
 
-                builder
-                    // Enable FlatFile
-                    .UseFlatFile(
-                        Globals.DatalayerName,
-                        config =>
-                        {
-                            config.FilePath = currentFolder;
-                        }
-                    )
-                    // Add Repositories to the Layer
-                    .MapRepository<ITestRepository, TestRepository>(Globals.DatalayerName);
-            });
+                    _container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+
+                    builder
+                        // Enable FlatFile
+                        .UseFlatFile(
+                            Globals.DatalayerName,
+                            config =>
+                            {
+                                config.FilePath = $"{currentFolder}/{Globals.DatabaseName}.json";
+                            }
+                        )
+                        // Add Repositories to the Layer
+                        .MapRepository<ITestRepository, TestRepository>();
+
+                });
         });
     }
 
