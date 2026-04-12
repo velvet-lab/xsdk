@@ -66,16 +66,13 @@ var host = xSdk.Hosting.Host
             // Sample for Vault Datalayer
             .AddDatalayer(builder =>
             {
-                var vaultSetup = SlimHost.Instance.VariableSystem.GetSetup<VaultSetup>();
+                var vaultSetup = SlimHost.Instance.VariableSystem.GetSetup<VaultOptions>();
                 var approleAuth = SlimHost.Instance.VariableSystem.GetSetup<AppRoleAuthSetup>();
 
                 builder
                     .UseVault("MyVaultDatabase", _ =>
                     {
-                        // _.Endpoint = $"http://localhost:{port}";
-                        // _.TokenAuth = new() { Token = rootToken };
                         _.Host = "https://vault.localhost";
-                        // _.CertAuth = new() { Certificate = approleAuth?.CreateCertificate() };
                         _.AppRoleAuth = new()
                         {
                             RoleId = approleAuth?.RoleId,

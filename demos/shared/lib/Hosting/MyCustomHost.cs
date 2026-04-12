@@ -16,24 +16,26 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using xSdk.Extensions.Variable;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 
 namespace xSdk.Demos.Hosting;
 
 public class MyCustomHost : IHostedService
 {
-    private readonly IVariableService _variableSvc;
     private readonly ILogger<MyCustomHost> _logger;
-    private readonly SetupWithoutPrefix _setupWithoutPrefix;
-    private readonly SetupWithPrefix _setupWithPrefix;
+    private readonly OptionsWithoutPrefix _optionsWithoutPrefix;
+    private readonly OptionsWithPrefix _optionsWithPrefix;
+    private readonly EnvironmentOptions _environment;
 
-    public MyCustomHost(IVariableService variableSvc, ILogger<MyCustomHost> logger)
+    public MyCustomHost(IOptions<EnvironmentOptions> environmentOptions, IOptions<OptionsWithPrefix> optionsWithPrefix, IOptions<OptionsWithoutPrefix> optionsWithoutPrefix,  ILogger<MyCustomHost> logger)
     {
-        this._variableSvc = variableSvc ?? throw new ArgumentNullException(nameof(variableSvc));
-        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-        this._setupWithoutPrefix = variableSvc.GetSetup<SetupWithoutPrefix>();
-        this._setupWithPrefix = variableSvc.GetSetup<SetupWithPrefix>();
+        _optionsWithoutPrefix = optionsWithoutPrefix.Value ?? throw new ArgumentNullException(nameof(optionsWithoutPrefix));
+        _optionsWithPrefix = optionsWithPrefix.Value ?? throw new ArgumentNullException(nameof(optionsWithPrefix));
+
+        _environment = environmentOptions.Value ?? throw new ArgumentNullException(nameof(environmentOptions));
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -42,11 +44,11 @@ public class MyCustomHost : IHostedService
 
         _logger.LogInformation("Host was started");
 
-        _logger.LogInformation("{0} = {1}", nameof(this._setupWithPrefix.WithAppPrefix_WithSetupPrefix), this._setupWithPrefix.WithAppPrefix_WithSetupPrefix);
-        _logger.LogInformation("{0} = {1}", nameof(this._setupWithPrefix.NoAppPrefix_NoSetupPrefix), this._setupWithPrefix.NoAppPrefix_NoSetupPrefix);
+        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithPrefix.WithAppPrefix_WithSetupPrefix), this._optionsWithPrefix.WithAppPrefix_WithSetupPrefix);
+        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithPrefix.NoAppPrefix_NoSetupPrefix), this._optionsWithPrefix.NoAppPrefix_NoSetupPrefix);
 
-        _logger.LogInformation("{0} = {1}", nameof(this._setupWithoutPrefix.NoAppPrefix_NoSetupPrefix), this._setupWithoutPrefix.NoAppPrefix_NoSetupPrefix);
-        _logger.LogInformation("{0} = {1}", nameof(this._setupWithoutPrefix.WithAppPrefix_NoSetupPrefix), this._setupWithoutPrefix.WithAppPrefix_NoSetupPrefix);
+        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithoutPrefix.NoAppPrefix_NoSetupPrefix), this._optionsWithoutPrefix.NoAppPrefix_NoSetupPrefix);
+        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithoutPrefix.WithAppPrefix_NoSetupPrefix), this._optionsWithoutPrefix.WithAppPrefix_NoSetupPrefix);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

@@ -17,7 +17,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using xSdk.Demos;
 using xSdk.Demos.Hosting;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 
 const string APP_NAME = "host";
@@ -32,9 +34,15 @@ var host = xSdk
             // Service um Informationen abzurufen
             // Ein eigener Host der benutzt werden soll
             .AddHostedService<MyCustomHost>();
+
+        // Register Options with Variable Service
+        services
+            .RegisterOptions<OptionsWithoutPrefix>()
+            .RegisterOptions<OptionsWithPrefix>(options =>
+            {
+                // Post configure Options with Variable Service, if needed
+            });
     })
-    //.RegisterSetup<SetupWithoutPrefix>()
-    //.RegisterSetup<SetupWithPrefix>()
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();

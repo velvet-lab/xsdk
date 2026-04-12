@@ -18,7 +18,7 @@ using xSdk.Data;
 
 namespace xSdk.Demos.Data;
 
-public sealed class SampleModel : FlatFileModel
+public sealed class SampleModel : Model
 {
     public string Name { get; set; }
 

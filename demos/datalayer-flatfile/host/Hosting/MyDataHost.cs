@@ -33,10 +33,7 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
         await LoadData(cancellationToken);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     private async Task LoadData(CancellationToken token)
     {
@@ -78,8 +75,8 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
             var samples = new SampleEntity[]
             {
                 new SampleEntity { Name = "Customer 1", Age = 10 },
-                new SampleEntity { Name = "Customer 2", Age = 10 },
-                new SampleEntity { Name = "Customer 3", Age = 10 },
+                new SampleEntity { Name = "Customer 2", Age = 20 },
+                new SampleEntity { Name = "Customer 3", Age = 30 },
             };
 
             // Add this Samples to Database
