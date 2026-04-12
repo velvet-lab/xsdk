@@ -25,8 +25,6 @@ internal class ModelMappingProfile<TModel> : MappingProfile
 
     protected override void Configure()
     {
-        CreateMap<TModel, TModel>()
-            .Ignore(dest => dest.Id)
-            .Ignore(dest => dest.PrimaryKey);
+        CreateMap<TModel, TModel>();
     }
 }

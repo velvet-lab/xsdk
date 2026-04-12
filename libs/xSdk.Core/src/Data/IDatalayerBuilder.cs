@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Variable;
+
 namespace xSdk.Data;
 
 public interface IDatalayerBuilder
 {
-    IDatalayerBuilder ConfigureDatabase<TDatabase, TDatabaseSetup, TConnectionStringBuilder>(string name, Action<TDatabaseSetup> factory)
+    IDatabaseBuilder ConfigureDatabase<TDatabase, TDatabaseOptions>()
         where TDatabase : class, IDatabase
-        where TDatabaseSetup : IDatabaseSetup, new()
-        where TConnectionStringBuilder : class, IConnectionBuilder;
-    IDatalayerBuilder ConfigureDatabase<TDatabase, TDatabaseSetup, TConnectionStringBuilder>(string name)
+        where TDatabaseOptions : class, IVariableSetup
+        => ConfigureDatabase<TDatabase, TDatabaseOptions>(null, null);
+
+    IDatabaseBuilder ConfigureDatabase<TDatabase, TDatabaseOptions>(Action<TDatabaseOptions>? factory)
         where TDatabase : class, IDatabase
-        where TDatabaseSetup : IDatabaseSetup, new()
-        where TConnectionStringBuilder : class, IConnectionBuilder;
-    IDatalayerBuilder ConfigureRepository<TImplementation>(IEnumerable<string> dataProviders)
-        where TImplementation : class, IRepository;
-    IDatalayerBuilder ConfigureRepository<TInterface, TImplementation>(IEnumerable<string> dataProviders)
-        where TInterface : class
-        where TImplementation : class, IRepository, TInterface;
+        where TDatabaseOptions : class, IVariableSetup
+        => ConfigureDatabase<TDatabase, TDatabaseOptions>(null, factory);
+
+    IDatabaseBuilder ConfigureDatabase<TDatabase, TDatabaseOptions>(string? name)
+        where TDatabase : class, IDatabase
+        where TDatabaseOptions : class, IVariableSetup
+        => ConfigureDatabase<TDatabase, TDatabaseOptions>(name, null);
+
+    IDatabaseBuilder ConfigureDatabase<TDatabase, TDatabaseOptions>(string? name, Action<TDatabaseOptions>? factory)
+        where TDatabase : class, IDatabase
+        where TDatabaseOptions : class, IVariableSetup;
 }

@@ -18,14 +18,14 @@ using System.Collections.ObjectModel;
 
 namespace xSdk.Data;
 
-public sealed class FakeRepository<TEntity> : Repository<TEntity>
-    where TEntity : class, IEntity
+public sealed class FakeRepository<TEntity, TPrimaryKeyType> : Repository<TEntity, TPrimaryKeyType>
+    where TEntity : class, IEntity<TPrimaryKeyType>
 {
     private ICollection<TEntity> _dbValues;
 
     internal FakeRepository(IEnumerable<TEntity> values)
     {
-        _dbValues = new Collection<TEntity>(values.ToList()) ?? throw new ArgumentNullException(nameof(values));
+        _dbValues = new Collection<TEntity>(values.ToList());
     }
 
     public override Task<bool> InsertAsync(TEntity entity, CancellationToken token = default)
@@ -41,9 +41,9 @@ public sealed class FakeRepository<TEntity> : Repository<TEntity>
         return Task.FromResult(entities.Count());
     }
 
-    public override Task<bool> RemoveAsync(IPrimaryKey primaryKey, CancellationToken token = default)
+    public override Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default)
     {
-        _dbValues = _dbValues.Where(x => x.PrimaryKey != primaryKey).ToList();
+        _dbValues = _dbValues.Where(x => !EqualityComparer<TPrimaryKeyType>.Default.Equals(x.Id, primaryKey)).ToList();
 
         return Task.FromResult(true);
     }
@@ -63,7 +63,7 @@ public sealed class FakeRepository<TEntity> : Repository<TEntity>
         return Task.FromResult(entities.Count());
     }
 
-    public override Task<int> RemoveAsync(IEnumerable<IPrimaryKey> primaryKeys, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default)
     {
         foreach (var primaryKey in primaryKeys)
             Remove(primaryKey);
@@ -71,9 +71,9 @@ public sealed class FakeRepository<TEntity> : Repository<TEntity>
         return Task.FromResult(primaryKeys.Count());
     }
 
-    public override Task<TEntity?> SelectAsync(IPrimaryKey primaryKey, CancellationToken token = default)
+    public override Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default)
     {
-        return Task.FromResult(_dbValues.SingleOrDefault(x => x.PrimaryKey == primaryKey));
+        return Task.FromResult(_dbValues.SingleOrDefault(x => EqualityComparer<TPrimaryKeyType>.Default.Equals(x.Id, primaryKey)));
     }
 
     public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default)
@@ -81,7 +81,7 @@ public sealed class FakeRepository<TEntity> : Repository<TEntity>
         return Task.FromResult<IEnumerable<TEntity>>(_dbValues);
     }
 
-    public override Task<bool> UpdateAsync(IPrimaryKey primaryKey, TEntity entity, CancellationToken token = default)
+    public override Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default)
     {
         Remove(primaryKey);
         Insert(entity);
@@ -91,6 +91,6 @@ public sealed class FakeRepository<TEntity> : Repository<TEntity>
 
     public override Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default)
     {
-        return UpdateAsync(entity.PrimaryKey, entity, token);
+        return UpdateAsync(entity.Id, entity, token);
     }
 }

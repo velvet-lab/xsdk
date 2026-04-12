@@ -37,13 +37,14 @@ public sealed class ModelWithAdditionalDataTests
     {
         var model = new TestModel
         {
+            Id = "1",
             Name = "TestName"
         };
 
         var json = JsonSerializer.Serialize(model);
 
         Assert.NotNull(json);
-        Assert.Equal("{\"Name\":\"TestName\"}", json);
+        Assert.Equal(@"{""Name"":""TestName"",""Id"":""1""}", json);
     }
 
     [Fact]

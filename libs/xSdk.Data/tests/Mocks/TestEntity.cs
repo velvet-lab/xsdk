@@ -15,22 +15,13 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using xSdk.Tools;
 
 namespace xSdk.Data.Mocks;
 
-internal class TestEntity : Entity, IEntity<GuidPK, Guid>
+internal class TestEntity : Entity<Guid>
 {
-    public TestEntity()
-    {
-        this.PrimaryKey = new GuidPK();
-    }
-
-    [Key]
-    public new Guid Id
-    {
-        get => PrimaryKey.GetValue<Guid>();
-        set => PrimaryKey.SetValue(value);
-    }
+    public override Guid Id { get; set; } = PrimaryKeyTools.Generate<Guid>();
 
     public string Name { get; set; }
 

@@ -15,7 +15,7 @@
  */
 
 using System.Text.Json;
-using xSdk.Data;
+using xSdk.Tools;
 
 namespace xSdk.Data;
 
@@ -31,7 +31,7 @@ public class JsonHelperTests
     [InlineData("", false)]
     public void IsJson_ReturnsExpectedResult(string input, bool expected)
     {
-        var result = JsonHelper.IsJson(input);
+        var result = JsonTools.IsJson(input);
 
         Assert.Equal(expected, result);
     }
@@ -39,7 +39,7 @@ public class JsonHelperTests
     [Fact]
     public void IsJson_WithInvalidObject_ReturnsFalse()
     {
-        var result = JsonHelper.IsJson("{invalid}");
+        var result = JsonTools.IsJson("{invalid}");
 
         Assert.False(result);
     }
@@ -50,7 +50,7 @@ public class JsonHelperTests
         var income = "{\"a\":1}";
         var outcome = "{\"b\":2}";
 
-        var result = JsonHelper.Merge(income, outcome);
+        var result = JsonTools.Merge(income, outcome);
 
         Assert.Contains("\"a\"", result);
         Assert.Contains("\"b\"", result);
@@ -62,7 +62,7 @@ public class JsonHelperTests
         var income = "";
         var outcome = "{\"b\":2}";
 
-        var result = JsonHelper.Merge(income, outcome);
+        var result = JsonTools.Merge(income, outcome);
 
         Assert.Contains("\"b\"", result);
     }
@@ -73,7 +73,7 @@ public class JsonHelperTests
         var income = "{\"a\":1}";
         var outcome = "";
 
-        var result = JsonHelper.Merge(income, outcome);
+        var result = JsonTools.Merge(income, outcome);
 
         Assert.Contains("\"a\"", result);
     }
@@ -81,7 +81,7 @@ public class JsonHelperTests
     [Fact]
     public void GetSerializerOptions_ReturnsNonNull()
     {
-        var options = JsonHelper.GetSerializerOptions();
+        var options = JsonTools.GetSerializerOptions();
 
         Assert.NotNull(options);
     }
@@ -89,7 +89,7 @@ public class JsonHelperTests
     [Fact]
     public void GetSerializerOptions_HasExpectedSettings()
     {
-        var options = JsonHelper.GetSerializerOptions();
+        var options = JsonTools.GetSerializerOptions();
 
         Assert.True(options.PropertyNameCaseInsensitive);
         Assert.True(options.AllowTrailingCommas);
@@ -98,7 +98,7 @@ public class JsonHelperTests
     [Fact]
     public void GetSerializerOptions_Compact_DoesNotWriteIndented()
     {
-        var options = JsonHelper.GetSerializerOptions(compact: true);
+        var options = JsonTools.GetSerializerOptions(compact: true);
 
         Assert.False(options.WriteIndented);
     }
@@ -106,7 +106,7 @@ public class JsonHelperTests
     [Fact]
     public void GetSerializerOptions_NonCompact_WritesIndented()
     {
-        var options = JsonHelper.GetSerializerOptions(compact: false);
+        var options = JsonTools.GetSerializerOptions(compact: false);
 
         Assert.True(options.WriteIndented);
     }
@@ -124,7 +124,7 @@ public class JsonHelperTests
     [Fact]
     public void GetDocumentOptions_ReturnsNonNull()
     {
-        var options = JsonHelper.GetDocumentOptions();
+        var options = JsonTools.GetDocumentOptions();
 
         Assert.Equal(JsonCommentHandling.Skip, options.CommentHandling);
         Assert.True(options.AllowTrailingCommas);

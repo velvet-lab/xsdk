@@ -31,7 +31,7 @@ public static class MappingFactory
         _logger.LogTrace("Create Mapper for Profile '{0}'", typeof(TProfile));
 
         var profile = new TProfile();
-        var config = profile.CreateConfig();
+        var config = profile.CreateConfig((adapter) => { });
         var mapper = new Mapper(config);
 
         return mapper;

@@ -17,7 +17,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Data.Converters.Json;
 
@@ -27,9 +27,9 @@ public sealed class SemVerConverter : JsonConverter<SemVer>
     {
         var value = reader.GetString();
 
-        if (Base64Helper.IsBase64(value))
+        if (Base64Tools.IsBase64(value))
         {
-            var converted = Base64Helper.ConvertFromBase64(value);
+            var converted = Base64Tools.ConvertFromBase64(value);
             var splitted = converted.Split(";", StringSplitOptions.RemoveEmptyEntries);
 
             return new SemVer(splitted[0], splitted[1]);

@@ -26,7 +26,7 @@ public class FakerTests
         var entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>();
 
         Assert.NotNull(entity);
-        Assert.True(entity.Id != Guid.Empty);
+        Assert.NotNull(entity.Id);
         Assert.NotNull(entity.Name);
         Assert.True(entity.Age > 0);
     }

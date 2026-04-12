@@ -15,7 +15,7 @@
  */
 
 using System.Text.Json;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Data.Converters.Mapper;
 
@@ -25,7 +25,7 @@ public static class JsonElementConverter
     {
         if (!string.IsNullOrEmpty(sourceMember))
         {
-            var json = Base64Helper.ConvertFromBase64(sourceMember.Trim());
+            var json = Base64Tools.ConvertFromBase64(sourceMember.Trim());
             return JsonDocument.Parse(json).RootElement;
         }
 
@@ -35,6 +35,6 @@ public static class JsonElementConverter
     public static string Convert(JsonElement sourceMember)
     {
         var json = sourceMember.GetRawText();
-        return Base64Helper.ConvertToBase64(json);
+        return Base64Tools.ConvertToBase64(json);
     }
 }

@@ -16,27 +16,14 @@
 
 namespace xSdk.Data;
 
-public class KeyValuePKTests
+public static class DatabaseBuilderExtensions
 {
-    [Fact]
-    public void CreateNewPrimaryKey()
-    {
-        KeyValuePK primaryKey = new KeyValuePK();
+    public static IDatabaseBuilder MapRepository<TImplementation>(this IDatabaseBuilder builder)
+        where TImplementation : class, IRepository
+        => builder.ConfigureRepository<TImplementation>();
 
-        Assert.NotNull(primaryKey);
-        Assert.IsType<string>(primaryKey.GetValue());
-    }
-
-    [Fact]
-    public void CreateNewPrimaryKeyFromString()
-    {
-        var id = Guid.NewGuid();
-        var expected = id.ToString();
-
-        KeyValuePK primaryKey = new KeyValuePK(expected);
-
-        Assert.NotNull(primaryKey);
-        Assert.Equal(expected, Guid.Parse(primaryKey.GetValue().ToString()).ToString());
-        Assert.IsType<string>(primaryKey.GetValue());
-    }
+    public static IDatabaseBuilder MapRepository<TInterface, TImplementation>(this IDatabaseBuilder builder)
+        where TInterface : class
+        where TImplementation : class, IRepository, TInterface
+        => builder.ConfigureRepository<TInterface, TImplementation>();
 }

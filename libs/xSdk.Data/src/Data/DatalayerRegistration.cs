@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+
 namespace xSdk.Data;
 
-public interface IConnectionBuilder
+internal class DatalayerRegistration(string name, Type databaseType)
 {
-    object Create(IDatabaseSetup setup);
+    internal Type DatabaseType => databaseType;
+
+    internal string DatalayerName => name;
 }

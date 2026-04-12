@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-using xSdk.Shared;
+using xSdk.Extensions.Variable;
 
 namespace xSdk.Data;
 
-public static class DatabaseSetupExtensions
+public static class DatalayerBuilderExtensions
 {
-    public static IDatabaseSetup AddConnectionProperties(this IDatabaseSetup setup, string key, string value)
-    {
-        setup.Properties.AddOrNew(key, value);
-
-        return setup;
-    }
+    public static IDatabaseBuilder UseDatabase<TDatabase, TDatabaseOptions>(this IDatalayerBuilder builder, string? name, Action<TDatabaseOptions> configure)
+        where TDatabase : class, IDatabase
+        where TDatabaseOptions : class, IVariableSetup        
+        => builder.ConfigureDatabase<TDatabase, TDatabaseOptions>(name, configure);
 }

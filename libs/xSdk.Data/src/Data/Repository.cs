@@ -15,75 +15,33 @@
  */
 
 using System.ComponentModel.DataAnnotations.Schema;
-using xSdk.Extensions.Variable;
-using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Data;
 
 public abstract class Repository : IRepository
 {
-    private IDatabase _database = null!;
+    public string? DatalayerName { get; internal set; }
 
-    #region Dispose Handling
-
-    ~Repository() => Dispose(false);
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-            Database.Close();
-    }
-
-    #endregion
-
-    internal IEnumerable<InternalDatabaseSetup>? InternalSetups { get; set; }
+    public IDatabaseHandler? DatabaseHandler { get; internal set; }
 
     protected bool IsDemoMode
     {
         get
         {
-            var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-            if (envSetup != null)
+            if (DatabaseHandler is DatabaseHandler handler)
             {
-                return envSetup.IsDemo;
+                return handler.Environment.IsDemo;
             }
             return false;
         }
     }
-
-    internal void Configure(IDatabase database)
-    {
-        _database = database;
-        Initialize();
-    }
-
-    protected virtual IDatabase Database
-    {
-        get
-        {
-            if (_database == null)
-                throw new SdkException("Repository was not initialzed with the Datalayer Factory. So no Database is loaded.");
-
-            return _database;
-        }
-    }
-
-    protected virtual void Initialize() { }
-
-    protected TKey ConvertTo<TKey>(object key) => TypeConverter.ConvertTo<TKey>(key);
 }
 
-public abstract class Repository<TEntity> : Repository, IRepository<TEntity>
-    where TEntity : class, IEntity
+public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IRepository<TEntity, TPrimaryKeyType>
+    where TEntity : class, IEntity<TPrimaryKeyType>
 {
-    private Repository<TEntity>? _fakeRepository;
+    private Repository<TEntity, TPrimaryKeyType>? _fakeRepository;
 
     protected string GetTableName()
     {
@@ -115,8 +73,6 @@ public abstract class Repository<TEntity> : Repository, IRepository<TEntity>
         return name;
     }
 
-    protected TKey ConvertTo<TKey>(TEntity entity) => ConvertTo<TKey>(entity.PrimaryKey);
-
     public virtual bool Insert(TEntity entity) => InsertAsync(entity).GetAwaiter().GetResult();
 
     public abstract Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
@@ -125,13 +81,13 @@ public abstract class Repository<TEntity> : Repository, IRepository<TEntity>
 
     public abstract Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
 
-    public virtual bool Remove(IPrimaryKey primaryKey) => RemoveAsync(primaryKey).GetAwaiter().GetResult();
+    public virtual bool Remove(TPrimaryKeyType primaryKey) => RemoveAsync(primaryKey).GetAwaiter().GetResult();
 
-    public abstract Task<bool> RemoveAsync(IPrimaryKey primaryKey, CancellationToken token = default);
+    public abstract Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
 
-    public int Remove(IEnumerable<IPrimaryKey> primaryKeys) => RemoveAsync(primaryKeys).GetAwaiter().GetResult();
+    public int Remove(IEnumerable<TPrimaryKeyType> primaryKeys) => RemoveAsync(primaryKeys).GetAwaiter().GetResult();
 
-    public abstract Task<int> RemoveAsync(IEnumerable<IPrimaryKey> primaryKeys, CancellationToken token = default);
+    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
 
     public virtual bool Remove(TEntity entity) => RemoveAsync(entity).GetAwaiter().GetResult();
 
@@ -141,17 +97,17 @@ public abstract class Repository<TEntity> : Repository, IRepository<TEntity>
 
     public abstract Task<int> RemoveAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
 
-    public virtual TEntity? Select(IPrimaryKey primaryKey) => SelectAsync(primaryKey).GetAwaiter().GetResult();
+    public virtual TEntity? Select(TPrimaryKeyType primaryKey) => SelectAsync(primaryKey).GetAwaiter().GetResult();
 
-    public abstract Task<TEntity?> SelectAsync(IPrimaryKey primaryKey, CancellationToken token = default);
+    public abstract Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
 
     public virtual IEnumerable<TEntity> SelectList() => SelectListAsync().GetAwaiter().GetResult();
 
     public abstract Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default);
 
-    public virtual bool Update(IPrimaryKey primaryKey, TEntity entity) => UpdateAsync(primaryKey, entity).GetAwaiter().GetResult();
+    public virtual bool Update(TPrimaryKeyType primaryKey, TEntity entity) => UpdateAsync(primaryKey, entity).GetAwaiter().GetResult();
 
-    public abstract Task<bool> UpdateAsync(IPrimaryKey primaryKey, TEntity entity, CancellationToken token = default);
+    public abstract Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default);
 
     public virtual bool Upsert(TEntity entity) => UpsertAsync(entity).GetAwaiter().GetResult();
 
@@ -160,14 +116,14 @@ public abstract class Repository<TEntity> : Repository, IRepository<TEntity>
     protected virtual Task<IEnumerable<TEntity>> CreateFakesAsync(CancellationToken token = default) =>
         Task.FromResult<IEnumerable<TEntity>>(new List<TEntity>());
 
-    protected Task<TResult> ExecuteAsDemoIfEnabledAsync<TResult>(Func<Repository<TEntity>, Task<TResult>> concreteCall, CancellationToken token = default)
+    protected Task<TResult> ExecuteAsDemoIfEnabledAsync<TResult>(Func<Repository<TEntity, TPrimaryKeyType>, Task<TResult>> concreteCall, CancellationToken token = default)
     {
         if (IsDemoMode)
         {
             if (_fakeRepository == null)
             {
                 var items = CreateFakesAsync(token).GetAwaiter().GetResult();
-                _fakeRepository = new FakeRepository<TEntity>(items);
+                _fakeRepository = new FakeRepository<TEntity, TPrimaryKeyType>(items);
             }
 
             return concreteCall(_fakeRepository);

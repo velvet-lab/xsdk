@@ -15,7 +15,8 @@
  */
 
 using Mapster;
-using xSdk.Data.Converters.Mapper;
+using xSdk.Data.Converters;
+using xSdk.Tools;
 
 namespace xSdk.Data.Mocks;
 
@@ -36,16 +37,14 @@ internal class TestMappingProfile : MappingProfile
         //    .ForMember(x => x.PrimaryKey, opts => opts.Ignore());
 
         CreateMap<TestEntity, TestModel>()
-            .Map(dest => dest.Id, src => GuidConverter.Convert(src.Id))
+            .Map(dest => dest.Id, src => PrimaryKeyTools.Convert(src.Id))
             .Map(dest => dest.Name, src => src.Name)
-            .Map(dest => dest.Age, src => src.Age)
-            .Ignore(dest => dest.PrimaryKey);
+            .Map(dest => dest.Age, src => src.Age);
 
 
         CreateMap<TestModel, TestEntity>()
-            .Map(dest => dest.Id, src => GuidConverter.Convert(src.Id))
+            .Map(dest => dest.Id, src => PrimaryKeyTools.Convert<Guid>(src.Id))
             .Map(dest => dest.Name, src => src.Name)
-            .Map(dest => dest.Age, src => src.Age)
-            .Ignore(dest => dest.PrimaryKey);
+            .Map(dest => dest.Age, src => src.Age);
     }
 }

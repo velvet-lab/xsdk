@@ -30,19 +30,20 @@ public abstract class MappingProfile
         return TypeAdapterConfig<TSource, TDestination>.NewConfig();
     }
 
-    internal TypeAdapterConfig CreateConfig(Action<TypeAdapterConfig>? configure = null)
+    internal TypeAdapterConfig CreateConfig(Action<TypeAdapterConfig>? configure)
     {
         // default configuration
         Action<TypeAdapterConfig> defaultConfig = config =>
         {
             config.Default.EnableNonPublicMembers(false);
             config.Default.IgnoreNullValues(true);
+            config.Default.IgnoreNonMapped(true);
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
-            config.Default.PreserveReference(true);
-            config.Default.Settings.EnableNonPublicMembers = false;
+            config.Default.PreserveReference(true);           
 
-            config.RequireExplicitMapping = true;
+            config.RequireExplicitMapping = false;
             config.RequireDestinationMemberSource = false;
+            config.RequireExplicitMappingPrimitive = false;
         };
 
         _logger.LogDebug("Creating TypeAdapterConfig for Profile '{0}'", GetType());

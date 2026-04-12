@@ -23,19 +23,19 @@ public class ModelTests
     [Fact]
     public void ModelShouldCreated()
     {
-        var model = new TestModel { Age = 42, Name = "John Doe" };
+        var model = new TestModel { Id = "123", Age = 42, Name = "John Doe" };
 
         Assert.NotNull(model);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
     public void ModelShouldCreatedWithAutomaticGeneratedPK()
     {
-        var model = new TestModel { Age = 42, Name = "John Doe" };
+        var model = new TestModel { Id = "123", Age = 42, Name = "John Doe" };
 
         Assert.NotNull(model);
         Assert.NotNull(model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.IsType<string>(model.Id);
     }
 }

@@ -18,13 +18,10 @@ namespace xSdk.Data;
 
 public interface IEntity
 {
-    object Id { get; set; }
 
-    IPrimaryKey PrimaryKey { get; }
 }
 
-public interface IEntity<TPrimaryKey, TPrimaryKeyType> : IEntity
-    where TPrimaryKey : IPrimaryKey<TPrimaryKeyType>, new()
+public interface IEntity<TPrimaryKeyType> : IEntity
 {
     new TPrimaryKeyType Id { get; set; }
 }

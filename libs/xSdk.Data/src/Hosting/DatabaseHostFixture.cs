@@ -21,7 +21,7 @@ namespace xSdk.Hosting;
 
 public abstract class DatabaseHostFixture : TestHostFixture
 {
-    public IDatalayerFactory Factory => this.BuildHost(true).Services.GetRequiredService<IDatalayerFactory>();
+    public IDatalayerFactory Factory => this.BuildHost().Services.GetRequiredService<IDatalayerFactory>();
 
     protected abstract override void Initialize();
 }

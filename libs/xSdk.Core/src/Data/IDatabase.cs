@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.ObjectPool;
+
 namespace xSdk.Data;
 
-public interface IDatabase : IDisposable
+public interface IDatabase : IDisposable, IResettable
 {
-    void Close();
+    string DatalayerName { get; }
 
-    TConnection Open<TConnection>(bool persistConnection = false)
-        where TConnection : class;
+    bool Close();
+
+    TDatabaseObject? Open<TDatabaseObject>()
+        where TDatabaseObject: class;
 }
