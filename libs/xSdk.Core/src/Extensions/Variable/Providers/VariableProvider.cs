@@ -22,7 +22,7 @@ public abstract class VariableProvider
 
     protected abstract object? ReadVariable(IVariable variable);
 
-    public bool TryReadVariable<TType>(IVariable variable, out TType value)
+    public bool TryReadVariable<TType>(IVariable variable, out TType? value)
     {
         var result = ReadVariable(variable);
         return TryConvertValue(result, variable, out value);
@@ -30,7 +30,7 @@ public abstract class VariableProvider
 
     public bool ContainsVariable(IVariable variable) => ExistsVariable(variable);
 
-    private bool TryConvertValue<TType>(object? value, IVariable variable, out TType? result)
+    private static bool TryConvertValue<TType>(object? value, IVariable variable, out TType? result)
     {
         result = default;
         if (value != null)

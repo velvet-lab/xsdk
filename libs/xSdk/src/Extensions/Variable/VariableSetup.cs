@@ -1,6 +1,6 @@
 namespace xSdk.Extensions.Variable;
 
-public class VariableSetup
+public class VariableSetup : IVariableSetup
 {
     private IVariableService? _variableService;
 
@@ -8,10 +8,25 @@ public class VariableSetup
     {
         if (variableService != null)
         {
-            variableService.ParseForVariables(this);
             _variableService = variableService;
+            variableService.ParseForVariables(this);            
+
+            OnInitialize();
+        }        
+    }
+
+    private IVariableService? GetVariableService()
+    {
+        if (_variableService == null)
+        {
+            var variableService = new VariableService(null, null);
+            _variableService = variableService;
+
+            variableService.ParseForVariables(this);
+
+            OnInitialize();
         }
-        OnInitialize();
+        return _variableService;
     }
 
     protected virtual void OnInitialize()
@@ -23,12 +38,13 @@ public class VariableSetup
 
     protected TValue? ReadValue<TValue>(string name, bool shouldThrowIfNotFound)
     {
-        if (_variableService != null)
+        var variableService = GetVariableService();
+        if (variableService != null)
         {
-            var variable = _variableService.LoadVariable(name);
+            var variable = variableService.LoadVariable(name);
             if (variable != null)
             {
-                return _variableService.ReadVariableValue<TValue>(name, shouldThrowIfNotFound);
+                return variableService.ReadVariableValue<TValue>(name, shouldThrowIfNotFound);
             }
         }
 
@@ -37,12 +53,13 @@ public class VariableSetup
 
     protected void SetValue<TValue>(string name, TValue value)
     {
-        if (_variableService != null)
+        var variableService = GetVariableService();
+        if (variableService != null)
         {
-            var variable = _variableService?.LoadVariable(name);
+            var variable = variableService.LoadVariable(name);
             if (variable != null)
             {
-                _variableService?.SetVariable(name, value);
+                variableService.SetVariable(name, value);
             }
         }
     }

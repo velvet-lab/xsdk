@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable.Providers;
 
@@ -30,5 +30,5 @@ internal sealed class EnvironmentProvider : VariableProviderBase
         return false;
     }
 
-    protected override object ReadVariable(IVariable variable) => EnvironmentTools.ReadEnvironmentVariable(Cast(variable).KeyForSystem);
+    protected override object? ReadVariable(IVariable variable) => EnvironmentTools.ReadEnvironmentVariable(Cast(variable).KeyForSystem);
 }

@@ -6,15 +6,14 @@ namespace xSdk.Extensions.Variable;
 
 public static class VariableServiceExtensions
 {
-    public static void ParseForVariables<T>(this IVariableService variableService, T implementation)
-        where T : class
+    public static void ParseForVariables(this IVariableService variableService, object implementation)
     {
         // Remarks: Dont activate Logging, because its produces a StackOverFlow
         MethodInfo? createMethod = typeof(Variable).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, [typeof(string)]);
         if (createMethod != null)
         {
             // Read all properties of the Implementation
-            Type setupType = typeof(T);
+            Type setupType = implementation.GetType();
 
             string? mainPrefix = setupType
                 .Name
@@ -23,8 +22,8 @@ public static class VariableServiceExtensions
                 .Replace("options", "", StringComparison.InvariantCultureIgnoreCase)
                 .Replace("setup", "", StringComparison.InvariantCultureIgnoreCase);
 
-            VariablePrefixAttribute prefixAttribute = setupType.GetAttribute<VariablePrefixAttribute>();
-            VariableNoPrefixAttribute noprefixAttribute = setupType.GetAttribute<VariableNoPrefixAttribute>();
+            VariablePrefixAttribute? prefixAttribute = setupType.GetAttribute<VariablePrefixAttribute>();
+            VariableNoPrefixAttribute? noprefixAttribute = setupType.GetAttribute<VariableNoPrefixAttribute>();
             if (prefixAttribute != null)
             {
                 mainPrefix = prefixAttribute.Prefix;
@@ -37,11 +36,11 @@ public static class VariableServiceExtensions
 
             foreach (var property in setupType.GetProperties())
             {
-                VariableAttribute attr = property.GetAttribute<VariableAttribute>();
+                VariableAttribute? attr = property.GetAttribute<VariableAttribute>();
                 if (attr != null)
                 {
                     object defaultValue = attr.DefaultValue;
-                    object currentValue = null;
+                    object? currentValue = null;
                     try
                     {
                         currentValue = property.GetValue(implementation);
@@ -152,17 +151,17 @@ public static class VariableServiceExtensions
         }
     }
 
-    private static bool IsDefaultValueGreater(Type type, object currentValue, object defaultValue)
+    private static bool IsDefaultValueGreater(Type type, object? currentValue, object defaultValue)
     {
         if (currentValue != null && defaultValue != null && type.IsEnum)
         {
             string? noneEnumValue = Enum.GetName(type, 0b_0000_0000);
-            if (Enum.TryParse(type, currentValue.ToString(), out object currentEnum))
+            if (Enum.TryParse(type, currentValue.ToString(), out object? currentEnum))
             {
                 string? currentEnumValue = Enum.GetName(type, currentEnum);
                 if (currentEnumValue == noneEnumValue)
                 {
-                    if (Enum.TryParse(type, defaultValue.ToString(), out object defaultEnum))
+                    if (Enum.TryParse(type, defaultValue.ToString(), out object? defaultEnum))
                     {
                         string? defaultEnumValue = Enum.GetName(type, defaultEnum);
                         if (defaultEnumValue != noneEnumValue)

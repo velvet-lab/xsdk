@@ -30,7 +30,7 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
         public const string HelpText = "Lists all available automation variables";
     }
 
-    public override int Execute(CommandContext context, ListCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, ListCommandSettings settings, CancellationToken cancellationToken)
     {
         var format = settings.FormatString;
         if (settings.ShowHelp)
@@ -107,4 +107,6 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
         logger.LogTrace("Write table");
         AnsiConsole.Write(table);
     }
+
+    
 }

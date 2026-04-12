@@ -101,10 +101,10 @@ internal partial class VariableService
         }
     }
 
-    private IVariable LoadVariableInternal(string name)
+    private IVariable? LoadVariableInternal(string name)
     {
         var result = Variables.Where(x => string.Compare(x.Name, name, true) == 0);
-        if (result != null && result.Any())
+        if (result.Any())
         {
             if (result.Count() > 1)
             {
@@ -112,7 +112,7 @@ internal partial class VariableService
             }
             else
             {
-                var variable = result.SingleOrDefault();
+                IVariable? variable = result.Single();
                 if (variable != null)
                 {
                     return variable;

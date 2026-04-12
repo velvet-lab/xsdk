@@ -15,6 +15,7 @@
  */
 
 using System.Collections.Concurrent;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Providers;
 using xSdk.Shared;
 
@@ -24,6 +25,8 @@ internal partial class VariableService
 {
     private Dictionary<string, VariableProvider> _systemProviders;
     private readonly Dictionary<string, VariableProvider> _registeredProviders = [];
+
+    private Dictionary<string, VariableProvider> Providers => _systemProviders;
 
     public void RegisterProvider(Type providerType)
     {
@@ -44,18 +47,19 @@ internal partial class VariableService
         {
             { nameof(FileProvider), new FileProvider() },
             { nameof(EnvironmentProvider), new EnvironmentProvider() },
-            { nameof(CommandlineProvider), new CommandlineProvider() },
-            { nameof(FallbackProvider), new FallbackProvider(_applicationOptions) },
+            { nameof(CommandlineProvider), new CommandlineProvider() },            
             { nameof(MemoryProvider), new MemoryProvider() },
         };
 
-        if (_config != null)
+        if (_applicationOptions != null)
         {
-            _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config, _applicationOptions));
+            _systemProviders.Add(nameof(FallbackProvider), new FallbackProvider(_applicationOptions));
+            if (_config != null)
+            {
+                _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config, _applicationOptions));
+            }
         }
     }
-
-    private Dictionary<string, VariableProvider> Providers => _systemProviders;
 
     public bool ExistsVariable(string name)
     {
@@ -75,7 +79,7 @@ internal partial class VariableService
     public TType ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false) =>
         ReadVariableValueInternal<TType>(name, shouldThrowIfNotFound, true);
 
-    internal bool TryReadVariableValue<TType>(string name, out TType value)
+    internal bool TryReadVariableValue<TType>(string name, out TType? value)
     {
         if (ExistsVariable(name))
         {
@@ -91,10 +95,10 @@ internal partial class VariableService
         return false;
     }
 
-    private TType ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable) =>
+    private TType? ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable) =>
         ReadVariableValueInternal<TType>(name, shouldThrowIfNotFound, saveVariable, out _);
 
-    private TType ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable, out bool valueFound)
+    private TType? ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable, out bool valueFound)
     {
         valueFound = true;
 
@@ -175,7 +179,7 @@ internal partial class VariableService
         return default;
     }
 
-    private bool Fallback<TType>(IVariable variable, bool shouldThrowIfNotFound, out TType value)
+    private bool Fallback<TType>(IVariable variable, bool shouldThrowIfNotFound, out TType? value)
     {
         // Before we use the Fallback Trial, we try to load from registered providers
         if (TryLoadFromRegisteredProviders(variable, out value))
@@ -183,18 +187,22 @@ internal partial class VariableService
             return true;
         }
 
-        // Last Chance, try to load the Fallback
-        if (!Providers[nameof(FallbackProvider)].TryReadVariable(variable, out value))
+        string fallbackProviderKey = nameof(FallbackProvider);
+        if (Providers.ContainsKey(fallbackProviderKey))
         {
-            if (shouldThrowIfNotFound)
+            // Last Chance, try to load the Fallback
+            if (Providers[fallbackProviderKey].TryReadVariable(variable, out value))
             {
-                throw new SdkException($"Automation variable '{variable.Name}' could not found/loaded.");
+                return true;
             }
-
-            return false;
         }
 
-        return true;
+        if (shouldThrowIfNotFound)
+        {
+            throw new SdkException($"Automation variable '{variable.Name}' could not found/loaded.");
+        }
+
+        return false;
     }
 
     private static object? TryReadDefaultValue<TType>(IVariable variable)

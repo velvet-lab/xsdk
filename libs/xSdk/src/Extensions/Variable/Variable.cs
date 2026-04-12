@@ -16,7 +16,7 @@
 
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 
@@ -90,12 +90,12 @@ public class Variable : IVariable
 
     internal virtual Variable SetDefaultValue(object defaultValue) => this;
 
-    public override int GetHashCode() => ObjectHelper.CreateHashCode(ToString());
+    public override int GetHashCode() => ObjectTools.CreateHashCode(ToString());
 
     public override string ToString() => CreateKey(false, false);
 
     public override bool Equals(object obj) =>
-        ObjectHelper.Equals<Variable>(this, obj, (source, dest) => string.CompareOrdinal(source.ToString(), dest.ToString()) == 0);
+        ObjectTools.Equals<Variable>(this, obj, (source, dest) => string.CompareOrdinal(source.ToString(), dest.ToString()) == 0);
 
     internal string CreateKey(bool forCommandline, bool withApplicationPrefix)
     {

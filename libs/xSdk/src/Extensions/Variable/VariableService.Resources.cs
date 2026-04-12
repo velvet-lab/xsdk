@@ -50,7 +50,7 @@ internal partial class VariableService
         return resources;
     }
 
-    private void ReplaceVariableNames(Dictionary<string, object> resources)
+    private static void ReplaceVariableNames(Dictionary<string, object> resources)
     {
         var sources = new List<string>();
         foreach (var item in resources)

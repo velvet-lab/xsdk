@@ -72,7 +72,7 @@ public class VariableAttribute : DataAnnotationAttribute
 
     public string[] ResourceNames { get; }
 
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
         if (value == null)
         {

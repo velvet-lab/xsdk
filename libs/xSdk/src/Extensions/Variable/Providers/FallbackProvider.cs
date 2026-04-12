@@ -20,17 +20,26 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable.Providers;
 
-internal sealed class FallbackProvider(ApplicationOptions options) : VariableProviderBase
+internal sealed class FallbackProvider(ApplicationOptions? options) : VariableProviderBase
 {
     protected override bool ExistsVariable(IVariable variable)
     {
+        if(options == null)
+        {
+            return false;
+        }
+
         var envFile = CreateFileName(variable);
         return File.Exists(envFile);
     }
 
-    protected override object ReadVariable(IVariable variable)
+    protected override object? ReadVariable(IVariable variable)
     {
         string result = default;
+        if (options == null)
+        {
+            return result;
+        }
 
         var envFile = CreateFileName(variable);
         if (File.Exists(envFile))

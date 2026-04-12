@@ -32,10 +32,10 @@ internal partial class VariableService : IVariableService
 
     private static readonly ILogger _logger = LogManager.CreateLogger<VariableService>();
 
-    public VariableService(IOptions<ApplicationOptions> options, IConfiguration? config)
+    public VariableService(IOptions<ApplicationOptions>? options, IConfiguration? config)
     {
         _config = config;
-        _applicationOptions = options.Value;
+        _applicationOptions = options?.Value;
 
         InitProviders();
     }
