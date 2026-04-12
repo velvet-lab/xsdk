@@ -37,5 +37,29 @@ public static class HostBuilderExtensions
         HostPluginManager.Instance.AddPluginBuilder<TPluginBuilder>();
 
         return builder;
-    }    
+    }
+
+    public static IHostBuilder AddHost<THostedService>(this IHostBuilder builder)
+        where THostedService : class, IHostedService
+    {
+        builder
+            .ConfigureServices(services =>
+            {
+                services.AddHostedService<THostedService>();
+            });
+
+        return builder;
+    }
+
+    public static IHostBuilder AddHost<THostedService>(this IHostBuilder builder, Func<IServiceProvider, THostedService> implementationFactory)
+        where THostedService : class, IHostedService
+    {
+        builder
+            .ConfigureServices(services =>
+            {
+                services.AddHostedService<THostedService>(implementationFactory);
+            });
+
+        return builder;
+    }
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Variable;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting;
 
@@ -26,8 +26,8 @@ public class TestHostFixture : IDisposable
     private IHost? _host;
 
     private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
-    private readonly List<Action<HostBuilderContext, IServiceCollection>> _hostServicesDelegates = new();
-    private readonly List<Action<WebHostBuilderContext, IServiceCollection>> _webhostServicesDelegates = new();
+    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();
+    // private readonly List<Action<WebHostBuilderContext, IServiceCollection>> _webhostServicesDelegates = new();
 
     internal List<Action<IHostBuilder>> builderDelegates = new();
 
@@ -51,6 +51,12 @@ public class TestHostFixture : IDisposable
         GC.SuppressFinalize(this);
     }
 
+    protected TestHostFixture ConfigureBuilder(Action<IHostBuilder> configure)
+    {
+        builderDelegates.Add(configure);
+        return this;
+    }
+
     public TestHostFixture ConfigureServices(Action<IServiceCollection> configure)
     {
         _servicesDelegates.Add(configure);
@@ -58,38 +64,26 @@ public class TestHostFixture : IDisposable
         return this;
     }
 
-    public TestHostFixture ConfigureHostServices(Action<HostBuilderContext, IServiceCollection> configure)
+    public TestHostFixture ConfigureServices(Action<HostBuilderContext, IServiceCollection> configure)
     {
-        _hostServicesDelegates.Add(configure);
+        _servicesWithContextDelegates.Add(configure);
 
         return this;
     }
 
-    public TestHostFixture ConfigureWebHostServices(Action<WebHostBuilderContext, IServiceCollection> configure)
-    {
-        _webhostServicesDelegates.Add(configure);
+    //public TestHostFixture ConfigureWebHostServices(Action<WebHostBuilderContext, IServiceCollection> configure)
+    //{
+    //    _webhostServicesDelegates.Add(configure);
 
-        return this;
-    }
-
-    public TestHostFixture EnablePlugin(Action<IHostBuilder> configure)
-    {
-        builderDelegates.Add(configure);
-
-        return this;
-    }
+    //    return this;
+    //}
 
     public IHost BuildHost()
-        => BuildHost(false);
-
-    public IHost BuildHost(bool reinitialize)
     {
-        if (reinitialize)
-        {
-            Initialize();
-        }
+        Initialize();
 
-        var builder = TestHost.CreateBuilder()
+        var builder = TestHost
+            .CreateBuilder()            
             .ConfigureServices(
                 (context, services) =>
                 {
@@ -98,26 +92,27 @@ public class TestHostFixture : IDisposable
                         configure?.Invoke(services);
                     }
 
-                    foreach (var configure in _hostServicesDelegates)
+                    foreach (var configure in _servicesWithContextDelegates)
                     {
                         configure?.Invoke(context, services);
                     }
                 }
             );
 
-            //.ConfigureWebHost(webhostBuilder =>
-            //{
-            //    webhostBuilder.ConfigureServices(
-            //        (context, services) =>
-            //        {
-            //            foreach (var configure in _webhostServicesDelegates)
-            //            {
-            //                configure?.Invoke(context, services);
-            //            }
-            //        }
-            //    );
-            //});
+        //.ConfigureWebHost(webhostBuilder =>
+        //{
+        //    webhostBuilder.ConfigureServices(
+        //        (context, services) =>
+        //        {
+        //            foreach (var configure in _webhostServicesDelegates)
+        //            {
+        //                configure?.Invoke(context, services);
+        //            }
+        //        }
+        //    );
+        //});
 
+        // Configure the host builder with any additional delegates
         foreach (var configure in builderDelegates)
         {
             configure?.Invoke(builder);
@@ -127,7 +122,7 @@ public class TestHostFixture : IDisposable
         _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         _host?.Dispose();
 
-        _host = builder.Build();        
+        _host = builder.Build();
 
         HandleDemoMode(_demoModeShouldEnabled);
 
@@ -153,9 +148,11 @@ public class TestHostFixture : IDisposable
         _disposed = true;
     }
 
-    protected string GetEnvironmentVariable(string key)
+    protected EnvironmentOptions? Environment => _host?.Services.GetService<IOptions<EnvironmentOptions>>()?.Value;
+
+    protected static string GetEnvironmentVariable(string key)
     {
-        var imageName = Environment.GetEnvironmentVariable(key);
+        var imageName = System.Environment.GetEnvironmentVariable(key);
         if (string.IsNullOrEmpty(imageName))
         {
             throw new SdkException($"The environment variable '{key}' is not defined.");
@@ -195,11 +192,15 @@ public class TestHostFixture : IDisposable
 
     private void HandleDemoMode(bool enable)
     {
-        //var setup = _host.Services.GetService<IVariableService>().GetSetup<EnvironmentSetup>();
-        //if (!_currentDemoMode.HasValue)
-        //{
-        //    _currentDemoMode = setup.IsDemo;
-        //}
-        //setup.IsDemo = enable;
+        
+        if (!_currentDemoMode.HasValue)
+        {
+            _currentDemoMode = Environment?.IsDemo;
+        }
+
+        if (Environment != null)
+        {
+            Environment.IsDemo = enable;
+        }
     }
 }

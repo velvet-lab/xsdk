@@ -40,17 +40,15 @@ public static partial class TestHost
     public static IHostBuilder CreateBuilder(string[] args, string appName, string appPrefix) => CreateBuilder(args, appName, APP_COMPANY, appPrefix);
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
-    {
-        ApplicationOptions appOptions = new()
-        {
-            Name = appName ?? ApplicationOptions.Definitions.AppName.DefaultValue,
-            Company = appCompany ?? ApplicationOptions.Definitions.AppCompany.DefaultValue,
-            Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
-        };
+    {       
 
         // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden
 #pragma warning disable EXTEXP0016 
-        var builder = Microsoft.Extensions.Hosting.Testing.FakeHost.CreateBuilder();        
+        var builder = Microsoft.Extensions.Hosting.Testing.FakeHost.CreateBuilder(config =>
+        {
+            config.FakeLogging = true;
+            config.FakeRedaction = true;
+        });        
 #pragma warning restore EXTEXP0016
 
         builder

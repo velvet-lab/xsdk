@@ -10,11 +10,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Asp.Versioning.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" PrivateAssets="contentfiles;analyzers;build" />
         <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="MongoDB.Bson" PrivateAssets="contentfiles;analyzers;build;compile" />

@@ -31,4 +31,8 @@
     <ItemGroup>
         <Using Include="Xunit" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\Converters\Mapper\" />
+    </ItemGroup>
 </Project>
