@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Tools;
-
-namespace xSdk.Security;
+namespace xSdk.Tools;
 
 public class CryptoToolTests : IDisposable
 {
