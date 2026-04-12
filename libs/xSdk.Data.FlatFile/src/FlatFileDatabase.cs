@@ -21,7 +21,7 @@ using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
-public sealed class FlatFileDatabase(IOptionsMonitor<FlatFileDatabaseOptions> options, ILogger<FlatFileDatabase> logger) : Database(logger)
+public sealed class FlatFileDatabase(IOptionsMonitor<FlatFileDatabaseOptions> options, ILogger<FlatFileDatabase> logger) : Database(options, logger)
 {
     private IDataStore? _dataStore = null;
 

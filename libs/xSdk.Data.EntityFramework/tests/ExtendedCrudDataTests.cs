@@ -18,14 +18,14 @@ using xSdk.Data.Mocks;
 
 namespace xSdk.Data;
 
-public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudDatabaseFixture>
+public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
     [Fact]
     public async Task SelectAsync_ByPrimaryKey_ReturnsCorrectEntity()
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
         {
@@ -35,7 +35,7 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
         };
         await repo!.InsertAsync(entity);
 
-        var result = await repo.SelectAsync(entity.PrimaryKey);
+        var result = await repo.SelectAsync(entity.Id);
 
         Assert.NotNull(result);
         Assert.Equal("Merry", result.Name);
@@ -46,9 +46,9 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
-        var pk = new GuidPK(Guid.Parse("e0000000-ffff-ffff-ffff-000000000001"));
+        var pk = Guid.Parse("e0000000-ffff-ffff-ffff-000000000001");
 
         var result = await repo!.SelectAsync(pk);
 
@@ -60,7 +60,7 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
         {
@@ -70,10 +70,10 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
         };
         await repo!.InsertAsync(entity);
 
-        var removed = await repo.RemoveAsync(entity.PrimaryKey);
+        var removed = await repo.RemoveAsync(entity.Id);
 
         Assert.True(removed);
-        var result = await repo.SelectAsync(entity.PrimaryKey);
+        var result = await repo.SelectAsync(entity.Id);
         Assert.Null(result);
     }
 
@@ -82,7 +82,7 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
         {
@@ -102,7 +102,7 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entities = new[]
         {
@@ -122,9 +122,9 @@ public class ExtendedCrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
-        var primaryKeys = new[] { new GuidPK(Guid.NewGuid()) as IPrimaryKey };
+        var primaryKeys = new[] { (Guid.NewGuid()) };
 
         await Assert.ThrowsAsync<NotImplementedException>(() => repo!.RemoveAsync(primaryKeys));
     }

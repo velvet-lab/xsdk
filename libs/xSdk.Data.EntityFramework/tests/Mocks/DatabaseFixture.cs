@@ -25,25 +25,30 @@ public class DatabaseFixture : DatabaseHostFixture
 {
     protected override void Initialize()
     {
-        ConfigureServices(services =>
+        ConfigureBuilder(builder =>        
         {
-            services
-                // Add DbContext Factory
-                .AddDbContextFactory<TestDbContext>(options =>
-                {
-                    // Use InMemory Database
-                    options
-                        .UseInMemoryDatabase(Globals.DatabaseName)
-                        .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                })
+            builder                
                 .AddDatalayer(builder =>
                 {
                     builder
                         .UseEntityFramework<TestDbContext>(Globals.DatalayerName)
-                        .MapRepository<ITestRepository, TestRepository>(Globals.DatalayerName)
-                        .MapRepository<IConcurrentRepositoryOne, ConcurrentRepositoryOne>(Globals.DatalayerName)
-                        .MapRepository<IConcurrentRepositoryTwo, ConcurrentRepositoryTwo>(Globals.DatalayerName);
+                        .MapRepository<ITestRepository, TestRepository>()
+                        .MapRepository<IConcurrentRepositoryOne, ConcurrentRepositoryOne>()
+                        .MapRepository<IConcurrentRepositoryTwo, ConcurrentRepositoryTwo>();
                 });
+        });
+
+        ConfigureServices(services =>
+        {
+            services
+            // Add DbContext Factory
+                .AddDbContextFactory<TestDbContext>(options =>
+                 {
+                     // Use InMemory Database
+                     options
+                         .UseInMemoryDatabase(Globals.DatabaseName)
+                         .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+                 });
         });
     }
 }

@@ -57,5 +57,15 @@ public static class ServiceCollectionExtensions
                 services.TryAddSingleton(typeof(IValidator<TOptions>), validatorType);
             }
         }
+        else
+        {
+            services.RegisterDefaultValidator<TOptions>();
+        }
+    }
+
+    private static void RegisterDefaultValidator<TOptions>(this IServiceCollection services)
+        where TOptions : class, IVariableSetup
+    {
+        services.TryAddSingleton<IValidator<TOptions>, DefaultOptionsValidator<TOptions>>();
     }
 }

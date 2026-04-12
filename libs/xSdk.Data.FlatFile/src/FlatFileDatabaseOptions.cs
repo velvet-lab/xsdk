@@ -24,8 +24,8 @@ public class FlatFileDatabaseOptions : VariableSetup
 {
     protected override void OnInitialize()
     {
-        UseLowerCamelCase = true;
-        ReloadBeforeGetCollection = false;
+        UseLowerCamelCase = Definitions.UseLowerCamelCase.DefaultValue;
+        ReloadBeforeGetCollection = Definitions.ReloadBeforeGetCollection.DefaultValue;
     }
 
     [Variable(
@@ -117,6 +117,7 @@ public class FlatFileDatabaseOptions : VariableSetup
             public const string Name = "reload-before-get-collection";
             public const string Template = "--reload-before-get-collection";
             public const string HelpText = "Whether to reload the flat file before getting a collection.";
+            public const bool DefaultValue = false;
         }
 
         public static class KeyProperty

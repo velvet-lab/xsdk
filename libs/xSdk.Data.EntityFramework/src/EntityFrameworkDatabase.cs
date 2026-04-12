@@ -15,43 +15,39 @@
  */
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
-public sealed class EntityFrameworkDatabase<TDbContext> : Database
+public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbContext> factory, IOptionsMonitor<EntityFrameworkDatabaseOptions> options, ILogger<EntityFrameworkDatabase<TDbContext>> logger) : Database(options, logger)
     where TDbContext : DbContext
 {
-    private readonly IDbContextFactory<TDbContext> _factory;
+    private TDbContext? _dbContext = null;
 
-    internal EntityFrameworkDatabaseSetup Setup { get; private set; }
-
-    public EntityFrameworkDatabase(IDbContextFactory<TDbContext> factory)
+    public override TDatabaseObject? Open<TDatabaseObject>() where TDatabaseObject : class
     {
-        this._factory = factory ?? throw new ArgumentNullException(nameof(factory));
-    }
-
-    protected override TConnection Open<TConnection>(Func<object> connectionStringBuilder)
-    {
-        Setup = connectionStringBuilder() as EntityFrameworkDatabaseSetup;
-        return _factory.CreateDbContext() as TConnection;
-    }
-
-    protected override TConnection Open<TConnection>(object connection, Func<object> connectionStringBuilder)
-    {
-        Setup = connectionStringBuilder() as EntityFrameworkDatabaseSetup;
-        if (connection == null)
+        if (_dbContext == null)
         {
-            return _factory.CreateDbContext() as TConnection;
+            _dbContext = factory.CreateDbContext();
+        }
+
+        return _dbContext as TDatabaseObject;
+    }
+
+    public override bool Close()
+    {
+        if(_dbContext!= null)
+        {
+            logger.LogInformation("Closing Entity Framework database connection for datalayer '{DatalayerName}'.", this.DatalayerName);
+            _dbContext.Dispose();
+            _dbContext = null;
+            return true;
         }
         else
         {
-            return connection as TConnection;
+            logger.LogWarning("Attempted to close Entity Framework database connection for datalayer '{DatalayerName}', but no active connection was found.", this.DatalayerName);
+            return false;
         }
-    }
-
-    protected override void Disconnect(object connection)
-    {
-        var dbContext = connection as TDbContext;
-        dbContext?.Dispose();
     }
 }

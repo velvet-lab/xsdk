@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Data;
@@ -38,35 +37,8 @@ var host = xSdk.Hosting.Host
                     config.FilePath = datastore;
                 })            
             .MapRepository<ISampleRepository, SampleRepository>();
-
-        
-
     })
-    .AddHost<MyDataHost>()
-    //.ConfigureServices(
-    //    (context, services) =>
-    //    {
-    //        services
-    //            // Sample for Flatfile Datalayer
-    //            .AddDatalayer(builder =>
-    //            {
-    //                var datastore = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-
-    //                builder
-    //                    // Enable FlatFile
-    //                    .UseFlatFile(
-    //                        "MyDataStore",
-    //                        config =>
-    //                        {
-    //                            config.FilePath = datastore;
-    //                        }
-    //                    )
-    //                    // Add Repositories to the Layer
-    //                    .MapRepository<ISampleRepository, SampleRepository>();
-    //            })
-    //            .AddHostedService<MyDataHost>();
-    //    }
-    //)
+    .AddHost<MyDataHost>()   
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();

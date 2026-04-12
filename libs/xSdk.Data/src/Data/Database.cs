@@ -15,18 +15,21 @@
  */
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
 public abstract class Database : IDatabase
 {
     private ILogger<Database> _logger;
+    internal object? _databaseOptions;
 
     public string DatalayerName { get; internal set; }
 
-    public Database(ILogger<Database> logger)
+    public Database(IOptionsMonitor<object>? options, ILogger<Database> logger)
     {
         _logger = logger;
+        _databaseOptions = options?.Get(this.DatalayerName);
 
         AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
         {
@@ -59,7 +62,6 @@ public abstract class Database : IDatabase
     /// <remarks>
     /// In general, this method is not expected to be thread-safe.
     /// </remarks>
-
     public bool TryReset() => Close();
 
     public abstract TDatabaseObject? Open<TDatabaseObject>()

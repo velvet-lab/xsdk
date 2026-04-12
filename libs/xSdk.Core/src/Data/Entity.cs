@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
+using xSdk.Tools;
+
 namespace xSdk.Data;
 
 public abstract class Entity<TPrimaryKeyType> : IEntity<TPrimaryKeyType>
 {
-    public virtual TPrimaryKeyType Id { get; set; }
+    [Key]
+    [Column("id")]
+    [XmlElement("id")]
+    [JsonPropertyName("id")]
+    public TPrimaryKeyType Id { get; set; }
 }

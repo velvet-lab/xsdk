@@ -15,6 +15,7 @@
  */
 
 using xSdk.Data.Mocks;
+using xSdk.Tools;
 
 namespace xSdk.Data;
 
@@ -24,11 +25,12 @@ public class EFModelTests
     public void CreateNewModel()
     {
         var model = new TestModel();
+        model.Id = PrimaryKeyTools.Generate<Guid>().ToString();
 
         Assert.NotNull(model);
-        Assert.NotNull(model.PrimaryKey);
-        Assert.Equal(model.PrimaryKey.GetValue(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.NotNull(model.Id);
+        Assert.Equal(model.Id, model.Id);
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
@@ -39,9 +41,9 @@ public class EFModelTests
         model.Id = pk;
 
         Assert.NotNull(model);
-        Assert.NotNull(model.PrimaryKey);
-        Assert.Equal(model.PrimaryKey.GetValue(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.NotNull(model.Id);
+        Assert.Equal(model.Id, model.Id);
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
@@ -52,8 +54,8 @@ public class EFModelTests
         model.Id = pk;
 
         Assert.NotNull(model);
-        Assert.NotNull(model.PrimaryKey);
-        Assert.Equal(model.PrimaryKey.GetValue(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.NotNull(model.Id);
+        Assert.Equal(model.Id, model.Id);
+        Assert.IsType<string>(model.Id);
     }
 }

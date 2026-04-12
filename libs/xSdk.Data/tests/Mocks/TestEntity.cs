@@ -21,7 +21,10 @@ namespace xSdk.Data.Mocks;
 
 internal class TestEntity : Entity<Guid>
 {
-    public override Guid Id { get; set; } = PrimaryKeyTools.Generate<Guid>();
+    public TestEntity()
+    {
+        Id = PrimaryKeyTools.Generate<Guid>();
+    }
 
     public string Name { get; set; }
 

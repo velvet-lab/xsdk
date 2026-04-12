@@ -27,6 +27,17 @@ public class CrudDatabaseFixture : DatabaseHostFixture
 
     protected override void Initialize()
     {
+        ConfigureBuilder(builder =>
+        {
+            builder
+                .AddDatalayer(builder =>
+                 {
+                     builder
+                         .UseEntityFramework<TestDbContext>(Globals.DatalayerName)
+                         .MapRepository<ITestRepository, TestRepository>();
+                 });
+        });
+
         ConfigureServices(services =>
         {
             services
@@ -35,12 +46,6 @@ public class CrudDatabaseFixture : DatabaseHostFixture
                     options
                         .UseInMemoryDatabase(_dbName)
                         .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-                })
-                .AddDatalayer(builder =>
-                {
-                    builder
-                        .UseEntityFramework<TestDbContext>(Globals.DatalayerName)
-                        .MapRepository<ITestRepository, TestRepository>(Globals.DatalayerName);
                 });
         });
     }

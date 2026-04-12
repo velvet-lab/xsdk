@@ -16,16 +16,15 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace xSdk.Data;
 
-public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repository<TEntity>
+public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repository<TEntity, Guid>
     where TDbContext : DbContext
-    where TEntity : class, IEntity
+    where TEntity : EFEntity
 {
-    protected override EntityFrameworkDatabase<TDbContext> Database => base.Database as EntityFrameworkDatabase<TDbContext>;
-
     public override Task<bool> InsertAsync(TEntity entity, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
@@ -49,17 +48,16 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             token
         );
 
-    public override Task<int> RemoveAsync(IEnumerable<IPrimaryKey> primaryKeys, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<Guid> primaryKeys, CancellationToken token = default)
     {
         throw new NotImplementedException();
     }
 
-    public override Task<bool> RemoveAsync(IPrimaryKey primaryKey, CancellationToken token = default) =>
+    public override Task<bool> RemoveAsync(Guid primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var primaryKeyValue = primaryKey.GetValue();
-                var trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id.Equals(primaryKeyValue));
+                var trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id.Equals(primaryKey));
 
                 if (trackedItem != null)
                 {
@@ -76,7 +74,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var existing = await SelectAsync(entity.PrimaryKey, token);
+                var existing = await SelectAsync(entity.Id, token);
                 if (existing != null)
                 {
                     dbContext.Remove(entity);
@@ -99,12 +97,11 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             token
         );
 
-    public override Task<TEntity?> SelectAsync(IPrimaryKey primaryKey, CancellationToken token = default) =>
+    public override Task<TEntity?> SelectAsync(Guid primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
             (dbContext) =>
             {
-                var primaryKeyValue = primaryKey.GetValue();
-                return dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKeyValue), token);
+                return dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
             },
             false,
             token
@@ -131,12 +128,11 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
     protected Task<IEnumerable<TEntity>> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().Where(filter).ToListAsync() as Task<IEnumerable<TEntity>>, false, token);
 
-    public override Task<bool> UpdateAsync(IPrimaryKey primaryKey, TEntity entity, CancellationToken token = default) =>
+    public override Task<bool> UpdateAsync(Guid primaryKey, TEntity entity, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var primaryKeyValue = primaryKey.GetValue();
-                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKeyValue), token);
+                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
 
                 if (trackedItem != null)
                 {
@@ -157,8 +153,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var primaryKeyValue = entity.PrimaryKey.GetValue();
-                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKeyValue), token);
+                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), token);
 
                 if (trackedItem == null)
                 {
@@ -176,44 +171,59 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             token
         );
 
-    private async Task<TResult> ExecuteInternalAsync<TResult>(Func<TDbContext, Task<TResult>> func, bool withTransaction, CancellationToken token)
+    private async Task<TResult?> ExecuteInternalAsync<TResult>(Func<TDbContext, Task<TResult>> func, bool withTransaction, CancellationToken token)
     {
         TResult result = default;
         IDbContextTransaction transaction = null;
         var shouldUseTransaction = withTransaction;
 
-        try
+        IDatabase? database = this.DatabaseHandler.Retrieve();
+
+        if (database != null)
         {
-            var dbContext = this.Database.Open<TDbContext>(false);
-            if (!this.Database.Setup.TransactionsEnabled)
-                shouldUseTransaction = false;
-
-            // Disable Transactions for MongoDbs, because this feature is not supported
-            if (dbContext.Database.ProviderName == "MongoDB.EntityFrameworkCore")
+            try
             {
-                shouldUseTransaction = false;
+                var dbContext = database.Open<TDbContext>();
+                if (dbContext != null)
+                {
+                    if (!database.GetDatabaseOptions<EntityFrameworkDatabaseOptions>()?.TransactionsEnabled ?? false)
+                        shouldUseTransaction = false;
+
+                    // Disable Transactions for MongoDbs, because this feature is not supported
+                    if (dbContext.Database.ProviderName == "MongoDB.EntityFrameworkCore")
+                    {
+                        shouldUseTransaction = false;
+                    }
+
+                    if (shouldUseTransaction)
+                        transaction = await dbContext.Database.BeginTransactionAsync();
+
+                    result = await func(dbContext);
+
+                    if (shouldUseTransaction && transaction != null)
+                    {
+                        await transaction.CommitAsync();
+                    }
+                }
+                else
+                {
+                    throw new SdkException("The Database Object could not be opened");
+                }
             }
-
-            if (shouldUseTransaction)
-                transaction = dbContext.Database.BeginTransaction();
-
-            result = await func(dbContext);
-
-            if (shouldUseTransaction)
+            catch (Exception ex)
             {
-                if (transaction != null)
-                    await transaction.CommitAsync();
+                if (shouldUseTransaction && transaction != null)
+                {
+                    await transaction.RollbackAsync();
+                    throw new SdkException("A Error occurred while Operation with Transaction will executed", ex);
+                }
+                else
+                    throw new SdkException("A Error occured while a Operation will executed", ex);
             }
-        }
-        catch (Exception ex)
-        {
-            if (shouldUseTransaction && transaction != null)
+            finally
             {
-                await transaction.RollbackAsync();
-                throw new SdkException("A Error occurred while Operation with Transaction will executed", ex);
+                this.DatabaseHandler.Return(database);
             }
-            else
-                throw new SdkException("A Error occured while a Operation will executed", ex);
         }
 
         return result;

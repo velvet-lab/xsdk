@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+using Microsoft.EntityFrameworkCore;
+
 namespace xSdk.Data;
 
-internal sealed class EntityFrameworkConnectionBuilder : ConnectionBuilder
+public interface IEntityFrameworkRepository<TDbContext, TEntity> : IRepository<TEntity, Guid>
+    where TEntity : EFEntity
+    where TDbContext : DbContext
 {
-    public override object Create(IDatabaseSetup setup) => setup;
+    TDbContext CreateDbContext();
+
+    Task<TDbContext> CreateDbContextAsync(CancellationToken token = default);
 }
