@@ -108,7 +108,7 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
         IDocumentCollection<TEntity>? col = null;
         string? collectionName = default;
 
-        IDatabase? database = this.DatabaseHandler.Retrieve();
+        IDatabase? database = DatabaseHandler?.Retrieve();
 
         if (database != null)
         {
@@ -129,7 +129,7 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
             }
             finally
             {
-                this.DatabaseHandler.Return(database);
+                DatabaseHandler?.Return(database);
             }
         }
 

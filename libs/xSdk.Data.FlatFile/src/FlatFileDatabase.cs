@@ -21,14 +21,14 @@ using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
-public sealed class FlatFileDatabase(IOptionsMonitor<FlatFileDatabaseOptions> options, ILogger<FlatFileDatabase> logger) : Database(options, logger)
+public sealed class FlatFileDatabase(ILogger<FlatFileDatabase> logger) : Database(logger)
 {
     private IDataStore? _dataStore = null;
 
     public override TDatabaseObject? Open<TDatabaseObject>()
         where TDatabaseObject : class
     {
-        FlatFileDatabaseOptions? setup = options?.Get(this.DatalayerName);
+        FlatFileDatabaseOptions? setup = GetOptions<FlatFileDatabaseOptions>(OptionsScope.Datalayer);
         if (setup != null)
         {
             if (_dataStore == null)
