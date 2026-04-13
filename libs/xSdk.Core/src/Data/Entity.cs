@@ -18,7 +18,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
-using xSdk.Tools;
 
 namespace xSdk.Data;
 
@@ -28,5 +27,6 @@ public abstract class Entity<TPrimaryKeyType> : IEntity<TPrimaryKeyType>
     [Column("id")]
     [XmlElement("id")]
     [JsonPropertyName("id")]
+    [SoapAttribute("id")]
     public TPrimaryKeyType Id { get; set; }
 }

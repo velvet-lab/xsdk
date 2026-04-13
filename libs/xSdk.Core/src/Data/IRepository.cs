@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Variable;
+
 namespace xSdk.Data;
 
-public interface IRepository
-{
-    string? DatalayerName { get; }
-
-    IDatabaseHandler? DatabaseHandler { get; }
+public interface IRepository : IDatalayerMetadata
+{   
 }
 
 public interface IRepository<TEntity, TPrimaryKeyType> : IRepository

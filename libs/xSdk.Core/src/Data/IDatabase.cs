@@ -15,13 +15,12 @@
  */
 
 using Microsoft.Extensions.ObjectPool;
+using xSdk.Extensions.Variable;
 
 namespace xSdk.Data;
 
-public interface IDatabase : IDisposable, IResettable
+public interface IDatabase : IDatalayerMetadata, IDisposable, IResettable
 {
-    string DatalayerName { get; }
-
     bool Close();
 
     TDatabaseObject? Open<TDatabaseObject>()

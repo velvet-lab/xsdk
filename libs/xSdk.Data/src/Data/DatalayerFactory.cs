@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-using System.Collections.Concurrent;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.ObjectPool;
 
 namespace xSdk.Data;
 
@@ -48,24 +46,15 @@ public class DatalayerFactory(IServiceProvider provider) : IDatalayerFactory
     private TRepository CreateRepositoryInternal<TRepository>(string? name, IServiceScope? scope)
         where TRepository : IRepository
     {
-        Guard.IsNotNull(scope);
-
-        DatalayerRegistration? registration = provider.GetKeyedService<DatalayerRegistration>(name);
-        if (registration != null)
-        {
-            IDatabaseHandler databaseHandler = provider.GetRequiredKeyedService<IDatabaseHandler>(name);
-            TRepository repo = scope.ServiceProvider.GetRequiredKeyedService<TRepository>(name);
+        Guard.IsNotNull(scope);        
+        
+        TRepository repo = scope.ServiceProvider.GetRequiredKeyedService<TRepository>(name);
             
-            if (databaseHandler != null && repo is Repository repository)
-            {
-                repository.DatabaseHandler = databaseHandler;
-            }
-            
-            return repo;
-        }
-        else
+        if (repo is Repository repository)
         {
-            throw new SdkException(string.Format("No datalayer registration found for the specified name '{0}'.", name));
+            repository.Services = provider;
         }
+            
+        return repo;        
     }
 }

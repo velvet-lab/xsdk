@@ -1,9 +1,10 @@
 
+using xSdk.Extensions.Variable;
+
 namespace xSdk.Data;
 
-public interface IDatabaseHandler {
-
-    string? DatalayerName { get; }
+public interface IDatabaseHandler : IDatalayerMetadata
+{    
 
     IDatabase? Retrieve();
 

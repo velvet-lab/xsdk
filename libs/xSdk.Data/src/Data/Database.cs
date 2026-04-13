@@ -14,27 +14,58 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using xSdk.Extensions.Variable;
+using xSdk.Shared;
 
 namespace xSdk.Data;
 
 public abstract class Database : IDatabase
 {
-    private ILogger<Database> _logger;
-    internal object? _databaseOptions;
+    private readonly Dictionary<string, string> _connectionProperties = new();
+    private readonly ILogger<Database> _logger;
 
-    public string DatalayerName { get; internal set; }
+    public string? DatalayerName { get; internal set; }
 
-    public Database(IOptionsMonitor<object>? options, ILogger<Database> logger)
+    public IServiceProvider? Services { get; internal set; }
+
+    protected Database(ILogger<Database> logger)
     {
         _logger = logger;
-        _databaseOptions = options?.Get(this.DatalayerName);
 
         AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
         {
             Close();
         };
+    }
+
+    protected void AddConnectionProperty(string name, string value)
+    {
+        _connectionProperties.AddOrNew(name, value);
+    }
+
+    protected void RemoveConnectionProperty(string name)
+    {
+        _connectionProperties.Remove(name);
+    }
+
+    protected TOptions? GetOptions<TOptions>(OptionsScope scope = OptionsScope.Default)
+    {
+        var options = Services?.GetService<IOptionsMonitor<TOptions>>();
+        if (options != null)
+        {
+            if (scope == OptionsScope.Datalayer)
+            {
+                return options.Get(DatalayerName);
+            }
+            else
+            {
+                return options.CurrentValue;
+            }
+        }
+        return default;
     }
 
     #region Dispose Handling
@@ -70,5 +101,40 @@ public abstract class Database : IDatabase
     public virtual bool Close()
     {
         return false;
+    }
+
+    protected string ResolvePlaceholders(string content)
+    {
+        // string name, string fileName
+        foreach (var kvp in _connectionProperties)
+        {
+            var placeholder = kvp.Key;
+            var value = kvp.Value;
+
+            if (!placeholder.StartsWith("{"))
+                placeholder = "{" + kvp.Key + "}";
+
+            if (content.IndexOf(placeholder, StringComparison.InvariantCultureIgnoreCase) > -1)
+            {
+                content = content.Replace(placeholder, value, StringComparison.InvariantCultureIgnoreCase);
+            }
+
+            if (content.IndexOf("{") > -1 && content.IndexOf("}") > -1)
+            {
+                var leftIndex = content.IndexOf("{");
+                if (leftIndex > -1)
+                {
+                    var rightIndex = content.IndexOf("}", leftIndex);
+                    if (rightIndex > -1)
+                    {
+                        var left = content.Substring(0, leftIndex + 1);
+                        var right = content.Substring(rightIndex + 1);
+
+                        content = $"{left}{value}{right}";
+                    }
+                }
+            }
+        }
+        return content;
     }
 }

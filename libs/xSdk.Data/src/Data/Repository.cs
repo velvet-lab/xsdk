@@ -15,6 +15,12 @@
  */
 
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
+using Bogus.DataSets;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
+using xSdk.Extensions.Variable;
 using xSdk.Shared;
 
 namespace xSdk.Data;
@@ -23,18 +29,38 @@ public abstract class Repository : IRepository
 {
     public string? DatalayerName { get; internal set; }
 
-    public IDatabaseHandler? DatabaseHandler { get; internal set; }
+    public IServiceProvider? Services { get; internal set; }
 
     protected bool IsDemoMode
     {
         get
         {
-            if (DatabaseHandler is DatabaseHandler handler)
+            var options = GetOptions<EnvironmentOptions>(OptionsScope.Default);
+            if (options != null)
             {
-                return handler.Environment.IsDemo;
+                return options.IsDemo;
             }
             return false;
         }
+    }
+
+    protected IDatabaseHandler? DatabaseHandler => Services?.GetRequiredKeyedService<IDatabaseHandler>(DatalayerName);
+
+    protected TOptions? GetOptions<TOptions>(OptionsScope scope = OptionsScope.Default)
+    {
+        var options = Services?.GetService<IOptionsMonitor<TOptions>>();
+        if (options != null)
+        {
+            if (scope == OptionsScope.Datalayer)
+            {
+                return options.Get(DatalayerName);
+            }
+            else
+            {
+                return options.CurrentValue;
+            }
+        }
+        return default;
     }
 }
 

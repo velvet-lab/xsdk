@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Bogus.DataSets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -46,12 +47,11 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
 
         _logger.LogTrace("Adding database '{name}' to object pool and registering database handler", name);
         AddDatabaseToObjectPool<TDatabase>(name);
-        AddDatabaseHandler<TDatabase>(name);
+        AddDatabaseHandler<TDatabase, TDatabaseOptions>(name);
 
         _logger.LogTrace("Registering database options for database '{name}'", name);
         services.RegisterOptions<TDatabaseOptions>(name, options => factory?.Invoke(options));
-        services.AddKeyedSingleton(name, new DatalayerRegistration(name, typeof(TDatabase)));
-        
+
         return new DatabaseBuilder(name, services);
     }
 
@@ -82,17 +82,22 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
         });
     }
 
-    private void AddDatabaseHandler<TDatabase>(string? name)
+    private void AddDatabaseHandler<TDatabase, TDatabaseOptions>(string? name)
         where TDatabase : class, IDatabase
+        where TDatabaseOptions : class, IVariableSetup
     {
         services.TryAddKeyedTransient<IDatabaseHandler>(name, (provider, key) =>
         {
+            string datalayerName = (string)key;
+
             var objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
             var logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
-            EnvironmentOptions? environmentOptions = provider.GetService<IOptions<EnvironmentOptions>>()?.Value;
+
+            EnvironmentOptions? environmentOptions = provider.GetService<IOptions<EnvironmentOptions>>()?.Value;            
 
             var poolHandler = new DatabaseHandler<TDatabase>(objectPool, environmentOptions, logger);
-            poolHandler.DatalayerName = (string)key;
+            poolHandler.DatalayerName = datalayerName;
+            poolHandler.Services = provider;
             return poolHandler;
         });
     }
