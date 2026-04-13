@@ -5,8 +5,7 @@
         <EnvironmentVariables>
             <GENERIC_LINUX_IMAGE_NAME>testcontainers/helloworld:1.2.0</GENERIC_LINUX_IMAGE_NAME>
             <MONGODB_IMAGE_NAME>mongo:8.0</MONGODB_IMAGE_NAME>
-            <VAULT_IMAGE_NAME>hashicorp/vault:1.18</VAULT_IMAGE_NAME>
-            <CONSUL_IMAGE_NAME>hashicorp/vault:1.18</CONSUL_IMAGE_NAME>
+            <VAULT_IMAGE_NAME>openbao/openbao:2.5.2</VAULT_IMAGE_NAME>
         </EnvironmentVariables>
     </RunConfiguration>
     <xUnit>

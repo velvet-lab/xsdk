@@ -4,6 +4,7 @@
         <OutputType>Exe</OutputType>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>ABA91A38-98D9-4809-BB71-ADA9665463C3</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>
