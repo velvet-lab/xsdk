@@ -15,11 +15,11 @@ public static class ServiceCollectionExtensions
         where TOptions : class, IVariableSetup
         => services.RegisterOptions<TOptions>(null, options => { });
 
-    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, Action<TOptions> configure)
+    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, Action<TOptions>? configure)
         where TOptions : class, IVariableSetup
         => services.RegisterOptions(null, configure);
 
-    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, string? name, Action<TOptions> configure)
+    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, string? name, Action<TOptions>? configure)
         where TOptions : class, IVariableSetup
     {
         services
