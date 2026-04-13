@@ -23,12 +23,12 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace xSdk.Data;
 
-public abstract class MongoDbEntity : Entity, IEntity<MongoDbEntityPK, ObjectId>
+public abstract class MongoDbEntity : Entity<ObjectId>
 {
     protected MongoDbEntity()
     {
-        this.PrimaryKey = new MongoDbEntityPK();
-    }
+        this.Id = ObjectId.GenerateNewId();
+    }    
 
     [Key]
     [Column("_id")]
@@ -36,9 +36,5 @@ public abstract class MongoDbEntity : Entity, IEntity<MongoDbEntityPK, ObjectId>
     [JsonPropertyName("_id")]
     [BsonElement("_id")]
     [BsonId]
-    public new ObjectId Id
-    {
-        get => PrimaryKey.GetValue<ObjectId>();
-        set => PrimaryKey.SetValue(value);
-    }
+    public override ObjectId Id { get; set; }
 }

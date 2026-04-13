@@ -9,17 +9,16 @@ using xSdk.Shared;
 
 namespace xSdk.Data;
 
-public static class MongoDbSetupExtensions
+public static class MongoDbOptionsExtensions
 {
-    public static MongoClientSettings? CreateMongoDbClientSettings(this MongoDbSetup mongoSetup, out string databaseName)
+    public static MongoClientSettings? CreateMongoDbClientSettings(this MongoDbOptions options)
     {
         MongoClientSettings? settings = null;
-        databaseName = SlimHost.Instance.AppName;
-            
-        var connectionString = mongoSetup.Uri;
+
+        var connectionString = options.Uri;
         if (string.IsNullOrEmpty(connectionString))
         {
-            connectionString = mongoSetup.Database;
+            connectionString = options.Database;
         }
         settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));        
 

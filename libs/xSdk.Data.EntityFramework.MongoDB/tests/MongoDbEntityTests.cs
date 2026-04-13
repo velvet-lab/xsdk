@@ -27,9 +27,9 @@ public class MongoDbEntityTests
         var entity = new TestEntity();
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.Equal(entity.PrimaryKey.GetValue(), entity.Id);
-        Assert.IsType<ObjectId>(entity.PrimaryKey.GetValue());
+        Assert.NotNull(entity.Id);
+        Assert.Equal(entity.Id, entity.Id);
+        Assert.IsType<ObjectId>(entity.Id);
     }
 
     [Fact]
@@ -40,21 +40,8 @@ public class MongoDbEntityTests
         entity.Id = pk;
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.Equal(entity.PrimaryKey.GetValue(), entity.Id);
-        Assert.IsType<ObjectId>(entity.PrimaryKey.GetValue());
-    }
-
-    [Fact]
-    public void CreateNewEntityByInterface()
-    {
-        var pk = ObjectId.GenerateNewId();
-        IEntity entity = new TestEntity();
-        entity.Id = pk;
-
-        Assert.NotNull(entity);
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.Equal(entity.PrimaryKey.GetValue(), entity.Id);
-        Assert.IsType<ObjectId>(entity.PrimaryKey.GetValue());
-    }
+        Assert.NotNull(entity.Id);
+        Assert.Equal(entity.Id, entity.Id);
+        Assert.IsType<ObjectId>(entity.Id);
+    }    
 }

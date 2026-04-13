@@ -8,7 +8,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Data;
 
 [VariablePrefix("mongodb")]
-public class MongoDbSetup : Setup
+public class MongoDbOptions : VariableSetup
 {
     [Variable(
         name: Definitions.Database.Name,

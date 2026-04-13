@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal class TestModel : MongoDbModel
+internal class TestModel : Model
 {
     public string MyName { get; set; }
 

@@ -43,40 +43,32 @@ var mongoDbContainer = new MongoDbBuilder()
 
 await mongoDbContainer.StartAsync();
 
-var host = xSdk
-    .Hosting.Host.CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .ConfigureServices(
-        (context, services) =>
-        {
-            services
-                // Add DbContext Factory
-                .AddDbContextFactory<SampleDbContext>(options =>
-                {
-                    var connectionString = mongoDbContainer.GetConnectionString();
-                    logger?.LogInformation("MongoDB ConnectionString: {ConnectionString}", connectionString);
+var host = xSdk.Hosting.Host
+    .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+    // Sample for NoSql Datalayer
+    .AddDatalayer(builder =>
+    {
+        builder
+            .UseEntityFramework<SampleDbContext>()
+            // Add Repositories to the Layer
+            .MapRepository<ISampleRepository, SampleRepository>();
+    })
+    .ConfigureServices(services =>
+    {
+        services
+            // Add DbContext Factory
+            .AddDbContextFactory<SampleDbContext>(options =>
+            {
+                var connectionString = mongoDbContainer.GetConnectionString();
+                logger?.LogInformation("MongoDB ConnectionString: {ConnectionString}", connectionString);
 
-                    var client = new MongoClient(connectionString);
+                var client = new MongoClient(connectionString);
 
-                    // Use InMemory Database
-                    options.UseMongoDB(client, "MyDataStore");
-                })
-                // Sample for NoSql Datalayer
-                .AddDatalayer(builder =>
-                {
-                    builder
-                        .UseEntityFramework<SampleDbContext>(
-                            "MySampleDatalayer",
-                            config =>
-                            {
-                                config.TransactionsEnabled = false;
-                            }
-                        )
-                        // Add Repositories to the Layer
-                        .MapRepository<ISampleRepository, SampleRepository>();
-                })
-                .AddHostedService<MyDataHost>();
-        }
-    )
+                // Use InMemory Database
+                options.UseMongoDB(client, "MyDataStore");
+            });
+    })
+    .AddHost<MyDataHost>()
     .Build();
 
 logger = LogManager.GetCurrentClassLogger();
