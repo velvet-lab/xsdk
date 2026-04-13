@@ -16,6 +16,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using MongoDB.Bson;
@@ -23,12 +24,12 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace xSdk.Data;
 
-public abstract class MongoDbEntity : Entity<ObjectId>
+public abstract class MongoDbEntity : IEntity<ObjectId>
 {
     protected MongoDbEntity()
     {
         this.Id = ObjectId.GenerateNewId();
-    }    
+    }
 
     [Key]
     [Column("_id")]
@@ -36,5 +37,5 @@ public abstract class MongoDbEntity : Entity<ObjectId>
     [JsonPropertyName("_id")]
     [BsonElement("_id")]
     [BsonId]
-    public override ObjectId Id { get; set; }
+    public ObjectId Id { get; set; }
 }

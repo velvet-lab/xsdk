@@ -19,11 +19,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Testcontainers.MongoDb;
 using xSdk.Data;
 using xSdk.Demos.Data;
 using xSdk.Demos.Hosting;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 
 const string APP_NAME = "datalayer-mongodb";
@@ -35,7 +37,7 @@ ILogger logger = null;
 var mongoDbContainer = new MongoDbBuilder()
     .WithImage("mongo:8.0")
     .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(27017)))
-    .WithPortBinding(27018)
+    .WithPortBinding(27017, 27017)
     .WithUsername("host")
     .WithPassword("password123")
     .WithReuse(true)
@@ -56,9 +58,20 @@ var host = xSdk.Hosting.Host
     .ConfigureServices(services =>
     {
         services
-            // Add DbContext Factory
-            .AddDbContextFactory<SampleDbContext>(options =>
+            .RegisterOptions<MongoDbOptions>(options =>
             {
+                options.Database = "MyDataStore";
+                options.Username = "host";
+                options.Password = "password123";
+                options.Uri = "localhost:27018";
+            })
+            // Add DbContext Factory
+            .AddDbContextFactory<SampleDbContext>((provider, options) =>
+            {
+                // Sample for using IOptionsMonitor to get the options
+                //var databaseOptions = provider.GetService<IOptionsMonitor<MongoDbOptions>>()?.CurrentValue;
+                //var client =  databaseOptions.CreateMongoDbClientSettings();
+
                 var connectionString = mongoDbContainer.GetConnectionString();
                 logger?.LogInformation("MongoDB ConnectionString: {ConnectionString}", connectionString);
 

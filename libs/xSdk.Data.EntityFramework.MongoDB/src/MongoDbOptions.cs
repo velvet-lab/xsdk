@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
@@ -24,16 +21,16 @@ public class MongoDbOptions : VariableSetup
     }
 
     [Variable(
-        name: Definitions.UserName.Name,
-        template: Definitions.UserName.Template,
-        helpText: Definitions.UserName.HelpText,
+        name: Definitions.Username.Name,
+        template: Definitions.Username.Template,
+        helpText: Definitions.Username.HelpText,
         hidden: true
         )]
-    [JsonPropertyName(Definitions.UserName.Name)]
-    public string UserName
+    [JsonPropertyName(Definitions.Username.Name)]
+    public string Username
     {
-        get => ReadValue<string>(Definitions.UserName.Name);
-        set => SetValue(Definitions.UserName.Name, value);
+        get => ReadValue<string>(Definitions.Username.Name);
+        set => SetValue(Definitions.Username.Name, value);
     }
 
     [Variable(
@@ -69,7 +66,7 @@ public class MongoDbOptions : VariableSetup
         hidden: true
         )]
     [JsonPropertyName(Definitions.RootCertificate.Name)]
-    public string RootCertificate
+    public string? RootCertificate
     {
         get => ReadValue<string>(Definitions.RootCertificate.Name);
         set => SetValue(Definitions.RootCertificate.Name, value);
@@ -82,7 +79,7 @@ public class MongoDbOptions : VariableSetup
         hidden: true
         )]
     [JsonPropertyName(Definitions.Uri.Name)]
-    public string Uri
+    public string? Uri
     {
         get => ReadValue<string>(Definitions.Uri.Name);
         set => SetValue(Definitions.Uri.Name, value);
@@ -97,7 +94,7 @@ public class MongoDbOptions : VariableSetup
             public const string HelpText = "Connection String or CloudFoundry Binding Name for the Database";
         }
 
-        public static class UserName
+        public static class Username
         {
             public const string Name = "username";
             public const string Template = $"--username <username>";

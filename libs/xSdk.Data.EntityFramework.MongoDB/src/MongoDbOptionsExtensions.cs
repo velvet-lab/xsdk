@@ -20,7 +20,11 @@ public static class MongoDbOptionsExtensions
         {
             connectionString = options.Database;
         }
-        settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));        
+
+        settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
+
+        settings.Credential = MongoCredential.CreatePlainCredential(options.Database, options.Username, options.Password);
+        settings.Server = new MongoServerAddress(options.Hosts[0]);
 
         return settings;
     }
