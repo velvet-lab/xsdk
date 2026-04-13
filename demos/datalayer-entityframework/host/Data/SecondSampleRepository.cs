@@ -18,7 +18,7 @@ using xSdk.Data;
 
 namespace xSdk.Demos.Data;
 
-internal class SecondSampleRepository : EntityFrameworkRepository<SecondDbContext, SecondEntity>, ISecondSampleRepository
+internal class SecondSampleRepository : EntityFrameworkRepository<SecondDbContext, SecondEntity, Guid>, ISecondSampleRepository
 {
     public Task AddSamplesAsync(SecondEntity[] samples, CancellationToken token = default)
     {

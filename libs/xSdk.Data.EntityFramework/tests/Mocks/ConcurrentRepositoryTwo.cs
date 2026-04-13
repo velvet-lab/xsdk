@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace xSdk.Data.Mocks;
 
-internal class ConcurrentRepositoryTwo : EntityFrameworkRepository<TestDbContext, ConcurrentEntityTwo>, IConcurrentRepositoryTwo
+internal class ConcurrentRepositoryTwo : EntityFrameworkRepository<TestDbContext, ConcurrentEntityTwo, Guid>, IConcurrentRepositoryTwo
 {
     public Task AddDataAsync(ConcurrentEntityTwo[] samples, CancellationToken token = default)
     {

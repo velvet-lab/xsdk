@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEntity>, ITestRepository
+internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEntity, Guid>, ITestRepository
 {
     public Task AddDataAsync(TestEntity[] samples, CancellationToken token = default)
     {

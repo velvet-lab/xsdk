@@ -16,14 +16,13 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace xSdk.Data;
 
-public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repository<TEntity, Guid>
+public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKeyType> : Repository<TEntity, TPrimaryKeyType>
     where TDbContext : DbContext
-    where TEntity : EFEntity
+    where TEntity : class, IEntity<TPrimaryKeyType>
 {
     public override Task<bool> InsertAsync(TEntity entity, CancellationToken token = default) =>
         ExecuteInternalAsync(
@@ -48,12 +47,12 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             token
         );
 
-    public override Task<int> RemoveAsync(IEnumerable<Guid> primaryKeys, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default)
     {
         throw new NotImplementedException();
     }
 
-    public override Task<bool> RemoveAsync(Guid primaryKey, CancellationToken token = default) =>
+    public override Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
             {
@@ -97,7 +96,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
             token
         );
 
-    public override Task<TEntity?> SelectAsync(Guid primaryKey, CancellationToken token = default) =>
+    public override Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
             (dbContext) =>
             {
@@ -111,24 +110,20 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity> : Repositor
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().SingleOrDefaultAsync(filter), false, token);
 
     public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default) =>
-        ExecuteInternalAsync(
-            async (dbContext) =>
-            {
-                var dbSet = dbContext.Set<TEntity>();
-                IEnumerable<TEntity> entities = await dbSet.ToListAsync(token);
-                if (entities == null)
-                    entities = new List<TEntity>();
+        ExecuteInternalAsync(async (dbContext) =>
+        {
+            var dbSet = dbContext.Set<TEntity>();
+            IEnumerable<TEntity> entities = await dbSet.ToListAsync(token);
+            if (entities == null)
+                entities = new List<TEntity>();
 
-                return entities;
-            },
-            false,
-            token
-        );
+            return entities;
+        }, false, token);
 
     protected Task<IEnumerable<TEntity>> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().Where(filter).ToListAsync() as Task<IEnumerable<TEntity>>, false, token);
 
-    public override Task<bool> UpdateAsync(Guid primaryKey, TEntity entity, CancellationToken token = default) =>
+    public override Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
             {
