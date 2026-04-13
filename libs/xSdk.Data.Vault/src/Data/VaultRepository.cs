@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 using VaultSharp;
-using xSdk.Extensions.Variable;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 
 namespace xSdk.Data;
@@ -27,24 +27,47 @@ internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultReposito
 
     public async Task<bool> AddSecretAsync(string? mountPoint, string path, Dictionary<string, object> data, CancellationToken token = default)
     {
-        try
-        {
-            var client = Database.Open<VaultClient>();
+        IDatabase? database = DatabaseHandler?.Retrieve();
 
-            var pathFormater = this.Database.Setup.PathFormat;
-            if (pathFormater != null)
+        if (database != null)
+        {
+            try
             {
-                var env = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-                path = pathFormater(env.Stage, path);
-            }
+                VaultDatabaseOptions? setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer);
+                if (setup != null)
+                {
+                    var pathFormater = setup.PathFormatFactory;
+                    if (pathFormater != null)
+                    {
+                        EnvironmentOptions? env = GetOptions<EnvironmentOptions>();
+                        if (env != null)
+                        {
+                            string? cleanedPath = pathFormater?.Invoke(env.Stage, path);
+                            if (cleanedPath != null)
+                            {
+                                path = cleanedPath;
+                            }
+                        }
+                    }
+                }
 
-            mountPoint = ValidateMountPoint(mountPoint);
-            await client.V1.Secrets.KeyValue.V2.WriteSecretAsync(path, data, mountPoint: mountPoint);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "A Error occured while Vault will readed");
-            throw;
+                VaultClient? client = database.Open<VaultClient>();
+                if (client != null)
+                {
+                    mountPoint = ValidateMountPoint(mountPoint);
+
+                    await client.V1.Secrets.KeyValue.V2.WriteSecretAsync(path, data, mountPoint: mountPoint);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "A Error occured while Vault will readed");
+                throw;
+            }
+            finally
+            {
+                DatabaseHandler?.Return(database);
+            }
         }
 
         return true;

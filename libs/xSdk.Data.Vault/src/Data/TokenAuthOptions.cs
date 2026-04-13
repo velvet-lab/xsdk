@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-using System.Text.Json.Serialization;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Data;
 
-[VariablePrefix("Vault")]
-public class VaultOptions : VariableSetup
+[VariablePrefix("vault-token-auth")]
+public sealed class TokenAuthOptions : VariableSetup
 {
     [Variable(
-        name: Definitions.Endpoint.Name,
-        template: Definitions.Endpoint.Template,
-        helpText: Definitions.Endpoint.HelpText,
-        hidden: true
-    )]
-    [JsonPropertyName(Definitions.Endpoint.Name)]
-    public string? Endpoint
+        name: Definitions.Token.Name,
+        template: Definitions.Token.Template,
+        helpText: Definitions.Token.HelpText,
+        hidden: true)]
+    public string? Token
     {
-        get => ReadValue<string>(Definitions.Endpoint.Name);
-        set => SetValue(Definitions.Endpoint.Name, value);
+        get => ReadValue<string>(Definitions.Token.Name);
+        set => SetValue(Definitions.Token.Name, value);
     }
 
     private static class Definitions
     {
-        public static class Endpoint
+        public static class Token
         {
-            public const string Name = "endpoint";
-            public const string Template = $"--vault-endpoint <endpoint>";
-            public const string HelpText = "Endpoint where hashicorp vault lives";
+            public const string Name = "token";
+            public const string Template = $"--vault-token <token>";
+            public const string HelpText = "Token for token based auth to access vault";
         }
     }
 }

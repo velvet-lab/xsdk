@@ -44,9 +44,9 @@ const string APP_PREFIX = "dv";
 
 // Prepare Testcontainer
 var container = new ContainerBuilder()
-    .WithImage("hashicorp/vault:1.18")
+    .WithImage("openbao/openbao:2.5.2")
     .WithPortBinding(8200, true)
-    .WithWaitStrategy(Wait.ForUnixContainer().UntilContainerIsHealthy())
+    .WithWaitStrategy(Wait.ForUnixContainer().UntilMessageIsLogged("Development mode should NOT be used in production installations!"))
     .WithImagePullPolicy(PullPolicy.Always)
     .Build();
 
@@ -60,53 +60,44 @@ var unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefaul
 
 var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .ConfigureServices((context, services) =>
+    .AddDatalayer(builder =>
     {
-        services
-            // Sample for Vault Datalayer
-            .AddDatalayer(builder =>
+        builder            
+            .UseVault(true, _ =>
             {
-                var vaultSetup = SlimHost.Instance.VariableSystem.GetSetup<VaultOptions>();
-                var approleAuth = SlimHost.Instance.VariableSystem.GetSetup<AppRoleAuthSetup>();
-
-                builder
-                    .UseVault("MyVaultDatabase", _ =>
+                _.AuthMethod = AuthMethods.Token;
+                _.Endpoint = $"http://localhost:{port}";                
+                _.PathFormatFactory = (stage, path) =>
+                {
+                    if (stage == Stage.Development)
                     {
-                        _.Host = "https://vault.localhost";
-                        _.AppRoleAuth = new()
-                        {
-                            RoleId = approleAuth?.RoleId,
-                            Secret = approleAuth?.Secret,
-                        };
-                        _.PathFormat = (stage, path) =>
-                        {
-                            if (stage == Stage.Development)
-                            {
-                                return string.Format(path, "dev");
-                            }
+                        return string.Format(path, "dev");
+                    }
 
-                            if (stage == Stage.Integration)
-                            {
-                                return string.Format(path, "qs");
-                            }
+                    if (stage == Stage.Integration)
+                    {
+                        return string.Format(path, "qs");
+                    }
 
-                            if (stage == Stage.PreProduction)
-                            {
-                                return string.Format(path, "pp");
-                            }
+                    if (stage == Stage.PreProduction)
+                    {
+                        return string.Format(path, "pp");
+                    }
 
-                            if (stage == Stage.Production)
-                            {
-                                return string.Format(path, "prod");
-                            }
+                    if (stage == Stage.Production)
+                    {
+                        return string.Format(path, "prod");
+                    }
 
-                            return path;
-                        };
-                    });
+                    return path;
+                };
             })
-            .AddHostedService<MyDataHost>();
+            .ConfigureAuth<TokenAuthOptions>(options =>
+            {
+                options.Token = rootToken;
+            });
     })
-    .EnableVaultAuth()
+    .AddHost<MyDataHost>()
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();

@@ -26,15 +26,19 @@ public class MyDataHost(IDatalayerFactory factory, ILogger<MyDataHost> logger) :
     {
         logger.LogInformation("Request informations from vault");
 
-        var repo = factory.CreateRepository<IReadOnlyVaultRepository>();
+        var repo = factory.CreateRepository<IVaultRepository>();
+        await repo.AddSecretAsync("groups/{0}/my-secrets", new Dictionary<string, object>
+        {
+            { "client-id", "12345" },
+            { "tenant-id", "67890" }
+        });
 
-        var secrets = await repo.GetSecretsAsync("kv", "groups/{0}/portal/azure");
+        var repoOnlyRead = factory.CreateRepository<IReadOnlyVaultRepository>();
+        var secrets = await repoOnlyRead.GetSecretsAsync("groups/{0}/my-secrets");
         foreach (var kvp in secrets)
             System.Console.WriteLine("Secret for Key '{0}' is '{1}'", kvp.Key, kvp.Value);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+        =>Task.CompletedTask;
 }

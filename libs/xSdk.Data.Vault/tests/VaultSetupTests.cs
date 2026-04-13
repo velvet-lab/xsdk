@@ -23,7 +23,7 @@ public class VaultSetupTests
     {
         var setup = new VaultDatabaseSetup();
 
-        Assert.Equal(VaultAuthenticationMethod.None, setup.AuthMethod);
+        Assert.Equal(AuthMethod.None, setup.AuthMethod);
     }
 
     [Fact]
@@ -213,9 +213,9 @@ public class VaultSetupTests
     [Fact]
     public void VaultAuthenticationMethod_Values_AreCorrect()
     {
-        Assert.Equal(0, (int)VaultAuthenticationMethod.None);
-        Assert.Equal(1, (int)VaultAuthenticationMethod.AppRole);
-        Assert.Equal(6, (int)VaultAuthenticationMethod.Token);
-        Assert.Equal(7, (int)VaultAuthenticationMethod.Cert);
+        Assert.Equal(0, (int)AuthMethod.None);
+        Assert.Equal(1, (int)AuthMethod.AppRole);
+        Assert.Equal(6, (int)AuthMethod.Token);
+        Assert.Equal(7, (int)AuthMethod.Cert);
     }
 }

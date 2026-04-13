@@ -18,7 +18,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using VaultSharp;
 using VaultSharp.V1.Commons;
-using xSdk.Extensions.Variable;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 using xSdk.Shared;
 
@@ -28,75 +28,84 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
 {
     private static readonly ILogger _logger = LogManager.CreateLogger<ReadOnlyVaultRepository>();
 
-    protected override VaultDatabase Database => base.Database as VaultDatabase;
 
     public async Task<IDictionary<string, string>> GetSecretsAsync(string? mountPoint, string path, CancellationToken token = default)
     {
         var result = new Dictionary<string, string>();
 
-        try
+        IDatabase? database = this.DatabaseHandler.Retrieve();
+
+        if (database != null)
         {
-            var client = Database.Open<VaultClient>();
-
-            var pathFormater = this.Database.Setup.PathFormat;
-            if (pathFormater != null)
+            try
             {
-                var env = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-                path = pathFormater(env.Stage, path);
-            }
+                var setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer);
+                var client = database.Open<VaultClient>();
 
-            Secret<SecretData>? secret = null;
-
-            mountPoint = ValidateMountPoint(mountPoint);
-            if (!string.IsNullOrEmpty(mountPoint))
-            {
-                secret = await client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path, mountPoint: mountPoint);
-            }
-            else
-            {
-                secret = await client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path);
-            }
-
-            if (secret != null)
-            {
-                var data = secret.Data.Data;
-                if (data == null || data.Count == 0)
+                var pathFormater = setup.PathFormatFactory;
+                if (pathFormater != null)
                 {
-                    throw new SdkException($"No Secrets found in Vault '{path}'");
+                    var env = GetOptions<EnvironmentOptions>();
+                    path = pathFormater(env.Stage, path);
                 }
 
-                foreach (var item in data)
+                Secret<SecretData>? secret = null;
+
+                mountPoint = ValidateMountPoint(mountPoint);
+                if (!string.IsNullOrEmpty(mountPoint))
                 {
-                    var value = item.Value;
-                    if (value != null)
+                    secret = await client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path, mountPoint: mountPoint);
+                }
+                else
+                {
+                    secret = await client.V1.Secrets.KeyValue.V2.ReadSecretAsync(path);
+                }
+
+                if (secret != null)
+                {
+                    var data = secret.Data.Data;
+                    if (data == null || data.Count == 0)
                     {
-                        string? itemValue = null;
+                        throw new SdkException($"No Secrets found in Vault '{path}'");
+                    }
 
-                        if (value is JsonElement element)
+                    foreach (var item in data)
+                    {
+                        var value = item.Value;
+                        if (value != null)
                         {
-                            itemValue = element.GetString();
-                        }
-                        else
-                        {
-                            itemValue = TypeConverter.ConvertTo<string>(value);
-                        }
+                            string? itemValue = null;
 
-                        if (!string.IsNullOrEmpty(itemValue))
-                        {
-                            result.Add(item.Key, itemValue);
+                            if (value is JsonElement element)
+                            {
+                                itemValue = element.GetString();
+                            }
+                            else
+                            {
+                                itemValue = TypeConverter.ConvertTo<string>(value);
+                            }
+
+                            if (!string.IsNullOrEmpty(itemValue))
+                            {
+                                result.Add(item.Key, itemValue);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    throw new SdkException($"No Secrets found in Vault '{path}'");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new SdkException($"No Secrets found in Vault '{path}'");
+                _logger.LogCritical(ex, "A Error occured while Vault will readed");
+                throw;
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "A Error occured while Vault will readed");
-            throw;
+            finally
+            {
+                this.DatabaseHandler.Return(database);
+            }
         }
 
         return result;

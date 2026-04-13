@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Data;
 
-[VariablePrefix("AppRoleAuth")]
-public class AppRoleAuthSetup : Setup
+[VariablePrefix("vault-app-role-auth")]
+public class AppRoleAuthOptions : VariableSetup
 {
     [Variable(
         name: Definitions.RoleId.Name,
         template: Definitions.RoleId.Template,
         helpText: Definitions.RoleId.HelpText,
-        hidden: true)]
-    [JsonPropertyName(Definitions.RoleId.Name)]
-    public string RoleId
+        hidden: true)
+    ]    
+    public string? RoleId
     {
         get => ReadValue<string>(Definitions.RoleId.Name);
         set => SetValue(Definitions.RoleId.Name, value);
@@ -40,21 +38,14 @@ public class AppRoleAuthSetup : Setup
         name: Definitions.Secret.Name,
         template: Definitions.Secret.Template,
         helpText: Definitions.Secret.HelpText,
-        hidden: true)]
-    [JsonPropertyName(Definitions.Secret.Name)]
-    public string Secret
+        hidden: true)]    
+    public string? Secret
     {
         get => ReadValue<string>(Definitions.Secret.Name);
         set => SetValue(Definitions.Secret.Name, value);
     }
 
-    protected override void ValidateSetup()
-    {
-        this.ValidateMember(x => string.IsNullOrEmpty(x.RoleId), "RoleId for vault approle auth is missing", Definitions.RoleId.Name);
-        this.ValidateMember(x => string.IsNullOrEmpty(x.Secret), "Secret for vault approle auth is missing", Definitions.RoleId.Name);
-    }
-
-    private class Definitions
+    private static class Definitions
     {
         public static class RoleId
         {

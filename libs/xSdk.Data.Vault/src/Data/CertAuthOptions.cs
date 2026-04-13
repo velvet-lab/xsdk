@@ -15,16 +15,15 @@
  */
 
 using System.Security.Cryptography.X509Certificates;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Data;
 
-[VariablePrefix("CertAuth")]
+[VariablePrefix("vault-cert-auth")]
 public class CertAuthOptions : VariableSetup
 {
     private static readonly ILogger _logger = LogManager.CreateLogger<CertAuthOptions>();
@@ -34,8 +33,7 @@ public class CertAuthOptions : VariableSetup
         template: Definitions.Certificate.Template,
         helpText: Definitions.Certificate.HelpText,
         hidden: true)]
-    [JsonPropertyName(Definitions.Certificate.Name)]
-    public string Certificate
+    public string? Certificate
     {
         get => ReadValue<string>(Definitions.Certificate.Name);
         set => SetValue(Definitions.Certificate.Name, value);
@@ -46,29 +44,28 @@ public class CertAuthOptions : VariableSetup
         template: Definitions.Key.Template,
         helpText: Definitions.Key.HelpText,
         hidden: true)]
-    [JsonPropertyName(Definitions.Key.Name)]
-    public string Key
+    public string? Key
     {
         get => ReadValue<string>(Definitions.Key.Name);
         set => SetValue(Definitions.Key.Name, value);
     }
 
-    public X509Certificate2? CreateCertificate()
+    internal X509Certificate2? CreateCertificate()
     {
         try
         {
             var cert = this.Certificate;
-            if (Base64Helper.IsBase64(cert))
+            if (Base64Tools.IsBase64(cert))
             {
                 _logger.LogInformation("Converting base64 encoded certificate to PEM format.");
-                cert = Base64Helper.ConvertFromBase64(cert);
+                cert = Base64Tools.ConvertFromBase64(cert);
             }
 
             var key = this.Key;
-            if (Base64Helper.IsBase64(key))
+            if (Base64Tools.IsBase64(key))
             {
                 _logger.LogInformation("Converting base64 encoded key to PEM format.");
-                key = Base64Helper.ConvertFromBase64(key);
+                key = Base64Tools.ConvertFromBase64(key);
             }
 
             var certificate = X509Certificate2.CreateFromPem(cert, key);
@@ -82,7 +79,7 @@ public class CertAuthOptions : VariableSetup
         }
     }
 
-    private class Definitions
+    private static class Definitions
     {
         public static class Certificate
         {
