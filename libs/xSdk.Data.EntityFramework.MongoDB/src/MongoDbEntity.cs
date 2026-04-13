@@ -35,6 +35,7 @@ public abstract class MongoDbEntity : IEntity<ObjectId>
     [Column("_id")]
     [XmlElement("_id")]
     [JsonPropertyName("_id")]
+    [SoapAttribute("_id")]
     [BsonElement("_id")]
     [BsonId]
     public ObjectId Id { get; set; }
