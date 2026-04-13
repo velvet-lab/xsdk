@@ -17,6 +17,7 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
@@ -172,17 +173,21 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         IDbContextTransaction transaction = null;
         var shouldUseTransaction = withTransaction;
 
-        IDatabase? database = this.DatabaseHandler.Retrieve();
+        IDatabase? database = DatabaseHandler?.Retrieve();       
 
         if (database != null)
         {
             try
             {
+                EntityFrameworkDatabaseOptions? setup = GetOptions<EntityFrameworkDatabaseOptions>(OptionsScope.Datalayer);
+                if (setup != null && !setup.TransactionsEnabled)
+                {
+                    shouldUseTransaction = false;
+                }
+
                 var dbContext = database.Open<TDbContext>();
                 if (dbContext != null)
-                {
-                    if (!database.GetDatabaseOptions<EntityFrameworkDatabaseOptions>()?.TransactionsEnabled ?? false)
-                        shouldUseTransaction = false;
+                {   
 
                     // Disable Transactions for MongoDbs, because this feature is not supported
                     if (dbContext.Database.ProviderName == "MongoDB.EntityFrameworkCore")
@@ -217,7 +222,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
             }
             finally
             {
-                this.DatabaseHandler.Return(database);
+                DatabaseHandler?.Return(database);
             }
         }
 
