@@ -16,8 +16,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
@@ -26,9 +26,9 @@ internal sealed class CommandPluginHost : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.TryAddSingleton<ICommandApp>(provider =>
-        {
-            var builder = SlimHost.Instance.PluginSystem.GetPlugin<ICommandsPluginBuilder>();
+        services.TryAddSingleton(provider =>
+        {            
+            var builder = provider.RetrievePluginBuilder<ICommandsPluginBuilder>();
 
             var app = builder.CreateApplication(services);
             app.Configure(config =>

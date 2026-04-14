@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
 
@@ -51,7 +52,7 @@ public static class HostExtensions
 
         host.RemoveConsoleLoggers();
 
-        var builder = SlimHost.Instance.PluginSystem.GetPlugin<ICommandsPluginBuilder>();
+        var builder = host.Services.RetrievePluginBuilder<ICommandsPluginBuilder>();
 
         var lastResult = 0;
         var replArgs = args;

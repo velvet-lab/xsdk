@@ -18,10 +18,22 @@ internal sealed class HostInitializer(IServiceProvider provider, IPluginService 
             .Distinct()
             .ToArray();
 
-        if (pluginService != null && pluginAssemblies.Any())
+        if (pluginService != null)
         {
-            await pluginService.AddPluginsFromAsync(pluginAssemblies, cancellationToken);
-        }
+            if (pluginAssemblies.Any())
+            {
+                await pluginService.AddPluginsFromAsync(pluginAssemblies, cancellationToken);
+            }
+
+            var pluginBuilders = pluginService.GetPlugins<IPluginBuilder>();
+            if (pluginBuilders.Any())
+            {
+                foreach(IPluginBuilder builder in pluginBuilders)
+                {
+                    builder.SetServiceProvider(provider);
+                }
+            }
+        }        
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

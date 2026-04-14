@@ -15,27 +15,28 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Commands;
-using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
-internal class DefaultCommandsPluginBuilder : PluginBuilder, ICommandsPluginBuilder
+internal class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> options) : PluginBuilder, ICommandsPluginBuilder
 {
-    private const string Prompt = ">";    
-
+    private const string Prompt = ">";
+    
     public Func<string> PromptFactory => () =>
     {
-        return string.Format("{0} {1} ", Environment.AppName, Prompt);
+        
+        return string.Format("{0} {1} ", options.Value.Name, Prompt);
     };
 
     public void Configure(IConfigurator setup)
     {
-        setup.SetApplicationName(Environment.AppName);
+        setup.SetApplicationName(options.Value.Name);
 
         setup.AddVariableCommands();
 

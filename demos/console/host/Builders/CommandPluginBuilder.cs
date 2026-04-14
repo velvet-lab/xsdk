@@ -18,21 +18,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Demos.Builders;
 
-internal class CommandPluginBuilder : PluginBuilder, ICommandsPluginBuilder
+internal class CommandPluginBuilder(IOptions<ApplicationOptions> options) : PluginBuilder, ICommandsPluginBuilder
 {
     public Func<string> PromptFactory => throw new NotImplementedException();
 
     public void Configure(IConfigurator setup)
     {
         setup
-            .SetApplicationName(this.Environment.AppName)
+            .SetApplicationName(options.Value.Name)
             // Tells the command line application to validate all examples before running the application.
             .ValidateExamples();
     }
