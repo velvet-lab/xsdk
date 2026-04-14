@@ -48,34 +48,36 @@ public class DatabaseFixture : DatabaseHostFixture
             hostBuilder
                 .AddDatalayer(builder =>
                  {
-                     var imageName = GetEnvironmentVariable("VAULT_IMAGE_NAME");
+                     string imageName = GetEnvironmentVariable("VAULT_IMAGE_NAME");
                      if (string.IsNullOrEmpty(imageName))
                      {
                          throw new SdkException("The environment variable VAULT_IMAGE_NAME is not defined.");
                      }
 
-                     var container = new ContainerBuilder()
-                         .WithImage(imageName)
+                     IContainer container = new ContainerBuilder(imageName)
                          .WithPortBinding(8200, true)
                          .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8200)))
                          .WithImagePullPolicy(PullPolicy.Always)
                          .Build();
 
                      container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                     var port = container.GetMappedPublicPort(8200);
-                     var (stdout, stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
+                     ushort port = container.GetMappedPublicPort(8200);
+                     (string? stdout, string? stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
 
-                     var splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                     var rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
-                     var unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
+                     string[] splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                     string? rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
+                     string? unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
 
                      builder
                         // Enable Vault
                         .UseVault(true, _ =>
                         {
-                            _.Host = $"http://localhost:{port}";
-                            _.AuthMethod = AuthMethod.Token;
-                            _.TokenAuth = new() { Token = rootToken };
+                            _.Endpoint = $"http://localhost:{port}";
+                            _.AuthMethod = AuthMethods.Token;
+                        })
+                        .ConfigureAuth<TokenAuthOptions>(options =>
+                        {
+                            options.Token = rootToken;
                         });
                  });
         });
