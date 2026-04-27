@@ -25,6 +25,12 @@ internal class LinksPluginHost : PluginHost
     public override void ConfigureServices(IServiceCollection services)
     {
         services
-            .AddLinksService();
+            .AddLinksService(() =>
+            {
+                var options = new LinksOptions();
+                InvokeBuilder<ILinksPluginBuilder>(builder => builder.ConfigureLinks(options));
+
+                return options;
+            });
     }
 }

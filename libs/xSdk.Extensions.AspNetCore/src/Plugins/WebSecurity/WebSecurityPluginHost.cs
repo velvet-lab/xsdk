@@ -20,16 +20,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using xSdk.Extensions.Variable;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
-internal sealed class WebSecurityPluginHost : WebPluginHost<WebSecuritySetup>
+internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        if (Setup.IsCorsEnabled)
+        if (websecurityOptions.Value.IsCorsEnabled)
         {
             Logger.LogInformation("Cors is enabled. Configure further security options");
             services.AddCors(cors =>
@@ -57,7 +58,7 @@ internal sealed class WebSecurityPluginHost : WebPluginHost<WebSecuritySetup>
     {
         PreBuild(app);
 
-        var stage = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>().Stage;
+        var stage = environmentOptions.Value.Stage;
         if (stage == Stage.Development)
         {
             app.UseDeveloperExceptionPage();
@@ -70,7 +71,7 @@ internal sealed class WebSecurityPluginHost : WebPluginHost<WebSecuritySetup>
 
         app.UseStaticFiles();
 
-        if (Setup.IsCorsEnabled)
+        if (websecurityOptions.Value.IsCorsEnabled)
             app.UseCors();
 
         PostBuild(app);
@@ -180,13 +181,10 @@ internal sealed class WebSecurityPluginHost : WebPluginHost<WebSecuritySetup>
 
     private string[] GetOrigins()
     {
-        var webSetup = SlimHost.Instance.VariableSystem.GetSetup<IWebHostSetup>();
-        var securitySetup = SlimHost.Instance.VariableSystem.GetSetup<WebSecuritySetup>();
-
         IEnumerable<string> additionalOrigins = new List<string>();
-        if (!string.IsNullOrEmpty(securitySetup.Origins))
+        if (!string.IsNullOrEmpty(websecurityOptions.Value.Origins))
         {
-            var splittedOrigins = securitySetup.Origins
+            var splittedOrigins = websecurityOptions.Value.Origins
                 .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             additionalOrigins = new List<string>(splittedOrigins);
         }

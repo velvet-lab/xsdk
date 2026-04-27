@@ -20,7 +20,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Plugins.Authentication;
 
 [VariablePrefix("auth_apikey")]
-public class ApiKeySetup : Setup
+public class ApiKeyOptions : VariableSetup
 {
     [Variable(
         name: Definitions.Realm.Name,
@@ -32,11 +32,6 @@ public class ApiKeySetup : Setup
     {
         get => ReadValue<string>(Definitions.Realm.Name);
         set => SetValue(Definitions.Realm.Name, value);
-    }
-
-    protected override void ValidateSetup()
-    {
-        this.ValidateMember(x => string.IsNullOrEmpty(x.Realm), "Authentication realm is missing", Definitions.Realm.Name);
     }
 
     public static class Definitions

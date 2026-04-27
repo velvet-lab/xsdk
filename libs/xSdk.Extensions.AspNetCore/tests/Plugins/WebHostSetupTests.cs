@@ -21,31 +21,31 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_DefaultBind_HasDefaultValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
-        Assert.Equal(WebHostSetup.Definitions.Bind.DefaultValue, setup.Bind);
+        Assert.Equal(WebHostOptions.Definitions.Bind.DefaultValue, setup.Bind);
     }
 
     [Fact]
     public void WebHostSetup_DefaultHttp_HasDefaultValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
-        Assert.Equal(WebHostSetup.Definitions.Http.DefaultValue, setup.Http);
+        Assert.Equal(WebHostOptions.Definitions.Http.DefaultValue, setup.Http);
     }
 
     [Fact]
     public void WebHostSetup_DefaultHttps_HasDefaultValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
-        Assert.Equal(WebHostSetup.Definitions.Https.DefaultValue, setup.Https);
+        Assert.Equal(WebHostOptions.Definitions.Https.DefaultValue, setup.Https);
     }
 
     [Fact]
     public void WebHostSetup_DefaultGrpc_IsZero()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         Assert.Equal(0, setup.Grpc);
     }
@@ -53,7 +53,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_DefaultTlsCertFile_IsEmpty()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         Assert.True(string.IsNullOrEmpty(setup.TlsCertFile));
     }
@@ -61,7 +61,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_DefaultTlsKeyFile_IsEmpty()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         Assert.True(string.IsNullOrEmpty(setup.TlsKeyFile));
     }
@@ -69,7 +69,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetBind_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.Bind = "0.0.0.0";
 
@@ -79,7 +79,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetHttp_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.Http = 9090;
 
@@ -89,7 +89,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetHttps_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.Https = 9443;
 
@@ -99,7 +99,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetGrpc_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.Grpc = 5000;
 
@@ -109,7 +109,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetTlsCertFile_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.TlsCertFile = "/path/to/cert.pem";
 
@@ -119,7 +119,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetTlsKeyFile_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.TlsKeyFile = "/path/to/key.pem";
 
@@ -129,7 +129,7 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_SetAllowSystemPorts_StoresValue()
     {
-        var setup = new WebHostSetup();
+        var setup = new WebHostOptions();
 
         setup.AllowSystemPorts = true;
 
@@ -139,36 +139,36 @@ public class WebHostSetupTests
     [Fact]
     public void WebHostSetup_Definitions_BindName_IsCorrect()
     {
-        Assert.Equal("bind", WebHostSetup.Definitions.Bind.Name);
+        Assert.Equal("bind", WebHostOptions.Definitions.Bind.Name);
     }
 
     [Fact]
     public void WebHostSetup_Definitions_HttpName_IsCorrect()
     {
-        Assert.Equal("http", WebHostSetup.Definitions.Http.Name);
+        Assert.Equal("http", WebHostOptions.Definitions.Http.Name);
     }
 
     [Fact]
     public void WebHostSetup_Definitions_HttpsName_IsCorrect()
     {
-        Assert.Equal("https", WebHostSetup.Definitions.Https.Name);
+        Assert.Equal("https", WebHostOptions.Definitions.Https.Name);
     }
 
     [Fact]
     public void WebHostSetup_Definitions_GrpcName_IsCorrect()
     {
-        Assert.Equal("grpc", WebHostSetup.Definitions.Grpc.Name);
+        Assert.Equal("grpc", WebHostOptions.Definitions.Grpc.Name);
     }
 
     [Fact]
     public void WebHostSetup_Definitions_TlsCertFileName_IsCorrect()
     {
-        Assert.Equal("tls-cert-file", WebHostSetup.Definitions.TlsCertFile.Name);
+        Assert.Equal("tls-cert-file", WebHostOptions.Definitions.TlsCertFile.Name);
     }
 
     [Fact]
     public void WebHostSetup_Definitions_TlsKeyFileName_IsCorrect()
     {
-        Assert.Equal("tls-key-file", WebHostSetup.Definitions.TlsKeyFile.Name);
+        Assert.Equal("tls-key-file", WebHostOptions.Definitions.TlsKeyFile.Name);
     }
 }

@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />        
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\libs\xSdk.Data.EntityFramework\src\xSdk.Data.EntityFramework.csproj" />
         <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
     </ItemGroup>
+
 </Project>

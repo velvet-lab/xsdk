@@ -26,6 +26,7 @@ using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Web;
 using xSdk.Hosting;
 using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
@@ -44,7 +45,7 @@ public static class CloudEventWebExtensions
     public static string ToBase64(this CloudEvent cloudEvent)
     {
         var cloudEventAsJson = cloudEvent.ToJson();
-        var cloudEventAsBase64 = Base64Helper.ConvertToBase64(cloudEventAsJson);
+        var cloudEventAsBase64 = Base64Tools.ConvertToBase64(cloudEventAsJson);
 
         return cloudEventAsBase64;
     }

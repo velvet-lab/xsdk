@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop.Implementation;
+using Microsoft.Extensions.Options;
 using xSdk.Data;
 
 namespace xSdk.Extensions.Links;
 
-internal sealed partial class LinksService(LinksOptions options, IHttpContextAccessor context, IServiceProvider _, ILogger<LinksService> __) : ILinksService
+internal sealed partial class LinksService(LinksOptions linksOptions, IHttpContextAccessor context, IServiceProvider _, ILogger<LinksService> __) : ILinksService
 {
     public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
@@ -70,7 +68,7 @@ internal sealed partial class LinksService(LinksOptions options, IHttpContextAcc
 
     private RoutedLink? SearchPolicyLink(IModel model, MethodDescription description, HttpContext? context)
     {
-        foreach (var policy in options.Policies)
+        foreach (var policy in linksOptions.Policies)
         {
             foreach (var link in policy.Links)
             {

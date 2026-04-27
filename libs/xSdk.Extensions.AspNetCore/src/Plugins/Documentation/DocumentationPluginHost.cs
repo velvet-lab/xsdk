@@ -19,13 +19,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
-internal sealed class DocumentationPluginHost : WebPluginHost<DocumentationSetup>
+public sealed class DocumentationPluginHost(IOptions<DocumentationOptions> options) : WebPluginHost
 {
     private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
     {
@@ -45,9 +46,10 @@ internal sealed class DocumentationPluginHost : WebPluginHost<DocumentationSetup
             .BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
 
-        var docPluginBuilder = SlimHost.Instance.PluginSystem.GetPlugin<IDocumentationPluginBuilder>();
+        var docPluginBuilder = GetBuilder<IDocumentationPluginBuilder>();
 
-        if (Setup.Enabled)
+        var documentationOptions = options.Value;
+        if (documentationOptions.Enabled)
         {
             foreach (var description in descriptionProvider.ApiVersionDescriptions)
             {
@@ -84,11 +86,10 @@ internal sealed class DocumentationPluginHost : WebPluginHost<DocumentationSetup
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder builder)
     {
-        var setup = SlimHost.Instance.VariableSystem.GetSetup<DocumentationSetup>();
-
-        if (setup.Enabled)
+        var documentationOptions = options.Value;
+        if (documentationOptions.Enabled && !string.IsNullOrEmpty(documentationOptions.DocumentPattern))
         {
-            builder.MapOpenApi(setup.DocumentPattern);
+            builder.MapOpenApi(documentationOptions.DocumentPattern);
         }
     }
 }

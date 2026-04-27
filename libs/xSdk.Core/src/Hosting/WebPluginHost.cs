@@ -19,16 +19,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
-public abstract class WebPluginHost : PluginDescription, IPluginHost
+public abstract class WebPluginHost : PluginHost, IWebPluginHost
 {
     protected ILogger Logger => LogManager.GetCurrentClassLogger();
-
-    public virtual void ConfigureServices(IServiceCollection services) { }
 
     public virtual void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) { }
 

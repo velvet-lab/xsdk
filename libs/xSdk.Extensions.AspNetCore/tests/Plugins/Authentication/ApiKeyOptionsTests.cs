@@ -21,20 +21,20 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
-public class ApiKeySetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void ApiKeySetup_DefaultRealm_HasDefaultValue()
     {
-        var setup = new ApiKeySetup();
+        var setup = new ApiKeyOptions();
 
-        Assert.Equal(ApiKeySetup.Definitions.Realm.DefaultValue, setup.Realm);
+        Assert.Equal(ApiKeyOptions.Definitions.Realm.DefaultValue, setup.Realm);
     }
 
     [Fact]
     public void ApiKeySetup_SetRealm_StoresValue()
     {
-        var setup = new ApiKeySetup();
+        var setup = new ApiKeyOptions();
 
         setup.Realm = "my-test-realm";
 
@@ -44,26 +44,26 @@ public class ApiKeySetupTests(TestHostFixture fixture) : IClassFixture<TestHostF
     [Fact]
     public void ApiKeySetup_Definitions_RealmName_IsCorrect()
     {
-        Assert.Equal("realm", ApiKeySetup.Definitions.Realm.Name);
+        Assert.Equal("realm", ApiKeyOptions.Definitions.Realm.Name);
     }
 
     [Fact]
     public void ApiKeySetup_Definitions_RealmTemplate_ContainsRealm()
     {
-        Assert.Contains("realm", ApiKeySetup.Definitions.Realm.Template);
+        Assert.Contains("realm", ApiKeyOptions.Definitions.Realm.Template);
     }
 
     [Fact]
     public void ApiKeySetup_Definitions_RealmDefaultValue_IsNotEmpty()
     {
-        Assert.False(string.IsNullOrEmpty(ApiKeySetup.Definitions.Realm.DefaultValue));
+        Assert.False(string.IsNullOrEmpty(ApiKeyOptions.Definitions.Realm.DefaultValue));
     }
 
     [Fact]
     public void AuthenticationPlugin_CreatedViaHostBuilder()
     {
-        IHost host = fixture
-            .EnablePlugin(builder => builder.EnableAuthentication())
+        IHost host = fixture            
+            .ConfigureBuilder(builder => builder.EnableAuthentication())
             .BuildHost();
 
         var service = host.Services.GetRequiredService<IPluginService>();

@@ -9,7 +9,7 @@
         <Description>xSdk.Extensions.Commands - Command line interface extensions for the xSdk project.</Description>
     </PropertyGroup>
 
-    <ItemGroup>        
+    <ItemGroup>
         <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 

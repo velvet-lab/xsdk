@@ -18,7 +18,7 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.Plugin;
 
-public interface IPluginBuilder : IPluginDescription
+public interface IPluginBuilder
 {
     
 }

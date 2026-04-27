@@ -22,18 +22,12 @@ namespace xSdk.Plugins.Documentation;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableDocumentation(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder
-            .RegisterSetup<DocumentationSetup>()
-            .RegisterPluginHost<DocumentationPluginHost>();
-    }
-
     public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder)
         where TPluginBuilder : class, IDocumentationPluginBuilder
     {
         return hostBuilder
-            .EnableDocumentation()
-            .RegisterPluginBuilder<TPluginBuilder>();
+            .RegisterPluginHostOptions<DocumentationOptions>()
+            .RegisterPluginHost<DocumentationPluginHost>()
+            .RegisterPluginBuilder<IDocumentationPluginBuilder, TPluginBuilder>();
     }
 }

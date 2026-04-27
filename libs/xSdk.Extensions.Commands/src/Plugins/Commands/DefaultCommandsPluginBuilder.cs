@@ -24,13 +24,12 @@ using xSdk.Extensions.Variable.Commands;
 
 namespace xSdk.Plugins.Commands;
 
-internal class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> options) : PluginBuilder, ICommandsPluginBuilder
+internal sealed class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> options) : PluginBuilder, ICommandsPluginBuilder
 {
     private const string Prompt = ">";
     
     public Func<string> PromptFactory => () =>
-    {
-        
+    {        
         return string.Format("{0} {1} ", options.Value.Name, Prompt);
     };
 

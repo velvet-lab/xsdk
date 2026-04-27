@@ -23,9 +23,19 @@ namespace xSdk.Extensions.Plugin;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPluginServices(this IServiceCollection services)
+        => services.AddPluginServices(null);
+
+    public static IServiceCollection AddPluginServices(this IServiceCollection services, Action<IPluginService>? postConfigure)
     {
         services
-            .TryAddSingleton<IPluginService, PluginService>();
+            .TryAddSingleton<IPluginService>(provider =>
+            {
+                var service = ActivatorUtilities.CreateInstance<PluginService>(provider);
+
+                postConfigure?.Invoke(service);
+
+                return service;
+            });
 
         return services;
     }

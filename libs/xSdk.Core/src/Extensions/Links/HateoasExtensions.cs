@@ -13,6 +13,7 @@ public static class HateoasExtensions
         {
             if (values.ToString().ToLower() == "true" || values.ToString() == "1")
             {
+                //
                 return true;
             }
         }

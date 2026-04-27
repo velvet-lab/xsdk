@@ -21,13 +21,17 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Compression;
 
-public class CompressionPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class CompressionPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void CreatePlugin()
     {
         IHost host = fixture
-            .EnablePlugin(builder => builder.EnableCompression())
+            .RegisterLoggingOutput(message =>
+            {
+                Console.WriteLine(message);
+            })
+            .ConfigureBuilder(builder => builder.EnableCompression())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();

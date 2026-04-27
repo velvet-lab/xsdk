@@ -19,8 +19,19 @@ using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Hosting;
 
-public sealed class WebHostSetup : Setup, IWebHostSetup
+public sealed class WebHostOptions : VariableSetup
 {
+    protected override void OnInitialize()
+    {
+        if (Https > 0)
+        {
+            if (!string.IsNullOrEmpty(TlsCertFile) && !string.IsNullOrEmpty(TlsKeyFile))
+            {
+                IsHttpsEnabled = true;
+            }
+        }    
+    }
+
     [Variable(
         name: Definitions.Bind.Name,
         template: Definitions.Bind.Template,
@@ -87,16 +98,7 @@ public sealed class WebHostSetup : Setup, IWebHostSetup
 
     public bool IsHttpsEnabled { get; private set; }
 
-    protected override void Initialize()
-    {
-        if (Https > 0)
-        {
-            if (!string.IsNullOrEmpty(TlsCertFile) && !string.IsNullOrEmpty(TlsKeyFile))
-            {
-                IsHttpsEnabled = true;
-            }
-        }
-    }
+   
 
     public static class Definitions
     {

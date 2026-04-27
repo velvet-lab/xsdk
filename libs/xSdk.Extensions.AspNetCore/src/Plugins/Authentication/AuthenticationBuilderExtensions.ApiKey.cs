@@ -20,7 +20,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.Authentication;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
@@ -28,37 +30,34 @@ namespace xSdk.Plugins.Authentication;
 
 public static partial class AuthenticationBuilderExtensions
 {
-    internal static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder)
+    internal static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, ApiKeyOptions apiKeyOptions, EnvironmentOptions environmentOptions)
     {
-        var apiKeySetup = SlimHost.Instance.VariableSystem.GetSetup<ApiKeySetup>();
-        var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-
         // Add ApiKeyName Auth
         builder
-            .AddApiKeyInHeader(AuthenticationDefaults.ApiKeyAuth.InHeader.Scheme, options => ActivateInHeader(options, envSetup, apiKeySetup))
+            .AddApiKeyInHeader(AuthenticationDefaults.ApiKeyAuth.InHeader.Scheme, options => ActivateInHeader(options, environmentOptions, apiKeyOptions))
             .AddApiKeyInAuthorizationHeader(
                 AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Scheme,
-                options => ActivateInAuthorizationHeader(options, envSetup, apiKeySetup)
+                options => ActivateInAuthorizationHeader(options, environmentOptions, apiKeyOptions)
             );
 
         return builder;
     }
 
-    private static void ActivateInHeader(ApiKeyOptions options, EnvironmentSetup envSetup, ApiKeySetup apiKeySetup)
+    private static void ActivateInHeader(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, ApiKeyOptions apiKeySetup)
     {
         options.KeyName = AuthenticationDefaults.ApiKeyAuth.InHeader.Header;
 
-        EnableApiKeyAuth(options, envSetup, apiKeySetup);
+        EnableApiKeyAuth(options, environmentOptions, apiKeySetup);
     }
 
-    private static void ActivateInAuthorizationHeader(ApiKeyOptions options, EnvironmentSetup envSetup, ApiKeySetup apiKeySetup)
+    private static void ActivateInAuthorizationHeader(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, ApiKeyOptions apiKeySetup)
     {
         options.KeyName = AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Header;
 
-        EnableApiKeyAuth(options, envSetup, apiKeySetup);
+        EnableApiKeyAuth(options, environmentOptions, apiKeySetup);
     }
 
-    private static void EnableApiKeyAuth(ApiKeyOptions options, EnvironmentSetup envSetup, ApiKeySetup apiKeySetup)
+    private static void EnableApiKeyAuth(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, ApiKeyOptions apiKeySetup)
     {
         options.Realm = apiKeySetup.Realm;
 
@@ -75,7 +74,7 @@ public static partial class AuthenticationBuilderExtensions
         // Only use this if you know what you are doing at your own risk. Any of the events can be assigned.
         options.Events = new ApiKeyEvents
         {
-            OnValidateKey = context => ValidateKeyAsync(context, envSetup),
+            OnValidateKey = context => ValidateKeyAsync(context),
             OnHandleChallenge = HandleChallengeAsync,
             OnHandleForbidden = HandleForbidden,
             OnAuthenticationFailed = AuthenticationFailedAsync,
@@ -88,7 +87,7 @@ public static partial class AuthenticationBuilderExtensions
         };
     }
 
-    private static async Task ValidateKeyAsync(ApiKeyValidateKeyContext context, EnvironmentSetup envSetup)
+    private static async Task ValidateKeyAsync(ApiKeyValidateKeyContext context)
     {
         // Will be invoked just before validating the api key.
         IApiKey? apiKey = null;

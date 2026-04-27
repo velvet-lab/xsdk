@@ -26,15 +26,20 @@ public class TestHostFixture : IDisposable
     private IHost? _host;
 
     private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
-    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();
-    // private readonly List<Action<WebHostBuilderContext, IServiceCollection>> _webhostServicesDelegates = new();
+    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();    
 
-    internal List<Action<IHostBuilder>> builderDelegates = new();
+    internal List<Action<IHostBuilder>> _builderDelegates = new();
+
+    internal List<Action<string>> _loggingOutputHandlers = new();
 
     private bool _disposed;
 
     private bool? _currentDemoMode;
     private bool _demoModeShouldEnabled;
+
+    // Serializes BuildHost calls so that parallel test runners cannot cause
+    // concurrent host initialization within the same fixture instance.
+    private readonly Lock _buildLock = new();
 
     public TestHostFixture()
     {        
@@ -51,83 +56,49 @@ public class TestHostFixture : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    protected TestHostFixture ConfigureBuilder(Action<IHostBuilder> configure)
+    public TestHostFixture EnableDemoMode()
     {
-        builderDelegates.Add(configure);
+        _demoModeShouldEnabled = true;
+        return this;
+    }
+
+    public TestHostFixture DisableDemoMode()
+    {
+        _demoModeShouldEnabled = false;
+        return this;
+    }
+
+    public TestHostFixture ConfigureBuilder(Action<IHostBuilder> configure)
+    {
+        _builderDelegates.Add(configure);
         return this;
     }
 
     public TestHostFixture ConfigureServices(Action<IServiceCollection> configure)
     {
         _servicesDelegates.Add(configure);
-
         return this;
     }
 
     public TestHostFixture ConfigureServices(Action<HostBuilderContext, IServiceCollection> configure)
     {
         _servicesWithContextDelegates.Add(configure);
-
         return this;
     }
 
-    //public TestHostFixture ConfigureWebHostServices(Action<WebHostBuilderContext, IServiceCollection> configure)
-    //{
-    //    _webhostServicesDelegates.Add(configure);
-
-    //    return this;
-    //}
+    public TestHostFixture RegisterLoggingOutput(Action<string> handler)
+    {
+        _loggingOutputHandlers.Add(handler);
+        return this;
+    }
 
     public IHost BuildHost()
     {
-        Initialize();
-
-        var builder = TestHost
-            .CreateBuilder()            
-            .ConfigureServices(
-                (context, services) =>
-                {
-                    foreach (var configure in _servicesDelegates)
-                    {
-                        configure?.Invoke(services);
-                    }
-
-                    foreach (var configure in _servicesWithContextDelegates)
-                    {
-                        configure?.Invoke(context, services);
-                    }
-                }
-            );
-
-        //.ConfigureWebHost(webhostBuilder =>
-        //{
-        //    webhostBuilder.ConfigureServices(
-        //        (context, services) =>
-        //        {
-        //            foreach (var configure in _webhostServicesDelegates)
-        //            {
-        //                configure?.Invoke(context, services);
-        //            }
-        //        }
-        //    );
-        //});
-
-        // Configure the host builder with any additional delegates
-        foreach (var configure in builderDelegates)
+        lock (_buildLock)
         {
-            configure?.Invoke(builder);
+            return BuildHostCore();
         }
-
-        // Stop and dispose the previous host if it exists
-        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        _host?.Dispose();
-
-        _host = builder.Build();
-
-        HandleDemoMode(_demoModeShouldEnabled);
-
-        return _host;
-    }
+    }    
 
     protected virtual void Dispose(bool disposing)
     {
@@ -148,7 +119,7 @@ public class TestHostFixture : IDisposable
         _disposed = true;
     }
 
-    protected EnvironmentOptions? Environment => _host?.Services.GetService<IOptions<EnvironmentOptions>>()?.Value;
+    public static EnvironmentOptions Environment => SlimHost.Instance.GetEnvironment();
 
     protected static string GetEnvironmentVariable(string key)
     {
@@ -161,23 +132,77 @@ public class TestHostFixture : IDisposable
         return imageName;
     }
 
-    protected virtual void Initialize()
+    protected virtual void Initialize() { }
+
+    protected virtual IHostBuilder CreateHostBuilder()
+        => TestHost.CreateBuilder();
+
+    private IHost BuildHostCore()
     {
+        // If the host was already built, return it directly (singleton semantics).
+        // The caller holds _buildLock, so no other thread can race here.
+        if (_host is not null)
+        {
+            return _host;
+        }
 
-    }
+        IHostBuilder builder = CreateHostBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                foreach (var configure in _servicesDelegates)
+                {
+                    configure?.Invoke(services);
+                }
 
-    public TestHostFixture EnableDemoMode()
-    {
-        _demoModeShouldEnabled = true;
+                foreach (var configure in _servicesWithContextDelegates)
+                {
+                    configure?.Invoke(context, services);
+                }
+            });
 
-        return this;
-    }
+#pragma warning disable EXTEXP0016 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
+        builder
+            .AddFakeLoggingOutputSink(message =>
+            {
+                foreach (Action<string> handler in _loggingOutputHandlers)
+                {
+                    handler?.Invoke(message);
+                }
+            });
+#pragma warning restore EXTEXP0016 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
 
-    public TestHostFixture DisableDemoMode()
-    {
-        _demoModeShouldEnabled = false;
+        Initialize();
 
-        return this;
+        // Configure the host builder with any additional delegates
+        foreach (var configure in _builderDelegates)
+        {
+            configure?.Invoke(builder);
+        }
+
+        // Stop and dispose the previous host if it exists
+        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        _host?.Dispose();
+
+        _host = builder.Build();
+
+        HandleDemoMode(_demoModeShouldEnabled);
+
+        // Start the HostInitializer hosted service if it exists, because in Unit tests the host
+        // is not automatically started as in a real application.
+        var hostedServices = _host.Services.GetServices<IHostedService>();
+        if (hostedServices != null)
+        {
+            foreach (var hostedService in hostedServices)
+            {
+                if (hostedService is HostInitializer)
+                {
+                    hostedService.StartAsync(CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
+                    break;
+                }
+            }
+        }
+
+        return _host;
     }
 
     private void RestoreDemoMode()
@@ -191,8 +216,7 @@ public class TestHostFixture : IDisposable
     }
 
     private void HandleDemoMode(bool enable)
-    {
-        
+    {        
         if (!_currentDemoMode.HasValue)
         {
             _currentDemoMode = Environment?.IsDemo;

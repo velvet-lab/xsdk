@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;
@@ -23,37 +24,39 @@ using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.Documentation;
 
-public class DocumentationSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class DocumentationOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void DocumentationSetup_DefaultRoutePrefix_IsCorrect()
     {
         IHost host = fixture
-            .EnablePlugin(b => b.EnableWebApi().EnableDocumentation())
+            .ConfigureBuilder(builder => builder
+                .EnableWebApi()
+                .EnableDocumentation<DocumentationPluginBuilderMock>())
             .BuildHost();
 
-        var setup = host.Services
-            .GetRequiredService<IVariableService>()
-            .GetSetup<DocumentationSetup>();
+        DocumentationOptions? options = host.Services
+            .GetService<IOptions<DocumentationOptions>>()?.Value;
 
-        Assert.Equal(DocumentationSetup.Definitions.DocumentPattern.DefaultValue, setup.DocumentPattern);
+        Assert.NotNull(options);
+        Assert.Equal(DocumentationOptions.Definitions.DocumentPattern.DefaultValue, options.DocumentPattern);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternDefaultValue_IsSet()
     {
-        Assert.Equal("openapi/{documentName}.json", DocumentationSetup.Definitions.DocumentPattern.DefaultValue);
+        Assert.Equal("openapi/{documentName}.json", DocumentationOptions.Definitions.DocumentPattern.DefaultValue);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternName_IsCorrect()
     {
-        Assert.Equal("document-pattern", DocumentationSetup.Definitions.DocumentPattern.Name);
+        Assert.Equal("document-pattern", DocumentationOptions.Definitions.DocumentPattern.Name);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternTemplate_ContainsPattern()
     {
-        Assert.Contains("pattern", DocumentationSetup.Definitions.DocumentPattern.Template);
+        Assert.Contains("pattern", DocumentationOptions.Definitions.DocumentPattern.Template);
     }
 }

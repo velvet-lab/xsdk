@@ -23,16 +23,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using xSdk.Data;
-using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
 using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Plugins.WebApi;
 
-internal sealed class WebApiPluginHost : WebPluginHost
+internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
 {
     protected override int Order => 50;
 
@@ -45,7 +45,7 @@ internal sealed class WebApiPluginHost : WebPluginHost
             .AddProblemDetails(_ =>
             {
                 Logger.LogDebug("Configure Problem Details");
-                var currentStage = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>().Stage;
+                var currentStage = environmentOptions.Value.Stage;
 
                 _.IncludeExceptionDetails = (ctx, ex) =>
                 {
@@ -75,7 +75,8 @@ internal sealed class WebApiPluginHost : WebPluginHost
                 _.InputFormatters.Add(new PlainTextFormatter());
                 _.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
-                SlimHost.Instance.PluginSystem.ConfigurePlugin<IWebApiPluginBuilder>(x => x.ConfigureMvc(_));
+                InvokeBuilders<IWebApiPluginBuilder>(plugin => plugin.ConfigureMvc(_));
+
             })
             .AddJsonOptions(_ =>
             {
@@ -133,7 +134,7 @@ internal sealed class WebApiPluginHost : WebPluginHost
     public override void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app)
     {
         Logger.LogDebug("Load Environtment Setup");
-        if (Environment.Stage == Stage.Development)
+        if (environmentOptions.Value.Stage == Stage.Development)
         {
             app.UseDeveloperExceptionPage();
         }

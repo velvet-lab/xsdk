@@ -27,12 +27,8 @@ public static class HostBuilderExtensions
 
     public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder)
         where TPluginBuilder : class, ITelemetryPluginBuilder
-    {
-        builder
-            .RegisterSetup<TelemetrySetup>()
+        => builder
             .RegisterPluginHost<TelemetryPluginHost>()
-            .RegisterPluginBuilder<TPluginBuilder>();
-
-        return builder;
-    }
+            .RegisterPluginHostOptions<TelemetryOptions>()
+            .RegisterPluginBuilder<ITelemetryPluginBuilder, TPluginBuilder>();
 }

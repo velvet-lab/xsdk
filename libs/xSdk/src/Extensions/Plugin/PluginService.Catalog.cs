@@ -42,7 +42,7 @@ internal partial class PluginService
             {
                 if (!_plugins.Any(x => x.WeikioPlugin.Type == abstractPlugin.Type))
                 {
-                    var item = new PluginItem(abstractPlugin);
+                    var item = new PluginItem(abstractPlugin, provider);
                     _plugins.Add(item);
                 }
             }

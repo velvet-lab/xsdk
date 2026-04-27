@@ -29,5 +29,5 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, ICommandsPluginBuilder
         => builder
             .RegisterPluginHost<CommandPluginHost>()
-            .RegisterPluginBuilder<TPluginBuilder>();
+            .RegisterPluginBuilder<ICommandsPluginBuilder, TPluginBuilder>();
 }

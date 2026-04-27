@@ -16,21 +16,17 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.Links;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddLinksService(this IServiceCollection services)
+    public static IServiceCollection AddLinksService(this IServiceCollection services, Func<LinksOptions> optionsFactory)
     {
         services.AddHttpContextAccessor();
         services.TryAddSingleton<ILinksService>(provider =>
         {
-            var options = new LinksOptions();
-            SlimHost.Instance.PluginSystem.ConfigurePlugin<ILinksPluginBuilder>(x => x.ConfigureLinks(options));
-
+            var options = optionsFactory?.Invoke();
             var service = ActivatorUtilities.CreateInstance<LinksService>(provider, options);
 
             return service;

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Telemetry;
-using xSdk.Extensions.Variable;
-using xSdk.Hosting;
 
 namespace xSdk.Plugins.Telemetry;
 
-internal class DefaultTelemetryPluginBuilder : PluginBuilder<TelemetrySetup>, ITelemetryPluginBuilder
+internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> environmentOptions, IOptions<TelemetryOptions> telemetryOptions) : PluginBuilder, ITelemetryPluginBuilder
 {
     public void ConfigureLoggingProvider(LoggerProviderBuilder builder)
     {
@@ -42,7 +42,7 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilder<TelemetrySetup>, IT
 
     public void ConfigureMetrics(MeterProviderBuilder builder)
     {
-        var envSetup = LoadSetup<EnvironmentSetup>();
+        var envSetup = environmentOptions.Value;
 
         builder
             .AddMeter(envSetup.ServiceFullName)
@@ -57,7 +57,8 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilder<TelemetrySetup>, IT
 
     public void ConfigureTracing(TracerProviderBuilder builder)
     {
-        var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
+        var envSetup = environmentOptions.Value;
+
         builder
             .AddSource(envSetup.ServiceFullName)
             .AddAspNetCoreInstrumentation()
@@ -71,8 +72,8 @@ internal class DefaultTelemetryPluginBuilder : PluginBuilder<TelemetrySetup>, IT
 
     private void ConfigureOtlpExporter(OtlpExporterOptions options)
     {
-        var telemetrySetup = SlimHost.Instance.VariableSystem.GetSetup<TelemetrySetup>();
-        if (telemetrySetup.IsValid(true))
+        var telemetrySetup = telemetryOptions.Value;
+        if(!telemetrySetup.IsOtlpExporterDisabled)
         {
             // Adding the OtlpExporter creates a GrpcChannel.
             // This switch must be set before creating a GrpcChannel when calling an insecure gRPC service.

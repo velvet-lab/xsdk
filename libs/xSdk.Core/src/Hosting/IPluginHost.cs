@@ -14,9 +14,17 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
-public interface IPluginHost : IPluginDescription { }
+public interface IPluginHost : IPluginDescription
+{
+    IServiceProvider Services { get; }
+
+    void ConfigureServices(IServiceCollection services);
+
+    void ConfigureServices(HostBuilderContext context, IServiceCollection services);
+}

@@ -9,7 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Spectre.Console.Cli" />
-        <PackageReference Include="MongoDB.EntityFrameworkCore" />        
+        <PackageReference Include="MongoDB.EntityFrameworkCore" />
         <PackageReference Include="Testcontainers.MongoDb" />
     </ItemGroup>
 
@@ -17,4 +17,5 @@
         <ProjectReference Include="..\..\..\libs\xSdk.Data.EntityFramework.MongoDB\src\xSdk.Data.EntityFramework.MongoDB.csproj" />
         <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
     </ItemGroup>
+
 </Project>

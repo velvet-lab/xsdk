@@ -18,74 +18,41 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.IO;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Plugins.DataProtection;
 
-internal sealed class DataProtectionPluginHost : PluginHost<DataProtectionSetup>
+public sealed class DataProtectionPluginHost(IOptions<ApplicationOptions> applicationOptions, IOptions<DataProtectionOptions> pluginOptions) : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
         Logger.LogInformation("Configure DataProtection");
 
+        var dataprotectionOptions = pluginOptions.Value;
+        var appOptions = applicationOptions.Value;
+
         IDataProtectionBuilder? builder = null;
-        if (!string.IsNullOrEmpty(Setup.ApplicationDiscriminator))
-            builder = services.AddDataProtection(_ => _.ApplicationDiscriminator = Setup.ApplicationDiscriminator);
+        if (!string.IsNullOrEmpty(dataprotectionOptions.Discriminator))
+            builder = services.AddDataProtection(_ => _.ApplicationDiscriminator = dataprotectionOptions.Discriminator);
         else
             builder = services.AddDataProtection();
 
-        if (!string.IsNullOrEmpty(Setup.ApplicationName))
-            builder.SetApplicationName(Setup.ApplicationName);
+        if (!string.IsNullOrEmpty(appOptions.Name))
+            builder.SetApplicationName(appOptions.Name);
 
-        if (!string.IsNullOrEmpty(Setup.KeyLifetime))
+        if (!string.IsNullOrEmpty(dataprotectionOptions.KeyLifetime))
         {
-            if (TimeSpanParser.TryParse(Setup.KeyLifetime, out TimeSpan result))
+            if (TimeSpanParser.TryParse(dataprotectionOptions.KeyLifetime, out TimeSpan result))
             {
                 builder.SetDefaultKeyLifetime(result);
             }
         }
 
-        if (!SlimHost.Instance.PluginSystem.ConfigurePlugin<IDataProtectionPluginBuilder>(x => x.ConfigureDataProtection(builder)))
-        {
-            var keysLocation = GetKeyFolder();
-            builder.PersistKeysToFileSystem(new DirectoryInfo(keysLocation));
-        }
-    }
-
-    private string GetKeyFolder()
-    {
-        Logger.LogInformation("Try to get Key Folder for Data Protection");
-
-        string? keyFolder = null;
-        if (Debugger.IsAttached)
-        {
-            keyFolder = Path.Combine(FileSystemHelper.GetExecutingFolder(), "keys");
-        }
-        else
-        {
-            keyFolder = SlimHost.Instance.FileSystem.Machine.Data.GetFullPath("/keys");
-        }
-
-        if (!string.IsNullOrEmpty(keyFolder) && !Directory.Exists(keyFolder))
-        {
-            try
-            {
-                Directory.CreateDirectory(keyFolder);
-            }
-            catch
-            {
-                Logger.LogWarning("KeyFolder '{0}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
-
-                keyFolder = SlimHost.Instance.FileSystem.User.Data.GetFullPath("/keys");
-                if (!Directory.Exists(keyFolder))
-                    Directory.CreateDirectory(keyFolder);
-            }
-        }
-
-        return keyFolder;
+        InvokeBuilder<IDataProtectionPluginBuilder>(x => x.ConfigureDataProtection(builder));
     }
 }

@@ -18,8 +18,8 @@ using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
-using OpenTelemetry.Resources;
-using xSdk.Extensions.Variable;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 
 namespace xSdk.Extensions.Telemetry;
 
@@ -27,16 +27,16 @@ internal partial class TelemetryService : ITelemetryService
 {
     private ActivitySource? _mainActivitySource;
     private Meter? _mainMeter;
-    private readonly EnvironmentSetup _envSetup;
+    private readonly EnvironmentOptions _envSetup;
     private readonly ILogger<TelemetryService> _logger;
 
     public ActivitySource MainActivitySource => CreateMainActivitySource();
 
     public Meter MainMeter => CreateMainMeter();
 
-    public TelemetryService(IVariableService variableService, ILogger<TelemetryService> logger)
+    public TelemetryService(IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryService> logger)
     {
-        this._envSetup = variableService.GetSetup<EnvironmentSetup>();
+        this._envSetup = environmentOptions.Value;
         this._logger = logger;
     }
 

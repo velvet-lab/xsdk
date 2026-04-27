@@ -15,24 +15,23 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using OpenTelemetry.Resources;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Telemetry;
-using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Telemetry;
 
-internal class TelemetryPluginHost : PluginHost
+public sealed class TelemetryPluginHost(IOptions<TelemetryOptions> telemetryOptions, IOptions<EnvironmentOptions> environmentOptions) : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        var telemetrySetup = SlimHost.Instance.VariableSystem.GetSetup<TelemetrySetup>();
+        var telemetrySetup = telemetryOptions.Value;
+
         if (!telemetrySetup.IsDisabled)
         {
             services.AddTelemetryServices();
-
-            telemetrySetup.Validate();
 
             // Create an builder
             var telemetryBuilder = services
@@ -45,7 +44,7 @@ internal class TelemetryPluginHost : PluginHost
                 telemetryBuilder.WithTracing(builder =>
                 {
                     // Call tracing configuration from possible other Startups
-                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
                 });
             }
 
@@ -55,7 +54,7 @@ internal class TelemetryPluginHost : PluginHost
                 telemetryBuilder.WithMetrics(builder =>
                 {
                     // Call metrics configuration from possible other Startups
-                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
                 });
             }
 
@@ -64,13 +63,13 @@ internal class TelemetryPluginHost : PluginHost
             {
                 telemetryBuilder.WithLogging(builder =>
                 {
-                    // Call logging configuration from possible other Startups
-                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder));
+                    // Call logging configuration from possible other Startups                    
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder));
                 },
                 options =>
                 {
-                    // Call logging configuration from possible other Startups
-                    SlimHost.Instance.PluginSystem.ConfigurePlugin<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options));
+                    // Call logging configuration from possible other Startups                    
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options));
                 });
             }
         }
@@ -78,7 +77,7 @@ internal class TelemetryPluginHost : PluginHost
 
     private void ConfigureResourceBuilder(ResourceBuilder resourceBuilder)
     {
-        var setup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
+        var setup = environmentOptions.Value;
 
         resourceBuilder
             .AddEnvironmentVariableDetector()

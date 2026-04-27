@@ -17,28 +17,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Variable;
 using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder RegisterPluginHost<TPluginHost>(this IHostBuilder builder)
-        where TPluginHost : class, IPluginHost
-    {
-        HostPluginManager.Instance.AddPluginHost<TPluginHost>();
-
-        return builder;
-    }
-
-    public static IHostBuilder RegisterPluginBuilder<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : class, IPluginBuilder
-    {
-        HostPluginManager.Instance.AddPluginBuilder<TPluginBuilder>();
-
-        return builder;
-    }
-
     public static IHostBuilder AddHost<THostedService>(this IHostBuilder builder)
         where THostedService : class, IHostedService
     {

@@ -23,14 +23,15 @@ public static class ServiceCollectionExtensions
         where TOptions : class, IVariableSetup
     {
         services
-            .AddOptions<TOptions>(name)            
+            .AddOptions<TOptions>(name)
             .Configure<IVariableService, IValidator<TOptions>>((options, variableService, validator) =>
             {
                 variableService.ParseForVariables(options);
 
-                VariableSetup? variableSetup = options as VariableSetup;
-
-                variableSetup?.Initialize(variableService);
+                if (options is VariableSetup variableSetup)
+                {
+                    variableSetup.Initialize(variableService);
+                }
 
                 configure?.Invoke(options);
 

@@ -19,7 +19,7 @@ using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Extensions.Telemetry;
 
-public sealed class TelemetrySetup : Setup
+public sealed class TelemetryOptions : VariableSetup
 {
     [Variable(name: Definitions.DisableAll.Name, template: Definitions.DisableAll.Template, helpText: Definitions.DisableAll.HelpText)]
     public bool IsDisabled
@@ -122,22 +122,8 @@ public sealed class TelemetrySetup : Setup
     }
 
     public ITelemetryPluginBuilder Configuration { get; set; }
-
-    protected override void ValidateSetup()
-    {
-        this.ValidateMember(
-            x => !x.IsDisabled && !x.IsOtlpExporterDisabled && string.IsNullOrEmpty(x.Endpoint),
-            "No MaaS endpoint configured",
-            Definitions.Endpoint.Name
-        );
-
-        if (!string.IsNullOrEmpty(Endpoint))
-        {
-            IsOtlpExporterDisabled = false;
-        }
-    }
-
-    public static class Definitions
+    
+    internal static class Definitions
     {
         public static class DisableAll
         {

@@ -23,11 +23,6 @@ public class PolicyExtensionsTests
 {
     private class TestModel : Model
     {
-        public TestModel()
-        {
-            PrimaryKey = new GuidStringPK();
-        }
-
         public string Name { get; set; } = string.Empty;
     }
 
@@ -80,10 +75,7 @@ public class LinksOptionsExtensionsTests
 {
     private class TestModel : Model
     {
-        public TestModel()
-        {
-            PrimaryKey = new GuidStringPK();
-        }
+        
     }
 
     [Fact]

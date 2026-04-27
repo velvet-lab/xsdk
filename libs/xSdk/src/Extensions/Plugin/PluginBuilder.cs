@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.DataProtection;
-using xSdk.Extensions.DataProtection;
-using xSdk.Extensions.Plugin;
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
 
-namespace xSdk.Demos.Builders;
+namespace xSdk.Extensions.Plugin;
 
-internal class DataProtectionPluginBuilder : PluginBuilder, IDataProtectionPluginBuilder
+public abstract class PluginBuilder : IPluginBuilder
 {
-    public void ConfigureDataProtection(IDataProtectionBuilder builder) { }
+    protected ILogger Logger { get => LogManager.GetCurrentClassLogger(); }
 }

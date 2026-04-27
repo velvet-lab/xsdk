@@ -18,15 +18,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
+using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.WebSecurity;
 
-public class WebSecuritySetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void WebSecuritySetup_DefaultProperties_AreEmpty()
     {
-        var setup = new WebSecuritySetup();
+        var setup = new WebSecurityOptions();
 
         Assert.NotNull(setup);
         Assert.True(string.IsNullOrEmpty(setup.Origins));
@@ -36,7 +37,9 @@ public class WebSecuritySetupTests(TestHostFixture fixture) : IClassFixture<Test
     public void WebSecurityPlugin_CreatedViaHostBuilder()
     {
         IHost host = fixture
-            .EnablePlugin(builder => builder.EnableWebSecurity())
+            .ConfigureBuilder(builder => builder
+                .EnableWebSecurity()
+                .EnableWebApi())
             .BuildHost();
 
         var service = host.Services.GetRequiredService<IPluginService>();
@@ -48,12 +51,12 @@ public class WebSecuritySetupTests(TestHostFixture fixture) : IClassFixture<Test
     [Fact]
     public void WebSecuritySetup_Definitions_OriginsName_IsCorrect()
     {
-        Assert.Equal("origins", WebSecuritySetup.Definitions.Origins.Name);
+        Assert.Equal("origins", WebSecurityOptions.Definitions.Origins.Name);
     }
 
     [Fact]
     public void WebSecuritySetup_Definitions_OriginsTemplate_IsCorrect()
     {
-        Assert.Contains("origins", WebSecuritySetup.Definitions.Origins.Template);
+        Assert.Contains("origins", WebSecurityOptions.Definitions.Origins.Template);
     }
 }

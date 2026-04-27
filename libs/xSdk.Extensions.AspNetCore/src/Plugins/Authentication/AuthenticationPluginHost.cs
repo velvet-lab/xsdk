@@ -21,14 +21,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using xSdk.Extensions.Authentication;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
-internal sealed class AuthenticationPluginHost : WebPluginHost
+internal sealed class AuthenticationPluginHost(IOptions<ApiKeyOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
@@ -43,8 +45,8 @@ internal sealed class AuthenticationPluginHost : WebPluginHost
             .AddPolicyScheme(AuthenticationDefaults.MulitAuth.Scheme, AuthenticationDefaults.MulitAuth.Scheme, EnableMultiAuth);
 
         // API Key Auth is always needed for the default Multi Auth Scheme
-        authBuilder.AddApiKeyAuth();
-        SlimHost.Instance.PluginSystem.ConfigurePlugin<IAuthenticationPluginBuilder>(x => x.ConfigureAuthentication(authBuilder));
+        authBuilder.AddApiKeyAuth(apiKeyOptions.Value, environmentOptions.Value);
+        InvokeBuilders<IAuthenticationPluginBuilder>(x => x.ConfigureAuthentication(authBuilder));
 
         // Add Client defined Policies
         services.AddAuthorization(_ =>
@@ -58,7 +60,7 @@ internal sealed class AuthenticationPluginHost : WebPluginHost
             //    .RequireAuthenticatedUser()
             //    .Build();
 
-            SlimHost.Instance.PluginSystem.ConfigurePlugin<IAuthenticationPluginBuilder>(x => x.ConfigureAuthorization(_));
+            InvokeBuilders<IAuthenticationPluginBuilder>(x => x.ConfigureAuthorization(_));
         });
     }
 
@@ -100,7 +102,7 @@ internal sealed class AuthenticationPluginHost : WebPluginHost
     private void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme)
     {
         string? result = null;
-        SlimHost.Instance.PluginSystem.ConfigurePlugin<IAuthenticationPluginBuilder>(x => x.TryRetrieveAuthenticationScheme(context, out result));
+        InvokeBuilders<IAuthenticationPluginBuilder>(x => x.TryRetrieveAuthenticationScheme(context, out result));
 
         scheme = result;
     }

@@ -38,7 +38,7 @@ internal static class AssemblyCollector
             AddAssembliesFromExecutingFolder(_assemblies);
 
             _logger.LogDebug("Add assemblies from loaded plugins");
-            var plugins = SlimHost.Instance.PluginSystem.GetPlugins();
+            var plugins = SlimHost.Instance.GetPluginHosts<IPluginHost>();
             foreach (var plugin in plugins)
             {
                 var assembly = plugin.GetType().Assembly;
@@ -117,6 +117,8 @@ internal static class AssemblyCollector
             "Handlebars",
             "Hellang",
             "LiteDB",
+            "Mapster",
+            "Mapster.Core",
             "MicroElements",
             "Microsoft",
             "MongoDB",
@@ -135,6 +137,12 @@ internal static class AssemblyCollector
             "Zio",
             "netcore",
             "netstandard",
+            "xunit.v3.runner.common",
+            "xunit.v3.common",
+            "xunit.v3.core",
+            "xunit.v3.mtp-v1",
+            "xunit.v3.runner.inproc.console",
+            "xunit.v3.assert"
         };
 
         if (!string.IsNullOrEmpty(name))

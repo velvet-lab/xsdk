@@ -23,17 +23,14 @@ namespace xSdk.Plugins.DataProtection;
 public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableDataProtection(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder
-            .RegisterSetup<DataProtectionSetup>()
-            .RegisterPluginHost<DataProtectionPluginHost>();
-    }
+        => hostBuilder.EnableDataProtection<DefaultDataProtectionBuilder>();
 
     public static IHostBuilder EnableDataProtection<TPluginBuilder>(this IHostBuilder hostBuilder)
         where TPluginBuilder : class, IDataProtectionPluginBuilder
     {
         return hostBuilder
-            .EnableDataProtection()
-            .RegisterPluginBuilder<TPluginBuilder>();
+            .RegisterPluginHostOptions<DataProtectionOptions>()
+            .RegisterPluginHost<DataProtectionPluginHost>()            
+            .RegisterPluginBuilder<IDataProtectionPluginBuilder, TPluginBuilder>();
     }
 }

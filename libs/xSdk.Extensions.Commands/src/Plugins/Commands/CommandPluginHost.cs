@@ -16,27 +16,29 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
-internal sealed class CommandPluginHost : PluginHost
+public sealed class CommandPluginHost(ICommandsPluginBuilder builder) : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        services.TryAddSingleton(provider =>
-        {            
-            var builder = provider.RetrievePluginBuilder<ICommandsPluginBuilder>();
-
-            var app = builder.CreateApplication(services);
-            app.Configure(config =>
+        services
+            .TryAddSingleton(provider =>
             {
-                builder.Configure(config);
-            });
+                var app = builder.CreateApplication(services);
+                app.Configure(config =>
+                {
+                    builder.Configure(config);
+                });
 
-            return app;
-        });
+                PromptFactory.Factory = builder.PromptFactory;
+
+                return app;
+            });
     }
 }

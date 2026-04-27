@@ -18,8 +18,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
-using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
+using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting;
 
@@ -34,22 +33,20 @@ public static partial class WebHost
     public static IHostBuilder CreateBuilder(string[] args, string appName, string appPrefix) => CreateBuilder(args, appName, default, appPrefix);
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
-    {
-        var builder = xSdk
-            .Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix)
+        => xSdk.Hosting.Host
+            .CreateBuilder(args, appName, appCompany, appPrefix)
             .ConfigureWebHostDefaults(webHostBuilder =>
             {
                 _logger.LogDebug("Configuring WebHostBuilder");
 
-                var envSetup = SlimHost.Instance.VariableSystem.GetSetup<EnvironmentSetup>();
-                var stage = envSetup.Stage;
+                EnvironmentOptions environmentSetup = SlimHost.Instance.GetEnvironment();
+                Stage stage = environmentSetup.Stage;
 
-                var contentRoot = GetContentRoot(envSetup);
+                string contentRoot = GetContentRoot(environmentSetup);
                 webHostBuilder
                     // Set the Content Root
                     .UseContentRoot(contentRoot)
                     .UseWebRoot(contentRoot)
-
                     // Set the Environment
                     .UseEnvironment(stage.ToString())
                     // Enabled detailed Errors if in Development Mode
@@ -57,13 +54,16 @@ public static partial class WebHost
                     // Configure Services
                     .ConfigureServices((services) =>
                     {
-                        SlimHost.Instance.PluginSystem.ConfigureHost<WebPluginHost>(x => x.ConfigureServices(services));
+                        services
+                            .RegisterOptions<WebHostOptions>();
+
+                        SlimHost.Instance.ConfigureWebPluginHost(x => x.ConfigureServices(services));
                     })
 
                     // Configure Services
                     .ConfigureServices((context, services) =>
                     {
-                        SlimHost.Instance.PluginSystem.ConfigureHost<WebPluginHost>(x => x.ConfigureServices(context, services));
+                        SlimHost.Instance.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
                     })
                     // Load Middlewares
                     .Configure(ConfigureApplicationWithContext)
@@ -74,17 +74,13 @@ public static partial class WebHost
                     webHostBuilder.CaptureStartupErrors(true);
             });
 
-        SlimHost.Instance.VariableSystem.RegisterSetup<WebHostSetup>();
-        return builder;
-    }
-
-    private static string GetContentRoot(EnvironmentSetup envSetup)
+    private static string GetContentRoot(EnvironmentOptions environmentOptions)
     {
-        _logger.LogDebug(envSetup.IsDemo ? "Demo Mode" : "Production Mode");
+        _logger.LogDebug(environmentOptions.IsDemo ? "Demo Mode" : "Production Mode");
         _logger.LogDebug("Try to get Content Root");
 
-        var root = envSetup.ContentRoot;
-        if (envSetup.IsDemo)
+        var root = environmentOptions.ContentRoot;
+        if (environmentOptions.IsDemo)
         {
             return FileSystemHelper.GetExecutingFolder();
         }

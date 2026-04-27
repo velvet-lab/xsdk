@@ -6,7 +6,7 @@
         <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
-    <ItemGroup>        
+    <ItemGroup>
         <PackageReference Include="Testcontainers" />
     </ItemGroup>
 

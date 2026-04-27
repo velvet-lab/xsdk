@@ -20,7 +20,7 @@ using xSdk.Extensions.WebSecurity;
 
 namespace xSdk.Plugins.WebSecurity;
 
-public sealed class WebSecuritySetup : Setup, IWebSecuritySetup
+public sealed class WebSecurityOptions : VariableSetup
 {
     [Variable(
         name: Definitions.Origins.Name,

@@ -21,28 +21,17 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Plugins.DataProtection;
 
 [VariablePrefix("encryption")]
-public sealed class DataProtectionSetup : Setup, IDataProtectionSetup
+public sealed class DataProtectionOptions : VariableSetup
 {
     [Variable(
-        name: Definitions.ApplicationDiscriminator.Name,
-        template: Definitions.ApplicationDiscriminator.Template,
-        helpText: Definitions.ApplicationDiscriminator.HelpText
+        name: Definitions.Discriminator.Name,
+        template: Definitions.Discriminator.Template,
+        helpText: Definitions.Discriminator.HelpText
     )]
-    public string ApplicationDiscriminator
+    public string? Discriminator
     {
-        get => this.ReadValue<string>(Definitions.ApplicationDiscriminator.Name);
-        set => this.SetValue(Definitions.ApplicationDiscriminator.Name, value);
-    }
-
-    [Variable(
-        name: Definitions.ApplicationName.Name,
-        template: Definitions.ApplicationName.Template,
-        helpText: Definitions.ApplicationName.HelpText
-    )]
-    public string ApplicationName
-    {
-        get => this.ReadValue<string>(Definitions.ApplicationName.Name);
-        set => this.SetValue(Definitions.ApplicationName.Name, value);
+        get => this.ReadValue<string>(Definitions.Discriminator.Name);
+        set => this.SetValue(Definitions.Discriminator.Name, value);
     }
 
     [Variable(
@@ -50,7 +39,7 @@ public sealed class DataProtectionSetup : Setup, IDataProtectionSetup
         template: Definitions.KeyLifetime.Template,
         helpText: Definitions.KeyLifetime.HelpText
     )]
-    public string KeyLifetime
+    public string? KeyLifetime
     {
         get => this.ReadValue<string>(Definitions.KeyLifetime.Name);
         set => this.SetValue(Definitions.KeyLifetime.Name, value);
@@ -58,7 +47,7 @@ public sealed class DataProtectionSetup : Setup, IDataProtectionSetup
 
     public static class Definitions
     {
-        public static class ApplicationDiscriminator
+        public static class Discriminator
         {
             public const string Name = "discriminator";
             public const string Template = "--discriminator <discriminator>";
@@ -68,13 +57,6 @@ public sealed class DataProtectionSetup : Setup, IDataProtectionSetup
                 "to isolate multiple logical applications that all happen to be using the same key material. " +
                 "If two different applications need to share protected payloads, they should ensure that this property " +
                 "is set to the same value across both applications.";
-        }
-
-        public static class ApplicationName
-        {
-            public const string Name = "name";
-            public const string Template = "--name <name>";
-            public const string HelpText = "Sets the unique name of this application within the data protection system.";
         }
 
         public static class KeyLifetime

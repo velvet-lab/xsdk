@@ -42,7 +42,9 @@ public static partial class Host
             Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
         };
 
-        var builder = new HostBuilder()
+        SlimHost.Instance.InitializeSlimHost(args, appOptions);
+
+        return new HostBuilder()
             .ConfigureHostConfiguration(configBuilder =>
             {
                 HostConfigurationManager.LoadHostConfiguration(configBuilder, appOptions);
@@ -53,19 +55,10 @@ public static partial class Host
             })
             .ConfigureServices(services =>
             {
-                services
-                    .AddOptions<ApplicationOptions>()
-                    .Configure(options =>
-                    {
-                        options.Name = appName ?? ApplicationOptions.Definitions.AppName.DefaultValue;
-                        options.Company = appCompany ?? ApplicationOptions.Definitions.AppCompany.DefaultValue;
-                        options.Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue;
-
-                        var validator = new ApplicationOptionsValidator();
-                        validator.ValidateAndThrow(options);
-                    });
+                SlimHost.Instance.PostConfigure(services);
 
                 services
+                    .RegisterApplicationOptions(appOptions)                    
                     .RegisterOptions<EnvironmentOptions>(options =>
                     {
                         services
@@ -79,13 +72,12 @@ public static partial class Host
                 services
                     .AddHostedService<HostInitializer>();
 
-                HostPluginManager.Instance.ConfigureHost<PluginHost>(x => x.ConfigureServices(services));
+                SlimHost.Instance.ConfigurePluginHost(x => x.ConfigureServices(services));
+                
             })
             .ConfigureServices((context, services) =>
             {
-                HostPluginManager.Instance.ConfigureHost<PluginHost>(x => x.ConfigureServices(context, services));
+                SlimHost.Instance.ConfigurePluginHost(x => x.ConfigureServices(context, services));
             });
-
-        return builder;
     }
 }

@@ -10,25 +10,26 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Exporter.Console" PrivateAssets="contentfiles;analyzers;build;compile" />        
+        <PackageReference Include="OpenTelemetry.Exporter.Console" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Extensions.Enrichment.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Extensions.Enrichment.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile"  />
-        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore"  PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Instrumentation.EventCounters" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.Http" PrivateAssets="contentfiles;analyzers;build;compile"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" PrivateAssets="contentfiles;analyzers;build;compile"  />
-        <PackageReference Include="OpenTelemetry.Resources.Container" PrivateAssets="contentfiles;analyzers;build;compile"  />
-        <PackageReference Include="OpenTelemetry.Resources.Host" PrivateAssets="contentfiles;analyzers;build;compile"  />
-        <PackageReference Include="OpenTelemetry.Resources.ProcessRuntime" PrivateAssets="contentfiles;analyzers;build;compile"  />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.Container" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.Host" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.ProcessRuntime" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Resources.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="OpenTelemetry.Resources.OperatingSystem" PrivateAssets="contentfiles;analyzers;build;compile"  />
+        <PackageReference Include="OpenTelemetry.Resources.OperatingSystem" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
     <ItemGroup>

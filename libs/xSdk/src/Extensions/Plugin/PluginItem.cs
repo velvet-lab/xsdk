@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Plugin;
 
-internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin)
+internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin, IServiceProvider provider)
 {
     private static readonly ILogger _logger = LogManager.CreateLogger<PluginItem>();
 
@@ -37,8 +38,22 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
         {
             if (_concretePlugin == null)
             {
-                _concretePlugin = Activator.CreateInstance(weikioPlugin);
-                Initialize();
+                object? tmpPlugin = null;
+                if (provider != null)
+                {
+                    tmpPlugin = ActivatorUtilities.CreateInstance(provider, weikioPlugin);
+                }
+
+                if (tmpPlugin == null)
+                {
+                    tmpPlugin = Activator.CreateInstance(weikioPlugin);
+                }
+
+                if (tmpPlugin != null)
+                {
+                    _concretePlugin = tmpPlugin;
+                    Initialize();
+                }
             }
             return _concretePlugin;
         }

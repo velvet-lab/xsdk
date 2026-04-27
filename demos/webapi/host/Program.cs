@@ -19,8 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos.Builders;
+using xSdk.Extensions.Links;
 using xSdk.Hosting;
-using xSdk.Plugins.Authentication;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.DataProtection;
 using xSdk.Plugins.Documentation;
@@ -35,15 +35,15 @@ const string APP_NAME = "webapi";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "webapi";
 
-var host = xSdk
-    .Hosting.WebHost.CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+var host = xSdk.Hosting.WebHost
+    .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
     .EnableDocumentation<DocumentationPluginBuilder>()
     .EnableWebSecurity()
     //.EnableAuthentication<AuthenticationPluginBuilder>()
     .EnableCompression()
-    .EnableDataProtection<DataProtectionPluginBuilder>()
-    .EnableLinks<LinksPluginBuilder>()
+    .EnableDataProtection()
+    .EnableLinks<ILinksPluginBuilder>()
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();

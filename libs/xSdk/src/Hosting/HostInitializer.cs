@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -7,33 +8,26 @@ using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 
-internal sealed class HostInitializer(IServiceProvider provider, IPluginService pluginService, ILoggerFactory factory) : IHostedService
+internal sealed class HostInitializer(IPluginService pluginService, ILoggerFactory factory) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        // Initialize the LogManager with the provided ILoggerFactory
         LogManager.Initialize(factory);
 
-        var pluginAssemblies = HostPluginManager.Instance.Plugins
-            .Select(p => p.GetType().Assembly)
+        Type[] pluginTypes = SlimHost.Instance.GetPluginHosts<IPluginHost>()
+            .Select(p => p.GetType())
             .Distinct()
             .ToArray();
 
-        if (pluginService != null)
+        // Register plugins with the plugin service
+        if (pluginService != null && pluginTypes.Any())
         {
-            if (pluginAssemblies.Any())
+            foreach (Type pluginType in pluginTypes)
             {
-                await pluginService.AddPluginsFromAsync(pluginAssemblies, cancellationToken);
+                await pluginService.AddPluginAsync(pluginType, cancellationToken);
             }
-
-            var pluginBuilders = pluginService.GetPlugins<IPluginBuilder>();
-            if (pluginBuilders.Any())
-            {
-                foreach(IPluginBuilder builder in pluginBuilders)
-                {
-                    builder.SetServiceProvider(provider);
-                }
-            }
-        }        
+        }                
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

@@ -23,19 +23,14 @@ namespace xSdk.Plugins.WebApi;
 public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableWebApi(this IHostBuilder builder)
-    {
-        builder
-            .RegisterPluginHost<WebApiPluginHost>();
-
-        return builder;
-    }
+        => builder.EnableWebApi<DefaultWebApiPluginBuilder>();
 
     public static IHostBuilder EnableWebApi<TPluginBuilder>(this IHostBuilder builder)
         where TPluginBuilder : class, IWebApiPluginBuilder
     {
         builder
-            .EnableWebApi()
-            .RegisterPluginBuilder<TPluginBuilder>();
+            .RegisterPluginHost<WebApiPluginHost>()
+            .RegisterPluginBuilder<IWebApiPluginBuilder, TPluginBuilder>();
 
         return builder;
     }

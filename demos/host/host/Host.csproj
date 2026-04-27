@@ -12,6 +12,4 @@
       <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
     </ItemGroup>
 
-
 </Project>
-

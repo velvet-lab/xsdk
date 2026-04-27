@@ -23,6 +23,7 @@ using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Plugin;
+using xSdk.Plugins.Commands;
 
 namespace xSdk.Hosting;
 
@@ -52,8 +53,6 @@ public static class HostExtensions
 
         host.RemoveConsoleLoggers();
 
-        var builder = host.Services.RetrievePluginBuilder<ICommandsPluginBuilder>();
-
         var lastResult = 0;
         var replArgs = args;
         var defaultArgs = CommandlineParser.Parse(args).BackupDefaultArgs();
@@ -64,7 +63,7 @@ public static class HostExtensions
             var currentResult = await app.RunAsync(replArgs);
             if (isReplConsole)
             {
-                System.Console.Write(builder.PromptFactory());
+                System.Console.Write(PromptFactory.Factory());
                 var input = System.Console.ReadLine();
 
                 if (CommandlineParser.Parse(input).AddDefaultArgs(defaultArgs).ContainsPattern(ExitCommand.Definitions.Name))

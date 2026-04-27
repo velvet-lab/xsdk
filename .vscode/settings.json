@@ -18,5 +18,6 @@
     {
       "file": ".github/guidance/pull-request-instructions.md"
     }
-  ]
+  ],
+  "dotnet.defaultSolution": "xsdk-demos.sln"
 }

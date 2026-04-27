@@ -99,4 +99,20 @@ public interface IPluginService
         => RemovePluginsFromAsync(new[] { sourceAssembly }, token);
 
     Task RemovePluginsFromAsync(Assembly[] sourceAssemblies, CancellationToken token = default);
+
+
+    void InvokePlugin<TPlugin>(Action<TPlugin> action)
+        where TPlugin : IPlugin
+        => InvokePluginAsync(action).ConfigureAwait(false).GetAwaiter().GetResult();
+
+    Task InvokePluginAsync<TPlugin>(Action<TPlugin> action, CancellationToken token = default)
+        where TPlugin : IPlugin;
+
+    void InvokePlugins<TPlugin>(Action<TPlugin> action)
+        where TPlugin : IPlugin
+        => InvokePluginsAsync(action).ConfigureAwait(false).GetAwaiter().GetResult();
+
+    Task InvokePluginsAsync<TPlugin>(Action<TPlugin> action, CancellationToken token = default)
+        where TPlugin : IPlugin;
+
 }

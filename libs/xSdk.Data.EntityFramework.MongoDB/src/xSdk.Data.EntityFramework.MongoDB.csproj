@@ -19,5 +19,4 @@
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk.Data.EntityFramework\src\xSdk.Data.EntityFramework.csproj" />
     </ItemGroup>
-
 </Project>

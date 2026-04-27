@@ -22,8 +22,8 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
@@ -31,7 +31,8 @@ public static partial class WebHost
 {
     private static void ConfigureKestrel(KestrelServerOptions options)
     {
-        var webSetup = options.ApplicationServices.GetRequiredService<IVariableService>().GetSetup<WebHostSetup>();
+        var webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
+        var fileService = options.ApplicationServices.GetService<IFileSystemService>();
         var certAvailable = false;
 
         var httpPort = webSetup.Http;
@@ -40,7 +41,7 @@ public static partial class WebHost
         // Remove Kestrel Header for security reasons
         options.AddServerHeader = false;
 
-        if (TryLoadCertificateIfHttpsIsEnabled(webSetup, out X509Certificate2 cert))
+        if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2 cert))
         {
             certAvailable = true;
             httpPort = webSetup.Https;
@@ -113,11 +114,11 @@ public static partial class WebHost
         }
     }
 
-    private static bool TryLoadCertificateIfHttpsIsEnabled(WebHostSetup webSetup, out X509Certificate2? cert)
+    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService fileService, WebHostOptions webSetup, out X509Certificate2? cert)
     {
         if (webSetup.IsHttpsEnabled)
         {
-            var certLocation = SlimHost.Instance.FileSystem.Machine.Data.GetFullPath("/certs");
+            var certLocation = fileService.Machine.Data.GetFullPath("/certs");
             if (Debugger.IsAttached)
                 certLocation = Environment.CurrentDirectory;
 

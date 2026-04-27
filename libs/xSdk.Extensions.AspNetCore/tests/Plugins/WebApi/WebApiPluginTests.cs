@@ -21,13 +21,13 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebApi;
 
-public class WebApiPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class WebApiPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void CreatePlugin()
     {
         IHost host = fixture
-            .EnablePlugin(builder => builder.EnableWebApi())
+            .ConfigureBuilder(builder => builder.EnableWebApi())
             .BuildHost();
 
         var service = host.Services.GetRequiredService<IPluginService>();

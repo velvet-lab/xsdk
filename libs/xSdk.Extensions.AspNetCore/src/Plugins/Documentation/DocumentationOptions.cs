@@ -21,7 +21,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Plugins.Documentation;
 
 [VariablePrefix("openapi")]
-public sealed class DocumentationSetup : Setup, IDocumentationSetup
+public sealed class DocumentationOptions : VariableSetup
 {
     [Variable(
         name: Definitions.DocumentPattern.Name,
@@ -29,7 +29,7 @@ public sealed class DocumentationSetup : Setup, IDocumentationSetup
         helpText: Definitions.DocumentPattern.HelpText,
         defaultValue: Definitions.DocumentPattern.DefaultValue
     )]
-    public string DocumentPattern
+    public string? DocumentPattern
     {
         get => ReadValue<string>(Definitions.DocumentPattern.Name);
         set => SetValue(Definitions.DocumentPattern.Name, value);

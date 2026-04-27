@@ -18,6 +18,7 @@ using System.Text;
 using CloudNative.CloudEvents;
 using xSdk.Data;
 using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
@@ -37,9 +38,9 @@ public static class CloudEventStringConverter
 
     private static CloudEvent FromBase64Internal(string raw, IEnumerable<CloudEventAttribute> extensions)
     {
-        if (Base64Helper.IsBase64(raw))
+        if (Base64Tools.IsBase64(raw))
         {
-            var cloudEventAsJson = Base64Helper.ConvertFromBase64(raw);
+            var cloudEventAsJson = Base64Tools.ConvertFromBase64(raw);
             var cloudEvent = FromJson(cloudEventAsJson, extensions);
 
             return cloudEvent;
@@ -62,7 +63,7 @@ public static class CloudEventStringConverter
 
     private static CloudEvent FromJsonInternal(string json, IEnumerable<CloudEventAttribute> extensions)
     {
-        if (JsonHelper.IsJson(json))
+        if (JsonTools.IsJson(json))
         {
             var body = Encoding.UTF8.GetBytes(json);
             var formatter = CloudEventFactory.CreateFormatter();
