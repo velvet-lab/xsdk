@@ -22,11 +22,11 @@ namespace xSdk.Hosting;
 
 public static partial class WebHost
 {
-    private static void ConfigureApplicationWithContext(WebHostBuilderContext context, IApplicationBuilder app)
+    private static void ConfigureApplicationWithContext(WebHostBuilderContext context, IApplicationBuilder app, SlimHost slimHost)
     {
         _logger.LogInformation("Configuring application services");
 
-        var plugins = SlimHost.Instance.GetPluginHosts<WebPluginHost>();
+        var plugins = slimHost.GetPluginHosts<WebPluginHost>();
 
         // Only the first Plugin needs to configure defaults
         var firstPlugin = plugins.FirstOrDefault();

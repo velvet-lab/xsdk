@@ -19,22 +19,23 @@ public static class TestHostFactory
             Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
         };
 
-        SlimHost.Instance.InitializeSlimHost(args, appOptions);
+        var slimHost = SlimHost.InitializeSlimHost(args, appOptions);
 
         // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden
-#pragma warning disable EXTEXP0016 
+#pragma warning disable EXTEXP0016
         var builder = Microsoft.Extensions.Hosting.Testing.FakeHost.CreateBuilder(config =>
         {
             config.FakeLogging = true;
-            config.FakeRedaction = true;            
+            config.FakeRedaction = true;
         });
 #pragma warning restore EXTEXP0016
 
-        builder            
+        builder
+            .SetSlimHost(slimHost)
             .ConfigureHostConfiguration(HostConfigurationManager.LoadTestConfiguration)
             .ConfigureServices(services =>
             {
-                SlimHost.Instance.PostConfigure(services);
+                slimHost.PostConfigure(services);
 
                 services
                     .RegisterApplicationOptions(appOptions)
@@ -48,11 +49,11 @@ public static class TestHostFactory
                 services
                     .AddHostedService<HostInitializer>();
 
-                SlimHost.Instance.ConfigurePluginHost(x => x.ConfigureServices(services));
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(services));
             })
             .ConfigureServices((context, services) =>
             {
-                SlimHost.Instance.ConfigurePluginHost(x => x.ConfigureServices(context, services));
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services));
             });
 
         return builder;

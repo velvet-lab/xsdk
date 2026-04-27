@@ -33,46 +33,50 @@ public static partial class WebHost
     public static IHostBuilder CreateBuilder(string[] args, string appName, string appPrefix) => CreateBuilder(args, appName, default, appPrefix);
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
-        => xSdk.Hosting.Host
-            .CreateBuilder(args, appName, appCompany, appPrefix)
-            .ConfigureWebHostDefaults(webHostBuilder =>
-            {
-                _logger.LogDebug("Configuring WebHostBuilder");
+    {
+        var hostBuilder = xSdk.Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix);
+        var slimHost = hostBuilder.GetSlimHost();
 
-                EnvironmentOptions environmentSetup = SlimHost.Instance.GetEnvironment();
-                Stage stage = environmentSetup.Stage;
+        hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
+        {
+            _logger.LogDebug("Configuring WebHostBuilder");
 
-                string contentRoot = GetContentRoot(environmentSetup);
-                webHostBuilder
-                    // Set the Content Root
-                    .UseContentRoot(contentRoot)
-                    .UseWebRoot(contentRoot)
-                    // Set the Environment
-                    .UseEnvironment(stage.ToString())
-                    // Enabled detailed Errors if in Development Mode
-                    .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
-                    // Configure Services
-                    .ConfigureServices((services) =>
-                    {
-                        services
-                            .RegisterOptions<WebHostOptions>();
+            EnvironmentOptions environmentSetup = slimHost.GetEnvironment();
+            Stage stage = environmentSetup.Stage;
 
-                        SlimHost.Instance.ConfigureWebPluginHost(x => x.ConfigureServices(services));
-                    })
+            string contentRoot = GetContentRoot(environmentSetup);
+            webHostBuilder
+                // Set the Content Root
+                .UseContentRoot(contentRoot)
+                .UseWebRoot(contentRoot)
+                // Set the Environment
+                .UseEnvironment(stage.ToString())
+                // Enabled detailed Errors if in Development Mode
+                .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
+                // Configure Services
+                .ConfigureServices((services) =>
+                {
+                    services
+                        .RegisterOptions<WebHostOptions>();
 
-                    // Configure Services
-                    .ConfigureServices((context, services) =>
-                    {
-                        SlimHost.Instance.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
-                    })
-                    // Load Middlewares
-                    .Configure(ConfigureApplicationWithContext)
-                    // Configure Kestrel
-                    .UseKestrel(ConfigureKestrel);
+                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(services));
+                })
+                // Configure Services with Context
+                .ConfigureServices((context, services) =>
+                {
+                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
+                })
+                // Load Middlewares
+                .Configure((context, app) => ConfigureApplicationWithContext(context, app, slimHost))
+                // Configure Kestrel
+                .UseKestrel(ConfigureKestrel);
 
-                if (stage == Stage.Development)
-                    webHostBuilder.CaptureStartupErrors(true);
-            });
+            if (stage == Stage.Development)
+                webHostBuilder.CaptureStartupErrors(true);
+        });
+
+        return hostBuilder;
+    }
 
     private static string GetContentRoot(EnvironmentOptions environmentOptions)
     {

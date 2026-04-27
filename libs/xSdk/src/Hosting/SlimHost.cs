@@ -13,12 +13,12 @@ namespace xSdk.Hosting;
 public class SlimHost
 {
     private bool _isBuilded;
-
-    private IServiceCollection _slimServices;
+    private IServiceCollection _slimServices = null!;
     private IServiceCollection? _appServices;
     private readonly List<Action> _appServicesDelegates = [];
     private IServiceProvider? _serviceProvider;
     private ApplicationOptions? _applicationOptions;
+    private readonly List<Type> _registeredPluginHostTypes = [];
 
     private IServiceProvider Provider
     {
@@ -31,11 +31,7 @@ public class SlimHost
         }
     }
 
-    private static Lazy<SlimHost> _instance = new(() => new SlimHost(), true);
-
-    public static SlimHost Instance => _instance.Value;
-
-    private SlimHost() { }
+    internal SlimHost() { }
 
     internal void ConfigurePluginHost<TPluginHost>(Action<IPluginHost> factory)
         where TPluginHost : IPluginHost
@@ -89,30 +85,29 @@ public class SlimHost
         return result;
     }
 
-    internal void InitializeSlimHost(string[] args, ApplicationOptions appOptions)
+    internal static SlimHost InitializeSlimHost(string[] args, ApplicationOptions appOptions)
     {
-        _applicationOptions = appOptions;
-
-        // Reset build state so plugins and options can be registered again
-        // for a new host instance (e.g., when tests call CreateHostBuilder
-        // multiple times across parallel test runs).
-        _isBuilded = false;
-        _serviceProvider = null;
-        _appServices = null;
-        _appServicesDelegates.Clear();
-
-        _slimServices = new ServiceCollection();
-        ConfigureDefaults(_slimServices);
+        var instance = new SlimHost();
+        instance._applicationOptions = appOptions;
+        instance._slimServices = new ServiceCollection();
+        instance.ConfigureDefaults(instance._slimServices);
+        instance._slimServices.AddSingleton<IPluginHostCollection>(_ =>
+            new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()));
+        return instance;
     }
 
     internal void PostConfigure(IServiceCollection applicationServices)
     {
         _appServices = applicationServices;
-
         foreach (var action in _appServicesDelegates)
         {
             action?.Invoke();
         }
+
+        // Expose the same IPluginHostCollection in the application DI container
+        // so post-build consumers (e.g. HostInitializer) can inject it directly.
+        applicationServices.AddSingleton<IPluginHostCollection>(
+            new PluginHostCollection(_registeredPluginHostTypes.AsReadOnly()));
     }
 
     internal void RegisterPluginHost<TPluginHost, TPluginHostImplementation>()
@@ -124,6 +119,7 @@ public class SlimHost
             throw new SdkException("Cannot register plugin host after the service provider has been built.");
         }
 
+        _registeredPluginHostTypes.Add(typeof(TPluginHostImplementation));
         _slimServices.AddSingleton<TPluginHost>(provider =>
         {
             var pluginHost = ActivatorUtilities.CreateInstance<TPluginHostImplementation>(provider);

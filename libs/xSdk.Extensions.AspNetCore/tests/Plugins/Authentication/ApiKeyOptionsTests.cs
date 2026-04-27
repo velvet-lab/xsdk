@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
+using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.Authentication;
 
@@ -63,7 +64,9 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
     public void AuthenticationPlugin_CreatedViaHostBuilder()
     {
         IHost host = fixture            
-            .ConfigureBuilder(builder => builder.EnableAuthentication())
+            .ConfigureBuilder(builder => builder
+                .EnableWebApi()
+                .EnableAuthentication())
             .BuildHost();
 
         var service = host.Services.GetRequiredService<IPluginService>();

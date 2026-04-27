@@ -7,9 +7,5 @@
             <MONGODB_IMAGE_NAME>mongo:8.0</MONGODB_IMAGE_NAME>
             <VAULT_IMAGE_NAME>openbao/openbao:2.5.2</VAULT_IMAGE_NAME>
         </EnvironmentVariables>
-    </RunConfiguration>
-    <xUnit>
-        <ParallelizeTestCollections>false</ParallelizeTestCollections>
-        <ParallelizeAssembly>false</ParallelizeAssembly>        
-    </xUnit>
+    </RunConfiguration>    
 </RunSettings>

@@ -24,29 +24,23 @@ namespace xSdk.Shared;
 internal static class AssemblyCollector
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-    private static List<Assembly>? _assemblies;
 
-    internal static List<Assembly> Collect()
+    internal static List<Assembly> Collect(IPluginHostCollection pluginHostCollection)
     {
         _logger.LogInformation("Collect loaded Assemblies");
 
-        if (_assemblies == null || _assemblies.Count == 0)
+        var assemblies = new List<Assembly>();
+
+        _logger.LogDebug("Add assemblies from executing folder");
+        AddAssembliesFromExecutingFolder(assemblies);
+
+        _logger.LogDebug("Add assemblies from loaded plugins");
+        foreach (var pluginType in pluginHostCollection)
         {
-            _assemblies = new List<Assembly>();
-
-            _logger.LogDebug("Add assemblies from executing folder");
-            AddAssembliesFromExecutingFolder(_assemblies);
-
-            _logger.LogDebug("Add assemblies from loaded plugins");
-            var plugins = SlimHost.Instance.GetPluginHosts<IPluginHost>();
-            foreach (var plugin in plugins)
-            {
-                var assembly = plugin.GetType().Assembly;
-                AddAssembly(_assemblies, assembly);
-            }
+            AddAssembly(assemblies, pluginType.Assembly);
         }
 
-        return _assemblies;
+        return assemblies;
     }
 
     private static void AddAssembly(List<Assembly> assemblies, Assembly assembly)

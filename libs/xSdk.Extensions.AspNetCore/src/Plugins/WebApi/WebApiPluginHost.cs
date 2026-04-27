@@ -32,7 +32,7 @@ using xSdk.Tools;
 
 namespace xSdk.Plugins.WebApi;
 
-internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
+internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection) : WebPluginHost
 {
     protected override int Order => 50;
 
@@ -119,7 +119,7 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
         Logger.LogDebug("Enabled Endpoints for API Explorer");
         services.AddEndpointsApiExplorer();
 
-        var assemblies = AssemblyCollector.Collect();
+        var assemblies = AssemblyCollector.Collect(pluginHostCollection);
 
         Logger.LogDebug("Add Fluent Validation");
         services.AddValidatorsFromAssemblies(assemblies);

@@ -42,9 +42,10 @@ public static partial class Host
             Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
         };
 
-        SlimHost.Instance.InitializeSlimHost(args, appOptions);
+        var slimHost = SlimHost.InitializeSlimHost(args, appOptions);
 
-        return new HostBuilder()
+        var builder = new HostBuilder()
+            .SetSlimHost(slimHost)
             .ConfigureHostConfiguration(configBuilder =>
             {
                 HostConfigurationManager.LoadHostConfiguration(configBuilder, appOptions);
@@ -55,7 +56,7 @@ public static partial class Host
             })
             .ConfigureServices(services =>
             {
-                SlimHost.Instance.PostConfigure(services);
+                slimHost.PostConfigure(services);
 
                 services
                     .RegisterApplicationOptions(appOptions)                    
@@ -72,12 +73,14 @@ public static partial class Host
                 services
                     .AddHostedService<HostInitializer>();
 
-                SlimHost.Instance.ConfigurePluginHost(x => x.ConfigureServices(services));
-                
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(services));
+
             })
             .ConfigureServices((context, services) =>
             {
-                SlimHost.Instance.ConfigurePluginHost(x => x.ConfigureServices(context, services));
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services));
             });
+
+        return builder;
     }
 }

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
@@ -11,19 +7,40 @@ namespace xSdk.Hosting;
 
 public static class SlimHostExtensions
 {
+    private const string SlimHostKey = "xSdk.Hosting.SlimHost";
+
+    /// <summary>
+    /// Stores the SlimHost instance in the builder's Properties dictionary,
+    /// binding it to this specific builder so parallel builds stay isolated.
+    /// </summary>
+    internal static IHostBuilder SetSlimHost(this IHostBuilder builder, SlimHost slimHost)
+    {
+        builder.Properties[SlimHostKey] = slimHost;
+        return builder;
+    }
+
+    /// <summary>
+    /// Retrieves the SlimHost instance bound to this builder.
+    /// </summary>
+    public static SlimHost GetSlimHost(this IHostBuilder builder)
+    {
+        if (builder.Properties.TryGetValue(SlimHostKey, out var value) && value is SlimHost slimHost)
+            return slimHost;
+
+        throw new SdkException("No SlimHost found on this IHostBuilder. Ensure InitializeSlimHost was called first.");
+    }
+
     public static IHostBuilder RegisterPluginHost<TPluginHost>(this IHostBuilder builder)
         where TPluginHost : class, IPluginHost
     {
-        SlimHost.Instance.RegisterPluginHost<IPluginHost, TPluginHost>();
-
+        builder.GetSlimHost().RegisterPluginHost<IPluginHost, TPluginHost>();
         return builder;
     }
 
     public static IHostBuilder RegisterPluginBuilder<TPluginBuilder>(this IHostBuilder builder)
         where TPluginBuilder : class, IPluginBuilder
     {
-        SlimHost.Instance.RegisterPluginBuilder<IPluginBuilder, TPluginBuilder>();
-
+        builder.GetSlimHost().RegisterPluginBuilder<IPluginBuilder, TPluginBuilder>();
         return builder;
     }
 
@@ -31,36 +48,32 @@ public static class SlimHostExtensions
         where TPluginBuilder : class, IPluginBuilder
         where TPluginBuilderImplementation : class, TPluginBuilder
     {
-        SlimHost.Instance.RegisterPluginBuilder<TPluginBuilder, TPluginBuilderImplementation>();
-
+        builder.GetSlimHost().RegisterPluginBuilder<TPluginBuilder, TPluginBuilderImplementation>();
         return builder;
     }
 
     public static IHostBuilder RegisterPluginHostOptions<TOptions>(this IHostBuilder builder)
         where TOptions : class, IVariableSetup
     {
-        SlimHost.Instance.RegisterPluginHostOptions<TOptions>();
-
+        builder.GetSlimHost().RegisterPluginHostOptions<TOptions>();
         return builder;
     }
 
     public static void ConfigurePluginHost(this SlimHost slimHost, Action<IPluginHost> factory)
     {
-        SlimHost.Instance.ConfigurePluginHost<IPluginHost>(factory);
+        slimHost.ConfigurePluginHost<IPluginHost>(factory);
     }
 
-    public static void ConfigureWebPluginHost(this SlimHost slimHost, Action<IWebPluginHost> factory)        
-    {        
-        SlimHost.Instance.ConfigureWebPluginHost<IWebPluginHost>(factory);
+    public static void ConfigureWebPluginHost(this SlimHost slimHost, Action<IWebPluginHost> factory)
+    {
+        slimHost.ConfigureWebPluginHost<IWebPluginHost>(factory);
     }
 
     public static EnvironmentOptions GetEnvironment(this SlimHost slimHost)
     {
-        EnvironmentOptions? options = SlimHost.Instance.BuildEnvironmentOptions();
-        if(options != null)
-        {
+        EnvironmentOptions? options = slimHost.BuildEnvironmentOptions();
+        if (options != null)
             return options;
-        }
 
         throw new SdkException("Failed to build environment options.");
     }

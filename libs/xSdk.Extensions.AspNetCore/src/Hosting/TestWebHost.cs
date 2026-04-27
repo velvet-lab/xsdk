@@ -19,26 +19,29 @@ public static partial class TestWebHost
     public static IHostBuilder CreateBuilder(string[] args, string appName, string appPrefix) => CreateBuilder(args, appName, APP_COMPANY, appPrefix);
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
-        => TestHostFactory
-            .CreateTestHost(args, appName, appCompany, appPrefix)
-            .ConfigureWebHost(webhostBuilder =>
-            {
+    {
+        var builder = TestHostFactory.CreateTestHost(args, appName, appCompany, appPrefix);
+        var slimHost = builder.GetSlimHost();
+
+        builder.ConfigureWebHost(webhostBuilder =>
+        {
 #pragma warning disable EXTEXP0014 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
-                webhostBuilder
-                    .UseFakeStartup()
-                    .ListenHttpOnAnyPort();
+            webhostBuilder
+                .UseFakeStartup()
+                .ListenHttpOnAnyPort();
 #pragma warning restore EXTEXP0014 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
 
-                webhostBuilder
-                    .ConfigureServices(services =>
-                    {
-                        SlimHost.Instance.ConfigureWebPluginHost(x => x.ConfigureServices(services));
-                    })
+            webhostBuilder
+                .ConfigureServices(services =>
+                {
+                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(services));
+                })
+                .ConfigureServices((context, services) =>
+                {
+                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
+                });
+        });
 
-                    .ConfigureServices((context, services) =>
-                    {
-                        SlimHost.Instance.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
-                    });
-
-            });
+        return builder;
+    }
 }

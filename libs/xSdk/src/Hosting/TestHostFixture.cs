@@ -119,7 +119,7 @@ public class TestHostFixture : IDisposable
         _disposed = true;
     }
 
-    public static EnvironmentOptions Environment => SlimHost.Instance.GetEnvironment();
+    public EnvironmentOptions Environment => (_host ?? BuildHost()).Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;
 
     protected static string GetEnvironmentVariable(string key)
     {
