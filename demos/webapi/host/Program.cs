@@ -43,7 +43,7 @@ var host = xSdk.Hosting.WebHost
     //.EnableAuthentication<AuthenticationPluginBuilder>()
     .EnableCompression()
     .EnableDataProtection()
-    .EnableLinks<ILinksPluginBuilder>()
+    .EnableLinks<LinksPluginBuilder>()
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();
