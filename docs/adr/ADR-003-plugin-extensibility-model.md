@@ -2,11 +2,15 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR-027](ADR-027-plugin-host-model.md)
 
 ## Date
 
 2026-03-17
+
+## Supersession Note (2026-04-27)
+
+The `IPlugin / PluginBase / HostPluginBase / WebHostPluginBase` hierarchy and `EnablePlugin<T>()` activation API have been replaced by a DI-first model based on `IPluginHost / PluginHost / WebPluginHost` and `RegisterPluginHost<T>()`. The old `Invoke<T>()` call pattern is gone. See [ADR-027](ADR-027-plugin-host-model.md) for the replacement architecture.
 
 ## Context
 

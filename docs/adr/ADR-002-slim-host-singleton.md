@@ -2,11 +2,15 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR-026](ADR-026-slim-host-builder-redesign.md)
 
 ## Date
 
 2026-03-17
+
+## Supersession Note (2026-04-27)
+
+The static `SlimHost.Instance` singleton design has been replaced. `SlimHost` is now instantiated per-builder and stored in `IHostBuilder.Properties`, enabling parallel and isolated host builds. The properties `FileSystem`, `VariableSystem`, and `PluginSystem` no longer exist; their functionality is wired through the new `IPluginHost` DI-registration model (see [ADR-026](ADR-026-slim-host-builder-redesign.md) and [ADR-027](ADR-027-plugin-host-model.md)).
 
 ## Context
 

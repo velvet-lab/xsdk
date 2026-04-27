@@ -2,11 +2,15 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR-027](ADR-027-plugin-host-model.md)
 
 ## Date
 
 2026-03-17
+
+## Supersession Note (2026-04-27)
+
+Weikio.PluginFramework is still used for **dynamic** (filesystem-based) assembly loading inside `PluginService`. However, the primary plugin-registration model for all built-in SDK extensions is now `IPluginHostCollection`-based (see [ADR-027](ADR-027-plugin-host-model.md)). `PluginItem`/`CatalogHelper` still wrap Weikio types, but the consumer-facing API (`RegisterPluginHost<T>`) is entirely independent of Weikio.
 
 ## Context
 
