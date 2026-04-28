@@ -183,7 +183,7 @@ public sealed class TelemetryOptions : VariableSetup
             public const string Name = "maas-endpoint";
             public const string Template = "--maas-endpoint <endpoint>";
             public const string HelpText = "gRpc Endpoit where MaaS lives.";
-            public const string DefaultValue = "http://localhost:4317";
+            public const string DefaultValue = "http://localhost:4317"; // DevSkim: ignore DS162092
         }
 
         public static class LogLevel
