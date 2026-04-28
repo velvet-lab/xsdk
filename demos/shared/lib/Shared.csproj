@@ -10,6 +10,7 @@
         <PackageReference Include="Mapster" />
         <PackageReference Include="Bogus" />
         <PackageReference Include="Spectre.Console.Cli" />
+    <PackageReference Include="YamlDotNet" />
     </ItemGroup>
 
     <ItemGroup>
