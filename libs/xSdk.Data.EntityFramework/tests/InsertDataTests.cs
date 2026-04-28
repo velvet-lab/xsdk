@@ -25,6 +25,9 @@ public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFi
     {
         var repo = fixture.Factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
+        // Clear existing data to ensure test isolation
+        await repo.ClearDataAsync();
+
         await repo.AddDataAsync(Globals.Entities);
 
         var entities = await repo.GetDataAsync();

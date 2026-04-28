@@ -27,4 +27,10 @@ internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEnt
     {
         return this.SelectListAsync(token);
     }
+
+    public async Task ClearDataAsync(CancellationToken token = default)
+    {
+        var entities = await this.SelectListAsync(token);
+        await this.RemoveAsync(entities, token);
+    }
 }
