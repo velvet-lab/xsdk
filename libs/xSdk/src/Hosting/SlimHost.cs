@@ -139,6 +139,17 @@ public class SlimHost
         }
 
         _slimServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+        if (_appServices != null)
+        {
+            _appServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+        }
+        else
+        {
+            _appServicesDelegates.Add(new Action(() =>
+            {
+                _appServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+            }));
+        }
     }
 
     internal void RegisterPluginHostOptions<TOptions>()
