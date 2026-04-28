@@ -12,7 +12,7 @@ public static class ContentTypes
 
     public const string TextHtml = "text/html";
     public const string TextPlain = "text/plain";
-    
+
     public const string ImagePng = "image/png";
-    public const string ImageJpeg = "image/jpeg";    
+    public const string ImageJpeg = "image/jpeg";
 }

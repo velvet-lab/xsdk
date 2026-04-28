@@ -24,5 +24,5 @@ public static class SerivceCollectionExtensions
     {
         services.AddSingleton<IVariableService, VariableService>();
         return services;
-    }    
+    }
 }

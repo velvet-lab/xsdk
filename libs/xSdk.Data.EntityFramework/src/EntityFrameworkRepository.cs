@@ -173,7 +173,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         IDbContextTransaction transaction = null;
         var shouldUseTransaction = withTransaction;
 
-        IDatabase? database = DatabaseHandler?.Retrieve();       
+        IDatabase? database = DatabaseHandler?.Retrieve();
 
         if (database != null)
         {
@@ -187,7 +187,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
                 var dbContext = database.Open<TDbContext>();
                 if (dbContext != null)
-                {   
+                {
 
                     // Disable Transactions for MongoDbs, because this feature is not supported
                     if (dbContext.Database.ProviderName == "MongoDB.EntityFrameworkCore")

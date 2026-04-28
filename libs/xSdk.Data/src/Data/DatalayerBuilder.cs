@@ -61,14 +61,14 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
             throw new SdkException($"Database with name '{name}' is already registered. Please choose another name to register the database layer");
 
         _logicalNames.Add(name);
-    }    
+    }
 
     private void AddDatabaseToObjectPool<TDatabase>(string? name)
         where TDatabase : class, IDatabase
     {
         services.TryAddKeyedSingleton<ObjectPool<TDatabase>>(name, (provider, key) =>
         {
-            if(!_objectPools.ContainsKey(key))
+            if (!_objectPools.ContainsKey(key))
             {
                 var policy = new DatabasePoolPolicy<TDatabase>(provider);
                 var objectPool = new DefaultObjectPool<TDatabase>(policy);
@@ -78,7 +78,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
             else
             {
                 return (ObjectPool<TDatabase>)_objectPools[key];
-            }            
+            }
         });
     }
 
@@ -93,7 +93,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
             var objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
             var logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
 
-            EnvironmentOptions? environmentOptions = provider.GetService<IOptions<EnvironmentOptions>>()?.Value;            
+            EnvironmentOptions? environmentOptions = provider.GetService<IOptions<EnvironmentOptions>>()?.Value;
 
             var poolHandler = new DatabaseHandler<TDatabase>(objectPool, environmentOptions, logger);
             poolHandler.DatalayerName = datalayerName;

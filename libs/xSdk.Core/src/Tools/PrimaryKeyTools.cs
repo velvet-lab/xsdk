@@ -4,7 +4,7 @@ namespace xSdk.Tools;
 
 public static class PrimaryKeyTools
 {
-    public static TTargetType Generate<TTargetType>()        
+    public static TTargetType Generate<TTargetType>()
     {
         Type primaryKeyType = typeof(TTargetType);
 

@@ -90,5 +90,5 @@ public sealed partial class EnvironmentOptions
         return default(TValue);
     }
 
-    
+
 }

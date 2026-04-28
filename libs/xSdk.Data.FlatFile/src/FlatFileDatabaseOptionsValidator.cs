@@ -4,10 +4,11 @@ using System.Text;
 using FluentValidation;
 
 namespace xSdk.Data;
+
 public sealed class FlatFileDatabaseOptionsValidator : AbstractValidator<FlatFileDatabaseOptions>
 {
     public FlatFileDatabaseOptionsValidator()
-    {        
+    {
         RuleFor(x => x.FilePath)
             .NotNull()
             .NotEmpty()

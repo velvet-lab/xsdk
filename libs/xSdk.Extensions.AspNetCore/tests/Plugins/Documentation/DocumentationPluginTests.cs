@@ -25,11 +25,11 @@ namespace xSdk.Plugins.Documentation;
 
 public class DocumentationPluginTests : IClassFixture<WebHostTestFixture>
 {
-    private readonly IHost _host;    
+    private readonly IHost _host;
 
     public DocumentationPluginTests(WebHostTestFixture fixture)
     {
-        _host = fixture            
+        _host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
                 .EnableDocumentation<DocumentationPluginBuilderMock>())

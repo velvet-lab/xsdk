@@ -47,7 +47,7 @@ internal partial class VariableService
         {
             { nameof(FileProvider), new FileProvider() },
             { nameof(EnvironmentProvider), new EnvironmentProvider() },
-            { nameof(CommandlineProvider), new CommandlineProvider() },            
+            { nameof(CommandlineProvider), new CommandlineProvider() },
             { nameof(MemoryProvider), new MemoryProvider() },
         };
 

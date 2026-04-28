@@ -35,10 +35,10 @@ var host = xSdk.Hosting.Host
                 config =>
                 {
                     config.FilePath = datastore;
-                })            
+                })
             .MapRepository<ISampleRepository, SampleRepository>();
     })
-    .AddHost<MyDataHost>()   
+    .AddHost<MyDataHost>()
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();

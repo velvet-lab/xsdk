@@ -38,7 +38,7 @@ public class VaultDatabaseOptions : VariableSetup
     {
         get => ReadValue<string>(Definitions.Endpoint.Name);
         set => SetValue(Definitions.Endpoint.Name, value);
-    }    
+    }
 
     [
         Variable(

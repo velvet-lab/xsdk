@@ -22,6 +22,6 @@ public static class DatalayerBuilderExtensions
 {
     public static IDatabaseBuilder UseDatabase<TDatabase, TDatabaseOptions>(this IDatalayerBuilder builder, string? name, Action<TDatabaseOptions> configure)
         where TDatabase : class, IDatabase
-        where TDatabaseOptions : class, IVariableSetup        
+        where TDatabaseOptions : class, IVariableSetup
         => builder.ConfigureDatabase<TDatabase, TDatabaseOptions>(name, configure);
 }

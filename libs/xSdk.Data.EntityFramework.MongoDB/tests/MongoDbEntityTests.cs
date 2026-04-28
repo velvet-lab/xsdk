@@ -43,5 +43,5 @@ public class MongoDbEntityTests
         Assert.NotNull(entity.Id);
         Assert.Equal(entity.Id, entity.Id);
         Assert.IsType<ObjectId>(entity.Id);
-    }    
+    }
 }

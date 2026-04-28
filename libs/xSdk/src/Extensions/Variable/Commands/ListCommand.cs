@@ -108,5 +108,5 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
         AnsiConsole.Write(table);
     }
 
-    
+
 }

@@ -30,7 +30,7 @@ public class DatalayerFactory(IServiceProvider provider) : IDatalayerFactory
         => CreateRepository<TRepository>(Globals.DefaultDatalayerName, scope);
 
     public TRepository CreateRepository<TRepository>(string? name) where TRepository : IRepository
-    { 
+    {
         var scope = provider.CreateScope();
         return CreateRepositoryInternal<TRepository>(name, scope);
     }
@@ -41,20 +41,20 @@ public class DatalayerFactory(IServiceProvider provider) : IDatalayerFactory
             return CreateRepository<TRepository>(name);
         else
             return CreateRepositoryInternal<TRepository>(name, scope);
-    }    
+    }
 
     private TRepository CreateRepositoryInternal<TRepository>(string? name, IServiceScope? scope)
         where TRepository : IRepository
     {
-        Guard.IsNotNull(scope);        
-        
+        Guard.IsNotNull(scope);
+
         TRepository repo = scope.ServiceProvider.GetRequiredKeyedService<TRepository>(name);
-            
+
         if (repo is Repository repository)
         {
             repository.Services = provider;
         }
-            
-        return repo;        
+
+        return repo;
     }
 }

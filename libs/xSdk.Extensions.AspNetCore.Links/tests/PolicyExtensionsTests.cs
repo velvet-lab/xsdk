@@ -75,7 +75,7 @@ public class LinksOptionsExtensionsTests
 {
     private class TestModel : Model
     {
-        
+
     }
 
     [Fact]

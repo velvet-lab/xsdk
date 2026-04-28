@@ -24,5 +24,5 @@ public interface IDatabase : IDatalayerMetadata, IDisposable, IResettable
     bool Close();
 
     TDatabaseObject? Open<TDatabaseObject>()
-        where TDatabaseObject: class;
+        where TDatabaseObject : class;
 }

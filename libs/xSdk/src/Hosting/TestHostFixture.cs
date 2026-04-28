@@ -26,7 +26,7 @@ public class TestHostFixture : IDisposable
     private IHost? _host;
 
     private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
-    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();    
+    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();
 
     internal List<Action<IHostBuilder>> _builderDelegates = new();
 
@@ -42,7 +42,7 @@ public class TestHostFixture : IDisposable
     private readonly Lock _buildLock = new();
 
     public TestHostFixture()
-    {        
+    {
     }
 
     ~TestHostFixture()
@@ -98,7 +98,7 @@ public class TestHostFixture : IDisposable
         {
             return BuildHostCore();
         }
-    }    
+    }
 
     protected virtual void Dispose(bool disposing)
     {
@@ -216,7 +216,7 @@ public class TestHostFixture : IDisposable
     }
 
     private void HandleDemoMode(bool enable)
-    {        
+    {
         if (!_currentDemoMode.HasValue)
         {
             _currentDemoMode = Environment?.IsDemo;

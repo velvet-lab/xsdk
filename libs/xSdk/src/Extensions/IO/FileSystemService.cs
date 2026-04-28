@@ -32,7 +32,7 @@ internal class FileSystemService : IFileSystemService
     private readonly FileSystemOptions _options;
 
     public FileSystemService(IOptions<FileSystemOptions> options) : this(options.Value)
-    {}
+    { }
 
     internal FileSystemService(FileSystemOptions options)
     {

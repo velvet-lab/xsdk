@@ -24,7 +24,7 @@ internal sealed class FallbackProvider(ApplicationOptions? options) : VariablePr
 {
     protected override bool ExistsVariable(IVariable variable)
     {
-        if(options == null)
+        if (options == null)
         {
             return false;
         }

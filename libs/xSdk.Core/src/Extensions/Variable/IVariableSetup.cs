@@ -1,4 +1,4 @@
-﻿namespace xSdk.Extensions.Variable;
+namespace xSdk.Extensions.Variable;
 
 public interface IVariableSetup
 {

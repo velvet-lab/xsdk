@@ -31,7 +31,8 @@ public class DatabaseFixture : DatabaseHostFixture
         ConfigureBuilder(hostBuilder =>
         {
             hostBuilder
-                .AddDatalayer(builder => {
+                .AddDatalayer(builder =>
+                {
 
                     var currentFolder = Path.Combine(FileSystemHelper.GetExecutingFolder(), "data", Guid.NewGuid().ToString("N"));
                     if (!Directory.Exists(currentFolder))

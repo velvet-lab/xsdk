@@ -40,5 +40,5 @@ public class MyDataHost(IDatalayerFactory factory, ILogger<MyDataHost> logger) :
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
-        =>Task.CompletedTask;
+        => Task.CompletedTask;
 }

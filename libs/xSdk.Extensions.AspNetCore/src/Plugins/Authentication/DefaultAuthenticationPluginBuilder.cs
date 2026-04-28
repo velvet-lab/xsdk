@@ -31,7 +31,7 @@ internal class DefaultAuthenticationPluginBuilder : PluginBuilder, IAuthenticati
     }
 
     public void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme)
-    {        
+    {
         scheme = null;
 
         string? authorizationHeader = context.Request.Headers[HeaderNames.Authorization];

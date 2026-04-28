@@ -39,7 +39,7 @@ public abstract class MappingProfile
             config.Default.IgnoreNullValues(true);
             config.Default.IgnoreNonMapped(true);
             config.Default.EnumMappingStrategy(EnumMappingStrategy.ByName);
-            config.Default.PreserveReference(true);           
+            config.Default.PreserveReference(true);
 
             config.RequireExplicitMapping = false;
             config.RequireDestinationMemberSource = false;

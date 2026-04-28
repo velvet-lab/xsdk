@@ -27,7 +27,7 @@ public class AppRoleAuthOptions : VariableSetup
         template: Definitions.RoleId.Template,
         helpText: Definitions.RoleId.HelpText,
         hidden: true)
-    ]    
+    ]
     public string? RoleId
     {
         get => ReadValue<string>(Definitions.RoleId.Name);
@@ -38,7 +38,7 @@ public class AppRoleAuthOptions : VariableSetup
         name: Definitions.Secret.Name,
         template: Definitions.Secret.Template,
         helpText: Definitions.Secret.HelpText,
-        hidden: true)]    
+        hidden: true)]
     public string? Secret
     {
         get => ReadValue<string>(Definitions.Secret.Name);

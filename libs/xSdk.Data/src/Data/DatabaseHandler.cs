@@ -22,8 +22,8 @@ internal class DatabaseHandler<TDatabase>(ObjectPool<TDatabase> pool, Environmen
     {
         logger.LogTrace("Try to open Database");
 
-        var database = pool.Get();        
-        if(database is Database concreteDatabase)
+        var database = pool.Get();
+        if (database is Database concreteDatabase)
         {
             concreteDatabase.DatalayerName = DatalayerName;
             concreteDatabase.Services = Services;

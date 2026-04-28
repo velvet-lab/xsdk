@@ -35,7 +35,7 @@ internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatab
             var objectFactory = _factory(_provider, Array.Empty<object?>());
             return (TDatabase)objectFactory;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating instance of type '{TypeName}': {ExceptionMessage}", typeof(TDatabase).FullName, ex.Message);
             throw;

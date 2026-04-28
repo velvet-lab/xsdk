@@ -94,7 +94,7 @@ internal partial class PluginService
             }
         }
 
-        await _aggregateCatalog.Initialize();        
+        await _aggregateCatalog.Initialize();
 
         _isTypePluginCatalogsStale = false;
         _isAssemblyPluginCatalogsStale = false;

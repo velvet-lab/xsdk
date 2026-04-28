@@ -21,13 +21,13 @@ namespace xSdk.Demos.Data;
 internal sealed class SampleMappingProfile : MappingProfile
 {
     protected override void Configure()
-    {        
-        CreateMap<SampleEntity, SampleModel>()            
+    {
+        CreateMap<SampleEntity, SampleModel>()
             .Map(dest => dest.Id, src => src.Id)
-            .Map(dest => dest.Name, src => src.Name)            
+            .Map(dest => dest.Name, src => src.Name)
             .Map(dest => dest.Age, src => src.Age);
 
-        CreateMap<SampleModel, SampleEntity>()            
+        CreateMap<SampleModel, SampleEntity>()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.Name, src => src.Name)
             .Map(dest => dest.Age, src => src.Age);

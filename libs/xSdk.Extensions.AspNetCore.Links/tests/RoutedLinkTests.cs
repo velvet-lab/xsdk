@@ -22,8 +22,8 @@ namespace xSdk.Extensions.AspNetCore.Links.Tests;
 public class RoutedLinkTests
 {
     private class TestModel : Model
-    {   
-        public string Name { get; set; } = string.Empty;        
+    {
+        public string Name { get; set; } = string.Empty;
     }
 
     [Fact]

@@ -48,6 +48,6 @@ public class EntityFrameworkDatabaseOptions : VariableSetup
             public const string Template = "--transactions-enabled <true|false>";
             public const string HelpText = "Indicates whether transactions are enabled for the Entity Framework database.";
             public const bool DefaultValue = true;
-        }        
+        }
     }
 }

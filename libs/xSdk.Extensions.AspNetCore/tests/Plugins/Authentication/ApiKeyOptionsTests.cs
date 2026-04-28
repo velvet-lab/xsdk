@@ -63,7 +63,7 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
     [Fact]
     public void AuthenticationPlugin_CreatedViaHostBuilder()
     {
-        IHost host = fixture            
+        IHost host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
                 .EnableAuthentication())

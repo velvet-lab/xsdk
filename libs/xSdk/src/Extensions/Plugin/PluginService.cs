@@ -22,7 +22,7 @@ namespace xSdk.Extensions.Plugin;
 internal partial class PluginService(IFileSystemService fsService, IServiceProvider provider, ILogger<PluginService> logger) : IPluginService
 {
     private readonly List<PluginItem> _plugins = new();
-    
+
     public Task<TPlugin?> GetPluginAsync<TPlugin>(CancellationToken token = default)
         where TPlugin : IPlugin
         => GetPluginsAsync<TPlugin>(token)

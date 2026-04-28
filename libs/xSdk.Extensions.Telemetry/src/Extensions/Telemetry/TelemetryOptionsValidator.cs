@@ -8,7 +8,7 @@ namespace xSdk.Extensions.Telemetry;
 public sealed class TelemetryOptionsValidator : AbstractValidator<TelemetryOptions>
 {
     public TelemetryOptionsValidator()
-    {   
+    {
         When(x => !x.IsDisabled && !x.IsOtlpExporterDisabled, () =>
         {
             RuleFor(x => x.Endpoint)

@@ -44,7 +44,7 @@ public abstract class PluginHost : PluginDescription, IPluginHost
             action?.Invoke(builder);
             return true;
         }
-        return false;        
+        return false;
     }
 
     protected bool InvokeBuilders<TPluginBuilder>(Action<TPluginBuilder> action)

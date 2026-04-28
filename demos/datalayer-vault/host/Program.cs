@@ -62,11 +62,11 @@ var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .AddDatalayer(builder =>
     {
-        builder            
+        builder
             .UseVault(true, _ =>
             {
                 _.AuthMethod = AuthMethods.Token;
-                _.Endpoint = $"http://localhost:{port}";                
+                _.Endpoint = $"http://localhost:{port}";
                 _.PathFormatFactory = (stage, path) =>
                 {
                     if (stage == Stage.Development)

@@ -28,7 +28,7 @@ public class MyCustomHost : IHostedService
     private readonly OptionsWithPrefix _optionsWithPrefix;
     private readonly EnvironmentOptions _environment;
 
-    public MyCustomHost(IOptions<EnvironmentOptions> environmentOptions, IOptions<OptionsWithPrefix> optionsWithPrefix, IOptions<OptionsWithoutPrefix> optionsWithoutPrefix,  ILogger<MyCustomHost> logger)
+    public MyCustomHost(IOptions<EnvironmentOptions> environmentOptions, IOptions<OptionsWithPrefix> optionsWithPrefix, IOptions<OptionsWithoutPrefix> optionsWithoutPrefix, ILogger<MyCustomHost> logger)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 

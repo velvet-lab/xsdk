@@ -16,7 +16,7 @@ public static class HostBuilderExtensions
                 var datalayerBuilder = new DatalayerBuilder(services);
 
                 services
-                
+
                     .AddSingleton<IDatalayerFactory>(provider =>
                     {
                         var factoryInstance = ActivatorUtilities.CreateInstance<DatalayerFactory>(provider);
@@ -27,7 +27,7 @@ public static class HostBuilderExtensions
 
                 factory?.Invoke(datalayerBuilder);
             });
-        
+
         return hostBuilder;
     }
 }

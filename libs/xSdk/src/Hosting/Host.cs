@@ -59,7 +59,7 @@ public static partial class Host
                 slimHost.PostConfigure(services);
 
                 services
-                    .RegisterApplicationOptions(appOptions)                    
+                    .RegisterApplicationOptions(appOptions)
                     .RegisterOptions<EnvironmentOptions>(options =>
                     {
                         services

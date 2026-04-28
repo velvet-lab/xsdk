@@ -4,7 +4,7 @@ using xSdk.Extensions.Variable;
 namespace xSdk.Data;
 
 public interface IDatabaseHandler : IDatalayerMetadata
-{    
+{
 
     IDatabase? Retrieve();
 
@@ -13,5 +13,5 @@ public interface IDatabaseHandler : IDatalayerMetadata
 
 public interface IDatabaseHandler<TDatabase> : IDatabaseHandler
     where TDatabase : class, IDatabase
-{   
+{
 }

@@ -19,7 +19,7 @@ using xSdk.Extensions.Variable;
 namespace xSdk.Data;
 
 public interface IRepository : IDatalayerMetadata
-{   
+{
 }
 
 public interface IRepository<TEntity, TPrimaryKeyType> : IRepository
@@ -29,7 +29,7 @@ public interface IRepository<TEntity, TPrimaryKeyType> : IRepository
 
     int Insert(IEnumerable<TEntity> entities);
 
-    Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);    
+    Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
 
     Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
 

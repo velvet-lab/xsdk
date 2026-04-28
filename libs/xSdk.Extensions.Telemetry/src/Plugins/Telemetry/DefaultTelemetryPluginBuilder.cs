@@ -73,7 +73,7 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
     private void ConfigureOtlpExporter(OtlpExporterOptions options)
     {
         var telemetrySetup = telemetryOptions.Value;
-        if(!telemetrySetup.IsOtlpExporterDisabled)
+        if (!telemetrySetup.IsOtlpExporterDisabled)
         {
             // Adding the OtlpExporter creates a GrpcChannel.
             // This switch must be set before creating a GrpcChannel when calling an insecure gRPC service.

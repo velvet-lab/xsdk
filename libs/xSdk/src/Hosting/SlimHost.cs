@@ -73,10 +73,10 @@ public class SlimHost
             .Cast<IPluginHost>();
 
         List<TPluginHost> result = new();
-        foreach(IPluginHost plugin in plugins)
+        foreach (IPluginHost plugin in plugins)
         {
             Type pluginType = plugin.GetType();
-            if(pluginType.IsAssignableTo(typeof(TPluginHost)))
+            if (pluginType.IsAssignableTo(typeof(TPluginHost)))
             {
                 result.Add((TPluginHost)plugin);
             }

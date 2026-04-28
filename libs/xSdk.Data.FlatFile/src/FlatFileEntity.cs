@@ -23,5 +23,5 @@ namespace xSdk.Data;
 
 public abstract class FlatFileEntity : Entity<int>
 {
-        
+
 }

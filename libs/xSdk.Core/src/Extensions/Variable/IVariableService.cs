@@ -42,5 +42,5 @@ public interface IVariableService
 
     Dictionary<string, object> ToDictionary();
 
-    void RegisterProvider(Type providerType);    
+    void RegisterProvider(Type providerType);
 }

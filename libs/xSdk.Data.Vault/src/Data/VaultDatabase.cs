@@ -58,7 +58,7 @@ internal class VaultDatabase(ILogger<VaultDatabase> logger) : Database(logger)
 
             var host = setup.Endpoint;
 
-            var settings = new VaultClientSettings($"{host}", authMethod);            
+            var settings = new VaultClientSettings($"{host}", authMethod);
 
             return new VaultClient(settings) as TDatabaseObject;
         }

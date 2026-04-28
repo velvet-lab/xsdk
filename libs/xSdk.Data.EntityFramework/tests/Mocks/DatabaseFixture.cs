@@ -25,9 +25,9 @@ public class DatabaseFixture : DatabaseHostFixture
 {
     protected override void Initialize()
     {
-        ConfigureBuilder(builder =>        
+        ConfigureBuilder(builder =>
         {
-            builder                
+            builder
                 .AddDatalayer(builder =>
                 {
                     builder

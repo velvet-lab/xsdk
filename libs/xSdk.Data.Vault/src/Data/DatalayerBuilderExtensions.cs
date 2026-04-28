@@ -31,7 +31,7 @@ public static class DatalayerBuilderExtensions
 
     public static IDatabaseBuilder UseVault(this IDatalayerBuilder builder, string? name, bool enableWrite, Action<VaultDatabaseOptions> configure)
     {
-        var dbBuilder = builder            
+        var dbBuilder = builder
             .UseDatabase<VaultDatabase, VaultDatabaseOptions>(name, configure);
 
         dbBuilder
@@ -43,5 +43,5 @@ public static class DatalayerBuilderExtensions
         }
 
         return dbBuilder;
-    }    
+    }
 }

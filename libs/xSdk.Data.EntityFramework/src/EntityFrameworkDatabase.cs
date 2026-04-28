@@ -37,7 +37,7 @@ public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbCon
 
     public override bool Close()
     {
-        if(_dbContext!= null)
+        if (_dbContext != null)
         {
             logger.LogInformation("Closing Entity Framework database connection for datalayer '{DatalayerName}'.", this.DatalayerName);
             _dbContext.Dispose();

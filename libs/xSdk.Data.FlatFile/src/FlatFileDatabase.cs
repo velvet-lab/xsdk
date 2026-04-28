@@ -63,9 +63,9 @@ public sealed class FlatFileDatabase(ILogger<FlatFileDatabase> logger) : Databas
     {
         if (_dataStore != null)
         {
-            logger.LogInformation("Closing flat file database.");            
+            logger.LogInformation("Closing flat file database.");
             _dataStore.Dispose();
-            _dataStore = null;            
+            _dataStore = null;
         }
         return true;
     }

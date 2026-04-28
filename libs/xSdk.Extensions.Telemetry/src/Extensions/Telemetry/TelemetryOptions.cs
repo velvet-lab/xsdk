@@ -122,7 +122,7 @@ public sealed class TelemetryOptions : VariableSetup
     }
 
     public ITelemetryPluginBuilder Configuration { get; set; }
-    
+
     internal static class Definitions
     {
         public static class DisableAll

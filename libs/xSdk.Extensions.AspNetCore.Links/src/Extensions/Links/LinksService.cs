@@ -74,7 +74,7 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
             {
                 RoutedLink? linkInstance = link as RoutedLink;
 
-                if(linkInstance == null)
+                if (linkInstance == null)
                 {
                     continue;
                 }

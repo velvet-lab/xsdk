@@ -30,7 +30,7 @@ public static class HostBuilderExtensions
     {
         return hostBuilder
             .RegisterPluginHostOptions<DataProtectionOptions>()
-            .RegisterPluginHost<DataProtectionPluginHost>()            
+            .RegisterPluginHost<DataProtectionPluginHost>()
             .RegisterPluginBuilder<IDataProtectionPluginBuilder, TPluginBuilder>();
     }
 }

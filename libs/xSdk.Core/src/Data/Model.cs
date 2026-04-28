@@ -24,5 +24,5 @@ public abstract class Model : IModel
     public virtual string? Id { get; set; }
 
     [JsonExtensionData]
-    public IDictionary<string, object>? AdditionalData { get; set; }    
+    public IDictionary<string, object>? AdditionalData { get; set; }
 }

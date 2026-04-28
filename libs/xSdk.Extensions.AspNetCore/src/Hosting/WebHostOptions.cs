@@ -29,7 +29,7 @@ public sealed class WebHostOptions : VariableSetup
             {
                 IsHttpsEnabled = true;
             }
-        }    
+        }
     }
 
     [Variable(
@@ -98,7 +98,7 @@ public sealed class WebHostOptions : VariableSetup
 
     public bool IsHttpsEnabled { get; private set; }
 
-   
+
 
     public static class Definitions
     {

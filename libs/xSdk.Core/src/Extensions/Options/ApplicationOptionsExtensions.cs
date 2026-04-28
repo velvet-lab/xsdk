@@ -18,7 +18,7 @@ public static class ApplicationOptionsExtensions
 
                 appOptions.Description = options.Description;
                 appOptions.AppVersion = options.AppVersion;
-                
+
                 var validator = new ApplicationOptionsValidator();
                 validator.ValidateAndThrow(appOptions);
             });

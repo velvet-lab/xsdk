@@ -5,7 +5,7 @@ namespace xSdk.Extensions.Options;
 public sealed class ApplicationOptions
 {
     public ApplicationOptions()
-    {        
+    {
         var version = new SemVer(GetType().Assembly.GetName().Version.ToString());
         Version = version;
         AppVersion = version.ToString();

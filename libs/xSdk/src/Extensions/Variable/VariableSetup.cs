@@ -9,10 +9,10 @@ public class VariableSetup : IVariableSetup
         if (variableService != null)
         {
             _variableService = variableService;
-            variableService.ParseForVariables(this);            
+            variableService.ParseForVariables(this);
 
             OnInitialize();
-        }        
+        }
     }
 
     private IVariableService? GetVariableService()

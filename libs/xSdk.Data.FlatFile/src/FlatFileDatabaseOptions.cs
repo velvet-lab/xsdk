@@ -31,7 +31,7 @@ public class FlatFileDatabaseOptions : VariableSetup
     [Variable(
         name: Definitions.FilePath.Name,
         template: Definitions.FilePath.Template,
-        helpText: Definitions.FilePath.HelpText        
+        helpText: Definitions.FilePath.HelpText
     )]
     public string FilePath
     {

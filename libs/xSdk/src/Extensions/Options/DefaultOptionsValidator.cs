@@ -8,6 +8,6 @@ internal class DefaultOptionsValidator<TOptions> : AbstractValidator<TOptions>
 {
     public DefaultOptionsValidator()
     {
-        
+
     }
 }

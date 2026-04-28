@@ -13,6 +13,6 @@ internal sealed class ConfigureFileSystemOptions(IOptions<ApplicationOptions> ap
     {
         options.ApplicationName = _appOptions?.Name;
         options.Company = _appOptions?.Company;
-        options.ContentRoot = _envOptions?.ContentRoot;     
+        options.ContentRoot = _envOptions?.ContentRoot;
     }
 }

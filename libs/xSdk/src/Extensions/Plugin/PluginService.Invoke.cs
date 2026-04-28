@@ -33,7 +33,7 @@ internal partial class PluginService
                     {
                         action?.Invoke(plugin);
                     }
-                }                
+                }
             }, token);
     }
 }

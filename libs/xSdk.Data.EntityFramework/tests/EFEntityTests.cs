@@ -26,7 +26,7 @@ public class EFEntityTests
         var entity = new TestEntity();
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.Id);        
+        Assert.NotNull(entity.Id);
         Assert.IsType<Guid>(entity.Id);
     }
 

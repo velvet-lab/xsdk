@@ -120,7 +120,7 @@ public static class VariableServiceExtensions
                             variable.SetAttribute(attr);
                             variable.SetTelemetryResourceValueDelegate(() => property.GetValue(implementation));
 
-                            ((VariableService) variableService).AddVariableFromSetupInitialize(variable);
+                            ((VariableService)variableService).AddVariableFromSetupInitialize(variable);
 
                             // Try to read Environment for the correct Value
                             MethodInfo? readMethod = typeof(VariableService).GetMethod(
