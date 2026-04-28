@@ -19,19 +19,19 @@ using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
-namespace xSdk.Plugins.Commands;
+namespace xSdk.Plugins.CloudEvents;
 
-public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class CloudEventPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
-    public void EnableCommands_CreatesCommandPlugin()
+    public void EnableCloudEvents_CreatesCloudEventPlugin()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
+            .ConfigureBuilder(builder => builder.EnableCloudEvents())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
+        CloudEventPluginHost? plugin = service.GetPlugin<CloudEventPluginHost>();
 
         Assert.NotNull(plugin);
     }

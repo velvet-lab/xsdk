@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.DataProtection;
 
-public class DataProtectionOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
+public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
     public void DataProtectionSetup_DefaultProperties_AreEmpty()
@@ -38,7 +41,7 @@ public class DataProtectionOptionsTests(WebHostTestFixture fixture) : IClassFixt
         setup.Discriminator = "my-discriminator";
 
         Assert.Equal("my-discriminator", setup.Discriminator);
-    }    
+    }
 
     [Fact]
     public void DataProtectionSetup_SetKeyLifetime_StoresValue()
@@ -60,5 +63,18 @@ public class DataProtectionOptionsTests(WebHostTestFixture fixture) : IClassFixt
     public void DataProtectionSetup_Definitions_KeyLifetimeName_IsCorrect()
     {
         Assert.Equal("lifetime", DataProtectionOptions.Definitions.KeyLifetime.Name);
+    }
+
+    [Fact]
+    public void DataProtectionPlugin_CreatedViaHostBuilder()
+    {
+        IHost host = fixture
+            .ConfigureBuilder(builder => builder.EnableDataProtection())
+            .BuildHost();
+
+        IPluginService service = host.Services.GetRequiredService<IPluginService>();
+        DataProtectionPluginHost? plugin = service.GetPlugin<DataProtectionPluginHost>();
+
+        Assert.NotNull(plugin);
     }
 }

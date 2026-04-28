@@ -7,14 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CloudNative.CloudEvents" />
-        <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" />
         <PackageReference Include="coverlet.collector">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Moq" />
         <PackageReference Include="xunit.v3" />
         <PackageReference Include="xunit.runner.visualstudio">
             <PrivateAssets>all</PrivateAssets>
@@ -23,12 +19,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\xSdk.Extensions.CloudEvents.csproj" />
-        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
-        <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
+        <ProjectReference Include="..\src\xSdk.Extensions.Telemetry.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Using Include="Xunit" />
     </ItemGroup>
+
 </Project>

@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Links;
 using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 
-namespace xSdk.Plugins.Commands;
+namespace xSdk.Plugins.Links.Mocks;
 
-public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+internal class LinksPluginBuilderMock : PluginBuilder, ILinksPluginBuilder
 {
-    [Fact]
-    public void EnableCommands_CreatesCommandPlugin()
-    {
-        IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
-            .BuildHost();
-
-        IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
-
-        Assert.NotNull(plugin);
-    }
+    public void ConfigureLinks(LinksOptions options) { }
 }

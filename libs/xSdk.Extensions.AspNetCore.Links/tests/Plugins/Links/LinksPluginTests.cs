@@ -18,20 +18,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
+using xSdk.Plugins.Links.Mocks;
 
-namespace xSdk.Plugins.Commands;
+namespace xSdk.Plugins.Links;
 
-public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class LinksPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
-    public void EnableCommands_CreatesCommandPlugin()
+    public void EnableLinks_CreatesLinksPlugin()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
+            .ConfigureBuilder(builder => builder.EnableLinks<LinksPluginBuilderMock>())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
+        LinksPluginHost? plugin = service.GetPlugin<LinksPluginHost>();
 
         Assert.NotNull(plugin);
     }

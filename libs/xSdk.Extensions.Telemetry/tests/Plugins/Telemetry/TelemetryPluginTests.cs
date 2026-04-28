@@ -19,19 +19,19 @@ using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
-namespace xSdk.Plugins.Commands;
+namespace xSdk.Plugins.Telemetry;
 
-public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class TelemetryPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
-    public void EnableCommands_CreatesCommandPlugin()
+    public void EnableTelemetry_CreatesTelemetryPlugin()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
+            .ConfigureBuilder(builder => builder.EnableTelemetry())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
+        TelemetryPluginHost? plugin = service.GetPlugin<TelemetryPluginHost>();
 
         Assert.NotNull(plugin);
     }
