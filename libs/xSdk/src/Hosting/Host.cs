@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.IO;

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
 using xSdk.Data.Mocks;
 
 namespace xSdk.Data;

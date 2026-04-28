@@ -25,7 +25,6 @@ using CloudNative.CloudEvents.SystemTextJson;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Web;
 using xSdk.Hosting;
-using xSdk.Shared;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;

@@ -16,7 +16,6 @@
 
 using Microsoft.Extensions.Configuration;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable.Providers;
 

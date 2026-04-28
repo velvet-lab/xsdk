@@ -15,7 +15,6 @@
  */
 
 using RestSharp.Authenticators;
-using xSdk.Hosting;
 using xSdk.Security;
 
 namespace xSdk.Extensions.Web;

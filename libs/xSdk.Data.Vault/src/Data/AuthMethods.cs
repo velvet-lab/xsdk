@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using VaultSharp.V1.AuthMethods;
-
 namespace xSdk.Data;
 
 [Flags]

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.ComponentModel.DataAnnotations;
-
 namespace xSdk.Data.Mocks;
 
 internal class TestModel : Model

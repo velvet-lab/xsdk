@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Security.Claims;
-
 namespace xSdk.Security.Claims;
 
 public class AuthorityTests

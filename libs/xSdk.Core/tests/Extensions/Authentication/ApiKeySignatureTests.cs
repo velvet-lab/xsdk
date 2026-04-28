@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Authentication;
-
 namespace xSdk.Extensions.Authentication;
 
 public class ApiKeySignatureTests

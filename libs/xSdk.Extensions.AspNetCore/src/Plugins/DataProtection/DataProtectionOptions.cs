@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 

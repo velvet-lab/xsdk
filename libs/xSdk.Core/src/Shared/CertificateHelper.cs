@@ -19,7 +19,6 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.Extensions.Logging;
-using xSdk;
 using xSdk.Hosting;
 
 namespace xSdk.Shared;

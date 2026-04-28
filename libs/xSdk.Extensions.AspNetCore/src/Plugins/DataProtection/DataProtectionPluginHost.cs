@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.DataProtection;
-using xSdk.Extensions.IO;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
 using xSdk.Shared;

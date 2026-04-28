@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos.Builders;
-using xSdk.Extensions.Links;
 using xSdk.Hosting;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.DataProtection;

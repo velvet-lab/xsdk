@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

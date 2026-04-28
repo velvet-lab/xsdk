@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using AspNetCore.Authentication.ApiKey;
 using xSdk.Data;
 using xSdk.Security.Claims;
 

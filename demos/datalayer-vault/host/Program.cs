@@ -30,7 +30,6 @@
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Images;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk;

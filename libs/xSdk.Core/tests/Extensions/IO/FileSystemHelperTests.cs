@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.IO;
-
 namespace xSdk.Extensions.IO;
 
 public class FileSystemHelperTests

@@ -16,7 +16,6 @@
 
 using System.Net.Http.Handlers;
 using Microsoft.Extensions.Logging;
-using xSdk;
 using xSdk.Hosting;
 using xSdk.Shared;
 

@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Plugin;
-using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 

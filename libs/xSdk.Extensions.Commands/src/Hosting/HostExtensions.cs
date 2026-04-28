@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-using System.ComponentModel.Design;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
-using xSdk.Extensions.Plugin;
 using xSdk.Plugins.Commands;
 
 namespace xSdk.Hosting;

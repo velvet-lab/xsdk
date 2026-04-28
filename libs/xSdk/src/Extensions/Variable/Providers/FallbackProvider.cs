@@ -16,7 +16,6 @@
 
 using System.Runtime.InteropServices;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable.Providers;
 

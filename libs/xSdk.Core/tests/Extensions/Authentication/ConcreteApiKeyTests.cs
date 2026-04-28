@@ -15,7 +15,6 @@
  */
 
 using System.Security.Claims;
-using xSdk.Extensions.Authentication;
 
 namespace xSdk.Extensions.Authentication;
 

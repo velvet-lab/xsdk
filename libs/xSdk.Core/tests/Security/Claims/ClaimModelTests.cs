@@ -15,7 +15,6 @@
  */
 
 using System.Security.Claims;
-using xSdk.Security.Claims;
 
 namespace xSdk.Security.Claims;
 

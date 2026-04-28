@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Reflection;
 using xSdk.Extensions.Links;
 
 namespace xSdk.Extensions.AspNetCore.Links.Tests;

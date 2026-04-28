@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Variable;
-
 namespace xSdk.Data;
 
 public interface IRepository : IDatalayerMetadata

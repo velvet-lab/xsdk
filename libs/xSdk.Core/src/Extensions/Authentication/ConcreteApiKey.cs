@@ -16,7 +16,6 @@
 
 using System.Security.Claims;
 using AspNetCore.Authentication.ApiKey;
-using xSdk.Data;
 
 namespace xSdk.Extensions.Authentication;
 

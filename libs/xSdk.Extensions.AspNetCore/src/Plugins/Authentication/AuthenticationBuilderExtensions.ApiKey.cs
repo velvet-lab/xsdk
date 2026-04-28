@@ -20,11 +20,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Options;
-using xSdk.Extensions.Variable;
-using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 

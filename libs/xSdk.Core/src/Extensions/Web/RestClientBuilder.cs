@@ -18,7 +18,6 @@ using Microsoft.Extensions.Logging;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.Json;
-using xSdk;
 using xSdk.Hosting;
 using xSdk.Shared;
 using xSdk.Tools;

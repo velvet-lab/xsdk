@@ -17,8 +17,6 @@
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using xSdk.Extensions.Options;
-using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 using xSdk.Security;
 using Zio;

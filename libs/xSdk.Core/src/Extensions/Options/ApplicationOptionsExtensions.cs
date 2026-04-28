@@ -1,6 +1,5 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using static xSdk.Extensions.Options.ApplicationOptions.Definitions;
 
 namespace xSdk.Extensions.Options;
 

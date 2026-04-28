@@ -25,7 +25,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Options;
-using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;

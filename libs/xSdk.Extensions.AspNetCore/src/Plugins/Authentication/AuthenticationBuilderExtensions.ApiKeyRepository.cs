@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Authentication;

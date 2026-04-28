@@ -31,15 +31,47 @@ namespace xSdk.Hosting;
 public static class LogManager
 {
     private static ILoggerFactory _factory = LoggerFactory.Create(b => b.AddConsole());
+    private static readonly object _lock = new();
 
-    internal static void Initialize(ILoggerFactory factory) =>
-        _factory = factory ?? LoggerFactory.Create(b => b.AddConsole());
+    internal static void Initialize(ILoggerFactory factory)
+    {
+        lock (_lock)
+        {
+            _factory = factory ?? LoggerFactory.Create(b => b.AddConsole());
+        }
+    }
 
-    public static ILogger CreateLogger(string categoryName) => _factory.CreateLogger(categoryName);
+    internal static void Reset()
+    {
+        lock (_lock)
+        {
+            _factory = LoggerFactory.Create(b => b.AddConsole());
+        }
+    }
 
-    public static ILogger<T> CreateLogger<T>() => _factory.CreateLogger<T>();
+    public static ILogger CreateLogger(string categoryName)
+    {
+        lock (_lock)
+        {
+            return _factory.CreateLogger(categoryName);
+        }
+    }
 
-    public static ILogger CreateLogger(Type type) => _factory.CreateLogger(type);
+    public static ILogger<T> CreateLogger<T>()
+    {
+        lock (_lock)
+        {
+            return _factory.CreateLogger<T>();
+        }
+    }
+
+    public static ILogger CreateLogger(Type type)
+    {
+        lock (_lock)
+        {
+            return _factory.CreateLogger(type);
+        }
+    }
 
     public static ILogger GetCurrentClassLogger()
     {

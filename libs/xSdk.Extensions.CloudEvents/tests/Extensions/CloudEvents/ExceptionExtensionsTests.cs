@@ -16,7 +16,6 @@
 
 using System.Text.Json;
 using CloudNative.CloudEvents;
-using xSdk.Extensions.CloudEvents;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;

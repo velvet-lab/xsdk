@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Options;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting.Managers;
 

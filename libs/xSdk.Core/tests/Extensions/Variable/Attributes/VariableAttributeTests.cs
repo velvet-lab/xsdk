@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Variable.Attributes;
-
 namespace xSdk.Extensions.Variable.Attributes;
 
 public class VariableAttributeTests

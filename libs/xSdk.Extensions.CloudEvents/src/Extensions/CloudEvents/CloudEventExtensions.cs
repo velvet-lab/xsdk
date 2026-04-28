@@ -16,7 +16,6 @@
 
 using System.Text.Json;
 using CloudNative.CloudEvents;
-using xSdk.Data;
 using xSdk.Shared;
 using xSdk.Tools;
 

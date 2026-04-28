@@ -15,7 +15,6 @@
  */
 
 using System.ComponentModel.DataAnnotations;
-using xSdk.Data.Annotations;
 
 namespace xSdk.Data.Annotations;
 

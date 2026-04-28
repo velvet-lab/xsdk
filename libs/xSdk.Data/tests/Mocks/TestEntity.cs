@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.ComponentModel.DataAnnotations;
 using xSdk.Tools;
 
 namespace xSdk.Data.Mocks;

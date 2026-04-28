@@ -17,7 +17,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;
 using xSdk.Plugins.WebApi;

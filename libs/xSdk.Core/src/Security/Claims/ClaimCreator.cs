@@ -15,7 +15,6 @@
  */
 
 using System.Security.Claims;
-using xSdk.Hosting;
 
 namespace xSdk.Security.Claims;
 

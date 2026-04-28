@@ -16,7 +16,6 @@
 
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using xSdk;
 using xSdk.Hosting;
 
 namespace xSdk.Shared;

@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using xSdk.Extensions.Commands;
 
 namespace xSdk.Extensions.Commands.Tests.Extensions.Commands;
 

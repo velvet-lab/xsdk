@@ -113,6 +113,9 @@ public class TestHostFixture : IDisposable
 
             _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             _host?.Dispose();
+
+            // Reset LogManager to prevent disposed ILoggerFactory access
+            LogManager.Reset();
         }
 
         // Free unmanaged resources.
@@ -146,6 +149,13 @@ public class TestHostFixture : IDisposable
             return _host;
         }
 
+        // Stop and dispose the previous host if it exists
+        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        _host?.Dispose();
+
+        // Reset LogManager to ensure a clean state before building a new host
+        LogManager.Reset();
+
         IHostBuilder builder = CreateHostBuilder()
             .ConfigureServices((context, services) =>
             {
@@ -178,10 +188,6 @@ public class TestHostFixture : IDisposable
         {
             configure?.Invoke(builder);
         }
-
-        // Stop and dispose the previous host if it exists
-        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        _host?.Dispose();
 
         _host = builder.Build();
 
