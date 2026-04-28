@@ -36,16 +36,16 @@ This registers `TelemetryPlugin` via the plugin system ([ADR-003](ADR-003-plugin
 
 `TelemetrySetup : Setup` exposes all telemetry settings as `Variable`-backed configuration properties:
 
-| Property | Variable Key | Default |
-|---|---|---|
-| `IsDisabled` | `{prefix}_TELEMETRY_DISABLE` | `false` |
-| `IsLoggingDisabled` | `{prefix}_TELEMETRY_LOGGING_DISABLE` | `false` |
-| `IsTracingDisabled` | `{prefix}_TELEMETRY_TRACING_DISABLE` | `false` |
-| `IsMetricsDisabled` | `{prefix}_TELEMETRY_METRICS_DISABLE` | `false` |
-| `IsOtlpExporterDisabled` | `{prefix}_TELEMETRY_OTLP_DISABLE` | `true` |
-| `IsConsoleEnabled` | `{prefix}_TELEMETRY_CONSOLE_ENABLE` | `false` |
-| `Token` | `{prefix}_TELEMETRY_TOKEN` | — |
-| Endpoint URL | `{prefix}_TELEMETRY_ENDPOINT` | — |
+| Property                 | Variable Key                         | Default |
+|--------------------------|--------------------------------------|---------|
+| `IsDisabled`             | `{prefix}_TELEMETRY_DISABLE`         | `false` |
+| `IsLoggingDisabled`      | `{prefix}_TELEMETRY_LOGGING_DISABLE` | `false` |
+| `IsTracingDisabled`      | `{prefix}_TELEMETRY_TRACING_DISABLE` | `false` |
+| `IsMetricsDisabled`      | `{prefix}_TELEMETRY_METRICS_DISABLE` | `false` |
+| `IsOtlpExporterDisabled` | `{prefix}_TELEMETRY_OTLP_DISABLE`    | `true`  |
+| `IsConsoleEnabled`       | `{prefix}_TELEMETRY_CONSOLE_ENABLE`  | `false` |
+| `Token`                  | `{prefix}_TELEMETRY_TOKEN`           | —       |
+| Endpoint URL             | `{prefix}_TELEMETRY_ENDPOINT`        | —       |
 
 ### TelemetryPlugin.ConfigureServices
 
@@ -104,21 +104,21 @@ Tracing is applied at **boundary layers only** — operations with measurable la
 
 **Priority HIGH — external I/O**
 
-| Class | Span names | Reason |
-|---|---|---|
-| `VaultRepository` / `ReadOnlyVaultRepository` | `vault.read_secret`, `vault.write_secret` | HTTP call to HashiCorp Vault |
-| `NoSqlRepository` (LiteDB) | `nosql.query`, `nosql.insert`, `nosql.update`, `nosql.delete` | File-based DB operations |
-| `HttpClientBuilder` | automatic via `AddHttpClientInstrumentation()` | All outbound HTTP |
-| `CloudEventFactory` / `CloudEventWebExtensions` | `cloudevent.publish`, `cloudevent.receive` | Event boundary |
-| `PluginItem` | `plugin.load`, `plugin.initialize` | Assembly + filesystem I/O |
+| Class                                           | Span names                                                    | Reason                       |
+|-------------------------------------------------|---------------------------------------------------------------|------------------------------|
+| `VaultRepository` / `ReadOnlyVaultRepository`   | `vault.read_secret`, `vault.write_secret`                     | HTTP call to HashiCorp Vault |
+| `NoSqlRepository` (LiteDB)                      | `nosql.query`, `nosql.insert`, `nosql.update`, `nosql.delete` | File-based DB operations     |
+| `HttpClientBuilder`                             | automatic via `AddHttpClientInstrumentation()`                | All outbound HTTP            |
+| `CloudEventFactory` / `CloudEventWebExtensions` | `cloudevent.publish`, `cloudevent.receive`                    | Event boundary               |
+| `PluginItem`                                    | `plugin.load`, `plugin.initialize`                            | Assembly + filesystem I/O    |
 
 **Priority MEDIUM — internal boundaries worth observing**
 
-| Class | Reason |
-|---|---|
-| `FileSystemService` | File I/O that can fail |
+| Class                                                      | Reason                            |
+|------------------------------------------------------------|-----------------------------------|
+| `FileSystemService`                                        | File I/O that can fail            |
 | `CredentialManager` / `CertAuthSetup` / `AppRoleAuthSetup` | Security operations — audit trail |
-| `VariableService` | Configuration resolution failures |
+| `VariableService`                                          | Configuration resolution failures |
 
 **Explicitly excluded from tracing**
 
@@ -129,15 +129,15 @@ Tracing is applied at **boundary layers only** — operations with measurable la
 
 Metrics are added at locations where aggregated data has operational value (alerting, dashboards, capacity planning):
 
-| Metric name | Type | Location | Operational value |
-|---|---|---|---|
-| `xsdk.repository.operations.duration` | Histogram | `NoSqlRepository`, `VaultRepository` | Latency alerting |
-| `xsdk.repository.operations.errors` | Counter | All repositories | Error rate / SLA |
-| `xsdk.plugin.load.duration` | Histogram | `PluginItem` | Plugin startup performance |
-| `xsdk.plugin.loaded.count` | UpDownCounter | Plugin system | Active plugin count |
-| `xsdk.http.requests.duration` | Histogram | `HttpClientBuilder` | automatic via instrumentation |
-| `xsdk.vault.requests.total` | Counter | `VaultRepository` | Vault call volume |
-| `xsdk.variable.resolution.failures` | Counter | `VariableService` | Configuration error detection |
+| Metric name                           | Type          | Location                             | Operational value             |
+|---------------------------------------|---------------|--------------------------------------|-------------------------------|
+| `xsdk.repository.operations.duration` | Histogram     | `NoSqlRepository`, `VaultRepository` | Latency alerting              |
+| `xsdk.repository.operations.errors`   | Counter       | All repositories                     | Error rate / SLA              |
+| `xsdk.plugin.load.duration`           | Histogram     | `PluginItem`                         | Plugin startup performance    |
+| `xsdk.plugin.loaded.count`            | UpDownCounter | Plugin system                        | Active plugin count           |
+| `xsdk.http.requests.duration`         | Histogram     | `HttpClientBuilder`                  | automatic via instrumentation |
+| `xsdk.vault.requests.total`           | Counter       | `VaultRepository`                    | Vault call volume             |
+| `xsdk.variable.resolution.failures`   | Counter       | `VariableService`                    | Configuration error detection |
 
 All custom instruments are created via `ITelemetryService.CreateCounter<T>()` / `CreateHistogram<T>()` to avoid direct references to `System.Diagnostics.Metrics` in SDK libraries.
 

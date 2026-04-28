@@ -39,10 +39,10 @@ public abstract class MappingProfile
 
 Pre-built SDK profiles:
 
-| Profile | Purpose |
-|---|---|
+| Profile                | Purpose                          |
+|------------------------|----------------------------------|
 | `EntityMappingProfile` | `IEntity` → `IModel` and reverse |
-| `ModelMappingProfile` | `IModel` → `IEntity` and reverse |
+| `ModelMappingProfile`  | `IModel` → `IEntity` and reverse |
 
 ### MappingFactory
 

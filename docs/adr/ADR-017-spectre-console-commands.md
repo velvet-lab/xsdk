@@ -43,11 +43,11 @@ Commands are defined by subclassing Spectre.Console.Cli's `Command<TSettings>` o
 
 `DefaultCommandSettings` defines the standard SDK variables that are also exposed as CLI flags:
 
-| CLI Flag | Mapped Variable |
-|---|---|
-| `--environment-stage` | `Stage` |
-| `--environment-demo` | `IsDemo` |
-| `--log-level` | Log level override |
+| CLI Flag              | Mapped Variable    |
+|-----------------------|--------------------|
+| `--environment-stage` | `Stage`            |
+| `--environment-demo`  | `IsDemo`           |
+| `--log-level`         | Log level override |
 
 These are always available in any SDK-based CLI application.
 

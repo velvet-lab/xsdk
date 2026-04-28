@@ -27,14 +27,14 @@ Some applications require a local, file-based NoSQL store without dependency on 
 
 ### Components
 
-| Class | Responsibility |
-|---|---|
-| `NoSqlDatabase` | Manages `LiteDatabaseAsync` instance; opens with `persistConnection = true` to reuse across calls |
-| `NoSqlConnectionBuilder` | Resolves the connection string from `Path` + `FileName` configuration |
-| `NoSqlDatabaseSetup` | Holds `Path`, `FileName`, `Password`, `IsReadOnly`; validates that path and file name are set |
-| `NoSqlEntity` / `NoSqlEntityPK` | Entity base classes with LiteDB BSON `[BsonId]` mapping |
-| `NoSqlRepository<TEntity>` | Repository implementation |
-| `IDatalayerBuilderExtensions` | `UseNoSql(name, config)` extension method |
+| Class                           | Responsibility                                                                                    |
+|---------------------------------|---------------------------------------------------------------------------------------------------|
+| `NoSqlDatabase`                 | Manages `LiteDatabaseAsync` instance; opens with `persistConnection = true` to reuse across calls |
+| `NoSqlConnectionBuilder`        | Resolves the connection string from `Path` + `FileName` configuration                             |
+| `NoSqlDatabaseSetup`            | Holds `Path`, `FileName`, `Password`, `IsReadOnly`; validates that path and file name are set     |
+| `NoSqlEntity` / `NoSqlEntityPK` | Entity base classes with LiteDB BSON `[BsonId]` mapping                                           |
+| `NoSqlRepository<TEntity>`      | Repository implementation                                                                         |
+| `IDatalayerBuilderExtensions`   | `UseNoSql(name, config)` extension method                                                         |
 
 ### Repository Operations
 

@@ -37,11 +37,11 @@ ISlimHost                  ← interface (in xSdk.Plugin, no runtime deps)
 
 `ISlimHost` exposes three subservices:
 
-| Property | Type | Purpose |
-|---|---|---|
-| `FileSystem` | `IFileSystemService` | Platform-agnostic file I/O |
-| `VariableSystem` | `IVariableService` | Configuration and setup access |
-| `PluginSystem` | `IPluginService` | Plugin catalog management |
+| Property         | Type                 | Purpose                        |
+|------------------|----------------------|--------------------------------|
+| `FileSystem`     | `IFileSystemService` | Platform-agnostic file I/O     |
+| `VariableSystem` | `IVariableService`   | Configuration and setup access |
+| `PluginSystem`   | `IPluginService`     | Plugin catalog management      |
 
 All three interfaces are defined in `xSdk.Core` (see [ADR-024](ADR-024-xsdk-core-foundation-layer.md)), which carries no host-runtime dependency.
 

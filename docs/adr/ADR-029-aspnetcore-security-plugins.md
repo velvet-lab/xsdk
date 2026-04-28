@@ -105,11 +105,11 @@ internal sealed class CompressionPluginHost : PluginHost
 
 Each plugin host reads its settings through the standard `IOptions<T>` pattern (wired via `RegisterPluginHostOptions<T>()`):
 
-| Plugin | Options Class | Key Variables |
-|---|---|---|
-| Authentication | `ApiKeyOptions` | `{prefix}_APIKEY_HEADER`, `{prefix}_APIKEY_VALUE` |
+| Plugin         | Options Class           | Key Variables                                                                  |
+|----------------|-------------------------|--------------------------------------------------------------------------------|
+| Authentication | `ApiKeyOptions`         | `{prefix}_APIKEY_HEADER`, `{prefix}_APIKEY_VALUE`                              |
 | DataProtection | `DataProtectionOptions` | `{prefix}_DATAPROTECTION_DISCRIMINATOR`, `{prefix}_DATAPROTECTION_KEYLIFETIME` |
-| WebSecurity | `WebSecurityOptions` | `{prefix}_WEBSECURITY_CORS_ENABLE`, `{prefix}_WEBSECURITY_ORIGINS` |
+| WebSecurity    | `WebSecurityOptions`    | `{prefix}_WEBSECURITY_CORS_ENABLE`, `{prefix}_WEBSECURITY_ORIGINS`             |
 
 ### API Key Model Abstraction
 

@@ -104,14 +104,14 @@ NLog is initialized programmatically (not via `nlog.config` XML) to ensure stage
 
 The following NLog constructs are removed as part of the migration to ADR-014:
 
-| NLog construct | Replacement |
-|---|---|
-| `LogManager.GetCurrentClassLogger()` | `ILogger<T>` via constructor injection |
-| `NLog.Extensions.Logging` adapter | `builder.AddOpenTelemetry()` in `TelemetryPlugin` |
-| `ConsoleTarget` | `builder.AddConsole()` (MEL built-in) |
-| `FileTarget` + XML config | `builder.AddFile()` or structured provider |
-| `Log4JXmlTarget` (UDP NLogViewer) | removed — replaced by OTLP export |
-| `LogManager.Flush()` / `Shutdown()` | `IHost.StopAsync()` handles graceful shutdown |
-| `NLog.LogLevel` conversion | direct `Microsoft.Extensions.Logging.LogLevel` |
+| NLog construct                       | Replacement                                       |
+|--------------------------------------|---------------------------------------------------|
+| `LogManager.GetCurrentClassLogger()` | `ILogger<T>` via constructor injection            |
+| `NLog.Extensions.Logging` adapter    | `builder.AddOpenTelemetry()` in `TelemetryPlugin` |
+| `ConsoleTarget`                      | `builder.AddConsole()` (MEL built-in)             |
+| `FileTarget` + XML config            | `builder.AddFile()` or structured provider        |
+| `Log4JXmlTarget` (UDP NLogViewer)    | removed — replaced by OTLP export                 |
+| `LogManager.Flush()` / `Shutdown()`  | `IHost.StopAsync()` handles graceful shutdown     |
+| `NLog.LogLevel` conversion           | direct `Microsoft.Extensions.Logging.LogLevel`    |
 
 Static classes that previously used `LogManager.GetCurrentClassLogger()` only for log-then-rethrow patterns have the try/catch removed entirely — the exception propagates unchanged to the boundary layer where it is captured by OTel tracing.

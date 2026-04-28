@@ -23,15 +23,15 @@ Some applications need the simplest possible persistence: human-readable JSON fi
 
 ### Components
 
-| Class | Responsibility |
-|---|---|
-| `FlatFileDatabase` | Wraps `DataStore` (from `JsonFlatFileDataStore`); opens via `Open<DataStore>()` |
-| `FlatFileConnectionBuilder` | Resolves file path and name from setup; supports placeholder substitution |
-| `FlatFileDatabaseSetup` / `IFlatFileDatabaseSetup` | Holds `Path`, `FileName`, `UseLowerCamelCase` flag |
-| `FlatFileEntity` | Entity base with Id property |
-| `FlatFileModel` | Model base |
-| `FlatFileRepository<TEntity>` | Repository implementation |
-| `ServiceCollectionExtensions` | `UseFlatFile(name, config)` extension method |
+| Class                                              | Responsibility                                                                  |
+|----------------------------------------------------|---------------------------------------------------------------------------------|
+| `FlatFileDatabase`                                 | Wraps `DataStore` (from `JsonFlatFileDataStore`); opens via `Open<DataStore>()` |
+| `FlatFileConnectionBuilder`                        | Resolves file path and name from setup; supports placeholder substitution       |
+| `FlatFileDatabaseSetup` / `IFlatFileDatabaseSetup` | Holds `Path`, `FileName`, `UseLowerCamelCase` flag                              |
+| `FlatFileEntity`                                   | Entity base with Id property                                                    |
+| `FlatFileModel`                                    | Model base                                                                      |
+| `FlatFileRepository<TEntity>`                      | Repository implementation                                                       |
+| `ServiceCollectionExtensions`                      | `UseFlatFile(name, config)` extension method                                    |
 
 ### Repository Operations
 

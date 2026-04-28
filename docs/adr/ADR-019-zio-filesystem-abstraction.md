@@ -25,12 +25,12 @@ The SDK's `IFileSystemService` must:
 
 ### Key Zio Types Used
 
-| Type | Description |
-|---|---|
-| `IFileSystem` | Abstraction over any file system (physical, virtual, sub) |
-| `PhysicalFileSystem` | Wraps `System.IO` with a `UPath` interface |
-| `SubFileSystem` | Read-only view scoped to a subdirectory of another `IFileSystem` |
-| `UPath` | Immutable, normalized cross-platform path (`/` separated everywhere) |
+| Type                 | Description                                                          |
+|----------------------|----------------------------------------------------------------------|
+| `IFileSystem`        | Abstraction over any file system (physical, virtual, sub)            |
+| `PhysicalFileSystem` | Wraps `System.IO` with a `UPath` interface                           |
+| `SubFileSystem`      | Read-only view scoped to a subdirectory of another `IFileSystem`     |
+| `UPath`              | Immutable, normalized cross-platform path (`/` separated everywhere) |
 
 ### FileSystemService
 
@@ -56,13 +56,13 @@ public interface IFileSystemService
 
 `RootFolders` record holds computed `UPath` values for:
 
-| Property | Windows Example | Linux Example |
-|---|---|---|
-| `Machine` | `C:\ProgramData\{company}\{app}` | `/etc/{company}/{app}` |
-| `User` | `C:\Users\bob\AppData\Roaming\{company}\{app}` | `~/.config/{company}/{app}` |
-| `Local` | current working directory | current working directory |
-| `MachineData` | `C:\ProgramData\{company}\{app}` | `/var/lib/{company}/{app}` |
-| `UserData` | `C:\Users\bob\AppData\Local\{company}\{app}` | `~/.local/share/{company}/{app}` |
+| Property      | Windows Example                                | Linux Example                    |
+|---------------|------------------------------------------------|----------------------------------|
+| `Machine`     | `C:\ProgramData\{company}\{app}`               | `/etc/{company}/{app}`           |
+| `User`        | `C:\Users\bob\AppData\Roaming\{company}\{app}` | `~/.config/{company}/{app}`      |
+| `Local`       | current working directory                      | current working directory        |
+| `MachineData` | `C:\ProgramData\{company}\{app}`               | `/var/lib/{company}/{app}`       |
+| `UserData`    | `C:\Users\bob\AppData\Local\{company}\{app}`   | `~/.local/share/{company}/{app}` |
 
 The paths are derived from `EnvironmentSetup.AppCompany` and `EnvironmentSetup.AppName`, so different applications coexist without path collisions.
 

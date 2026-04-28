@@ -41,12 +41,12 @@ public class MongoDbContext<TContext> : DbContext
 
 Four base classes are provided to accommodate MongoDB's BSON requirements:
 
-| Class | Description |
-|---|---|
-| `MongoDbEntity` | String-keyed entity with `[BsonId]` on `Id` |
-| `MongoDbEntityPK` | Entity with `ObjectId`-based primary key |
-| `MongoDbModel` | DTO model (string key) |
-| `MongoDbModelPK` | DTO model with `ObjectId` key |
+| Class             | Description                                 |
+|-------------------|---------------------------------------------|
+| `MongoDbEntity`   | String-keyed entity with `[BsonId]` on `Id` |
+| `MongoDbEntityPK` | Entity with `ObjectId`-based primary key    |
+| `MongoDbModel`    | DTO model (string key)                      |
+| `MongoDbModelPK`  | DTO model with `ObjectId` key               |
 
 ### BSON Converters
 

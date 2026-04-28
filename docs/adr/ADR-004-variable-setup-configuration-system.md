@@ -28,16 +28,16 @@ A two-layer system is introduced: **`Variable`** (metadata) and **`Setup`** (typ
 
 `Variable` / `Variable<TType>` represents a single configuration entry with:
 
-| Property | Description |
-|---|---|
-| `Name` | Logical name (e.g., `"stage"`) |
-| `ValueType` | CLR type for the value |
-| `Prefix` | Application prefix override |
-| `NoPrefix` | Skip prefix when building the environment variable key |
-| `Template` | Handlebars-style template (via `Handlebars.Net`) for the env-var key (e.g., `{{app.prefix}}_ENVIRONMENT_STAGE`) |
-| `IsProtected` | Marks as secret — value never logged |
-| `IsHidden` | Excluded from help/diagnostic output |
-| `HelpText` | Description for CLI help |
+| Property      | Description                                                                                                     |
+|---------------|-----------------------------------------------------------------------------------------------------------------|
+| `Name`        | Logical name (e.g., `"stage"`)                                                                                  |
+| `ValueType`   | CLR type for the value                                                                                          |
+| `Prefix`      | Application prefix override                                                                                     |
+| `NoPrefix`    | Skip prefix when building the environment variable key                                                          |
+| `Template`    | Handlebars-style template (via `Handlebars.Net`) for the env-var key (e.g., `{{app.prefix}}_ENVIRONMENT_STAGE`) |
+| `IsProtected` | Marks as secret — value never logged                                                                            |
+| `IsHidden`    | Excluded from help/diagnostic output                                                                            |
+| `HelpText`    | Description for CLI help                                                                                        |
 
 Keys are derived deterministically:
 - **Environment / file system** key: `{APP_PREFIX}_{VARIABLE_NAME}` (upper-case)

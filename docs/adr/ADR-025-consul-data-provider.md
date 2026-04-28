@@ -42,16 +42,16 @@ The alternative considered was **Microsoft.Extensions.ServiceDiscovery** (the .N
 
 `xSdk.Data.Consul` exposes:
 
-| Type | Role |
-|---|---|
-| `ConsulEntity` | Base entity type for Consul KV-backed items |
-| `ConsulPrimaryKey` | Primary key implementation using Consul KV path segments |
-| `ConsulDatabase` / `ConsulDatabaseSetup` | Database context and setup options for Consul connection |
-| `ConsulRepository<TEntity>` | `IRepository<TEntity>` implementation backed by Consul KV; supports Insert, Select, Update, Remove, Upsert operations |
-| `ConsulConnectionBuilder` | Fluent builder for Consul connection strings (address, datacenter, token) |
-| `IConsulService` / `ConsulService` | Higher-level service for Consul service registry interactions (registration, deregistration, health checks) |
-| `DatalayerBuilderExtensions` | `AddConsul(...)` extension method on `IDatalayerBuilder` |
-| `ServiceCollectionExtensions` | `AddConsulService(...)` for registering `IConsulService` via DI |
+| Type                                     | Role                                                                                                                  |
+|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `ConsulEntity`                           | Base entity type for Consul KV-backed items                                                                           |
+| `ConsulPrimaryKey`                       | Primary key implementation using Consul KV path segments                                                              |
+| `ConsulDatabase` / `ConsulDatabaseSetup` | Database context and setup options for Consul connection                                                              |
+| `ConsulRepository<TEntity>`              | `IRepository<TEntity>` implementation backed by Consul KV; supports Insert, Select, Update, Remove, Upsert operations |
+| `ConsulConnectionBuilder`                | Fluent builder for Consul connection strings (address, datacenter, token)                                             |
+| `IConsulService` / `ConsulService`       | Higher-level service for Consul service registry interactions (registration, deregistration, health checks)           |
+| `DatalayerBuilderExtensions`             | `AddConsul(...)` extension method on `IDatalayerBuilder`                                                              |
+| `ServiceCollectionExtensions`            | `AddConsulService(...)` for registering `IConsulService` via DI                                                       |
 
 ### Integration Pattern
 

@@ -27,28 +27,28 @@ The SDK needs to expose Vault as a data provider so that secrets can be read thr
 
 A dedicated class exists for each supported auth method:
 
-| Class | Vault Auth Backend |
-|---|---|
-| `AppRoleAuth` | AppRole (recommended for machine-to-machine) |
-| `UsernamePasswordAuth` | Userpass |
-| `LdapAuth` | LDAP |
-| `JwtAuth` | JWT/OIDC |
-| `OidcAuth` | OIDC with browser redirect |
-| `TokenAuth` | Direct token (dev/test only) |
-| `CertAuth` | TLS certificate |
+| Class                  | Vault Auth Backend                           |
+|------------------------|----------------------------------------------|
+| `AppRoleAuth`          | AppRole (recommended for machine-to-machine) |
+| `UsernamePasswordAuth` | Userpass                                     |
+| `LdapAuth`             | LDAP                                         |
+| `JwtAuth`              | JWT/OIDC                                     |
+| `OidcAuth`             | OIDC with browser redirect                   |
+| `TokenAuth`            | Direct token (dev/test only)                 |
+| `CertAuth`             | TLS certificate                              |
 
 `VaultAuthenticationMethod` enum controls which auth class is instantiated.
 
 ### Components
 
-| Class | Responsibility |
-|---|---|
-| `VaultDatabase` | Opens and caches `VaultClient` (from VaultSharp); persists connection |
-| `VaultConnectionBuilder` | Builds Vault server URL and auth settings from `VaultDatabaseSetup` |
-| `VaultDatabaseSetup` | Holds `ServerUrl`, `MountPoint`, `AuthMethod`, auth-specific fields, `PathFormat` delegate |
-| `VaultSetup` | `Setup` derivative exposing Vault config as `Variable`-backed properties |
-| `ReadOnlyVaultRepository` | Implements `IReadOnlyVaultRepository` — reads KV v2 secrets |
-| `VaultRepository` | Extends read-only; adds `AddSecretAsync` for writing secrets |
+| Class                     | Responsibility                                                                             |
+|---------------------------|--------------------------------------------------------------------------------------------|
+| `VaultDatabase`           | Opens and caches `VaultClient` (from VaultSharp); persists connection                      |
+| `VaultConnectionBuilder`  | Builds Vault server URL and auth settings from `VaultDatabaseSetup`                        |
+| `VaultDatabaseSetup`      | Holds `ServerUrl`, `MountPoint`, `AuthMethod`, auth-specific fields, `PathFormat` delegate |
+| `VaultSetup`              | `Setup` derivative exposing Vault config as `Variable`-backed properties                   |
+| `ReadOnlyVaultRepository` | Implements `IReadOnlyVaultRepository` — reads KV v2 secrets                                |
+| `VaultRepository`         | Extends read-only; adds `AddSecretAsync` for writing secrets                               |
 
 ### Path Formatting
 

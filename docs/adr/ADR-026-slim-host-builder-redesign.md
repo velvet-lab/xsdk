@@ -53,16 +53,16 @@ SlimHost slimHost = builder.GetSlimHost();
 
 `SlimHost` now has a focused set of responsibilities:
 
-| Method / Property | Purpose |
-|---|---|
-| `InitializeSlimHost(args, appOptions)` | Factory — creates and seeds the slim DI container with defaults |
-| `PostConfigure(appServices)` | Merges slim-registered services into the full application `IServiceCollection` |
-| `RegisterPluginHost<TInterface, TImpl>()` | Adds a plugin host type to the internal type catalog |
-| `RegisterPluginBuilder<TBuilder, TImpl>()` | Adds a plugin builder as a keyed singleton in the slim container |
-| `RegisterPluginHostOptions<TOptions>()` | Registers an options type for a plugin host |
-| `ConfigurePluginHost<T>(action)` | Iterates registered `IPluginHost` instances of type `T` and invokes `action` |
-| `GetPluginHosts<T>()` | Returns ordered `IEnumerable<T>` of registered plugin hosts |
-| `GetEnvironment()` | Returns `EnvironmentOptions` resolved from the slim container |
+| Method / Property                          | Purpose                                                                        |
+|--------------------------------------------|--------------------------------------------------------------------------------|
+| `InitializeSlimHost(args, appOptions)`     | Factory — creates and seeds the slim DI container with defaults                |
+| `PostConfigure(appServices)`               | Merges slim-registered services into the full application `IServiceCollection` |
+| `RegisterPluginHost<TInterface, TImpl>()`  | Adds a plugin host type to the internal type catalog                           |
+| `RegisterPluginBuilder<TBuilder, TImpl>()` | Adds a plugin builder as a keyed singleton in the slim container               |
+| `RegisterPluginHostOptions<TOptions>()`    | Registers an options type for a plugin host                                    |
+| `ConfigurePluginHost<T>(action)`           | Iterates registered `IPluginHost` instances of type `T` and invokes `action`   |
+| `GetPluginHosts<T>()`                      | Returns ordered `IEnumerable<T>` of registered plugin hosts                    |
+| `GetEnvironment()`                         | Returns `EnvironmentOptions` resolved from the slim container                  |
 
 ### No More Static Singleton
 

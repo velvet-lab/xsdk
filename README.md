@@ -58,29 +58,29 @@ Key goals:
 
 ## Technology Stack
 
-| Category            | Technology                    | Version    |
-|---------------------|-------------------------------|------------|
-| Runtime             | .NET                          | 10.0       |
-| Language            | C#                            | latest     |
-| Web Framework       | ASP.NET Core                  | 10.0       |
-| ORM                 | Entity Framework Core         | 10.0.5     |
-| Document DB         | MongoDB (EF Core provider)    | 10.0.1     |
-| Embedded DB         | LiteDB / LiteDB.Async         | 5.0.21     |
-| Flat File Store     | JsonFlatFileDataStore         | 2.4.2      |
-| Service Discovery   | Consul                        | 1.8.0      |
-| Secrets Management  | VaultSharp                    | 1.17.5.1   |
-| Plugin System       | Weikio.PluginFramework        | 1.5.1      |
-| Validation          | FluentValidation              | 12.1.1     |
-| Object Mapping      | Mapster                       | 10.0.6     |
-| Observability       | OpenTelemetry                 | 1.15.1     |
-| API Versioning      | Asp.Versioning                | 8.1.1      |
-| API Documentation   | Microsoft.AspNetCore.OpenAPI  | 10.0.5     |
-| Cloud Events        | CloudNative.CloudEvents       | 2.8.0      |
-| CLI                 | Spectre.Console.Cli           | 0.53.1     |
-| HTTP Client         | RestSharp                     | 114.0.0    |
-| Security Middleware | NWebsec                       | 3.0.0      |
-| Serialization       | YamlDotNet                    | 16.3.0     |
-| Release Tooling     | semantic-release / pnpm       | —          |
+| Category            | Technology                   | Version  |
+|---------------------|------------------------------|----------|
+| Runtime             | .NET                         | 10.0     |
+| Language            | C#                           | latest   |
+| Web Framework       | ASP.NET Core                 | 10.0     |
+| ORM                 | Entity Framework Core        | 10.0.5   |
+| Document DB         | MongoDB (EF Core provider)   | 10.0.1   |
+| Embedded DB         | LiteDB / LiteDB.Async        | 5.0.21   |
+| Flat File Store     | JsonFlatFileDataStore        | 2.4.2    |
+| Service Discovery   | Consul                       | 1.8.0    |
+| Secrets Management  | VaultSharp                   | 1.17.5.1 |
+| Plugin System       | Weikio.PluginFramework       | 1.5.1    |
+| Validation          | FluentValidation             | 12.1.1   |
+| Object Mapping      | Mapster                      | 10.0.6   |
+| Observability       | OpenTelemetry                | 1.15.1   |
+| API Versioning      | Asp.Versioning               | 8.1.1    |
+| API Documentation   | Microsoft.AspNetCore.OpenAPI | 10.0.5   |
+| Cloud Events        | CloudNative.CloudEvents      | 2.8.0    |
+| CLI                 | Spectre.Console.Cli          | 0.53.1   |
+| HTTP Client         | RestSharp                    | 114.0.0  |
+| Security Middleware | NWebsec                      | 3.0.0    |
+| Serialization       | YamlDotNet                   | 16.3.0   |
+| Release Tooling     | semantic-release / pnpm      | —        |
 
 ---
 
@@ -347,15 +347,15 @@ Common types: `feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `perf`.
 
 ### CI/CD Pipelines
 
-| Workflow              | Trigger                       | Description                             |
-|-----------------------|-------------------------------|-----------------------------------------|
-| `unit-tests.yml`      | Push / PR to `main`, `next`   | Quality assurance — build and test      |
-| `sonar-scan.yml`      | PR to `next`                  | SonarCloud quality analysis             |
-| `check-format.yml`    | PR to `main`, `next`          | Verify code formatting                  |
-| `check-license.yml`   | PR to `main`, `next`          | Validate license headers                |
-| `lint-commits.yml`    | PR (opened / sync / edited)   | Conventional commit enforcement         |
-| `lint-dotnet.yml`     | PR to `main`, `next`          | .NET code consistency scan              |
-| `release.yml`         | Push to `main`, `next`        | Semantic versioning & GitHub Release    |
+| Workflow            | Trigger                     | Description                          |
+|---------------------|-----------------------------|--------------------------------------|
+| `unit-tests.yml`    | Push / PR to `main`, `next` | Quality assurance — build and test   |
+| `sonar-scan.yml`    | PR to `next`                | SonarCloud quality analysis          |
+| `check-format.yml`  | PR to `main`, `next`        | Verify code formatting               |
+| `check-license.yml` | PR to `main`, `next`        | Validate license headers             |
+| `lint-commits.yml`  | PR (opened / sync / edited) | Conventional commit enforcement      |
+| `lint-dotnet.yml`   | PR to `main`, `next`        | .NET code consistency scan           |
+| `release.yml`       | Push to `main`, `next`      | Semantic versioning & GitHub Release |
 
 ### Release Process
 
@@ -412,15 +412,15 @@ For full details see the instruction files in [.github/instructions/](.github/in
 
 ### Frameworks and Libraries
 
-| Library                                  | Version  | Purpose                                                |
-|------------------------------------------|----------|--------------------------------------------------------|
-| xunit.v3                                 | 3.2.2    | Test runner (`[Fact]`, `[Theory]`)                     |
-| Moq                                      | 4.20.72  | Mocking framework                                      |
-| Testcontainers.MongoDb                   | 4.11.0   | Integration tests with real containers (MongoDB, etc.) |
-| `Xunit.SkippableFact`                    | 1.5.23   | Skip tests conditionally                               |
-| `Bogus`                                  | 35.6.5   | Fake data generation                                   |
-| `Microsoft.EntityFrameworkCore.InMemory` | 10.0.5   | In-memory EF Core provider for unit tests              |
-| `coverlet.collector`                     | 8.0.1    | Code coverage collection (XPlat Code Coverage)         |
+| Library                                  | Version | Purpose                                                |
+|------------------------------------------|---------|--------------------------------------------------------|
+| xunit.v3                                 | 3.2.2   | Test runner (`[Fact]`, `[Theory]`)                     |
+| Moq                                      | 4.20.72 | Mocking framework                                      |
+| Testcontainers.MongoDb                   | 4.11.0  | Integration tests with real containers (MongoDB, etc.) |
+| `Xunit.SkippableFact`                    | 1.5.23  | Skip tests conditionally                               |
+| `Bogus`                                  | 35.6.5  | Fake data generation                                   |
+| `Microsoft.EntityFrameworkCore.InMemory` | 10.0.5  | In-memory EF Core provider for unit tests              |
+| `coverlet.collector`                     | 8.0.1   | Code coverage collection (XPlat Code Coverage)         |
 
 ### Test Naming
 
@@ -471,33 +471,33 @@ Test projects are named `[ProjectName].Tests` and mirror the source project stru
 
 All significant design decisions are documented in [`docs/adr/`](docs/adr/). Each ADR captures the context, decision, and consequences.
 
-| ADR | Title |
-|-----|-------|
-| [ADR-001](docs/adr/ADR-001-modular-library-architecture.md) | Modular Library Architecture |
-| [ADR-002](docs/adr/ADR-002-slim-host-singleton.md) | Slim Host Singleton |
-| [ADR-003](docs/adr/ADR-003-plugin-extensibility-model.md) | Plugin Extensibility Model |
-| [ADR-004](docs/adr/ADR-004-variable-setup-configuration-system.md) | Variable / Setup Configuration System |
-| [ADR-005](docs/adr/ADR-005-repository-pattern-with-factory.md) | Repository Pattern with Factory |
-| [ADR-006](docs/adr/ADR-006-provider-agnostic-data-layer.md) | Provider-Agnostic Data Layer |
-| [ADR-007](docs/adr/ADR-007-entity-framework-data-provider.md) | Entity Framework Data Provider |
-| [ADR-008](docs/adr/ADR-008-nosql-litedb-provider.md) | NoSQL LiteDB Provider |
-| [ADR-009](docs/adr/ADR-009-flatfile-jsonstore-provider.md) | Flat-File JsonStore Provider |
-| [ADR-010](docs/adr/ADR-010-vault-secret-management.md) | Vault Secret Management |
-| [ADR-011](docs/adr/ADR-011-mongodb-via-efcore.md) | MongoDB via EF Core |
-| [ADR-012](docs/adr/ADR-012-demo-fake-repository-mode.md) | Demo Fake Repository Mode |
-| [ADR-013](docs/adr/ADR-013-nlog-logging-framework.md) | NLog Logging Framework |
-| [ADR-014](docs/adr/ADR-014-opentelemetry-observability.md) | OpenTelemetry Observability |
-| [ADR-015](docs/adr/ADR-015-aspnetcore-web-host-extension.md) | ASP.NET Core Web Host Extension |
-| [ADR-016](docs/adr/ADR-016-cloudevents-integration.md) | CloudEvents Integration |
-| [ADR-017](docs/adr/ADR-017-spectre-console-commands.md) | Spectre Console Commands |
-| [ADR-018](docs/adr/ADR-018-mapster-object-mapping.md) | Mapster Object Mapping |
-| [ADR-019](docs/adr/ADR-019-zio-filesystem-abstraction.md) | Zio Filesystem Abstraction |
-| [ADR-020](docs/adr/ADR-020-central-package-management.md) | Central Package Management |
-| [ADR-021](docs/adr/ADR-021-semver-version-validation.md) | SemVer Version Validation |
-| [ADR-022](docs/adr/ADR-022-weikio-plugin-framework.md) | Weikio Plugin Framework |
-| [ADR-023](docs/adr/ADR-023-aspnetcore-links-hypermedia.md) | ASP.NET Core Links / Hypermedia |
-| [ADR-024](docs/adr/ADR-024-xsdk-core-foundation-layer.md) | xSdk.Core as Unified Foundation Layer |
-| [ADR-025](docs/adr/ADR-025-consul-data-provider.md) | HashiCorp Consul as Service-Discovery and Configuration Provider |
+| ADR                                                                | Title                                                            |
+|--------------------------------------------------------------------|------------------------------------------------------------------|
+| [ADR-001](docs/adr/ADR-001-modular-library-architecture.md)        | Modular Library Architecture                                     |
+| [ADR-002](docs/adr/ADR-002-slim-host-singleton.md)                 | Slim Host Singleton                                              |
+| [ADR-003](docs/adr/ADR-003-plugin-extensibility-model.md)          | Plugin Extensibility Model                                       |
+| [ADR-004](docs/adr/ADR-004-variable-setup-configuration-system.md) | Variable / Setup Configuration System                            |
+| [ADR-005](docs/adr/ADR-005-repository-pattern-with-factory.md)     | Repository Pattern with Factory                                  |
+| [ADR-006](docs/adr/ADR-006-provider-agnostic-data-layer.md)        | Provider-Agnostic Data Layer                                     |
+| [ADR-007](docs/adr/ADR-007-entity-framework-data-provider.md)      | Entity Framework Data Provider                                   |
+| [ADR-008](docs/adr/ADR-008-nosql-litedb-provider.md)               | NoSQL LiteDB Provider                                            |
+| [ADR-009](docs/adr/ADR-009-flatfile-jsonstore-provider.md)         | Flat-File JsonStore Provider                                     |
+| [ADR-010](docs/adr/ADR-010-vault-secret-management.md)             | Vault Secret Management                                          |
+| [ADR-011](docs/adr/ADR-011-mongodb-via-efcore.md)                  | MongoDB via EF Core                                              |
+| [ADR-012](docs/adr/ADR-012-demo-fake-repository-mode.md)           | Demo Fake Repository Mode                                        |
+| [ADR-013](docs/adr/ADR-013-nlog-logging-framework.md)              | NLog Logging Framework                                           |
+| [ADR-014](docs/adr/ADR-014-opentelemetry-observability.md)         | OpenTelemetry Observability                                      |
+| [ADR-015](docs/adr/ADR-015-aspnetcore-web-host-extension.md)       | ASP.NET Core Web Host Extension                                  |
+| [ADR-016](docs/adr/ADR-016-cloudevents-integration.md)             | CloudEvents Integration                                          |
+| [ADR-017](docs/adr/ADR-017-spectre-console-commands.md)            | Spectre Console Commands                                         |
+| [ADR-018](docs/adr/ADR-018-mapster-object-mapping.md)              | Mapster Object Mapping                                           |
+| [ADR-019](docs/adr/ADR-019-zio-filesystem-abstraction.md)          | Zio Filesystem Abstraction                                       |
+| [ADR-020](docs/adr/ADR-020-central-package-management.md)          | Central Package Management                                       |
+| [ADR-021](docs/adr/ADR-021-semver-version-validation.md)           | SemVer Version Validation                                        |
+| [ADR-022](docs/adr/ADR-022-weikio-plugin-framework.md)             | Weikio Plugin Framework                                          |
+| [ADR-023](docs/adr/ADR-023-aspnetcore-links-hypermedia.md)         | ASP.NET Core Links / Hypermedia                                  |
+| [ADR-024](docs/adr/ADR-024-xsdk-core-foundation-layer.md)          | xSdk.Core as Unified Foundation Layer                            |
+| [ADR-025](docs/adr/ADR-025-consul-data-provider.md)                | HashiCorp Consul as Service-Discovery and Configuration Provider |
 
 ---
 
@@ -515,22 +515,22 @@ All significant design decisions are documented in [`docs/adr/`](docs/adr/). Eac
 
 This repository ships with a full set of GitHub Copilot customizations:
 
-| Resource                                                   | Purpose                                                        |
-|------------------------------------------------------------|----------------------------------------------------------------|
-| [copilot-instructions.md](.github/copilot-instructions.md) | Project-wide coding context                                    |
-| [.github/instructions/](.github/instructions/)             | 9 focused instruction files by topic                           |
-| [.github/agents/](.github/agents/)                         | 4 specialized agent modes (see below)                          |
-| [.github/skills/](.github/skills/)                         | 10 reusable skill modules from awesome-copilot                 |
-| [.github/guidance/](.github/guidance/)                     | Commit, pull request, and review guidance                      |
+| Resource                                                   | Purpose                                        |
+|------------------------------------------------------------|------------------------------------------------|
+| [copilot-instructions.md](.github/copilot-instructions.md) | Project-wide coding context                    |
+| [.github/instructions/](.github/instructions/)             | 9 focused instruction files by topic           |
+| [.github/agents/](.github/agents/)                         | 4 specialized agent modes (see below)          |
+| [.github/skills/](.github/skills/)                         | 10 reusable skill modules from awesome-copilot |
+| [.github/guidance/](.github/guidance/)                     | Commit, pull request, and review guidance      |
 
 **Available agents:**
 
-| Agent | Purpose |
-|-------|---------|
-| **C# Expert** | Senior .NET developer — clean, idiomatic, secure C# code |
-| **GitHub Actions Expert** | Secure CI/CD workflows, action SHA pinning, OIDC |
-| **ADR Generator** | Create structured Architecture Decision Records |
-| **Technical Debt Remediation Plan** | Analyze and prioritize technical debt |
+| Agent                               | Purpose                                                  |
+|-------------------------------------|----------------------------------------------------------|
+| **C# Expert**                       | Senior .NET developer — clean, idiomatic, secure C# code |
+| **GitHub Actions Expert**           | Secure CI/CD workflows, action SHA pinning, OIDC         |
+| **ADR Generator**                   | Create structured Architecture Decision Records          |
+| **Technical Debt Remediation Plan** | Analyze and prioritize technical debt                    |
 
 ---
 
@@ -542,8 +542,8 @@ See [SECURITY.md](SECURITY.md) for the full security policy and vulnerability re
 
 | Version | Supported |
 |---------|-----------|
-| 1.1.x   | ✅        |
-| < 1.1.0 | ❌        |
+| 1.1.x   | ✅         |
+| < 1.1.0 | ❌         |
 
 To report a vulnerability, use [GitHub's private vulnerability reporting](https://github.com/velvet-lab/xsdk/security/advisories/new) or email `danlorb@velvet-lab.net`. **Do not** open public GitHub issues for security vulnerabilities.
 

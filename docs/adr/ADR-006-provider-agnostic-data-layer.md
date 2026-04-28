@@ -32,12 +32,12 @@ IEntity                 ← requires PrimaryKey (IPrimaryKey) and Id (object)
 
 Entity base classes provided per provider:
 
-| Provider | Entity Base | Model Base |
-|---|---|---|
-| EF Core | `EFEntity` | `EFModel` |
-| MongoDB EF | `MongoDbEntity` / `MongoDbEntityPK` | `MongoDbModel` / `MongoDbModelPK` |
-| FlatFile | `FlatFileEntity` | `FlatFileModel` |
-| LiteDB NoSql | `NoSqlEntity` / `NoSqlEntityPK` | `NoSqlModel` / `NoSqlModelPK` |
+| Provider     | Entity Base                         | Model Base                        |
+|--------------|-------------------------------------|-----------------------------------|
+| EF Core      | `EFEntity`                          | `EFModel`                         |
+| MongoDB EF   | `MongoDbEntity` / `MongoDbEntityPK` | `MongoDbModel` / `MongoDbModelPK` |
+| FlatFile     | `FlatFileEntity`                    | `FlatFileModel`                   |
+| LiteDB NoSql | `NoSqlEntity` / `NoSqlEntityPK`     | `NoSqlModel` / `NoSqlModelPK`     |
 
 ### Connection Abstraction
 

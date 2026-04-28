@@ -33,18 +33,18 @@ The name `xSdk.Plugin` no longer accurately described the package's contents and
 
 `xSdk.Core` is the lowest-level package in the SDK dependency graph. It contains:
 
-| Category | Key Types |
-|---|---|
-| Host Abstractions | `ISlimHost`, `SlimHostBase`, `SlimHostBuilder`, `IPluginHost<TSetup>` |
-| Plugin Primitives | `IPlugin`, `IPluginBuilder`, `IPluginDescription`, `IPluginService` |
-| Data Abstractions | `IEntity`, `IModel`, `IPrimaryKey`, `IRepository<TEntity>`, `IDatabase`, `IDatalayerFactory` |
-| Configuration | `ISetup`, `IVariable`, `IVariableService`, `VariableAttribute`, `SetupLoader` |
-| File System | `IFileSystemService`, `FileSystemContext`, `FileSystemHelper` |
-| Authentication | `IApiKeyHandler`, `IApiKeyModel`, `AuthenticationDefaults` |
-| Web Abstractions | `IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService` |
-| Telemetry | `ITelemetryService`, `ITelemetryPluginBuilder` |
-| Security Utilities | `CryptoTool`, `SecurityContext`, `CredentialManager`, `CertificateHelper` |
-| Shared SDK Types | `SdkException`, `Stage`, `SemVer`, `Mapster` mapping base, REST client helpers |
+| Category           | Key Types                                                                                    |
+|--------------------|----------------------------------------------------------------------------------------------|
+| Host Abstractions  | `ISlimHost`, `SlimHostBase`, `SlimHostBuilder`, `IPluginHost<TSetup>`                        |
+| Plugin Primitives  | `IPlugin`, `IPluginBuilder`, `IPluginDescription`, `IPluginService`                          |
+| Data Abstractions  | `IEntity`, `IModel`, `IPrimaryKey`, `IRepository<TEntity>`, `IDatabase`, `IDatalayerFactory` |
+| Configuration      | `ISetup`, `IVariable`, `IVariableService`, `VariableAttribute`, `SetupLoader`                |
+| File System        | `IFileSystemService`, `FileSystemContext`, `FileSystemHelper`                                |
+| Authentication     | `IApiKeyHandler`, `IApiKeyModel`, `AuthenticationDefaults`                                   |
+| Web Abstractions   | `IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`                         |
+| Telemetry          | `ITelemetryService`, `ITelemetryPluginBuilder`                                               |
+| Security Utilities | `CryptoTool`, `SecurityContext`, `CredentialManager`, `CertificateHelper`                    |
+| Shared SDK Types   | `SdkException`, `Stage`, `SemVer`, `Mapster` mapping base, REST client helpers               |
 
 ### Dependency Rule
 
