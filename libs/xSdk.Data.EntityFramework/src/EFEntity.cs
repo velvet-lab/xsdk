@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
+using xSdk.Tools;
 
 namespace xSdk.Data;
 
-public abstract class EFEntity : Entity, IEntity<GuidPK, Guid>
+public abstract class EFEntity : Entity<Guid>
 {
     protected EFEntity()
     {
-        this.PrimaryKey = new GuidPK();
-    }
-
-    [Key]
-    [Column("id")]
-    [XmlElement("id")]
-    [JsonPropertyName("id")]
-    public new Guid Id
-    {
-        get => PrimaryKey.GetValue<Guid>();
-        set => PrimaryKey.SetValue(value);
+        Id = PrimaryKeyTools.Generate<Guid>();
     }
 }

@@ -17,12 +17,13 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
 using xSdk.Plugins.Authentication;
 
 namespace xSdk.Demos.Builders;
 
-internal class AuthenticationPluginBuilder : PluginBuilderBase, IAuthenticationPluginBuilder
+internal class AuthenticationPluginBuilder : PluginBuilder, IAuthenticationPluginBuilder
 {
     // Global Constants for an easier handling
     public const string Policy_OnlyRead = "OnlyRead";

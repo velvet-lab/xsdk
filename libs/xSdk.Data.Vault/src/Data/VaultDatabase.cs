@@ -14,68 +14,55 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Logging;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.AppRole;
-using VaultSharp.V1.AuthMethods.Cert;
-using VaultSharp.V1.AuthMethods.JWT;
-using VaultSharp.V1.AuthMethods.LDAP;
-using VaultSharp.V1.AuthMethods.OCI;
 using VaultSharp.V1.AuthMethods.Token;
-using VaultSharp.V1.AuthMethods.UserPass;
 
 namespace xSdk.Data;
 
-internal class VaultDatabase : Database
+internal class VaultDatabase(ILogger<VaultDatabase> logger) : Database(logger)
 {
-    internal VaultDatabaseSetup Setup { get; private set; }
-
-    protected override TConnection Open<TConnection>(Func<object> connectionStringBuilder)
+    public override TDatabaseObject? Open<TDatabaseObject>() where TDatabaseObject : class
     {
-        var setup = connectionStringBuilder() as VaultDatabaseSetup;
+        VaultDatabaseOptions? setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer);
 
-        IAuthMethodInfo? authMethod = default;
-        if (setup.AuthMethod == VaultAuthenticationMethod.AppRole)
+        if (setup.AuthMethod != AuthMethods.None)
         {
-            authMethod = new AppRoleAuthMethodInfo(setup.AppRoleAuth.RoleId, setup.AppRoleAuth.Secret);
-        }
-        else if (setup.AuthMethod == VaultAuthenticationMethod.Jwt)
-        {
-            authMethod = new JWTAuthMethodInfo(setup.JwtAuth.Role, setup.JwtAuth.Token);
-        }
-        else if (setup.AuthMethod == VaultAuthenticationMethod.Ldap)
-        {
-            authMethod = new LDAPAuthMethodInfo(setup.LdapAuth.Username, setup.LdapAuth.Password);
-        }
-        else if (setup.AuthMethod == VaultAuthenticationMethod.Oidc)
-        {
-            authMethod = new OCIAuthMethodInfo(setup.OidcAuth.Role, setup.OidcAuth.Headers);
-        }
-        else if (setup.AuthMethod == VaultAuthenticationMethod.UsernamePassword)
-        {
-            authMethod = new UserPassAuthMethodInfo(setup.UsernamePasswordAuth.Username, setup.UsernamePasswordAuth.Password);
-        }
-        else if (setup.AuthMethod == VaultAuthenticationMethod.Token)
-        {
-            authMethod = new TokenAuthMethodInfo(setup.TokenAuth.Token);
-        }
-        else if (setup.AuthMethod == VaultAuthenticationMethod.Cert)
-        {
-            authMethod = new CertAuthMethodInfo(setup.CertAuth.Certificate, setup.CertAuth.RoleName);
+            IAuthMethodInfo? authMethod = default;
+            if (setup.AuthMethod == AuthMethods.AppRole)
+            {
+                AppRoleAuthOptions? options = GetOptions<AppRoleAuthOptions>(OptionsScope.Datalayer);
+                if (options != null)
+                {
+                    authMethod = new AppRoleAuthMethodInfo(options.RoleId, options.Secret);
+                }
+            }
+            else if (setup.AuthMethod == AuthMethods.Token)
+            {
+                TokenAuthOptions? options = GetOptions<TokenAuthOptions>(OptionsScope.Datalayer);
+                if (options != null)
+                {
+                    authMethod = new TokenAuthMethodInfo(options.Token);
+                }
+            }
+            else if (setup.AuthMethod == AuthMethods.UsernamePassword)
+            {
+                throw new SdkException("Username/Password authentication method is not implemented yet.");
+            }
+            else if (setup.AuthMethod == AuthMethods.Cert)
+            {
+                throw new SdkException("Certificate authentication method is not implemented yet.");
+            }
 
+            var host = setup.Endpoint;
+
+            var settings = new VaultClientSettings($"{host}", authMethod);
+
+            return new VaultClient(settings) as TDatabaseObject;
         }
 
-        if (authMethod == null)
-        {
-            throw new SdkException("Vault authentication method is not set or not supported.");
-        }
-
-        var host = setup.Host;
-
-        var settings = new VaultClientSettings($"{host}", authMethod);
-
-        this.Setup = setup;
-
-        return new VaultClient(settings) as TConnection;
+        return default;
     }
 }

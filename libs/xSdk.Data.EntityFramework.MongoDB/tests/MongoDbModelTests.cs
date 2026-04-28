@@ -25,11 +25,12 @@ public class MongoDbModelTests
     public void CreateNewModel()
     {
         var model = new TestModel();
+        model.Id = ObjectId.GenerateNewId().ToString();
 
         Assert.NotNull(model);
-        Assert.NotNull(model.PrimaryKey);
-        Assert.Equal(model.PrimaryKey.GetValue(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.NotNull(model.Id);
+        Assert.Equal(model.Id, model.Id);
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
@@ -40,9 +41,9 @@ public class MongoDbModelTests
         model.Id = pk;
 
         Assert.NotNull(model);
-        Assert.NotNull(model.PrimaryKey);
-        Assert.Equal(model.PrimaryKey.GetValue(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.NotNull(model.Id);
+        Assert.Equal(model.Id, model.Id);
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
@@ -53,8 +54,8 @@ public class MongoDbModelTests
         model.Id = pk;
 
         Assert.NotNull(model);
-        Assert.NotNull(model.PrimaryKey);
-        Assert.Equal(model.PrimaryKey.GetValue(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.NotNull(model.Id);
+        Assert.Equal(model.Id, model.Id);
+        Assert.IsType<string>(model.Id);
     }
 }

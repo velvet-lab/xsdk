@@ -21,7 +21,7 @@ public class EFDatabaseSetupTests
     [Fact]
     public void DefaultTransactionsEnabled_IsTrue()
     {
-        var setup = new EntityFrameworkDatabaseSetup();
+        var setup = new EntityFrameworkDatabaseOptions();
 
         Assert.True(setup.TransactionsEnabled);
     }
@@ -29,7 +29,7 @@ public class EFDatabaseSetupTests
     [Fact]
     public void SetTransactionsEnabled_False_RetainsFalse()
     {
-        var setup = new EntityFrameworkDatabaseSetup
+        var setup = new EntityFrameworkDatabaseOptions
         {
             TransactionsEnabled = false
         };

@@ -3,13 +3,13 @@
         <OutputType>Exe</OutputType>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>C699E1A5-52F4-4BCC-BD81-3B02DF2F7B09</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Spectre.Console.Cli" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" />
-        <PackageReference Include="NLog" />
         <PackageReference Include="Testcontainers.MongoDb" />
     </ItemGroup>
 
@@ -17,4 +17,5 @@
         <ProjectReference Include="..\..\..\libs\xSdk.Data.EntityFramework.MongoDB\src\xSdk.Data.EntityFramework.MongoDB.csproj" />
         <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
     </ItemGroup>
+
 </Project>

@@ -3,10 +3,10 @@
         <OutputType>Exe</OutputType>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>da82c13d-1ddd-456e-a48c-8c7af4a81cf3</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" />
         <PackageReference Include="Testcontainers" />
     </ItemGroup>
 

@@ -15,8 +15,7 @@
  */
 
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 
@@ -33,7 +32,7 @@ public class Variable : IVariable
 
         ValueType = valueType;
 
-        _applicationPrefix = SlimHost.Instance.AppPrefix;
+        _applicationPrefix = "none";// SlimHost.Instance.AppPrefix;
     }
 
     public string Name { get; private set; }
@@ -90,12 +89,12 @@ public class Variable : IVariable
 
     internal virtual Variable SetDefaultValue(object defaultValue) => this;
 
-    public override int GetHashCode() => ObjectHelper.CreateHashCode(this.ToString());
+    public override int GetHashCode() => ObjectTools.CreateHashCode(ToString());
 
     public override string ToString() => CreateKey(false, false);
 
     public override bool Equals(object obj) =>
-        ObjectHelper.Equals<Variable>(this, obj, (source, dest) => string.CompareOrdinal(source.ToString(), dest.ToString()) == 0);
+        ObjectTools.Equals<Variable>(this, obj, (source, dest) => string.CompareOrdinal(source.ToString(), dest.ToString()) == 0);
 
     internal string CreateKey(bool forCommandline, bool withApplicationPrefix)
     {
@@ -197,7 +196,7 @@ public sealed partial class Variable<TType> : Variable
     {
         try
         {
-            if (defaultValue.GetType() != this.ValueType)
+            if (defaultValue.GetType() != ValueType)
             {
                 throw new SdkException("Value Type is different from Variable Type");
             }

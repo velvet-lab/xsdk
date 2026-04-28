@@ -14,47 +14,34 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnablePlugin<TPlugin>(this IHostBuilder builder)
+    public static IHostBuilder AddHost<THostedService>(this IHostBuilder builder)
+        where THostedService : class, IHostedService
     {
-        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPlugin>();
+        builder
+            .ConfigureServices(services =>
+            {
+                services.AddHostedService<THostedService>();
+            });
+
         return builder;
     }
 
-    public static IHostBuilder EnablePlugin<TPlugin, TPluginBuilder>(this IHostBuilder builder)
-        where TPlugin : IPlugin
-        where TPluginBuilder : IPluginBuilder
+    public static IHostBuilder AddHost<THostedService>(this IHostBuilder builder, Func<IServiceProvider, THostedService> implementationFactory)
+        where THostedService : class, IHostedService
     {
-        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPlugin>();
-        SlimHostInternal.Instance.PluginSystem.AddPlugin<TPluginBuilder>();
-        return builder;
-    }
+        builder
+            .ConfigureServices(services =>
+            {
+                services.AddHostedService<THostedService>(implementationFactory);
+            });
 
-    public static IHostBuilder RegisterSetup<TSetup>(this IHostBuilder builder)
-        where TSetup : class, ISetup, new()
-    {
-        SlimHostInternal.Instance.VariableSystem.RegisterSetup<TSetup>();
-        return builder;
-    }
-
-    public static IHostBuilder RegisterSetup<TSetup>(this IHostBuilder builder, Action<TSetup>? configure)
-        where TSetup : class, ISetup, new()
-    {
-        SlimHostInternal.Instance.VariableSystem.RegisterSetup<TSetup>(configure);
-        return builder;
-    }
-
-    public static IHostBuilder RegisterSetup<TSetup>(this IHostBuilder builder, TSetup implementation)
-        where TSetup : class, ISetup, new()
-    {
-        SlimHostInternal.Instance.VariableSystem.RegisterSetup<TSetup>(implementation);
         return builder;
     }
 }

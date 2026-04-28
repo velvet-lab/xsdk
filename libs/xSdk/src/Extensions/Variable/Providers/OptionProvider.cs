@@ -15,11 +15,11 @@
  */
 
 using Microsoft.Extensions.Configuration;
-using xSdk.Hosting;
+using xSdk.Extensions.Options;
 
 namespace xSdk.Extensions.Variable.Providers;
 
-internal class OptionProvider(IConfiguration configuration) : VariableProviderBase
+internal class OptionProvider(IConfiguration configuration, ApplicationOptions options) : VariableProviderBase
 {
     protected override bool ExistsVariable(IVariable variable)
     {
@@ -32,7 +32,7 @@ internal class OptionProvider(IConfiguration configuration) : VariableProviderBa
     {
         if (configuration != null && variable != null)
         {
-            var mainSection = configuration.GetSection(SlimHost.Instance.AppPrefix.ToLower());
+            var mainSection = configuration.GetSection(options.Prefix.ToLower());
             if (mainSection != null)
             {
                 var sectionName = variable.Name;

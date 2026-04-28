@@ -329,12 +329,12 @@ public static class FakeGenerator
         }
 
         string completeContext = $"{baseContext}_{context}";
-
         if (!_fakers.ContainsKey(completeContext))
         {
             object? faker = InitFaker<TEntity>(fakeType, context, repeatableData, strictMode);
             if (faker != null)
             {
+
                 _fakers.AddOrNew(completeContext, faker);
             }
         }

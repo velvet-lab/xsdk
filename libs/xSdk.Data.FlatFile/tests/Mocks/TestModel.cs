@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal class TestModel : FlatFileModel
+internal class TestModel : Model
 {
     public string MyName { get; set; }
 

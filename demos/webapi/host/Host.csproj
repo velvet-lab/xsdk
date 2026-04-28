@@ -14,7 +14,6 @@
         <PackageReference Include="Asp.Versioning.Mvc" />
         <PackageReference Include="Microsoft.OpenApi" />
         <PackageReference Include="FluentValidation" />
-        <PackageReference Include="NLog" />
         <PackageReference Include="AspNetCore.Authentication.ApiKey" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     </ItemGroup>

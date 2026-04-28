@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-using NLog;
-using xSdk.Shared;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using xSdk.Hosting;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Plugin;
 
-internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin)
+internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin, IServiceProvider provider)
 {
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<PluginItem>();
 
     private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;
@@ -36,8 +38,22 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
         {
             if (_concretePlugin == null)
             {
-                _concretePlugin = Activator.CreateInstance(weikioPlugin);
-                Initialize();
+                object? tmpPlugin = null;
+                if (provider != null)
+                {
+                    tmpPlugin = ActivatorUtilities.CreateInstance(provider, weikioPlugin);
+                }
+
+                if (tmpPlugin == null)
+                {
+                    tmpPlugin = Activator.CreateInstance(weikioPlugin);
+                }
+
+                if (tmpPlugin != null)
+                {
+                    _concretePlugin = tmpPlugin;
+                    Initialize();
+                }
             }
             return _concretePlugin;
         }
@@ -53,7 +69,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     {
         if (weikioPlugin != null && _concretePlugin is PluginDescription description)
         {
-            _logger.Info("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
+            _logger.LogInformation("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
 
             description.Name = weikioPlugin.Name;
             description.Version = weikioPlugin.Version;
@@ -66,7 +82,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
             var key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
             Key = HashTools.GetHashString(key);
-            this.Description = description;
+            Description = description;
         }
     }
 }

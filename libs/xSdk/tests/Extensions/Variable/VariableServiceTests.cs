@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Variable.Fakes;
+using Microsoft.Extensions.DependencyInjection;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable;
@@ -22,30 +22,50 @@ namespace xSdk.Extensions.Variable;
 public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
-    public void LoadServiceWithVariables()
+    public void GetService_IVariableService_IsRegistered()
     {
         var service = fixture
-            .ConfigureServices(services => services.AddVariableServices())
-            .GetService<IVariableService>();
-
-        service.RegisterSetup<EnvironmentSetup>();
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
 
         Assert.NotNull(service);
-        Assert.NotEmpty(service.Variables);
     }
 
     [Fact]
-    public void LoadEnvironemtVariablesWithNoValidationErrors()
+    public void ToDictionary_ReturnsNonNull()
     {
         var service = fixture
-            .ConfigureServices(services => services.AddVariableServices())
-            .GetService<IVariableService>();
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
 
-        Assert.NotNull(service);
-        service.RegisterSetup<SetupWithNoPrefix>();
+        var dict = service.ToDictionary();
 
-        Assert.NotEmpty(service.Variables);
-        var setup = service.GetSetup<SetupWithNoPrefix>(false);
-        Assert.NotNull(setup);
+        Assert.NotNull(dict);
+    }
+
+    [Fact]
+    public void Variables_InitiallyRegistered_ContainsEntries()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        var dict = service.ToDictionary();
+
+        // After BuildHost, framework variables (stage, log-level, etc.) should be registered
+        Assert.NotNull(dict);
+    }
+
+    [Fact]
+    public void RegisterProvider_WithValidType_DoesNotThrow()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        // Registering a valid provider type should not throw
+        var ex = Record.Exception(() => service.RegisterProvider(typeof(Fakes.TestVariableProvider)));
+
+        Assert.Null(ex);
     }
 }

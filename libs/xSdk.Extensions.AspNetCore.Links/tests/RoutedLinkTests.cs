@@ -23,17 +23,7 @@ public class RoutedLinkTests
 {
     private class TestModel : Model
     {
-        public TestModel()
-        {
-            PrimaryKey = new GuidStringPK();
-        }
-
         public string Name { get; set; } = string.Empty;
-        public new string Id
-        {
-            get => PrimaryKey.GetValue<string>();
-            set => PrimaryKey.SetValue(value);
-        }
     }
 
     [Fact]

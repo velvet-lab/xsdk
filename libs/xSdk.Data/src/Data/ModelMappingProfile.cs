@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Mapster;
-
 namespace xSdk.Data;
 
 internal class ModelMappingProfile<TModel> : MappingProfile
@@ -25,8 +23,6 @@ internal class ModelMappingProfile<TModel> : MappingProfile
 
     protected override void Configure()
     {
-        CreateMap<TModel, TModel>()
-            .Ignore(dest => dest.Id)
-            .Ignore(dest => dest.PrimaryKey);
+        CreateMap<TModel, TModel>();
     }
 }

@@ -42,7 +42,7 @@ internal partial class PluginService
             {
                 if (!_plugins.Any(x => x.WeikioPlugin.Type == abstractPlugin.Type))
                 {
-                    var item = new PluginItem(abstractPlugin);
+                    var item = new PluginItem(abstractPlugin, provider);
                     _plugins.Add(item);
                 }
             }
@@ -64,9 +64,9 @@ internal partial class PluginService
         {
             _aggregateCatalog = new CompositePluginCatalog();
 
-            var machineCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Machine, "/pluginBuilders");
-            var userCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.User, "/pluginBuilders");
-            var localCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Local, "/pluginBuilders");
+            var machineCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Machine, "/plugins");
+            var userCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.User, "/plugins");
+            var localCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Local, "/plugins");
 
             if (machineCatalog != null)
             {

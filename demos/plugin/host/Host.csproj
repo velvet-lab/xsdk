@@ -4,16 +4,12 @@
         <OutputType>Exe</OutputType>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>2211A7F7-BC06-4110-A286-33AA0F5A04D2</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="NLog" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+        <ProjectReference Include="..\..\..\libs\xSdk\src\xSdk.csproj" />
         <ProjectReference Include="..\plugin\Plugin.csproj" />
     </ItemGroup>
 
 </Project>
-

@@ -3,6 +3,7 @@
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>5ada9914-afc0-4e56-9410-d9a2de7fcb02</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>

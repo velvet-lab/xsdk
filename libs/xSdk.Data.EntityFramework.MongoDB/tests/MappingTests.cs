@@ -31,7 +31,7 @@ public class MappingTests
         Assert.Equal(fake.Id.ToString(), model.Id);
         Assert.Equal(fake.Name, model.MyName);
         Assert.Equal(fake.Age, model.MyAge);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
@@ -50,6 +50,6 @@ public class MappingTests
         Assert.Equal(model.Id, entity.Id.ToString());
         Assert.Equal(fake.Name, entity.Name);
         Assert.Equal(fake.Age, entity.Age);
-        Assert.IsType<ObjectId>(entity.PrimaryKey.GetValue());
+        Assert.IsType<ObjectId>(entity.Id);
     }
 }

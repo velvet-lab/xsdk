@@ -28,7 +28,7 @@ internal sealed class MemoryProvider : VariableProviderBase
         return _variables.ContainsKey(Cast(variable).KeyForSystem);
     }
 
-    protected override object ReadVariable(IVariable variable)
+    protected override object? ReadVariable(IVariable variable)
     {
         if (ExistsVariable(variable))
         {

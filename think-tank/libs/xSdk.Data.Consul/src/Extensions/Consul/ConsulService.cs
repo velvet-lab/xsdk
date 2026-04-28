@@ -21,125 +21,124 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace xSdk.Extensions.Consul
+namespace xSdk.Extensions.Consul;
+
+internal sealed class ConsulService : IConsulService
 {
-    internal sealed class ConsulService : IConsulService
+    private readonly IConfiguration _config;
+    private readonly ILogger<ConsulService> _logger;
+
+    public ConsulService(IConfiguration config, ILogger<ConsulService> logger)
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger<ConsulService> _logger;
+        _config = config ?? throw new ArgumentNullException(nameof(config));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public ConsulService(IConfiguration config, ILogger<ConsulService> logger)
-        {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+    public void RegisterService(string accesstoken, string name) => RegisterServiceAsync(accesstoken, name, null, -1, null).GetAwaiter().GetResult();
 
-        public void RegisterService(string accesstoken, string name) => RegisterServiceAsync(accesstoken, name, null, -1, null).GetAwaiter().GetResult();
+    public void RegisterService(string accesstoken, string name, string address, int port) =>
+        RegisterServiceAsync(accesstoken, name, address, port, null).GetAwaiter().GetResult();
 
-        public void RegisterService(string accesstoken, string name, string address, int port) =>
-            RegisterServiceAsync(accesstoken, name, address, port, null).GetAwaiter().GetResult();
+    public void RegisterService(string accesstoken, string name, string address, int port, string[] tags) =>
+        RegisterServiceAsync(accesstoken, name, address, port, tags).GetAwaiter().GetResult();
 
-        public void RegisterService(string accesstoken, string name, string address, int port, string[] tags) =>
-            RegisterServiceAsync(accesstoken, name, address, port, tags).GetAwaiter().GetResult();
+    public Task RegisterServiceAsync(string accesstoken, string name, CancellationToken token = default) =>
+        RegisterServiceAsync(accesstoken, name, null, -1, null, token);
 
-        public Task RegisterServiceAsync(string accesstoken, string name, CancellationToken token = default) =>
-            RegisterServiceAsync(accesstoken, name, null, -1, null, token);
+    public Task RegisterServiceAsync(string accesstoken, string name, string address, int port, CancellationToken token = default) =>
+        RegisterServiceAsync(accesstoken, name, address, port, null, token);
 
-        public Task RegisterServiceAsync(string accesstoken, string name, string address, int port, CancellationToken token = default) =>
-            RegisterServiceAsync(accesstoken, name, address, port, null, token);
+    public async Task RegisterServiceAsync(string accesstoken, string name, string address, int port, string[] tags, CancellationToken token = default)
+    {
+        //var server = _config.GetConsulServer();
+        //using (var client = new ConsulClient(setup =>
+        //{
+        //    setup.Address = new Uri($"https://{server}");
+        //    setup.Token = accesstoken;
+        //}))
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(address))
+        //            address = GetCurrentIPAddess();
 
-        public async Task RegisterServiceAsync(string accesstoken, string name, string address, int port, string[] tags, CancellationToken token = default)
-        {
-            //var server = _config.GetConsulServer();
-            //using (var client = new ConsulClient(setup =>
-            //{
-            //    setup.Address = new Uri($"https://{server}");
-            //    setup.Token = accesstoken;
-            //}))
-            //{
-            //    try
-            //    {
-            //        if (string.IsNullOrEmpty(address))
-            //            address = GetCurrentIPAddess();
+        //        if (port == -1)
+        //            port = 443;
 
-            //        if (port == -1)
-            //            port = 443;
+        //        var portAsString = $":{port}";
+        //        if (port == 443)
+        //            portAsString = "";
 
-            //        var portAsString = $":{port}";
-            //        if (port == 443)
-            //            portAsString = "";
+        //        _logger.LogInformation("Register new Service");
+        //        var registration = new AgentServiceRegistration
+        //        {
+        //            ID = $"id-{name}",
+        //            Name = name,
+        //            Address = address,
+        //            Port = port,
+        //            Tags = tags,
+        //            Checks = new AgentServiceCheck[]
+        //            {
+        //                new AgentServiceCheck{
+        //                    HTTP = $"https://{address}{portAsString}/health",
+        //                    DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(10),
+        //                    Interval = TimeSpan.FromSeconds(30),
+        //                    Timeout = TimeSpan.FromSeconds(20),
+        //                    Status = HealthStatus.Passing,
+        //                    TLSSkipVerify = true
+        //                }
+        //            }
+        //        };
 
-            //        _logger.LogInformation("Register new Service");
-            //        var registration = new AgentServiceRegistration
-            //        {
-            //            ID = $"id-{name}",
-            //            Name = name,
-            //            Address = address,
-            //            Port = port,
-            //            Tags = tags,
-            //            Checks = new AgentServiceCheck[]
-            //            {
-            //                new AgentServiceCheck{
-            //                    HTTP = $"https://{address}{portAsString}/health",
-            //                    DeregisterCriticalServiceAfter = TimeSpan.FromMinutes(10),
-            //                    Interval = TimeSpan.FromSeconds(30),
-            //                    Timeout = TimeSpan.FromSeconds(20),
-            //                    Status = HealthStatus.Passing,
-            //                    TLSSkipVerify = true
-            //                }
-            //            }
-            //        };
+        //        var response = await client.Agent.ServiceRegister(registration, token);
+        //        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        //            throw new AminOOException($"Service '{name}' could not registered");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogCritical(ex, "A Error occured while Service will registered");
+        //        throw;
+        //    }
+        //}
+    }
 
-            //        var response = await client.Agent.ServiceRegister(registration, token);
-            //        if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            //            throw new AminOOException($"Service '{name}' could not registered");
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _logger.LogCritical(ex, "A Error occured while Service will registered");
-            //        throw;
-            //    }
-            //}
-        }
+    public string GetKeyValue(string accesstoken, string key) => GetKeyValueAsync(accesstoken, key).GetAwaiter().GetResult();
 
-        public string GetKeyValue(string accesstoken, string key) => GetKeyValueAsync(accesstoken, key).GetAwaiter().GetResult();
+    public async Task<string> GetKeyValueAsync(string accesstoken, string key, CancellationToken token = default)
+    {
+        //var server = _config.GetConsulServer();
+        //using (var client = new ConsulClient(setup =>
+        //{
+        //    setup.Address = new Uri($"https://{server}");
+        //    setup.Token = accesstoken;
+        //}))
+        //{
+        //    try
+        //    {
+        //        _logger.LogInformation("Try to read Key '{0}' from Store", key);
+        //        var queryResult = await client.KV.Get(key, token);
 
-        public async Task<string> GetKeyValueAsync(string accesstoken, string key, CancellationToken token = default)
-        {
-            //var server = _config.GetConsulServer();
-            //using (var client = new ConsulClient(setup =>
-            //{
-            //    setup.Address = new Uri($"https://{server}");
-            //    setup.Token = accesstoken;
-            //}))
-            //{
-            //    try
-            //    {
-            //        _logger.LogInformation("Try to read Key '{0}' from Store", key);
-            //        var queryResult = await client.KV.Get(key, token);
+        //        if (queryResult != null)
+        //            return Encoding.UTF8.GetString(queryResult.Response.Value, 0, queryResult.Response.Value.Length);
 
-            //        if (queryResult != null)
-            //            return Encoding.UTF8.GetString(queryResult.Response.Value, 0, queryResult.Response.Value.Length);
+        //        return null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogCritical(ex, $"A Error occured while Key '{key}' will readed'");
+        //        throw;
+        //    }
+        //}
+        throw new NotImplementedException();
+    }
 
-            //        return null;
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _logger.LogCritical(ex, $"A Error occured while Key '{key}' will readed'");
-            //        throw;
-            //    }
-            //}
-            throw new NotImplementedException();
-        }
+    private static string GetCurrentIPAddess()
+    {
+        var hostName = Dns.GetHostName();
 
-        private static string GetCurrentIPAddess()
-        {
-            var hostName = Dns.GetHostName();
+        IPHostEntry ipHostEntry = Dns.GetHostEntry(hostName);
+        IPAddress[] address = ipHostEntry.AddressList;
 
-            IPHostEntry ipHostEntry = Dns.GetHostEntry(hostName);
-            IPAddress[] address = ipHostEntry.AddressList;
-
-            return address[4].ToString();
-        }
+        return address[4].ToString();
     }
 }

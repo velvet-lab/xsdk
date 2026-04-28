@@ -23,8 +23,10 @@ public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFi
     [Fact]
     public async Task InsertData()
     {
-        var factory = fixture.Factory;
-        var repo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        var repo = fixture.Factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+
+        // Clear existing data to ensure test isolation
+        await repo.ClearDataAsync();
 
         await repo.AddDataAsync(Globals.Entities);
 

@@ -1,226 +1,114 @@
-<!-- Based on: https://github.com/github/awesome-copilot/blob/main/instructions/csharp.instructions.md -->
 ---
-description: 'C# and .NET development guidelines for xSDK project'
+description: 'Guidelines for building C# applications'
 applyTo: '**/*.cs'
 ---
 
-# C# Development Guidelines for xSDK
+# C# Development
 
-## C# and .NET Version
+## C# Instructions
+- Always use the latest version C#, currently C# 14 features.
+- Write clear and concise comments for each function.
 
-- Project targets .NET 8.0 (see `global.json`, SDK pinned to 8.0.411)
-- `<LangVersion>latest</LangVersion>` is set in `Directory.Build.props` — use the latest C# features available for the target framework
-- Do not change the target framework or SDK version without explicit approval
-- Write clear and concise comments for public APIs and complex logic
-
-## General Principles
-
-- Make only high confidence suggestions when reviewing code changes
-- Write code with good maintainability practices
-- Handle edge cases and write clear exception handling
-- For libraries or external dependencies, mention their usage and purpose in comments
-- Follow the project's conventions first, then standard C# conventions
+## General Instructions
+- Make only high confidence suggestions when reviewing code changes.
+- Write code with good maintainability practices, including comments on why certain design decisions were made.
+- Handle edge cases and write clear exception handling.
+- For libraries or external dependencies, mention their usage and purpose in comments.
 
 ## Naming Conventions
 
-- Use PascalCase for: types, methods, properties, events, namespaces
-- Use camelCase for: private fields, local variables, parameters
-- Prefix interfaces with "I" (e.g., `IDataStore`, `IHostingService`)
-- Prefix type parameters with "T" (e.g., `TEntity`, `TContext`)
-- Use descriptive names that convey intent
-- Avoid abbreviations unless widely recognized (e.g., `Id`, `Dto`)
+- Follow PascalCase for component names, method names, and public members.
+- Use camelCase for private fields and local variables.
+- Prefix interface names with "I" (e.g., IUserService).
 
-## Formatting and Style
+## Formatting
 
-- Apply code-formatting style defined in `.editorconfig`
-- Use file-scoped namespace declarations (C# 10+)
-- Use single-line using directives
-- Insert a newline before opening curly braces of code blocks
-- Ensure final return statement is on its own line
-- Use pattern matching and switch expressions where appropriate
-- Use `nameof` instead of string literals when referring to member names
-- Limit line length to 120 characters where practical
+- Apply code-formatting style defined in `.editorconfig`.
+- Prefer file-scoped namespace declarations and single-line using directives.
+- Insert a newline before the opening curly brace of any code block (e.g., after `if`, `for`, `while`, `foreach`, `using`, `try`, etc.).
+- Ensure that the final return statement of a method is on its own line.
+- Use pattern matching and switch expressions wherever possible.
+- Use `nameof` instead of string literals when referring to member names.
+- Ensure that XML doc comments are created for any public APIs. When applicable, include `<example>` and `<code>` documentation in the comments.
+
+## Project Setup and Structure
+
+- Guide users through creating a new .NET project with the appropriate templates.
+- Explain the purpose of each generated file and folder to build understanding of the project structure.
+- Demonstrate how to organize code using feature folders or domain-driven design principles.
+- Show proper separation of concerns with models, services, and data access layers.
+- Explain the Program.cs and configuration system in ASP.NET Core 10 including environment-specific settings.
 
 ## Nullable Reference Types
 
-This project has nullable reference types enabled.
-
-- Declare variables non-nullable by default
-- Use `?` suffix for nullable reference types
-- Always use `is null` or `is not null` instead of `== null` or `!= null`
-- Trust the C# null annotations; don't add null checks when the type system guarantees non-null
-- Check for `null` at entry points (public API boundaries)
-- Use `ArgumentNullException.ThrowIfNull(parameter)` for parameter validation
-- For strings, use `string.IsNullOrWhiteSpace()` or `string.IsNullOrEmpty()`
-
-## Exception Handling
-
-- Choose precise exception types: `ArgumentException`, `ArgumentNullException`, `InvalidOperationException`
-- Don't throw or catch base `Exception` type
-- No silent catches - always log or rethrow
-- Use `ArgumentNullException.ThrowIfNull(x)` for parameter checks
-- Include meaningful error messages with context
-- Document thrown exceptions with `<exception>` XML tags
-
-## Async Programming
-
-All async methods must follow these guidelines:
-
-- Name all async methods with `Async` suffix
-- Always await async operations - no fire-and-forget
-- Accept and pass through `CancellationToken` parameters
-- Use `ConfigureAwait(false)` in library code (this is a library project)
-- Use `Task.Delay(ms, cancellationToken)` to make delays cancelable
-- Call `ThrowIfCancellationRequested()` in long-running loops
-- For timeout scenarios, use linked `CancellationTokenSource` with `CancelAfter`
-- Prefer `Task` over `ValueTask` unless measured performance benefit
-- Use `await using` for async disposable resources
-- Don't create async wrappers that just return the task directly
+- Declare variables non-nullable, and check for `null` at entry points.
+- Always use `is null` or `is not null` instead of `== null` or `!= null`.
+- Trust the C# null annotations and don't add null checks when the type system says a value cannot be null.
 
 ## Data Access Patterns
 
-This project provides multiple data layer abstractions:
+- Guide the implementation of a data access layer using Entity Framework Core.
+- Explain different options (SQL Server, SQLite, In-Memory) for development and production.
+- Demonstrate repository pattern implementation and when it's beneficial.
+- Show how to implement database migrations and data seeding.
+- Explain efficient query patterns to avoid common performance issues.
 
-- Follow repository pattern implementations in `xSdk.Data.*` projects
-- All data access operations must be async
-- Pass `CancellationToken` through all data access calls
-- Use appropriate EF Core patterns to avoid N+1 queries
-- Implement proper transaction handling where needed
-- Consider query performance and use pagination for large result sets
-- Use projection (`Select`) to load only needed fields
+## Authentication and Authorization
 
-## Dependency Injection
+- Guide users through implementing authentication using JWT Bearer tokens.
+- Explain OAuth 2.0 and OpenID Connect concepts as they relate to ASP.NET Core.
+- Show how to implement role-based and policy-based authorization.
+- Demonstrate integration with Microsoft Entra ID (formerly Azure AD).
+- Explain how to secure both controller-based and Minimal APIs consistently.
 
-- Register services in extension methods following the pattern: `Add[ServiceName]`
-- Use appropriate lifetime: Singleton, Scoped, or Transient
-- Prefer constructor injection over property injection
-- Don't create service locator pattern (anti-pattern)
-- Add XML documentation to DI extension methods explaining service registration
+## Validation and Error Handling
 
-## XML Documentation
+- Guide the implementation of model validation using data annotations and FluentValidation.
+- Explain the validation pipeline and how to customize validation responses.
+- Demonstrate a global exception handling strategy using middleware.
+- Show how to create consistent error responses across the API.
+- Explain problem details (RFC 9457) implementation for standardized error responses.
 
-All public APIs must have XML documentation:
+## API Versioning and Documentation
 
-```csharp
-/// <summary>
-/// Provides data storage operations for entities.
-/// </summary>
-/// <typeparam name="TEntity">The type of entity to store.</typeparam>
-public interface IDataStore<TEntity> where TEntity : class
-{
-    /// <summary>
-    /// Retrieves an entity by its identifier.
-    /// </summary>
-    /// <param name="id">The unique identifier of the entity.</param>
-    /// <param name="cancellationToken">Token to cancel the operation.</param>
-    /// <returns>The entity if found; otherwise, null.</returns>
-    Task<TEntity?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
-}
-```
+- Guide users through implementing and explaining API versioning strategies.
+- Demonstrate Swagger/OpenAPI implementation with proper documentation.
+- Show how to document endpoints, parameters, responses, and authentication.
+- Explain versioning in both controller-based and Minimal APIs.
+- Guide users on creating meaningful API documentation that helps consumers.
 
-## Performance Considerations
+## Logging and Monitoring
 
-- Use `Span<T>` and `Memory<T>` for memory-efficient operations
-- Avoid unnecessary allocations in hot paths
-- Use object pooling (`ArrayPool<T>`) for large temporary buffers
-- Stream large data; don't load entirely into memory
-- Use `StringBuilder` for string concatenation in loops
-- Consider `stackalloc` for small, short-lived arrays
-- Profile before optimizing; don't prematurely optimize
+- Guide the implementation of structured logging using Serilog or other providers.
+- Explain the logging levels and when to use each.
+- Demonstrate integration with Application Insights for telemetry collection.
+- Show how to implement custom telemetry and correlation IDs for request tracking.
+- Explain how to monitor API performance, errors, and usage patterns.
 
-## Testing Requirements
+## Testing
 
-- All public APIs require unit tests
-- Test projects follow naming: `[ProjectName].Tests`
-- Tests mirror source structure
-- Use xUnit (`[Fact]`, `[Theory]`)
-- Follow AAA pattern (Arrange-Act-Assert)
-- Test method naming: `MethodName_Scenario_ExpectedBehavior`
-- Don't add "Arrange", "Act", "Assert" comments
-- Use xUnit assertions (`Assert.*`) as the standard
-- Use Moq for mocking external dependencies
-- Mock external dependencies, not domain logic
-- Tests should be independent and runnable in any order
+- Always include test cases for critical paths of the application.
+- Guide users through creating unit tests.
+- Do not emit "Act", "Arrange" or "Assert" comments.
+- Copy existing style in nearby files for test method names and capitalization.
+- Explain integration testing approaches for API endpoints.
+- Demonstrate how to mock dependencies for effective testing.
+- Show how to test authentication and authorization logic.
+- Explain test-driven development principles as applied to API development.
 
-## Code Organization
+## Performance Optimization
 
-- One type per file (class, interface, enum, etc.)
-- File name matches the type name
-- Organize using statements: System namespaces first, then others, then project namespaces
-- Group members by type: fields, constructors, properties, methods, nested types
-- Order by accessibility: public, internal, protected, private
+- Guide users on implementing caching strategies (in-memory, distributed, response caching).
+- Explain asynchronous programming patterns and why they matter for API performance.
+- Demonstrate pagination, filtering, and sorting for large data sets.
+- Show how to implement compression and other performance optimizations.
+- Explain how to measure and benchmark API performance.
 
-## Security Best Practices
+## Deployment and DevOps
 
-- Never commit secrets or connection strings to source control
-- Use configuration providers for sensitive data
-- Validate all inputs at API boundaries
-- Use parameterized queries (EF Core does this)
-- Follow principle of least privilege
-- Log security events appropriately (audit trail)
-- Don't log sensitive information (passwords, tokens, PII)
-
-## Common Patterns
-
-**Options Pattern for Configuration:**
-```csharp
-public class MyServiceOptions
-{
-    public string ConnectionString { get; set; } = string.Empty;
-    public int Timeout { get; set; } = 30;
-}
-
-// Registration
-services.Configure<MyServiceOptions>(configuration.GetSection("MyService"));
-
-// Usage via constructor injection
-public MyService(IOptions<MyServiceOptions> options)
-{
-    _options = options.Value;
-}
-```
-
-**Disposal Pattern:**
-```csharp
-public class MyResource : IDisposable, IAsyncDisposable
-{
-    private bool _disposed;
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                // Dispose managed resources
-            }
-            _disposed = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (!_disposed)
-        {
-            // Async disposal logic
-            _disposed = true;
-        }
-        GC.SuppressFinalize(this);
-    }
-}
-```
-
-## Project-Specific Guidelines
-
-- Follow existing patterns in the codebase
-- Check similar implementations before creating new abstractions
-- Reuse existing extension methods and helper utilities
-- Maintain consistency with the established architecture
-- Don't add interfaces unless needed for testing or external dependencies
-- Keep the API surface minimal - internal by default, public when necessary
+- Guide users through containerizing their API using .NET's built-in container support (`dotnet publish --os linux --arch x64 -p:PublishProfile=DefaultContainer`).
+- Explain the differences between manual Dockerfile creation and .NET's container publishing features.
+- Explain CI/CD pipelines for NET applications.
+- Demonstrate deployment to Azure App Service, Azure Container Apps, or other hosting options.
+- Show how to implement health checks and readiness probes.
+- Explain environment-specific configurations for different deployment stages.

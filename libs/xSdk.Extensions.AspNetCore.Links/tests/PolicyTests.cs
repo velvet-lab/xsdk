@@ -23,11 +23,6 @@ public class PolicyTests
 {
     private class TestModel : Model
     {
-        public TestModel()
-        {
-            PrimaryKey = new GuidStringPK();
-        }
-
         public string Name { get; set; } = string.Empty;
     }
 

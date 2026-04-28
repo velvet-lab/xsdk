@@ -14,41 +14,35 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
-using xSdk.Extensions.Variable;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting;
 
 public class TestHostFixture : IDisposable
 {
-    private readonly IHostBuilder _builder;
     private IHost? _host;
 
     private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
-    private readonly List<Action<HostBuilderContext, IServiceCollection>> _hostServicesDelegates = new();
-    private readonly List<Action<WebHostBuilderContext, IServiceCollection>> _webhostServicesDelegates = new();
+    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();
 
-    internal List<Action<IHostBuilder>> builderDelegates = new();
+    internal List<Action<IHostBuilder>> _builderDelegates = new();
+
+    internal List<Action<string>> _loggingOutputHandlers = new();
 
     private bool _disposed;
 
     private bool? _currentDemoMode;
     private bool _demoModeShouldEnabled;
 
-    private readonly bool _initializeShouldCalled;
+    // Serializes BuildHost calls so that parallel test runners cannot cause
+    // concurrent host initialization within the same fixture instance.
+    private readonly Lock _buildLock = new();
 
     public TestHostFixture()
     {
-        _builder = TestHost.CreateBuilder();
-    }
-
-    protected TestHostFixture(bool callInitialize)
-    {
-        _builder = TestHost.CreateBuilder();
-        _initializeShouldCalled = callInitialize;
     }
 
     ~TestHostFixture()
@@ -62,146 +56,48 @@ public class TestHostFixture : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public IHostBuilder Builder => _builder;
+    public TestHostFixture EnableDemoMode()
+    {
+        _demoModeShouldEnabled = true;
+        return this;
+    }
 
-    public IHost Host => Build();
+    public TestHostFixture DisableDemoMode()
+    {
+        _demoModeShouldEnabled = false;
+        return this;
+    }
 
-    public string AppName => SlimHostInternal.Instance.AppName;
-
-    public string AppCompany => SlimHostInternal.Instance.AppCompany;
-
-    public string AppPrefix => SlimHostInternal.Instance.AppPrefix;
-
-    public string AppVersion => SlimHostInternal.Instance.AppVersion;
-
-    public TService? GetService<TService>()
-        where TService : notnull => Host.Services.GetService<TService>();
-
-    //public TService? GetService<TService>(Action<IServiceCollection> configure)
-    //    where TService : notnull
-    //    => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetService<TService>();
-
-
-
-    public IEnumerable<TService> GetServices<TService>()
-        where TService : notnull => Host.Services.GetServices<TService>();
-
-    //public IEnumerable<TService> GetServices<TService>(Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetServices<TService>();
-
-
-
-
-    public TService GetRequiredService<TService>()
-        where TService : notnull => Host.Services.GetRequiredService<TService>();
-
-    //public TService GetRequiredService<TService>(Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetRequiredService<TService>();
-
-
-
-    public TService? GetRequiredKeyedService<TService>(object? serviceKey)
-        where TService : notnull => Host.Services.GetRequiredKeyedService<TService>(serviceKey);
-
-    //public TService? GetRequiredKeyedService<TService>(object? serviceKey, Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetRequiredKeyedService<TService>(serviceKey);
-
-
-
-
-    public TService? GetKeyedService<TService>(object? serviceKey)
-        where TService : notnull => Host.Services.GetKeyedService<TService>(serviceKey);
-
-    //public TService? GetKeyedService<TService>(object? serviceKey, Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetKeyedService<TService>(serviceKey);
-
-
-
-
-    public IEnumerable<TService> GetKeyedServices<TService>(object? serviceKey)
-        where TService : notnull => Host.Services.GetKeyedServices<TService>(serviceKey);
-
-
-    //public IEnumerable<TService> GetKeyedServices<TService>(object? serviceKey, Action<IServiceCollection> configure)
-    //    where TService : notnull => TestHost.CreateBuilder().ConfigureServices(configure).Build().Services.GetKeyedServices<TService>(serviceKey);
-
+    public TestHostFixture ConfigureBuilder(Action<IHostBuilder> configure)
+    {
+        _builderDelegates.Add(configure);
+        return this;
+    }
 
     public TestHostFixture ConfigureServices(Action<IServiceCollection> configure)
     {
         _servicesDelegates.Add(configure);
-
         return this;
     }
 
-    public TestHostFixture ConfigureHostServices(Action<HostBuilderContext, IServiceCollection> configure)
+    public TestHostFixture ConfigureServices(Action<HostBuilderContext, IServiceCollection> configure)
     {
-        _hostServicesDelegates.Add(configure);
-
+        _servicesWithContextDelegates.Add(configure);
         return this;
     }
 
-    public TestHostFixture ConfigureWebHostServices(Action<WebHostBuilderContext, IServiceCollection> configure)
+    public TestHostFixture RegisterLoggingOutput(Action<string> handler)
     {
-        _webhostServicesDelegates.Add(configure);
-
+        _loggingOutputHandlers.Add(handler);
         return this;
     }
 
-    public TestHostFixture EnablePlugin(Action<IHostBuilder> configure)
+    public IHost BuildHost()
     {
-        builderDelegates.Add(configure);
-
-        return this;
-    }
-
-    private IHost Build()
-    {
-        if (_host == null)
+        lock (_buildLock)
         {
-            if (_initializeShouldCalled)
-            {
-                Initialize();
-            }
-
-            _builder
-                .ConfigureServices(
-                    (context, services) =>
-                    {
-                        foreach (var configure in _servicesDelegates)
-                        {
-                            configure?.Invoke(services);
-                        }
-
-                        foreach (var configure in _hostServicesDelegates)
-                        {
-                            configure?.Invoke(context, services);
-                        }
-                    }
-                )
-                .ConfigureWebHost(webhostBuilder =>
-                {
-                    webhostBuilder.ConfigureServices(
-                        (context, services) =>
-                        {
-                            foreach (var configure in _webhostServicesDelegates)
-                            {
-                                configure?.Invoke(context, services);
-                            }
-                        }
-                    );
-                });
-
-            foreach (var configure in builderDelegates)
-            {
-                configure?.Invoke(_builder);
-            }
-
-            _host = _builder.Build();
+            return BuildHostCore();
         }
-
-        HandleDemoMode(_demoModeShouldEnabled);
-
-        return _host;
     }
 
     protected virtual void Dispose(bool disposing)
@@ -215,21 +111,22 @@ public class TestHostFixture : IDisposable
         {
             RestoreDemoMode();
 
-            // Dispose managed state (managed objects).
-            LogManager.Flush();
-            LogManager.Shutdown();
-
             _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             _host?.Dispose();
+
+            // Reset LogManager to prevent disposed ILoggerFactory access
+            LogManager.Reset();
         }
 
         // Free unmanaged resources.
         _disposed = true;
     }
 
-    protected string GetEnvironmentVariable(string key)
+    public EnvironmentOptions Environment => (_host ?? BuildHost()).Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;
+
+    protected static string GetEnvironmentVariable(string key)
     {
-        var imageName = Environment.GetEnvironmentVariable(key);
+        var imageName = System.Environment.GetEnvironmentVariable(key);
         if (string.IsNullOrEmpty(imageName))
         {
             throw new SdkException($"The environment variable '{key}' is not defined.");
@@ -238,21 +135,80 @@ public class TestHostFixture : IDisposable
         return imageName;
     }
 
-    protected virtual void Initialize()
+    protected virtual void Initialize() { }
+
+    protected virtual IHostBuilder CreateHostBuilder()
+        => TestHost.CreateBuilder();
+
+    private IHost BuildHostCore()
     {
+        // If the host was already built, return it directly (singleton semantics).
+        // The caller holds _buildLock, so no other thread can race here.
+        if (_host is not null)
+        {
+            return _host;
+        }
 
-    }
+        // Stop and dispose the previous host if it exists
+        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        _host?.Dispose();
 
-    public TestHostFixture EnableDemoMode()
-    {
-        _demoModeShouldEnabled = true;
+        // Reset LogManager to ensure a clean state before building a new host
+        LogManager.Reset();
 
-        return this;
-    }
+        IHostBuilder builder = CreateHostBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                foreach (var configure in _servicesDelegates)
+                {
+                    configure?.Invoke(services);
+                }
 
-    public void DisableDemoMode()
-    {
-        _demoModeShouldEnabled = false;
+                foreach (var configure in _servicesWithContextDelegates)
+                {
+                    configure?.Invoke(context, services);
+                }
+            });
+
+#pragma warning disable EXTEXP0016 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
+        builder
+            .AddFakeLoggingOutputSink(message =>
+            {
+                foreach (Action<string> handler in _loggingOutputHandlers)
+                {
+                    handler?.Invoke(message);
+                }
+            });
+#pragma warning restore EXTEXP0016 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
+
+        Initialize();
+
+        // Configure the host builder with any additional delegates
+        foreach (var configure in _builderDelegates)
+        {
+            configure?.Invoke(builder);
+        }
+
+        _host = builder.Build();
+
+        HandleDemoMode(_demoModeShouldEnabled);
+
+        // Start the HostInitializer hosted service if it exists, because in Unit tests the host
+        // is not automatically started as in a real application.
+        var hostedServices = _host.Services.GetServices<IHostedService>();
+        if (hostedServices != null)
+        {
+            foreach (var hostedService in hostedServices)
+            {
+                if (hostedService is HostInitializer)
+                {
+                    hostedService.StartAsync(CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
+                    break;
+                }
+            }
+        }
+
+        return _host;
     }
 
     private void RestoreDemoMode()
@@ -267,11 +223,14 @@ public class TestHostFixture : IDisposable
 
     private void HandleDemoMode(bool enable)
     {
-        var setup = _host.Services.GetService<IVariableService>().GetSetup<EnvironmentSetup>();
         if (!_currentDemoMode.HasValue)
         {
-            _currentDemoMode = setup.IsDemo;
+            _currentDemoMode = Environment?.IsDemo;
         }
-        setup.IsDemo = enable;
+
+        if (Environment != null)
+        {
+            Environment.IsDemo = enable;
+        }
     }
 }

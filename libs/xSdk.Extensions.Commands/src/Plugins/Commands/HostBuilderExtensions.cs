@@ -23,17 +23,11 @@ namespace xSdk.Plugins.Commands;
 public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableCommands(this IHostBuilder builder)
-    {
-        builder.EnablePlugin<CommandPlugin>();
-
-        return builder;
-    }
+        => builder.EnableCommands<DefaultCommandsPluginBuilder>();
 
     public static IHostBuilder EnableCommands<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : ICommandLinePluginBuilder
-    {
-        builder.EnableCommands().EnablePlugin<TPluginBuilder>();
-
-        return builder;
-    }
+        where TPluginBuilder : class, ICommandsPluginBuilder
+        => builder
+            .RegisterPluginHost<CommandPluginHost>()
+            .RegisterPluginBuilder<ICommandsPluginBuilder, TPluginBuilder>();
 }

@@ -23,8 +23,6 @@ internal class EntityMappingProfile<TEntity> : MappingProfile
 
     protected override void Configure()
     {
-        CreateMap<TEntity, TEntity>()
-            .Ignore(dest => dest.Id)
-            .Ignore(dest => dest.PrimaryKey);
+        CreateMap<TEntity, TEntity>();
     }
 }

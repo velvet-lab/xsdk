@@ -15,6 +15,7 @@
  */
 
 using xSdk.Data.Mocks;
+using xSdk.Tools;
 
 namespace xSdk.Data;
 
@@ -30,21 +31,21 @@ public class MappingTests
         Assert.NotNull(model);
         Assert.Equal(entity.Name, model.Name);
         Assert.Equal(entity.Age, model.Age);
-        Assert.Equal(entity.Id.ToString(), model.Id);
-        Assert.IsType<string>(model.PrimaryKey.GetValue());
+        Assert.Equal(entity.Id, PrimaryKeyTools.Convert<Guid>(model.Id));
+        Assert.IsType<string>(model.Id);
     }
 
     [Fact]
     public void MapModelToEntity()
     {
-        var model = new TestModel { Age = 42, Name = "John Doe" };
+        var model = new TestModel { Id = PrimaryKeyTools.Generate<Guid>().ToString(), Age = 42, Name = "John Doe" };
 
         var entity = model.ToEntity<TestMappingProfile, TestEntity>();
 
         Assert.NotNull(entity);
         Assert.Equal(model.Name, entity.Name);
         Assert.Equal(model.Age, entity.Age);
-        Assert.Equal(model.Id, entity.Id.ToString());
-        Assert.IsType<Guid>(entity.PrimaryKey.GetValue());
+        Assert.Equal(model.Id, PrimaryKeyTools.Convert(entity.Id));
+        Assert.IsType<Guid>(entity.Id);
     }
 }

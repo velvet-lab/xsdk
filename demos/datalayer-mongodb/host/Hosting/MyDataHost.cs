@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using xSdk.Data;
 using xSdk.Demos.Data;
+using xSdk.Tools;
 
 namespace xSdk.Demos.Hosting;
 
@@ -104,7 +105,7 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
             var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
 
             // Convert the Models to Entities
-            var models = JsonSerializer.Deserialize<IEnumerable<SampleModel>>(json, JsonHelper.GetSerializerOptions());
+            var models = JsonSerializer.Deserialize<IEnumerable<SampleModel>>(json, JsonTools.GetSerializerOptions());
             var entities = models.ToEntity<SampleMappingProfile, SampleEntity>();
 
             // Add this Samples to Database

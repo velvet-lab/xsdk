@@ -14,11 +14,50 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Variable;
+using xSdk.Extensions.Variable.Attributes;
+
 namespace xSdk.Data;
 
-public sealed class UsernamePasswordAuth
+[VariablePrefix("vault-username-password-auth")]
+public sealed class UsernamePasswordAuth : VariableSetup
 {
-    public string Username { get; set; }
+    [Variable(
+        name: Definitions.Username.Name,
+        template: Definitions.Username.Template,
+        helpText: Definitions.Username.HelpText,
+        hidden: true)]
+    public string? Username
+    {
+        get => ReadValue<string>(Definitions.Username.Name);
+        set => SetValue(Definitions.Username.Name, value);
+    }
 
-    public string Password { get; set; }
+    [Variable(
+        name: Definitions.Password.Name,
+        template: Definitions.Password.Template,
+        helpText: Definitions.Password.HelpText,
+        hidden: true)]
+    public string? Password
+    {
+        get => ReadValue<string>(Definitions.Password.Name);
+        set => SetValue(Definitions.Password.Name, value);
+    }
+
+    private static class Definitions
+    {
+        public static class Username
+        {
+            public const string Name = "username";
+            public const string Template = $"--vault-username <username>";
+            public const string HelpText = "Username for username/password auth to access vault";
+        }
+
+        public static class Password
+        {
+            public const string Name = "password";
+            public const string Template = $"--vault-password <password>";
+            public const string HelpText = "Password for username/password auth to access vault";
+        }
+    }
 }

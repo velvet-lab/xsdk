@@ -16,8 +16,8 @@
 
 using System.Text.Json;
 using CloudNative.CloudEvents;
-using xSdk.Data;
 using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
@@ -47,7 +47,7 @@ public static class CloudEventExtensions
         TValue result = default;
 
         var attributes = cloudEvent.GetPopulatedAttributes();
-        var cleanedName = StringHelper.RemoveSpecialChars(name);
+        var cleanedName = StringTools.RemoveSpecialChars(name);
 
         var kvp = attributes.SingleOrDefault(x => string.Compare(x.Key.Name, cleanedName, true) == 0);
 
@@ -173,8 +173,8 @@ public static class CloudEventExtensions
 
         if (!string.IsNullOrEmpty(jsonAsString))
         {
-            if (JsonHelper.IsJson(jsonAsString))
-                result = JsonSerializer.Deserialize(jsonAsString, dataType, JsonHelper.GetSerializerOptions());
+            if (JsonTools.IsJson(jsonAsString))
+                result = JsonSerializer.Deserialize(jsonAsString, dataType, JsonTools.GetSerializerOptions());
             else
                 throw new SdkException("CloudEvent has a unknown Json Format as DataObject");
         }

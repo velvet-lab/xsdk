@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-using CloudNative.CloudEvents;
 using xSdk.Data;
-using xSdk.Extensions.CloudEvents;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
@@ -26,11 +24,6 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     // Test model class
     private class TestModel : Model
     {
-        public TestModel()
-        {
-            PrimaryKey = new GuidPK();
-        }
-
         public string Name { get; set; }
         public int Value { get; set; }
     }

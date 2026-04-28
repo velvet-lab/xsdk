@@ -16,41 +16,25 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.Plugin;
 
 public static class ServiceCollectionExtensions
 {
-    private static bool _isLocked = false;
-
     public static IServiceCollection AddPluginServices(this IServiceCollection services)
-    {
-        services.Replace(
-            ServiceDescriptor.Singleton(provider =>
-            {
-                _isLocked = true;
-                return SlimHostInternal.Instance.PluginSystem;
-            })
-        );
+        => services.AddPluginServices(null);
 
-        return services;
-    }
-
-    internal static IServiceCollection AddSlimPluginServices(this IServiceCollection services)
+    public static IServiceCollection AddPluginServices(this IServiceCollection services, Action<IPluginService>? postConfigure)
     {
-        services.TryAddSingleton<IPluginService>(provider =>
-        {
-            if (!_isLocked)
+        services
+            .TryAddSingleton<IPluginService>(provider =>
             {
                 var service = ActivatorUtilities.CreateInstance<PluginService>(provider);
+
+                postConfigure?.Invoke(service);
+
                 return service;
-            }
-            else
-            {
-                throw new SdkException("SlimPluginService is locked and cannot be used");
-            }
-        });
+            });
 
         return services;
     }

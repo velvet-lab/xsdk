@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal class ConcurrentRepositoryOne : EntityFrameworkRepository<TestDbContext, ConcurrentEntityOne>, IConcurrentRepositoryOne
+internal class ConcurrentRepositoryOne : EntityFrameworkRepository<TestDbContext, ConcurrentEntityOne, Guid>, IConcurrentRepositoryOne
 {
     public Task AddDataAsync(ConcurrentEntityOne[] samples, CancellationToken token = default)
     {

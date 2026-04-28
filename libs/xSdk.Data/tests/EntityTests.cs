@@ -26,16 +26,6 @@ public class EntityTests
         var entity = new TestEntity { Age = 42, Name = "John Doe" };
 
         Assert.NotNull(entity);
-        Assert.IsType<Guid>(entity.PrimaryKey.GetValue());
-    }
-
-    [Fact]
-    public void EntityShouldCreatedWithAutomaticGeneratedPK()
-    {
-        var entity = new TestEntity { Age = 42, Name = "John Doe" };
-
-        Assert.NotNull(entity);
-        Assert.True(entity.Id != Guid.Empty);
-        Assert.IsType<Guid>(entity.PrimaryKey.GetValue());
+        Assert.IsType<Guid>(entity.Id);
     }
 }

@@ -3,11 +3,8 @@
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
         <ProjectGuid>130F3203-E031-4A9B-81EA-97E974978A33</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="NLog" />
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\libs\xSdk\src\xSdk.csproj" />

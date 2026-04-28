@@ -15,6 +15,7 @@
  */
 
 using System.Text.Json;
+using xSdk.Tools;
 
 namespace xSdk.Data.Converters.Mapper;
 
@@ -24,7 +25,7 @@ public static class ExtensionDataConverter
     {
         if (!string.IsNullOrEmpty(sourceMember))
         {
-            var options = JsonHelper.GetSerializerOptions();
+            var options = JsonTools.GetSerializerOptions();
             options.WriteIndented = false;
 
             var result = JsonSerializer.Deserialize<IDictionary<string, object>>(sourceMember, options);
@@ -37,7 +38,7 @@ public static class ExtensionDataConverter
     {
         if (sourceMember != null)
         {
-            var options = JsonHelper.GetSerializerOptions();
+            var options = JsonTools.GetSerializerOptions();
             options.WriteIndented = false;
 
             var json = JsonSerializer.Serialize(sourceMember, options);

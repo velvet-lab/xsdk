@@ -17,29 +17,30 @@
 using HandlebarsDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Data;
+using xSdk.Hosting;
 
 namespace xSdk.Extensions.Links;
 
 internal class RoutedLinkBuilder
 {
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<RoutedLinkBuilder>();
 
     internal IHateoasItem? Build<TModel>(RoutedLink<TModel> link)
         where TModel : IModel
     {
-        _logger.Info("Build links");
+        _logger.LogInformation("Build links");
 
         var description = link.Description;
         if (description != null)
         {
-            _logger.Debug("Create base url path");
+            _logger.LogDebug("Create base url path");
             var baseUrl = CreateBaseUrl(link);
 
             if (!string.IsNullOrEmpty(baseUrl))
             {
-                _logger.Debug("Replace values");
+                _logger.LogDebug("Replace values");
                 var href = ReplaceValue(link, baseUrl);
 
                 if (!string.IsNullOrEmpty(href))
@@ -48,7 +49,7 @@ internal class RoutedLinkBuilder
 
                     if (isAuthorized)
                     {
-                        _logger.Debug("Create HateOas Item");
+                        _logger.LogDebug("Create HateOas Item");
                         var item = new HateoasItem();
                         item.Rel = description.ControllerType.Name + "/" + description.MethodName;
                         item.Href = href;
@@ -66,7 +67,7 @@ internal class RoutedLinkBuilder
     {
         if (description != null)
         {
-            _logger.Debug("Clean controller name");
+            _logger.LogDebug("Clean controller name");
             return description.ControllerType.Name.Replace("Controller", "", StringComparison.OrdinalIgnoreCase);
         }
         return default;

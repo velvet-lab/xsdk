@@ -22,17 +22,11 @@ namespace xSdk.Plugins.Links;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableLinks(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder
-            .EnablePlugin<LinksPlugin>();
-    }
-
     public static IHostBuilder EnableLinks<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : ILinksPluginBuilder
+        where TPluginBuilder : class, ILinksPluginBuilder
     {
         return hostBuilder
-            .EnableLinks()
-            .EnablePlugin<TPluginBuilder>();
+            .RegisterPluginHost<LinksPluginHost>()
+            .RegisterPluginBuilder<TPluginBuilder>();
     }
 }
