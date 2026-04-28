@@ -200,4 +200,25 @@ public class ProblemDetailsExtensionsTests
         var problem = (ProblemDetails)result.Value!;
         Assert.Equal("The item with ID 1 does not exist", problem.Detail);
     }
+
+    [Fact]
+    public void NotAcceptableAsProblem_WithValidationResult_Returns406()
+    {
+        var httpContext = new DefaultHttpContext();
+        httpContext.Request.Path = "/api/resource";
+        var controller = new TestController(httpContext);
+        var validationResult = new FluentValidation.Results.ValidationResult(new[]
+        {
+            new FluentValidation.Results.ValidationFailure("Name", "Name is required"),
+            new FluentValidation.Results.ValidationFailure("Email", "Email is invalid"),
+        });
+
+        var result = controller.NotAcceptableAsProblem(validationResult);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+        var problem = (ProblemDetails)result.Value!;
+        Assert.Equal(StatusCodes.Status406NotAcceptable, problem.Status);
+        Assert.Equal("Model validation Error", problem.Title);
+        Assert.Contains("Name is required", problem.Detail);
+    }
 }

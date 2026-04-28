@@ -98,4 +98,27 @@ public class FileSystemHelperTests
         Assert.NotNull(result);
         Assert.NotEmpty(result);
     }
+
+    [Fact]
+    public void CreateSpecificDataFolder_CreatesAndReturnsPath()
+    {
+        using var fs = new Zio.FileSystems.MemoryFileSystem();
+        fs.CreateDirectory("/root");
+
+        var result = FileSystemHelper.CreateSpecificDataFolder(fs, "/root/data");
+
+        Assert.NotNull(result);
+        Assert.True(fs.DirectoryExists("/root/data"));
+    }
+
+    [Fact]
+    public void CreateSpecificDataFolder_ExistingDirectory_ReturnsPath()
+    {
+        using var fs = new Zio.FileSystems.MemoryFileSystem();
+        fs.CreateDirectory("/root/existing");
+
+        var result = FileSystemHelper.CreateSpecificDataFolder(fs, "/root/existing");
+
+        Assert.NotNull(result);
+    }
 }

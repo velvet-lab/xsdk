@@ -1,138 +1,133 @@
-///*
-// * Copyright 2026 Roland Breitschaft
-// *
-// * Licensed under the Apache License, Version 2.0 (the "License");
-// * you may not use this file except in compliance with the License.
-// * You may obtain a copy of the License at
-// *
-// *     http://www.apache.org/licenses/LICENSE-2.0
-// *
-// * Unless required by applicable law or agreed to in writing, software
-// * distributed under the License is distributed on an "AS IS" BASIS,
-// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// * See the License for the specific language governing permissions and
-// * limitations under the License.
-// */
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-//using xSdk.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
+using xSdk.Hosting;
 
-//namespace xSdk.Extensions.Variable;
+namespace xSdk.Extensions.Variable;
 
-//public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
-//{
-//    [Fact]
-//    public void EnvironmentSetup_AppName_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+{
+    private EnvironmentOptions GetEnvironmentOptions()
+        => fixture.BuildHost().Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;
 
-//        setup.Name = "my-app";
+    [Fact]
+    public void EnvironmentOptions_Stage_DefaultsToDevlopment()
+    {
+        var options = GetEnvironmentOptions();
 
-//        Assert.Equal("my-app", setup.Name);
-//    }
+        Assert.Equal(Stage.Development, options.Stage);
+    }
 
-//    [Fact]
-//    public void EnvironmentSetup_AppDescription_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+    [Fact]
+    public void EnvironmentOptions_IsDemo_DefaultsToFalse()
+    {
+        var options = GetEnvironmentOptions();
 
-//        setup.Description = "My application description";
+        Assert.False(options.IsDemo);
+    }
 
-//        Assert.Equal("My application description", setup.Description);
-//    }
+    [Fact]
+    public void EnvironmentOptions_ContentRoot_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
 
-//    [Fact]
-//    public void EnvironmentSetup_AppCompany_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+        Assert.False(string.IsNullOrEmpty(options.ContentRoot));
+    }
 
-//        setup.Company = "Acme Corp";
+    [Fact]
+    public void EnvironmentOptions_LogLevel_DefaultsToInfo()
+    {
+        var options = GetEnvironmentOptions();
 
-//        Assert.Equal("Acme Corp", setup.Company);
-//    }
+        Assert.Equal("Info", options.LogLevel);
+    }
 
-//    [Fact]
-//    public void EnvironmentSetup_AppPrefix_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+    [Fact]
+    public void EnvironmentOptions_ServiceName_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
 
-//        setup.AppPrefix = "MYAPP";
+        Assert.False(string.IsNullOrEmpty(options.ServiceName));
+    }
 
-//        Assert.Equal("MYAPP", setup.AppPrefix);
-//    }
+    [Fact]
+    public void EnvironmentOptions_ServiceNamespace_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
 
-//    [Fact]
-//    public void EnvironmentSetup_IsDemo_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+        Assert.False(string.IsNullOrEmpty(options.ServiceNamespace));
+    }
 
-//        setup.IsDemo = true;
+    [Fact]
+    public void EnvironmentOptions_ServiceVersion_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
 
-//        Assert.True(setup.IsDemo);
-//    }
+        Assert.False(string.IsNullOrEmpty(options.ServiceVersion));
+    }
 
-//    [Fact]
-//    public void EnvironmentSetup_Stage_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+    [Fact]
+    public void EnvironmentOptions_ServiceFullName_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
 
-//        setup.Stage = Stage.Production;
+        Assert.False(string.IsNullOrEmpty(options.ServiceFullName));
+    }
 
-//        Assert.Equal(Stage.Production, setup.Stage);
-//    }
+    [Fact]
+    public void EnvironmentOptions_Stage_CanBeSetAndRead()
+    {
+        var options = GetEnvironmentOptions();
 
-//    [Fact]
-//    public void EnvironmentSetup_ContentRoot_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+        options.Stage = Stage.Production;
 
-//        setup.ContentRoot = "/app/content";
+        Assert.Equal(Stage.Production, options.Stage);
+    }
 
-//        Assert.Equal("/app/content", setup.ContentRoot);
-//    }
+    [Fact]
+    public void EnvironmentOptions_IsDemo_CanBeSetAndRead()
+    {
+        var options = GetEnvironmentOptions();
 
-//    [Fact]
-//    public void EnvironmentSetup_LogLevel_CanBeSet()
-//    {
-//        var setup = new EnvironmentSetup();
+        options.IsDemo = true;
 
-//        setup.LogLevel = "Debug";
+        Assert.True(options.IsDemo);
+    }
 
-//        Assert.Equal("Debug", setup.LogLevel);
-//    }
+    [Fact]
+    public void EnvironmentOptions_ContentRoot_CanBeSetAndRead()
+    {
+        var options = GetEnvironmentOptions();
 
-//    [Fact]
-//    public void EnvironmentSetup_Definitions_AppName_IsCorrect()
-//    {
-//        Assert.Equal("app-name", EnvironmentSetup.Definitions.Name.Name);
-//        Assert.Equal("xsdk", EnvironmentSetup.Definitions.Name.DefaultValue);
-//    }
+        options.ContentRoot = "/custom/content";
 
-//    [Fact]
-//    public void EnvironmentSetup_Definitions_AppCompany_IsCorrect()
-//    {
-//        Assert.Equal("app-company", EnvironmentSetup.Definitions.Company.Name);
-//        Assert.Equal("xcom", EnvironmentSetup.Definitions.Company.DefaultValue);
-//    }
+        Assert.Equal("/custom/content", options.ContentRoot);
+    }
 
-//    [Fact]
-//    public void EnvironmentSetup_Definitions_AppPrefix_IsCorrect()
-//    {
-//        Assert.Equal("app-prefix", EnvironmentSetup.Definitions.AppPrefix.Name);
-//        Assert.Equal("XSDK", EnvironmentSetup.Definitions.AppPrefix.DefaultValue);
-//    }
+    [Fact]
+    public void EnvironmentOptions_LogLevel_CanBeSetAndRead()
+    {
+        var options = GetEnvironmentOptions();
 
-//    [Fact]
-//    public void EnvironmentSetup_Definitions_ServiceNamespace_HasDefaultValue()
-//    {
-//        Assert.Equal("xSdk", EnvironmentSetup.Definitions.ServiceNamespace.DefaultValue);
-//    }
+        options.LogLevel = "Debug";
 
-//    [Fact]
-//    public void EnvironmentSetup_IsSlimMode_WhenUsedStandalone_IsTrue()
-//    {
-//        var setup = new EnvironmentSetup();
-//        _ = setup.Name;
-
-//        Assert.True(setup.IsSlimMode);
-//    }
-//}
+        Assert.Equal("Debug", options.LogLevel);
+    }
+}

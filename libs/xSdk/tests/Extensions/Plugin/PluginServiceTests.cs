@@ -33,4 +33,39 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
         Assert.NotNull(plugins);
         Assert.False(plugins.Any());
     }
+
+    [Fact]
+    public async Task GetPluginsAsync_NoPluginsLoaded_ReturnsEmptyList()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetService<IPluginService>();
+
+        var plugins = await service.GetPluginsAsync<IPlugin>();
+
+        Assert.NotNull(plugins);
+        Assert.Empty(plugins);
+    }
+
+    [Fact]
+    public async Task GetPluginAsync_NoPluginsLoaded_ReturnsNull()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetService<IPluginService>();
+
+        var plugin = await service.GetPluginAsync<IPlugin>();
+
+        Assert.Null(plugin);
+    }
+
+    [Fact]
+    public void GetService_IPluginService_IsRegistered()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetService<IPluginService>();
+
+        Assert.NotNull(service);
+    }
 }

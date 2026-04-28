@@ -191,4 +191,173 @@ public class SemVerTests
         // ~1.2.3 is satisfied by 1.2.3
         Assert.True(semver.IsSatisfied);
     }
+
+    [Theory]
+    [InlineData("1.2.3", 1, "1")]
+    [InlineData("1.2.3", 2, "1.2")]
+    [InlineData("1.2.3", 3, "1.2.3")]
+    public void ToString_WithFieldCount_ReturnsCorrectFields(string version, int fieldCount, string expected)
+    {
+        var semver = new SemVer(version);
+
+        var result = semver.ToString(fieldCount);
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void Equals_WithSameVersion_ReturnsTrue()
+    {
+        var a = new SemVer("1.2.3");
+        var b = new SemVer("1.2.3");
+
+        Assert.True(a.Equals(b));
+    }
+
+    [Fact]
+    public void Equals_WithDifferentVersion_ReturnsFalse()
+    {
+        var a = new SemVer("1.2.3");
+        var b = new SemVer("2.0.0");
+
+        Assert.False(a.Equals(b));
+    }
+
+    [Fact]
+    public void GetHashCode_SameVersion_ReturnsSameHashCode()
+    {
+        var a = new SemVer("1.2.3");
+        var b = new SemVer("1.2.3");
+
+        Assert.Equal(a.GetHashCode(), b.GetHashCode());
+    }
+
+    [Fact]
+    public void EqualityOperator_WithEqualVersions_ReturnsTrue()
+    {
+        var a = new SemVer("1.2.3");
+        var b = new SemVer("1.2.3");
+
+        Assert.True(a == b);
+    }
+
+    [Fact]
+    public void EqualityOperator_WithDifferentVersions_ReturnsFalse()
+    {
+        var a = new SemVer("1.2.3");
+        var b = new SemVer("2.0.0");
+
+        Assert.False(a == b);
+    }
+
+    [Fact]
+    public void InequalityOperator_WithDifferentVersions_ReturnsTrue()
+    {
+        var a = new SemVer("1.2.3");
+        var b = new SemVer("2.0.0");
+
+        Assert.True(a != b);
+    }
+
+    [Fact]
+    public void GreaterThanOperator_WithHigherVersion_ReturnsTrue()
+    {
+        var a = new SemVer("2.0.0");
+        var b = new SemVer("1.0.0");
+
+        Assert.True(a > b);
+    }
+
+    [Fact]
+    public void GreaterThanOrEqualOperator_WithSameVersion_ReturnsTrue()
+    {
+        var a = new SemVer("1.0.0");
+        var b = new SemVer("1.0.0");
+
+        Assert.True(a >= b);
+    }
+
+    [Fact]
+    public void GreaterThanOrEqualOperator_WithHigherVersion_ReturnsTrue()
+    {
+        var a = new SemVer("2.0.0");
+        var b = new SemVer("1.0.0");
+
+        Assert.True(a >= b);
+    }
+
+    [Fact]
+    public void EqualityOperator_WithLeftNull_ReturnsFalse()
+    {
+        SemVer? a = null;
+        var b = new SemVer("1.0.0");
+
+        Assert.False(a == b);
+    }
+
+    [Fact]
+    public void EqualityOperator_WithBothNull_ReturnsTrue()
+    {
+        SemVer? a = null;
+        SemVer? b = null;
+
+        Assert.True(a == b);
+    }
+
+    [Fact]
+    public void HasRangeStrings_WithTilde_ReturnsTrue()
+    {
+        Assert.True(SemVer.HasRangeStrings("~1.0.0"));
+    }
+
+    [Fact]
+    public void HasRangeStrings_WithCaret_ReturnsTrue()
+    {
+        Assert.True(SemVer.HasRangeStrings("^1.0.0"));
+    }
+
+    [Fact]
+    public void HasRangeStrings_WithDotX_ReturnsTrue()
+    {
+        Assert.True(SemVer.HasRangeStrings("1.2.x"));
+    }
+
+    [Fact]
+    public void HasRangeStrings_WithPlainVersion_ReturnsFalse()
+    {
+        Assert.False(SemVer.HasRangeStrings("1.2.3"));
+    }
+
+    [Fact]
+    public void Constructor_WithFourPartVersion_ConvertsToThreePart()
+    {
+        var semver = new SemVer("1.2.3.4");
+
+        Assert.Equal("1.2.3", semver.Version);
+    }
+
+    [Fact]
+    public void Constructor_WithTwoPartVersion_PadsToThreePart()
+    {
+        var semver = new SemVer("1.2");
+
+        // Should have at least major.minor.patch
+        Assert.Contains(".", semver.Version);
+    }
+
+    [Fact]
+    public void MaxSatisfying_WithPreRelease_IncludesWhenFlagIsTrue()
+    {
+        var range = new SemVer("^1.0.0");
+        var versions = new[]
+        {
+            new SemVer("1.0.0"),
+            new SemVer("1.1.0-alpha.1"),
+        };
+
+        var result = range.MaxSatisfying(versions, true);
+
+        Assert.NotNull(result);
+        Assert.Equal("1.1.0-alpha.1", result.Version);
+    }
 }

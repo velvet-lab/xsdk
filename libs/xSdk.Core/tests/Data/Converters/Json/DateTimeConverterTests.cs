@@ -68,7 +68,7 @@ public class DateTimeConverterTests
     }
 
     [Fact]
-    public void Read_WithNullString_ReturnsMinValue()
+    public void Read_WithNullString_ReturnsNull()
     {
         var json = "null";
 

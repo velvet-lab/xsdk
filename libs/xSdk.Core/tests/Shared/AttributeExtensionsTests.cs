@@ -86,4 +86,37 @@ public class AttributeExtensionsTests
 
         Assert.Null(attr);
     }
+
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true)]
+    private class MultiAttribute(string value) : Attribute
+    {
+        public string Value { get; } = value;
+    }
+
+    [MultiAttribute("first")]
+    [MultiAttribute("second")]
+    private class MultiAnnotatedClass { }
+
+    [Fact]
+    public void GetAttribute_OnType_WithMultipleAttributes_ThrowsSdkException()
+    {
+        Assert.Throws<SdkException>(() => typeof(MultiAnnotatedClass).GetAttribute<MultiAttribute>());
+    }
+
+    [MultiAttribute("first")]
+    [MultiAttribute("second")]
+    private class MultiAnnotatedClass2
+    {
+        [MultiAttribute("propfirst")]
+        [MultiAttribute("propsecond")]
+        public string Name { get; set; } = string.Empty;
+    }
+
+    [Fact]
+    public void GetAttribute_OnProperty_WithMultipleAttributes_ThrowsSdkException()
+    {
+        var propertyInfo = typeof(MultiAnnotatedClass2).GetProperty(nameof(MultiAnnotatedClass2.Name))!;
+
+        Assert.Throws<SdkException>(() => propertyInfo.GetAttribute<MultiAttribute>());
+    }
 }

@@ -77,4 +77,27 @@ public class EmbeddedResourceLoaderTests
         Assert.False(found);
         Assert.Null(content);
     }
+
+    [Fact]
+    public void TryReadResource_VersionedPath_ReturnsFalse()
+    {
+        // Path contains a version segment — exercises the version branch in FormatResourceName
+        var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
+
+        var found = loader.TryReadResource("1.0.0/test.txt", out string content);
+
+        // Resource doesn't actually exist; only branch coverage matters here
+        Assert.False(found);
+    }
+
+    [Fact]
+    public void TryReadResource_VersionedPathWithRevision_ReturnsFalse()
+    {
+        // 1.0.0.1 has a Revision > 0, exercising the extra revision format line
+        var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
+
+        var found = loader.TryReadResource("1.0.0.1/test.txt", out string content);
+
+        Assert.False(found);
+    }
 }

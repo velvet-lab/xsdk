@@ -7,9 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="coverlet.collector">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="SemanticVersioning" />
         <PackageReference Include="xunit.v3" />

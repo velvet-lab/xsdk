@@ -188,4 +188,24 @@ public class Base64ToolsTests
 
         Assert.Equal(original, result);
     }
+
+    [Fact]
+    public void ConvertFromBase64_WithNullByteEncoded_ReturnsOriginalEncoded()
+    {
+        var encoded = Convert.ToBase64String(new byte[] { 0 });
+
+        var result = Base64Tools.ConvertFromBase64(encoded);
+
+        Assert.Equal(encoded, result);
+    }
+
+    [Fact]
+    public void IsBase64_WithNullByteDecoded_ReturnsFalse()
+    {
+        var encoded = Convert.ToBase64String(new byte[] { 0 });
+
+        var result = Base64Tools.IsBase64(encoded);
+
+        Assert.False(result);
+    }
 }

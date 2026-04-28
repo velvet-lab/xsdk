@@ -21,7 +21,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Compression;
 
-public class CompressionPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
+public class CompressionPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
     public void CreatePlugin()

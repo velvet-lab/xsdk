@@ -79,6 +79,22 @@ public class ObjectToolsTests
         Assert.NotEqual(0, hash);
     }
 
+    private class FieldObject
+    {
+        public string Name;
+        public int Value;
+    }
+
+    [Fact]
+    public void CreateAutomaticHashCode_WithFields_ReturnsNonZeroHash()
+    {
+        var obj = new FieldObject { Name = "F", Value = 7 };
+
+        var hash = ObjectTools.CreateAutomaticHashCode(obj);
+
+        Assert.NotEqual(0, hash);
+    }
+
     [Fact]
     public void Equals_WithSameValues_ReturnsTrue()
     {

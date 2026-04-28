@@ -95,4 +95,12 @@ public class NetworkToolsTests
         Assert.NotNull(ip);
         Assert.NotEmpty(ip);
     }
+
+    [Fact]
+    public void GetMacAddress_DoesNotThrow()
+    {
+        var ex = Record.Exception(() => NetworkTools.GetMacAddress());
+
+        Assert.Null(ex);
+    }
 }
