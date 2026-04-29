@@ -103,4 +103,5 @@ jobs:
 
           dotnet dotnet-sonarscanner @beginArgs
           just dotnet::sonar-build xsdk.sln
+          dotnet dotnet-coverage collect 
           dotnet dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
