@@ -30,7 +30,7 @@ internal sealed class CommandlineProvider : VariableProviderBase
         return false;
     }
 
-    protected override object ReadVariable(IVariable variable)
+    protected override object? ReadVariable(IVariable variable)
     {
         if (CommandlineParser.Parse().ContainsPattern(Cast(variable).KeyForCommandline))
         {
@@ -89,6 +89,6 @@ internal sealed class CommandlineProvider : VariableProviderBase
                 //}
             }
         }
-        return null;
+        return default;
     }
 }

@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.IO;
 
-public class FileSystemServiceTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class FileSystemServiceTests : IClassFixture<TestHostFixture>
 {
+    private readonly IFileSystemService _service;
+
+    public FileSystemServiceTests(TestHostFixture fixture)
+    {
+        _service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IFileSystemService>();
+    }
+
     [Theory]
     [InlineData(FileSystemContext.Machine)]
     [InlineData(FileSystemContext.User)]
@@ -27,13 +37,9 @@ public class FileSystemServiceTests(TestHostFixture fixture) : IClassFixture<Tes
     [InlineData(FileSystemContext.None)]
     public void RequestMachineFileSystem(FileSystemContext context)
     {
-        var service = fixture
-            .ConfigureServices(services => services.AddFileServices())
-            .GetService<IFileSystemService>();
+        Assert.NotNull(_service);
 
-        Assert.NotNull(service);
-
-        var fs = service.RequestFileSystem(context);
+        var fs = _service.RequestFileSystem(context);
         Assert.NotNull(fs);
     }
 }

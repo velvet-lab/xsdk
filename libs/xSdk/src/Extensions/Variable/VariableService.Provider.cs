@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Collections.Concurrent;
 using xSdk.Extensions.Variable.Providers;
 using xSdk.Shared;
 
@@ -23,7 +22,9 @@ namespace xSdk.Extensions.Variable;
 internal partial class VariableService
 {
     private Dictionary<string, VariableProvider> _systemProviders;
-    private readonly Dictionary<string, VariableProvider> _registeredProviders = new Dictionary<string, VariableProvider>();
+    private readonly Dictionary<string, VariableProvider> _registeredProviders = [];
+
+    private Dictionary<string, VariableProvider> Providers => _systemProviders;
 
     public void RegisterProvider(Type providerType)
     {
@@ -43,19 +44,20 @@ internal partial class VariableService
         _systemProviders = new Dictionary<string, VariableProvider>
         {
             { nameof(FileProvider), new FileProvider() },
-            { nameof(SystemProvider), new SystemProvider() },
+            { nameof(EnvironmentProvider), new EnvironmentProvider() },
             { nameof(CommandlineProvider), new CommandlineProvider() },
-            { nameof(FallbackProvider), new FallbackProvider() },
             { nameof(MemoryProvider), new MemoryProvider() },
         };
 
-        if (_config != null)
+        if (_applicationOptions != null)
         {
-            _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config));
+            _systemProviders.Add(nameof(FallbackProvider), new FallbackProvider(_applicationOptions));
+            if (_config != null)
+            {
+                _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config, _applicationOptions));
+            }
         }
     }
-
-    private Dictionary<string, VariableProvider> Providers => _systemProviders;
 
     public bool ExistsVariable(string name)
     {
@@ -64,7 +66,7 @@ internal partial class VariableService
         return Providers
             .Where(x =>
                 string.Compare(x.Key, nameof(FileProvider), true) == 0
-                || string.Compare(x.Key, nameof(SystemProvider), true) == 0
+                || string.Compare(x.Key, nameof(EnvironmentProvider), true) == 0
                 || string.Compare(x.Key, nameof(CommandlineProvider), true) == 0
                 || string.Compare(x.Key, nameof(OptionProvider), true) == 0
                 || string.Compare(x.Key, nameof(MemoryProvider), true) == 0
@@ -75,7 +77,7 @@ internal partial class VariableService
     public TType ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false) =>
         ReadVariableValueInternal<TType>(name, shouldThrowIfNotFound, true);
 
-    internal bool TryReadVariableValue<TType>(string name, out TType value)
+    internal bool TryReadVariableValue<TType>(string name, out TType? value)
     {
         if (ExistsVariable(name))
         {
@@ -91,29 +93,10 @@ internal partial class VariableService
         return false;
     }
 
-    internal ConcurrentDictionary<string, object> Export()
-    {
-        var provider = Providers[nameof(MemoryProvider)];
-        if (provider != null && provider is MemoryProvider memoryProvider)
-        {
-            return memoryProvider._variables;
-        }
-        return new();
-    }
-
-    internal void Import(ConcurrentDictionary<string, object> variables)
-    {
-        var provider = Providers[nameof(MemoryProvider)];
-        if (provider != null && provider is MemoryProvider memoryProvider)
-        {
-            memoryProvider._variables = variables;
-        }
-    }
-
-    private TType ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable) =>
+    private TType? ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable) =>
         ReadVariableValueInternal<TType>(name, shouldThrowIfNotFound, saveVariable, out _);
 
-    private TType ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable, out bool valueFound)
+    private TType? ReadVariableValueInternal<TType>(string name, bool shouldThrowIfNotFound, bool saveVariable, out bool valueFound)
     {
         valueFound = true;
 
@@ -127,7 +110,7 @@ internal partial class VariableService
                 if (!Providers[nameof(CommandlineProvider)].TryReadVariable(variable, out value))
                 {
                     // then from System Environment
-                    if (!Providers[nameof(SystemProvider)].TryReadVariable(variable, out value))
+                    if (!Providers[nameof(EnvironmentProvider)].TryReadVariable(variable, out value))
                     {
                         // then from File
                         if (!Providers[nameof(FileProvider)].TryReadVariable(variable, out value))
@@ -194,7 +177,7 @@ internal partial class VariableService
         return default;
     }
 
-    private bool Fallback<TType>(IVariable variable, bool shouldThrowIfNotFound, out TType value)
+    private bool Fallback<TType>(IVariable variable, bool shouldThrowIfNotFound, out TType? value)
     {
         // Before we use the Fallback Trial, we try to load from registered providers
         if (TryLoadFromRegisteredProviders(variable, out value))
@@ -202,18 +185,22 @@ internal partial class VariableService
             return true;
         }
 
-        // Last Chance, try to load the Fallback
-        if (!Providers[nameof(FallbackProvider)].TryReadVariable(variable, out value))
+        string fallbackProviderKey = nameof(FallbackProvider);
+        if (Providers.ContainsKey(fallbackProviderKey))
         {
-            if (shouldThrowIfNotFound)
+            // Last Chance, try to load the Fallback
+            if (Providers[fallbackProviderKey].TryReadVariable(variable, out value))
             {
-                throw new SdkException($"Automation variable '{variable.Name}' could not found/loaded.");
+                return true;
             }
-
-            return false;
         }
 
-        return true;
+        if (shouldThrowIfNotFound)
+        {
+            throw new SdkException($"Automation variable '{variable.Name}' could not found/loaded.");
+        }
+
+        return false;
     }
 
     private static object? TryReadDefaultValue<TType>(IVariable variable)

@@ -21,8 +21,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 
@@ -30,7 +31,8 @@ public static partial class WebHost
 {
     private static void ConfigureKestrel(KestrelServerOptions options)
     {
-        var webSetup = options.ApplicationServices.GetRequiredService<IVariableService>().GetSetup<WebHostSetup>();
+        var webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
+        var fileService = options.ApplicationServices.GetService<IFileSystemService>();
         var certAvailable = false;
 
         var httpPort = webSetup.Http;
@@ -39,7 +41,7 @@ public static partial class WebHost
         // Remove Kestrel Header for security reasons
         options.AddServerHeader = false;
 
-        if (TryLoadCertificateIfHttpsIsEnabled(webSetup, out X509Certificate2 cert))
+        if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2 cert))
         {
             certAvailable = true;
             httpPort = webSetup.Https;
@@ -85,7 +87,7 @@ public static partial class WebHost
             }
             else
             {
-                _logger.Debug("Http Port is not set");
+                _logger.LogDebug("Http Port is not set");
             }
         }
 
@@ -102,21 +104,21 @@ public static partial class WebHost
                 }
                 else
                 {
-                    _logger.Error("Https configuration is needed for gRpc");
+                    _logger.LogError("Https configuration is needed for gRpc");
                 }
             }
             else
             {
-                _logger.Debug("gRpc Port is not set");
+                _logger.LogDebug("gRpc Port is not set");
             }
         }
     }
 
-    private static bool TryLoadCertificateIfHttpsIsEnabled(WebHostSetup webSetup, out X509Certificate2? cert)
+    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService fileService, WebHostOptions webSetup, out X509Certificate2? cert)
     {
         if (webSetup.IsHttpsEnabled)
         {
-            var certLocation = SlimHost.Instance.FileSystem.Machine.Data.GetFullPath("/certs");
+            var certLocation = fileService.Machine.Data.GetFullPath("/certs");
             if (Debugger.IsAttached)
                 certLocation = Environment.CurrentDirectory;
 
@@ -128,7 +130,7 @@ public static partial class WebHost
                 {
                     try
                     {
-                        _logger.Info("Load Certificate from certificate and key File");
+                        _logger.LogInformation("Load Certificate from certificate and key File");
                         var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
                         // cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
                         cert = new X509Certificate2(innerCert.Export(X509ContentType.Pkcs12));
@@ -137,14 +139,14 @@ public static partial class WebHost
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ex, "Certificate could not created from certificate- and key File. (Reason: {0})", ex.Message);
+                        _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {0})", ex.Message);
                     }
                 }
                 else
-                    _logger.Warn("Https is enabled, but no key file '{0}' could not found", keyFilePath);
+                    _logger.LogWarning("Https is enabled, but no key file '{0}' could not found", keyFilePath);
             }
             else
-                _logger.Warn("Https is enabled, but no certificate file '{0}' could not found", certFilePath);
+                _logger.LogWarning("Https is enabled, but no certificate file '{0}' could not found", certFilePath);
         }
 
         cert = null;

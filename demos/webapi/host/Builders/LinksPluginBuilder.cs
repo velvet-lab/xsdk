@@ -21,7 +21,7 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Demos.Builders;
 
-internal class LinksPluginBuilder : PluginBuilderBase, ILinksPluginBuilder
+internal class LinksPluginBuilder : PluginBuilder, ILinksPluginBuilder
 {
     public void ConfigureLinks(LinksOptions options)
     {

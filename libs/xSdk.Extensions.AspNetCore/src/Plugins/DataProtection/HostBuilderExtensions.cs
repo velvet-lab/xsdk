@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.DataProtection;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.DataProtection;
@@ -22,13 +23,14 @@ namespace xSdk.Plugins.DataProtection;
 public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableDataProtection(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder.RegisterSetup<DataProtectionSetup>().EnablePlugin<DataProtectionPlugin>();
-    }
+        => hostBuilder.EnableDataProtection<DefaultDataProtectionBuilder>();
 
     public static IHostBuilder EnableDataProtection<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : IDataProtectionPluginBuilder
+        where TPluginBuilder : class, IDataProtectionPluginBuilder
     {
-        return hostBuilder.EnableDataProtection().EnablePlugin<TPluginBuilder>();
+        return hostBuilder
+            .RegisterPluginHostOptions<DataProtectionOptions>()
+            .RegisterPluginHost<DataProtectionPluginHost>()
+            .RegisterPluginBuilder<IDataProtectionPluginBuilder, TPluginBuilder>();
     }
 }

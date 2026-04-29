@@ -8,14 +8,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mapster" />
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
         <PackageReference Include="Bogus" />
-        <PackageReference Include="TestContainers" />
+        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Mapster" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="xunit" />
+        <PackageReference Include="TestContainers" />
+        <PackageReference Include="xunit.v3" />
         <PackageReference Include="xunit.runner.visualstudio">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 

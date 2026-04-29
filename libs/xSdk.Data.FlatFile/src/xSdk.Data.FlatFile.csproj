@@ -11,6 +11,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="JsonFlatFileDataStore" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 

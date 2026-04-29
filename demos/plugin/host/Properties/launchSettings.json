@@ -3,14 +3,14 @@
     "Host": {
       "commandName": "Project",
       "environmentVariables": {
-        "VAH_DEMO": "true",
-        "VAH_INFRASTRUCTURE": "BK20",
-        "VAH_LEVEL": "Information",
-        "VAH_MODE": "Console",
-        "VAH_PLUGIN_ROOT": "../../../plugins",
-        "VAH_RUNLEVEL": "HEALTHY",
-        "VAH_STAGE": "DEVELOPMENT",
-        "VAH_DISABLE_TELEMETRY": "true",
+        "PL_DEMO": "true",
+        "PL_INFRASTRUCTURE": "BK20",
+        "PL_LEVEL": "Information",
+        "PL_MODE": "Console",
+        "PL_PLUGIN_ROOT": "../../../plugins",
+        "PL_RUNLEVEL": "HEALTHY",
+        "PL_STAGE": "DEVELOPMENT",
+        "PL_DISABLE_TELEMETRY": "true",
         "DOTNET_ENVIRONMENT": "DEVELOPMENT"
       }
     }

@@ -19,57 +19,56 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public partial class ConsulRepository<TEntity>
 {
-    public partial class ConsulRepository<TEntity>
+    public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default) =>
+        throw new NotImplementedException("Please use 'SelectListAsync(string prefix, CancellationToken token = default)'");
+
+    protected IEnumerable<TEntity> SelectList(string prefix) => SelectListAsync(prefix).GetAwaiter().GetResult();
+
+    protected Task<IEnumerable<TEntity>> SelectListAsync(string prefix, CancellationToken token = default)
     {
-        public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default) =>
-            throw new NotImplementedException("Please use 'SelectListAsync(string prefix, CancellationToken token = default)'");
+        return this.ExecuteInternalAsync(
+            async kv =>
+            {
+                ICollection<TEntity> entities = new List<TEntity>();
 
-        protected IEnumerable<TEntity> SelectList(string prefix) => SelectListAsync(prefix).GetAwaiter().GetResult();
-
-        protected Task<IEnumerable<TEntity>> SelectListAsync(string prefix, CancellationToken token = default)
-        {
-            return this.ExecuteInternalAsync(
-                async kv =>
+                var queryResult = await kv.List(prefix, token);
+                foreach (var result in queryResult.Response)
                 {
-                    ICollection<TEntity> entities = new List<TEntity>();
-
-                    var queryResult = await kv.List(prefix, token);
-                    foreach (var result in queryResult.Response)
+                    var value = Convert(result.Value);
+                    if (!string.IsNullOrEmpty(value))
                     {
-                        var value = Convert(result.Value);
-                        if (!string.IsNullOrEmpty(value))
-                        {
-                            entities.Add(new TEntity { Key = result.Key, Value = value });
-                        }
+                        entities.Add(new TEntity { Key = result.Key, Value = value });
                     }
+                }
 
-                    return entities as IEnumerable<TEntity>;
-                },
-                token
-            );
-        }
+                return entities as IEnumerable<TEntity>;
+            },
+            token
+        );
+    }
 
-        public override Task<TEntity?> SelectAsync(IPrimaryKey primaryKey, CancellationToken token = default)
-        {
-            return this.ExecuteInternalAsync(
-                async kv =>
+    public override Task<TEntity?> SelectAsync(IPrimaryKey primaryKey, CancellationToken token = default)
+    {
+        return this.ExecuteInternalAsync(
+            async kv =>
+            {
+                TEntity entity = default;
+
+                var queryResult = await kv.Get(primaryKey.GetValue<string>(), token);
+                if (queryResult != null)
                 {
-                    TEntity entity = default;
+                    var value = Convert(queryResult.Response.Value);
+                    entity.Key = queryResult.Response.Key;
+                    entity.Value = value;
+                }
 
-                    var queryResult = await kv.Get(primaryKey.GetValue<string>(), token);
-                    if (queryResult != null)
-                    {
-                        var value = Convert(queryResult.Response.Value);
-                        entity.Key = queryResult.Response.Key;
-                        entity.Value = value;
-                    }
-
-                    return entity;
-                },
-                token
-            );
-        }
+                return entity;
+            },
+            token
+        );
     }
 }

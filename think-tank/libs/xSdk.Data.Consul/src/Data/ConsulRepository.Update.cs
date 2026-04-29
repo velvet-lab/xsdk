@@ -18,10 +18,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace xSdk.Data
+namespace xSdk.Data;
+
+public partial class ConsulRepository<TEntity>
 {
-    public partial class ConsulRepository<TEntity>
-    {
-        public override Task<bool> UpdateAsync(IPrimaryKey primaryKey, TEntity entity, CancellationToken token = default) => UpsertAsync(entity, token);
-    }
+    public override Task<bool> UpdateAsync(IPrimaryKey primaryKey, TEntity entity, CancellationToken token = default) => UpsertAsync(entity, token);
 }

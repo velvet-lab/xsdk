@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+using MongoDB.Bson;
 using xSdk.Data;
 
 namespace xSdk.Demos.Data;
 
-internal class SampleRepository : EntityFrameworkRepository<SampleDbContext, SampleEntity>, ISampleRepository
+internal class SampleRepository : EntityFrameworkRepository<SampleDbContext, SampleEntity, ObjectId>, ISampleRepository
 {
     public Task AddSamplesAsync(IEnumerable<SampleEntity> samples, CancellationToken token = default)
     {

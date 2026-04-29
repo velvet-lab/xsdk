@@ -18,14 +18,15 @@ using xSdk.Data.Mocks;
 
 namespace xSdk.Data;
 
-public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudDatabaseFixture>
+public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
     [Fact]
     public async Task InsertAsync_SingleEntity_ReturnsTrue()
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
+
 
         var entity = new TestEntity
         {
@@ -34,7 +35,7 @@ public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudData
             Age = 18
         };
 
-        var result = await repo!.InsertAsync(entity);
+        var result = await repo.InsertAsync(entity);
 
         Assert.True(result);
     }
@@ -44,7 +45,7 @@ public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudData
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entities = new[]
         {
@@ -52,7 +53,7 @@ public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudData
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000011"), Name = "Legolas", Age = 2931 },
         };
 
-        var count = await repo!.InsertAsync(entities);
+        var count = await repo.InsertAsync(entities);
 
         Assert.Equal(2, count);
     }
@@ -62,7 +63,7 @@ public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudData
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entities = new[]
         {
@@ -82,7 +83,7 @@ public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudData
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entities = new[]
         {
@@ -104,7 +105,7 @@ public class CrudDataTests(CrudDatabaseFixture fixture) : IClassFixture<CrudData
     {
         var factory = fixture.Factory;
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity>;
+        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
         {

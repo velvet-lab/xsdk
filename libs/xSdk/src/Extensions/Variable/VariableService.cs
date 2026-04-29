@@ -17,7 +17,10 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Configuration;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
+using xSdk.Hosting;
 using xSdk.Shared;
 
 namespace xSdk.Extensions.Variable;
@@ -25,12 +28,14 @@ namespace xSdk.Extensions.Variable;
 internal partial class VariableService : IVariableService
 {
     private readonly IConfiguration? _config;
+    private readonly ApplicationOptions _applicationOptions;
 
-    private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.CreateLogger<VariableService>();
 
-    public VariableService(IConfiguration? config)
+    public VariableService(IOptions<ApplicationOptions>? options, IConfiguration? config)
     {
-        this._config = config;
+        _config = config;
+        _applicationOptions = options?.Value;
 
         InitProviders();
     }
@@ -39,7 +44,7 @@ internal partial class VariableService : IVariableService
     {
         var result = new Dictionary<string, object>();
 
-        foreach (var variable in this.Variables)
+        foreach (var variable in Variables)
         {
             try
             {
@@ -49,7 +54,7 @@ internal partial class VariableService : IVariableService
                 }
                 else
                 {
-                    _logger.Warn("Variable Value '{0}' not found", variable.Name);
+                    _logger.LogWarning("Variable Value '{0}' not found", variable.Name);
                 }
             }
             catch
@@ -83,7 +88,7 @@ internal partial class VariableService : IVariableService
                 if (valueType != null)
                 {
                     var name = item.Key.ToString();
-                    var variable = this.LoadVariableInternal(name);
+                    var variable = LoadVariableInternal(name);
                     if (variable == null)
                     {
                         variable = Variable.Create(name, valueType).Protect().DisablePrefix().Hide();

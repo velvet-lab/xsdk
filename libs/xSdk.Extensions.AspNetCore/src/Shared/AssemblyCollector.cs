@@ -15,7 +15,7 @@
  */
 
 using System.Reflection;
-using NLog;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
 using xSdk.Hosting;
 
@@ -23,30 +23,24 @@ namespace xSdk.Shared;
 
 internal static class AssemblyCollector
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-    private static List<Assembly>? _assemblies;
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    internal static List<Assembly> Collect()
+    internal static List<Assembly> Collect(IPluginHostCollection pluginHostCollection)
     {
-        _logger.Info("Collect loaded Assemblies");
+        _logger.LogInformation("Collect loaded Assemblies");
 
-        if (_assemblies == null || _assemblies.Count == 0)
+        var assemblies = new List<Assembly>();
+
+        _logger.LogDebug("Add assemblies from executing folder");
+        AddAssembliesFromExecutingFolder(assemblies);
+
+        _logger.LogDebug("Add assemblies from loaded plugins");
+        foreach (var pluginType in pluginHostCollection)
         {
-            _assemblies = new List<Assembly>();
-
-            _logger.Debug("Add assemblies from executing folder");
-            AddAssembliesFromExecutingFolder(_assemblies);
-
-            _logger.Debug("Add assemblies from loaded plugins");
-            var plugins = SlimHost.Instance.PluginSystem.GetPlugins();
-            foreach (var plugin in plugins)
-            {
-                var assembly = plugin.GetType().Assembly;
-                AddAssembly(_assemblies, assembly);
-            }
+            AddAssembly(assemblies, pluginType.Assembly);
         }
 
-        return _assemblies;
+        return assemblies;
     }
 
     private static void AddAssembly(List<Assembly> assemblies, Assembly assembly)
@@ -57,7 +51,7 @@ internal static class AssemblyCollector
         {
             assemblies.Add(assembly);
 
-            _logger.Debug("Add referenced Assemblies for found Assemblies");
+            _logger.LogDebug("Add referenced Assemblies for found Assemblies");
             AddReferencedAssemblies(assemblies, assembly);
         }
     }
@@ -117,6 +111,8 @@ internal static class AssemblyCollector
             "Handlebars",
             "Hellang",
             "LiteDB",
+            "Mapster",
+            "Mapster.Core",
             "MicroElements",
             "Microsoft",
             "MongoDB",
@@ -135,6 +131,12 @@ internal static class AssemblyCollector
             "Zio",
             "netcore",
             "netstandard",
+            "xunit.v3.runner.common",
+            "xunit.v3.common",
+            "xunit.v3.core",
+            "xunit.v3.mtp-v1",
+            "xunit.v3.runner.inproc.console",
+            "xunit.v3.assert"
         };
 
         if (!string.IsNullOrEmpty(name))

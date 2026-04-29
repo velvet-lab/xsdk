@@ -17,7 +17,6 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Images;
-using Microsoft.Extensions.DependencyInjection;
 using xSdk.Hosting;
 
 namespace xSdk.Data.Mocks;
@@ -44,44 +43,43 @@ public class DatabaseFixture : DatabaseHostFixture
 
     protected override void Initialize()
     {
-        ConfigureServices(services =>
+        ConfigureBuilder(hostBuilder =>
         {
-            services
+            hostBuilder
                 .AddDatalayer(builder =>
-                {
-                    var imageName = Environment.GetEnvironmentVariable("VAULT_IMAGE_NAME");
-                    if (string.IsNullOrEmpty(imageName))
-                    {
-                        throw new SdkException("The environment variable VAULT_IMAGE_NAME is not defined.");
-                    }
+                 {
+                     string imageName = GetEnvironmentVariable("VAULT_IMAGE_NAME");
+                     if (string.IsNullOrEmpty(imageName))
+                     {
+                         throw new SdkException("The environment variable VAULT_IMAGE_NAME is not defined.");
+                     }
 
-                    var container = new ContainerBuilder()
-                        .WithImage(imageName)
-                        .WithPortBinding(8200, true)
-                        .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8200)))
-                        .WithImagePullPolicy(PullPolicy.Always)
-                        .Build();
+                     IContainer container = new ContainerBuilder(imageName)
+                         .WithPortBinding(8200, true)
+                         .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8200)))
+                         .WithImagePullPolicy(PullPolicy.Always)
+                         .Build();
 
-                    container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    var port = container.GetMappedPublicPort(8200);
-                    var (stdout, stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
+                     container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                     ushort port = container.GetMappedPublicPort(8200);
+                     (string? stdout, string? stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
 
-                    var splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                    var rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
-                    var unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
+                     string[] splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                     string? rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
+                     string? unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
 
-                    builder
+                     builder
                         // Enable Vault
-                        .UseVault(
-                            Globals.DatalayerName,
-                            true,
-                            _ =>
-                            {
-                                _.Host = $"http://localhost:{port}";
-                                _.TokenAuth = new() { Token = rootToken };
-                            }
-                        );
-                });
+                        .UseVault(true, _ =>
+                        {
+                            _.Endpoint = $"http://localhost:{port}";
+                            _.AuthMethod = AuthMethods.Token;
+                        })
+                        .ConfigureAuth<TokenAuthOptions>(options =>
+                        {
+                            options.Token = rootToken;
+                        });
+                 });
         });
     }
 }

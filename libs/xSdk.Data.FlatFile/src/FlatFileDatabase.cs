@@ -14,26 +14,70 @@
  * limitations under the License.
  */
 
+using CommunityToolkit.Diagnostics;
 using JsonFlatFileDataStore;
+using Microsoft.Extensions.Logging;
 
 namespace xSdk.Data;
 
-public sealed class FlatFileDatabase : Database
+public sealed class FlatFileDatabase(ILogger<FlatFileDatabase> logger) : Database(logger)
 {
-    protected override TConnection Open<TConnection>(Func<object> connectionStringBuilder) => Open<TConnection>(null, connectionStringBuilder);
+    private IDataStore? _dataStore = null;
 
-    protected override TConnection Open<TConnection>(object connection, Func<object> connectionStringBuilder)
+    public override TDatabaseObject? Open<TDatabaseObject>()
+        where TDatabaseObject : class
     {
-        var setup = connectionStringBuilder() as FlatFileDatabaseSetup;
+        FlatFileDatabaseOptions? setup = GetOptions<FlatFileDatabaseOptions>(OptionsScope.Datalayer);
+        if (setup != null)
+        {
+            if (_dataStore == null)
+            {
+                EnsurePathExists(setup.FilePath);
 
-        var datastore = new DataStore(
-            setup.FilePath,
-            useLowerCamelCase: setup.UseLowerCamelCase,
-            keyProperty: setup.KeyProperty,
-            reloadBeforeGetCollection: setup.ReloadBeforeGetCollection,
-            encryptionKey: setup.EncryptionKey
-        );
+                logger.LogInformation("Initializing flat file database with file path: {FilePath}", setup.FilePath);
+                _dataStore = new DataStore(
+                    setup.FilePath,
+                    useLowerCamelCase: setup.UseLowerCamelCase,
+                    keyProperty: setup.KeyProperty,
+                    reloadBeforeGetCollection: setup.ReloadBeforeGetCollection,
+                    encryptionKey: setup.EncryptionKey,
+                    minifyJson: setup.MinifyJson
+                );
+            }
+            else
+            {
+                logger.LogTrace("Flat file database already initialized, reusing existing instance.");
+            }
+            return _dataStore as TDatabaseObject;
+        }
+        else
+        {
+            logger.LogError("No configuration found for datalayer '{DatalayerName}'. Please ensure that the configuration is properly set up.", this.DatalayerName);
+        }
 
-        return datastore as TConnection;
+        return default;
+    }
+
+    public override bool Close()
+    {
+        if (_dataStore != null)
+        {
+            logger.LogInformation("Closing flat file database.");
+            _dataStore.Dispose();
+            _dataStore = null;
+        }
+        return true;
+    }
+
+    private void EnsurePathExists(string filePath)
+    {
+        Guard.IsNotNullOrEmpty(filePath);
+
+        string directory = Path.GetDirectoryName(filePath) ?? string.Empty;
+        if (!Directory.Exists(directory))
+        {
+            logger.LogInformation("Creating directory for flat file database at path: {Directory}", directory);
+            Directory.CreateDirectory(directory);
+        }
     }
 }

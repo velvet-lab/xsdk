@@ -23,6 +23,4 @@ internal class TestEntity : IEntity
     public string Value { get; set; }
 
     public object Id { get; set; }
-
-    public IPrimaryKey PrimaryKey => null;
 }

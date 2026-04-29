@@ -17,18 +17,17 @@
 using System.Text.Json;
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
-using NLog;
-using xSdk.Data;
+using Microsoft.Extensions.Logging;
 using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventFactory
 {
-    private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    internal static string BaseUrl = $"https://{SlimHost.Instance.AppCompany}.de";
+    internal static string BaseUrl = $"https://xsdk.io";
     internal static string SourceBaseUrl = $"{BaseUrl}/events/spec/v1";
     internal static string SchemeBaseUrl = $"{BaseUrl}/schemes/v1";
 
@@ -73,7 +72,7 @@ public static class CloudEventFactory
     public static CloudEventAttribute CreateAttribute(string name, CloudEventAttributeType type)
     {
         name = name.ToLower();
-        name = StringHelper.RemoveSpecialChars(name);
+        name = StringTools.RemoveSpecialChars(name);
 
         if (name.Length > 20)
             name = name.Substring(0, 20);
@@ -150,7 +149,7 @@ public static class CloudEventFactory
             cloudEvent.Subject = subject;
 
         if (!cloudEvent.IsValid)
-            _logger.Warn("Cloud Event is not valid. Some Attributes missing");
+            _logger.LogWarning("Cloud Event is not valid. Some Attributes missing");
 
         // Add Default Attributes
         cloudEvent.EnrichAttributes(extensions);
@@ -158,9 +157,9 @@ public static class CloudEventFactory
         return cloudEvent;
     }
 
-    public static JsonEventFormatter CreateFormatter() => CreateFormatter(JsonHelper.GetSerializerOptions(true), JsonHelper.GetDocumentOptions());
+    public static JsonEventFormatter CreateFormatter() => CreateFormatter(JsonTools.GetSerializerOptions(true), JsonTools.GetDocumentOptions());
 
-    public static JsonEventFormatter CreateFormatter(JsonSerializerOptions serializer) => CreateFormatter(serializer, JsonHelper.GetDocumentOptions());
+    public static JsonEventFormatter CreateFormatter(JsonSerializerOptions serializer) => CreateFormatter(serializer, JsonTools.GetDocumentOptions());
 
     public static JsonEventFormatter CreateFormatter(JsonSerializerOptions serializer, JsonDocumentOptions document) =>
         new JsonEventFormatter(serializer, document);

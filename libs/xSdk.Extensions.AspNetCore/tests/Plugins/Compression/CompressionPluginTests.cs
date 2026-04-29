@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
@@ -25,12 +26,16 @@ public class CompressionPluginTests(TestHostFixture fixture) : IClassFixture<Tes
     [Fact]
     public void CreatePlugin()
     {
-        fixture.Builder
-            .EnableCompression()
-            .ConfigureServices((context, services) => services.AddPluginServices());
+        IHost host = fixture
+            .RegisterLoggingOutput(message =>
+            {
+                Console.WriteLine(message);
+            })
+            .ConfigureBuilder(builder => builder.EnableCompression())
+            .BuildHost();
 
-        var service = fixture.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<CompressionPlugin>();
+        IPluginService service = host.Services.GetRequiredService<IPluginService>();
+        CompressionPluginHost? plugin = service.GetPlugin<CompressionPluginHost>();
 
         Assert.NotNull(plugin);
     }

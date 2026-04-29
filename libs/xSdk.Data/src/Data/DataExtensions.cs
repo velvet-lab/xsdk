@@ -30,7 +30,7 @@ public static class DataExtensions
     {
         var mapper = MappingFactory.CreateMapper<TProfile>();
 
-        return mapper.Map<TEntity>(model);
+        return model.Adapt<TEntity>(mapper.Config);
     }
 
     public static IEnumerable<TEntity> ToEntity<TProfile, TEntity>(this IEnumerable<IModel> models)
@@ -38,7 +38,7 @@ public static class DataExtensions
         where TEntity : IEntity
     {
         var mapper = MappingFactory.CreateMapper<TProfile>();
-        return mapper.Map<IEnumerable<TEntity>>(models);
+        return models.Adapt<IEnumerable<TEntity>>(mapper.Config);
     }
 
     #endregion
@@ -50,7 +50,7 @@ public static class DataExtensions
         where TModel : IModel
     {
         var mapper = MappingFactory.CreateMapper<TProfile>();
-        return mapper.Map<TModel>(entity);
+        return entity.Adapt<TModel>(mapper.Config);
     }
 
     public static IEnumerable<TModel> ToModel<TProfile, TModel>(this IEnumerable<IEntity> entities)
@@ -59,7 +59,7 @@ public static class DataExtensions
     {
         var mapper = MappingFactory.CreateMapper<TProfile>();
 
-        return mapper.Map<IEnumerable<IEntity>, IEnumerable<TModel>>(entities);
+        return entities.Adapt<IEnumerable<TModel>>(mapper.Config);
     }
 
     #endregion
@@ -70,14 +70,14 @@ public static class DataExtensions
         where TEntity : IEntity
     {
         var mapper = MappingFactory.CreateMapper<EntityMappingProfile<TEntity>>();
-        return mapper.Map(entity, destination);
+        return entity.Adapt(destination, mapper.Config);
     }
 
     public static IEnumerable<TEntity> CopyToEntity<TEntity>(this IEnumerable<TEntity> entity, IEnumerable<TEntity> destination)
         where TEntity : IEntity
     {
         var mapper = MappingFactory.CreateMapper<EntityMappingProfile<TEntity>>();
-        return mapper.Map(entity, destination);
+        return entity.Adapt(destination, mapper.Config);
     }
 
     #endregion
@@ -88,14 +88,14 @@ public static class DataExtensions
         where TModel : IModel
     {
         var mapper = MappingFactory.CreateMapper<ModelMappingProfile<TModel>>();
-        return mapper.Map(model, destination);
+        return model.Adapt(destination, mapper.Config);
     }
 
     public static IEnumerable<TModel> CopyToModel<TModel>(this IEnumerable<TModel> entity, IEnumerable<TModel> destination)
         where TModel : IModel
     {
         var mapper = MappingFactory.CreateMapper<ModelMappingProfile<TModel>>();
-        return mapper.Map(entity, destination);
+        return entity.Adapt(destination, mapper.Config);
     }
 
     #endregion
@@ -109,6 +109,6 @@ public static class DataExtensions
     public static TEntity EnrichEntity<TEntity>(this IMapper mapper, TEntity source, TEntity destination)
         where TEntity : IEntity
     {
-        return mapper.Map(source, destination);
+        return source.Adapt(destination, mapper.Config);
     }
 }

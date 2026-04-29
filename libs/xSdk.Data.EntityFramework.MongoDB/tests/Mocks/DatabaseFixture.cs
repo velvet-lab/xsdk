@@ -29,7 +29,17 @@ public class DatabaseFixture : DatabaseHostFixture
 
     protected override void Initialize()
     {
-        ConfigureServices(services =>
+        ConfigureBuilder(hostBuilder =>
+        {
+            hostBuilder
+                .AddDatalayer(builder =>
+                 {
+                     builder
+                         .UseEntityFramework<TestDbContext>()
+                         .MapRepository<ITestRepository, TestRepository>();
+                 });
+        })
+        .ConfigureServices(services =>
         {
             services
                 // Add DbContext Factory
@@ -48,18 +58,6 @@ public class DatabaseFixture : DatabaseHostFixture
 
                     var client = new MongoClient(connectionString);
                     options.UseMongoDB(client, Globals.DatabaseName);
-                })
-                .AddDatalayer(builder =>
-                {
-                    builder
-                        .UseEntityFramework<TestDbContext>(
-                            Globals.DatalayerName,
-                            setup =>
-                            {
-                                setup.TransactionsEnabled = false;
-                            }
-                        )
-                        .MapRepository<ITestRepository, TestRepository>(Globals.DatalayerName);
                 });
         });
     }

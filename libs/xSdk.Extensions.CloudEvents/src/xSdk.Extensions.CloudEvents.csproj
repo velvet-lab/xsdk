@@ -17,7 +17,6 @@
         <PackageReference Include="CloudNative.CloudEvents" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="CloudNative.CloudEvents.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="NLog" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
     <ItemGroup>

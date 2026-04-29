@@ -19,7 +19,7 @@ using xSdk.Data;
 
 namespace xSdk.Extensions.Links;
 
-public abstract class RoutedLink(string name, string methodName)
+public abstract class RoutedLink(string name, string methodName) : IRoutedLink
 {
     public string Name => name;
 
@@ -34,7 +34,7 @@ public abstract class RoutedLink(string name, string methodName)
     internal abstract IHateoasItem? Build();
 }
 
-public class RoutedLink<TModel>(string name, string methodName, Func<TModel, object> values) : RoutedLink(name, methodName)
+public class RoutedLink<TModel>(string name, string methodName, Func<TModel, object> values) : RoutedLink(name, methodName), IRoutedLink<TModel>
     where TModel : IModel
 {
     public Func<TModel, object> Values => values;

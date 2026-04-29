@@ -72,15 +72,15 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
         try
         {
             // Load the the Repository
-            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>(DbProviderNames.First);
+            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
             var secondRepo = dbFactory.CreateRepository<ISecondSampleRepository>(DbProviderNames.Second);
 
             // Create some Sample Entities
             var samples = new SampleEntity[]
             {
                 new SampleEntity { Name = "Customer 1", Age = 10 },
-                new SampleEntity { Name = "Customer 2", Age = 10 },
-                new SampleEntity { Name = "Customer 3", Age = 10 },
+                new SampleEntity { Name = "Customer 2", Age = 20 },
+                new SampleEntity { Name = "Customer 3", Age = 30 },
             };
 
             // Add this Samples to Database

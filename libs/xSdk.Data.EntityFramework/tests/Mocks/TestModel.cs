@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal class TestModel : EFModel
+internal class TestModel : Model
 {
     public string MyName { get; set; }
 

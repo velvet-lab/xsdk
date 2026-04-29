@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Tools;
+
 namespace xSdk.Data;
 
 public class FlatFileEntityTests
@@ -28,27 +30,19 @@ public class FlatFileEntityTests
     {
         var entity = new TestEntity();
 
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.IsType<GuidPK>(entity.PrimaryKey);
+        Assert.NotNull(entity.Id);
+        Assert.IsType<int>(entity.Id);
     }
 
     [Fact]
     public void FlatFileEntity_IdProperty_GetSet_WorksCorrectly()
     {
         var entity = new TestEntity();
-        var id = Guid.NewGuid();
+        var id = PrimaryKeyTools.Generate<int>();
 
         entity.Id = id;
 
         Assert.Equal(id, entity.Id);
-    }
-
-    [Fact]
-    public void FlatFileEntity_IdDefault_IsNotEmptyGuid()
-    {
-        var entity = new TestEntity();
-
-        Assert.NotEqual(Guid.Empty, entity.Id);
     }
 
     [Fact]
@@ -64,8 +58,8 @@ public class FlatFileEntityTests
     {
         var entity1 = new TestEntity();
         var entity2 = new TestEntity();
-        entity1.Id = Guid.NewGuid();
-        entity2.Id = Guid.NewGuid();
+        entity1.Id = PrimaryKeyTools.Generate<int>();
+        entity2.Id = PrimaryKeyTools.Generate<int>();
 
         Assert.NotEqual(entity1.Id, entity2.Id);
     }

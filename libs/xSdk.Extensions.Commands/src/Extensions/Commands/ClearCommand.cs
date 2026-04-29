@@ -28,7 +28,7 @@ internal class ClearCommand : Command<EmptyCommandSettings>
         public const string HelpText = "Clears the last console output";
     }
 
-    public override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
     {
         System.Console.Clear();
         return 0;

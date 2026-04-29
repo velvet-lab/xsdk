@@ -20,8 +20,8 @@ namespace xSdk.Data;
 
 public class FakeRepositoryTests
 {
-    private static FakeRepository<TestEntity> CreateRepository() =>
-        new FakeRepository<TestEntity>(new List<TestEntity>());
+    private static FakeRepository<TestEntity, Guid> CreateRepository() =>
+        new FakeRepository<TestEntity, Guid>(new List<TestEntity>());
 
     [Fact]
     public async Task InsertAsync_SingleEntity_ReturnsTrue()
@@ -41,7 +41,7 @@ public class FakeRepositoryTests
         var entity = new TestEntity { Name = "Bob", Age = 25 };
         await repo.InsertAsync(entity);
 
-        var found = await repo.SelectAsync(entity.PrimaryKey);
+        var found = await repo.SelectAsync(entity.Id);
 
         Assert.NotNull(found);
         Assert.Equal(entity.Name, found.Name);
@@ -86,7 +86,7 @@ public class FakeRepositoryTests
         var entity = new TestEntity { Name = "ToRemove", Age = 20 };
         await repo.InsertAsync(entity);
 
-        var result = await repo.RemoveAsync(entity.PrimaryKey);
+        var result = await repo.RemoveAsync(entity.Id);
         var all = await repo.SelectListAsync();
 
         Assert.True(result);
@@ -116,7 +116,7 @@ public class FakeRepositoryTests
         var updatedEntity = new TestEntity { Name = "Updated", Age = 21 };
         updatedEntity.Id = entity.Id;
 
-        var updateResult = await repo.UpdateAsync(entity.PrimaryKey, updatedEntity);
+        var updateResult = await repo.UpdateAsync(entity.Id, updatedEntity);
 
         Assert.True(updateResult);
         var all = await repo.SelectListAsync();
@@ -133,7 +133,7 @@ public class FakeRepositoryTests
         entity.Name = "Upserted";
 
         await repo.UpsertAsync(entity);
-        var found = await repo.SelectAsync(entity.PrimaryKey);
+        var found = await repo.SelectAsync(entity.Id);
 
         Assert.NotNull(found);
         Assert.Equal("Upserted", found.Name);
@@ -143,9 +143,8 @@ public class FakeRepositoryTests
     public async Task SelectAsync_WithNonExistentKey_ReturnsNull()
     {
         var repo = CreateRepository();
-        var nonExistentKey = new GuidPK();
 
-        var result = await repo.SelectAsync(nonExistentKey);
+        var result = await repo.SelectAsync(Guid.NewGuid());
 
         Assert.Null(result);
     }
@@ -178,7 +177,7 @@ public class FakeRepositoryTests
             new TestEntity { Name = "Bob", Age = 25 }
         };
         await repo.InsertAsync(entities);
-        var keys = entities.Select(e => e.PrimaryKey);
+        var keys = entities.Select(e => e.Id);
 
         var result = await repo.RemoveAsync(keys);
         var all = await repo.SelectListAsync();

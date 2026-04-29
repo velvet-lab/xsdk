@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Variable.Fakes;
 using xSdk.Hosting;
 
@@ -24,9 +25,9 @@ public class VariableProviderTests(TestHostFixture fixture) : IClassFixture<Test
     [Fact]
     public void RegisterVariableProvider()
     {
-        var service = fixture
-            .ConfigureServices(services => services.AddVariableServices())
-            .GetService<IVariableService>();
+        IVariableService service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
 
         var ex = Record.Exception(() => service.RegisterProvider(typeof(TestVariableProvider)));
 

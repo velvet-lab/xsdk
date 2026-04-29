@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using CloudNative.CloudEvents;
-using xSdk.Extensions.CloudEvents;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;

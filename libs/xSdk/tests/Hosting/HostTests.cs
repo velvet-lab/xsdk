@@ -19,9 +19,41 @@ namespace xSdk.Hosting;
 public class HostTests
 {
     [Fact]
-    public void CreateBuilder()
+    public void CreateBuilder_WithNullArgs_ReturnsNonNull()
     {
         var builder = Host.CreateBuilder(null);
+
+        Assert.NotNull(builder);
+    }
+
+    [Fact]
+    public void CreateBuilder_WithEmptyArgs_ReturnsNonNull()
+    {
+        var builder = Host.CreateBuilder(new string[] { });
+
+        Assert.NotNull(builder);
+    }
+
+    [Fact]
+    public void CreateBuilder_WithAppName_ReturnsNonNull()
+    {
+        var builder = Host.CreateBuilder(new string[] { }, "myapp");
+
+        Assert.NotNull(builder);
+    }
+
+    [Fact]
+    public void CreateBuilder_WithAppNameAndPrefix_ReturnsNonNull()
+    {
+        var builder = Host.CreateBuilder(new string[] { }, "myapp", "MYAPP");
+
+        Assert.NotNull(builder);
+    }
+
+    [Fact]
+    public void CreateBuilder_WithAllParams_ReturnsNonNull()
+    {
+        var builder = Host.CreateBuilder(new string[] { }, "myapp", "mycompany", "MYAPP");
 
         Assert.NotNull(builder);
     }

@@ -16,10 +16,11 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLog;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
+using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 
@@ -33,34 +34,51 @@ public static partial class Host
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
-        SlimHostInternal.Initialize(args, appName, appCompany, appPrefix);
+        ApplicationOptions appOptions = new()
+        {
+            Name = appName ?? ApplicationOptions.Definitions.AppName.DefaultValue,
+            Company = appCompany ?? ApplicationOptions.Definitions.AppCompany.DefaultValue,
+            Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
+        };
+
+        var slimHost = SlimHost.InitializeSlimHost(args, appOptions);
 
         var builder = new HostBuilder()
-            .ConfigureHostConfiguration(HostConfigurationManager.LoadHostConfiguration)
-            .ConfigureAppConfiguration(HostConfigurationManager.LoadAppConfiguration)
+            .SetSlimHost(slimHost)
+            .ConfigureHostConfiguration(configBuilder =>
+            {
+                HostConfigurationManager.LoadHostConfiguration(configBuilder, appOptions);
+            })
+            .ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                HostConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions);
+            })
             .ConfigureServices(services =>
             {
-                services
-                    .AddLogging(HostLoggingManager.ConfigureLogging)
-                    .AddFileServices()
-                    .AddPluginServices()
-                    .AddVariableServices();
+                slimHost.PostConfigure(services);
 
-                SlimHostInternal.Instance.PluginSystem
-                    .Invoke<PluginBase>(x => x.ConfigureServices(services));
+                services
+                    .RegisterApplicationOptions(appOptions)
+                    .RegisterOptions<EnvironmentOptions>(options =>
+                    {
+                        services
+                            .AddLogging(logBuilder => HostLoggingManager.ConfigureLogging(logBuilder, options));
+                    })
+                    .AddVariableServices()
+                    .AddFileServices()
+                    .AddPluginServices();
+
+                // Add initializer for the host
+                services
+                    .AddHostedService<HostInitializer>();
+
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(services));
+
             })
             .ConfigureServices((context, services) =>
             {
-                SlimHostInternal.Instance.PluginSystem
-                    .Invoke<HostPluginBase>(x => x.ConfigureServices(context, services));
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services));
             });
-
-        // Shutdown the logger
-        AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
-        {
-            LogManager.Flush();
-            LogManager.Shutdown();
-        };
 
         return builder;
     }

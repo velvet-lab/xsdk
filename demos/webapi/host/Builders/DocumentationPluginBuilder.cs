@@ -16,12 +16,12 @@
 
 using Asp.Versioning.ApiExplorer;
 using Microsoft.OpenApi;
+using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Plugin;
-using xSdk.Plugins.Documentation;
 
 namespace xSdk.Demos.Builders;
 
-public class DocumentationPluginBuilder : PluginBuilderBase, IDocumentationPluginBuilder
+public class DocumentationPluginBuilder : PluginBuilder, IDocumentationPluginBuilder
 {
     public OpenApiInfo CreateApiInfo(ApiVersionDescription description)
     {

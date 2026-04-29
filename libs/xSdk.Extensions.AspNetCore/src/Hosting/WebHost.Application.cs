@@ -16,16 +16,17 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace xSdk.Hosting;
 
 public static partial class WebHost
 {
-    private static void ConfigureApplicationWithContext(WebHostBuilderContext context, IApplicationBuilder app)
+    private static void ConfigureApplicationWithContext(WebHostBuilderContext context, IApplicationBuilder app, SlimHost slimHost)
     {
-        _logger.Info("Configuring application services");
+        _logger.LogInformation("Configuring application services");
 
-        var plugins = SlimHost.Instance.PluginSystem.GetPlugins<WebHostPluginBase>();
+        var plugins = slimHost.GetPluginHosts<WebPluginHost>();
 
         // Only the first Plugin needs to configure defaults
         var firstPlugin = plugins.FirstOrDefault();

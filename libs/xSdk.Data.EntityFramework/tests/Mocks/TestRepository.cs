@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEntity>, ITestRepository
+internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEntity, Guid>, ITestRepository
 {
     public Task AddDataAsync(TestEntity[] samples, CancellationToken token = default)
     {
@@ -26,5 +26,11 @@ internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEnt
     public Task<IEnumerable<TestEntity>> GetDataAsync(CancellationToken token = default)
     {
         return this.SelectListAsync(token);
+    }
+
+    public async Task ClearDataAsync(CancellationToken token = default)
+    {
+        var entities = await this.SelectListAsync(token);
+        await this.RemoveAsync(entities, token);
     }
 }

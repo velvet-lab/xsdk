@@ -68,7 +68,12 @@ internal static class CatalogHelper
 
     private static TypeFinderOptions CreateTypeFinderOptions()
     {
-        return new TypeFinderOptions { TypeFinderCriterias = new List<TypeFinderCriteria> { new TypeFinderCriteria { AssignableTo = typeof(IPlugin) } } };
+        return new TypeFinderOptions
+        {
+            TypeFinderCriterias = new List<TypeFinderCriteria> {
+                new() { AssignableTo = typeof(IPlugin) }
+            }
+        };
     }
 
     private static PluginLoadContextOptions CreatePluginLoadContextOptions()

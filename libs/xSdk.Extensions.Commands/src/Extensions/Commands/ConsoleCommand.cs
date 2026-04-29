@@ -28,7 +28,7 @@ internal class ConsoleCommand : Command<EmptyCommandSettings>
         public const string HelpText = "Creates a interactive REPL Console";
     }
 
-    public override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
     {
         return 0;
     }

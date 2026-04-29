@@ -14,123 +14,120 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
+using xSdk.Hosting;
+
 namespace xSdk.Extensions.Variable;
 
-public class EnvironmentSetupTests
+public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
+    private EnvironmentOptions GetEnvironmentOptions()
+        => fixture.BuildHost().Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;
+
     [Fact]
-    public void EnvironmentSetup_AppName_CanBeSet()
+    public void EnvironmentOptions_Stage_DefaultsToDevlopment()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.AppName = "my-app";
-
-        Assert.Equal("my-app", setup.AppName);
+        Assert.Equal(Stage.Development, options.Stage);
     }
 
     [Fact]
-    public void EnvironmentSetup_AppDescription_CanBeSet()
+    public void EnvironmentOptions_IsDemo_DefaultsToFalse()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.AppDescription = "My application description";
-
-        Assert.Equal("My application description", setup.AppDescription);
+        Assert.False(options.IsDemo);
     }
 
     [Fact]
-    public void EnvironmentSetup_AppCompany_CanBeSet()
+    public void EnvironmentOptions_ContentRoot_IsNotEmpty()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.AppCompany = "Acme Corp";
-
-        Assert.Equal("Acme Corp", setup.AppCompany);
+        Assert.False(string.IsNullOrEmpty(options.ContentRoot));
     }
 
     [Fact]
-    public void EnvironmentSetup_AppPrefix_CanBeSet()
+    public void EnvironmentOptions_LogLevel_DefaultsToInfo()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.AppPrefix = "MYAPP";
-
-        Assert.Equal("MYAPP", setup.AppPrefix);
+        Assert.Equal("Info", options.LogLevel);
     }
 
     [Fact]
-    public void EnvironmentSetup_IsDemo_CanBeSet()
+    public void EnvironmentOptions_ServiceName_IsNotEmpty()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.IsDemo = true;
-
-        Assert.True(setup.IsDemo);
+        Assert.False(string.IsNullOrEmpty(options.ServiceName));
     }
 
     [Fact]
-    public void EnvironmentSetup_Stage_CanBeSet()
+    public void EnvironmentOptions_ServiceNamespace_IsNotEmpty()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.Stage = Stage.Production;
-
-        Assert.Equal(Stage.Production, setup.Stage);
+        Assert.False(string.IsNullOrEmpty(options.ServiceNamespace));
     }
 
     [Fact]
-    public void EnvironmentSetup_ContentRoot_CanBeSet()
+    public void EnvironmentOptions_ServiceVersion_IsNotEmpty()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.ContentRoot = "/app/content";
-
-        Assert.Equal("/app/content", setup.ContentRoot);
+        Assert.False(string.IsNullOrEmpty(options.ServiceVersion));
     }
 
     [Fact]
-    public void EnvironmentSetup_LogLevel_CanBeSet()
+    public void EnvironmentOptions_ServiceFullName_IsNotEmpty()
     {
-        var setup = new EnvironmentSetup();
+        var options = GetEnvironmentOptions();
 
-        setup.LogLevel = "Debug";
-
-        Assert.Equal("Debug", setup.LogLevel);
+        Assert.False(string.IsNullOrEmpty(options.ServiceFullName));
     }
 
     [Fact]
-    public void EnvironmentSetup_Definitions_AppName_IsCorrect()
+    public void EnvironmentOptions_Stage_CanBeSetAndRead()
     {
-        Assert.Equal("app-name", EnvironmentSetup.Definitions.AppName.Name);
-        Assert.Equal("xsdk", EnvironmentSetup.Definitions.AppName.DefaultValue);
+        var options = GetEnvironmentOptions();
+
+        options.Stage = Stage.Production;
+
+        Assert.Equal(Stage.Production, options.Stage);
     }
 
     [Fact]
-    public void EnvironmentSetup_Definitions_AppCompany_IsCorrect()
+    public void EnvironmentOptions_IsDemo_CanBeSetAndRead()
     {
-        Assert.Equal("app-company", EnvironmentSetup.Definitions.AppCompany.Name);
-        Assert.Equal("xcom", EnvironmentSetup.Definitions.AppCompany.DefaultValue);
+        var options = GetEnvironmentOptions();
+
+        options.IsDemo = true;
+
+        Assert.True(options.IsDemo);
     }
 
     [Fact]
-    public void EnvironmentSetup_Definitions_AppPrefix_IsCorrect()
+    public void EnvironmentOptions_ContentRoot_CanBeSetAndRead()
     {
-        Assert.Equal("app-prefix", EnvironmentSetup.Definitions.AppPrefix.Name);
-        Assert.Equal("XSDK", EnvironmentSetup.Definitions.AppPrefix.DefaultValue);
+        var options = GetEnvironmentOptions();
+
+        options.ContentRoot = "/custom/content";
+
+        Assert.Equal("/custom/content", options.ContentRoot);
     }
 
     [Fact]
-    public void EnvironmentSetup_Definitions_ServiceNamespace_HasDefaultValue()
+    public void EnvironmentOptions_LogLevel_CanBeSetAndRead()
     {
-        Assert.Equal("xSdk", EnvironmentSetup.Definitions.ServiceNamespace.DefaultValue);
-    }
+        var options = GetEnvironmentOptions();
 
-    [Fact]
-    public void EnvironmentSetup_IsSlimMode_WhenUsedStandalone_IsTrue()
-    {
-        var setup = new EnvironmentSetup();
-        _ = setup.AppName;
+        options.LogLevel = "Debug";
 
-        Assert.True(setup.IsSlimMode);
+        Assert.Equal("Debug", options.LogLevel);
     }
 }

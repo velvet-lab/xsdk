@@ -18,19 +18,28 @@ namespace xSdk.Data;
 
 public static class DatalayerBuilderExtensions
 {
-    public static IDatalayerBuilder UseVault(this IDatalayerBuilder builder, string name, Action<VaultDatabaseSetup> configure)
+    public static IDatabaseBuilder UseVault(this IDatalayerBuilder builder, Action<VaultDatabaseOptions> configure)
+        => builder.UseVault(null, false, configure);
+
+    public static IDatabaseBuilder UseVault(this IDatalayerBuilder builder, bool enableWrite, Action<VaultDatabaseOptions> configure)
+        => builder.UseVault(null, enableWrite, configure);
+
+    public static IDatabaseBuilder UseVault(this IDatalayerBuilder builder, string? name, Action<VaultDatabaseOptions> configure)
         => builder.UseVault(name, false, configure);
 
-    public static IDatalayerBuilder UseVault(this IDatalayerBuilder builder, string name, bool enableWrite, Action<VaultDatabaseSetup> configure)
+    public static IDatabaseBuilder UseVault(this IDatalayerBuilder builder, string? name, bool enableWrite, Action<VaultDatabaseOptions> configure)
     {
-        builder.UseDatabase<VaultDatabase, VaultDatabaseSetup, VaultConnectionBuilder>(name, configure);
-        builder.MapRepository<IReadOnlyVaultRepository, ReadOnlyVaultRepository>(name);
+        var dbBuilder = builder
+            .UseDatabase<VaultDatabase, VaultDatabaseOptions>(name, configure);
+
+        dbBuilder
+            .MapRepository<IReadOnlyVaultRepository, ReadOnlyVaultRepository>();
 
         if (enableWrite)
         {
-            builder.MapRepository<IVaultRepository, VaultRepository>(name);
+            dbBuilder.MapRepository<IVaultRepository, VaultRepository>();
         }
 
-        return builder;
+        return dbBuilder;
     }
 }

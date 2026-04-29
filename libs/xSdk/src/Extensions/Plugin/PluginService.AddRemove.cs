@@ -29,10 +29,13 @@ internal partial class PluginService
         return Task.CompletedTask;
     }
 
-    public Task AddPluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+    public Task AddPluginsFromAsync(Assembly[] sourceAssemblies, CancellationToken token = default)
     {
-        _assemblyPluginCatalogs.AddOrNew(sourceAssembly, CatalogHelper.CreateAssemblyCatalog(sourceAssembly));
-        _isAssemblyPluginCatalogsStale = true;
+        foreach (Assembly sourceAssembly in sourceAssemblies)
+        {
+            _assemblyPluginCatalogs.AddOrNew(sourceAssembly, CatalogHelper.CreateAssemblyCatalog(sourceAssembly));
+            _isAssemblyPluginCatalogsStale = true;
+        }
 
         return Task.CompletedTask;
     }
@@ -47,12 +50,15 @@ internal partial class PluginService
         return Task.CompletedTask;
     }
 
-    public Task RemovePluginsFromAsync(Assembly sourceAssembly, CancellationToken token = default)
+    public Task RemovePluginsFromAsync(Assembly[] sourceAssemblies, CancellationToken token = default)
     {
-        if (_assemblyPluginCatalogs.ContainsKey(sourceAssembly))
+        foreach (Assembly sourceAssembly in sourceAssemblies)
         {
-            _isAssemblyPluginCatalogsStale = true;
-            _assemblyPluginCatalogs.Remove(sourceAssembly);
+            if (_assemblyPluginCatalogs.ContainsKey(sourceAssembly))
+            {
+                _isAssemblyPluginCatalogsStale = true;
+                _assemblyPluginCatalogs.Remove(sourceAssembly);
+            }
         }
         return Task.CompletedTask;
     }

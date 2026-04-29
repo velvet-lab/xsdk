@@ -89,7 +89,7 @@ feat(data): add soft-delete support to EntityFramework provider
 fix(extensions): resolve middleware ordering issue in AspNetCore
 feat(plugin): introduce hot-reload capability
 chore(demos): update console demo to use new async API
-build: upgrade all projects to .NET 8.0.411
+build: upgrade all projects to .NET 10.0.200
 ci: add SonarQube analysis step
 ```
 
@@ -146,10 +146,10 @@ Migrate call sites to GetAsync, SaveAsync, and DeleteAsync respectively.
 ### Build / tooling change (no scope)
 
 ```
-build: upgrade all projects to .NET 8.0.411
+build: upgrade all projects to .NET 10.0.200
 
 Update global.json and Directory.Build.props to target the latest
-.NET 8 patch release. All package references remain unchanged.
+.NET 10 patch release. All package references remain unchanged.
 ```
 
 ### Revert

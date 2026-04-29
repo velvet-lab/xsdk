@@ -116,7 +116,7 @@ namespace xSdk.Extensions.Package
                 public const string Template = "--url <url>";
                 public const string HelpText = "Url to artifactory";
                 public const string Prefix = "package";
-                public const string DefaultValue = "https://packages.repo.dvint.de/";
+                public const string DefaultValue = "https://nuget.org";
             }
         }
     }

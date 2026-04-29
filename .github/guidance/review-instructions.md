@@ -62,7 +62,7 @@ Work through the following areas and report only findings that apply to the sele
 ### Testing (when test code is selected)
 - Test method name follows `MethodName_Scenario_ExpectedBehavior`
 - Clear Arrange-Act-Assert structure (no AAA comments)
-- No logic in tests; assertions use FluentAssertions (`Should()`)
+- No logic in tests; assertions use xUnit assertion methods (`Assert.*`)
 - No shared mutable state between tests
 
 ## Comment Format

@@ -2,7 +2,7 @@
 # Repository variables
 repo_root := clean(source_directory() / "../../../..")
 repo_name := if os() == 'windows' {
-    shell("Split-Path -Path $args[1] -Leaf", repo_root)
+    shell("Split-Path -Path $args[0] -Leaf", repo_root)
 } else {
     shell("basename $1", repo_root)
 }

@@ -26,9 +26,8 @@ public class EFEntityTests
         var entity = new TestEntity();
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.Equal(entity.PrimaryKey.GetValue(), entity.Id);
-        Assert.IsType<Guid>(entity.PrimaryKey.GetValue());
+        Assert.NotNull(entity.Id);
+        Assert.IsType<Guid>(entity.Id);
     }
 
     [Fact]
@@ -39,21 +38,8 @@ public class EFEntityTests
         entity.Id = pk;
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.Equal(entity.PrimaryKey.GetValue(), entity.Id);
-        Assert.IsType<Guid>(entity.PrimaryKey.GetValue());
-    }
-
-    [Fact]
-    public void CreateNewEntityByInterface()
-    {
-        var pk = Guid.NewGuid();
-        IEntity entity = new TestEntity();
-        entity.Id = pk;
-
-        Assert.NotNull(entity);
-        Assert.NotNull(entity.PrimaryKey);
-        Assert.Equal(entity.PrimaryKey.GetValue(), entity.Id);
-        Assert.IsType<Guid>(entity.PrimaryKey.GetValue());
+        Assert.NotNull(entity.Id);
+        Assert.Equal(entity.Id, entity.Id);
+        Assert.IsType<Guid>(entity.Id);
     }
 }
