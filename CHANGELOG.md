@@ -1,3 +1,9 @@
+## [2.0.0-next.9](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.8...v2.0.0-next.9) (2026-04-29)
+
+### Features
+
+* **extensions:** add coverage exclusions and improve test coverage ([a03414c](https://github.com/velvet-lab/xsdk/commit/a03414c19dde44700c3ea866a7cbf360caf75768))
+
 ## [2.0.0-next.8](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.7...v2.0.0-next.8) (2026-04-29)
 
 ### Features
