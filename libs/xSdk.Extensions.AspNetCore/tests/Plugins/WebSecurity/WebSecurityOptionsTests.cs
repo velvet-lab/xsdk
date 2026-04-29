@@ -59,4 +59,18 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
     {
         Assert.Contains("origins", WebSecurityOptions.Definitions.Origins.Template);
     }
+
+    [Fact]
+    public void WebSecurityOptions_IsCorsEnabled_WhenOriginsIsEmpty_ReturnsFalse()
+    {
+        var setup = new WebSecurityOptions();
+
+        Assert.False(setup.IsCorsEnabled);
+    }
+
+    [Fact]
+    public void WebSecurityOptions_Definitions_OriginsHelpText_IsNotEmpty()
+    {
+        Assert.False(string.IsNullOrEmpty(WebSecurityOptions.Definitions.Origins.HelpText));
+    }
 }

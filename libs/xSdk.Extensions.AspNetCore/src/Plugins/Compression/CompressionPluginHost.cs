@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Compression;
 
+[ExcludeFromCodeCoverage(Justification = "ASP.NET Core response compression configuration – requires a running web host.")]
 internal sealed class CompressionPluginHost : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)

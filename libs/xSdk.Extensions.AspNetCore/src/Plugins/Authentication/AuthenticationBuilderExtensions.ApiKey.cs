@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using AspNetCore.Authentication.ApiKey;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,7 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Plugins.Authentication;
 
+[ExcludeFromCodeCoverage(Justification = "ApiKey authentication wiring – requires a running web host with authentication middleware.")]
 public static partial class AuthenticationBuilderExtensions
 {
     internal static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, ApiKeyOptions apiKeyOptions, EnvironmentOptions environmentOptions)

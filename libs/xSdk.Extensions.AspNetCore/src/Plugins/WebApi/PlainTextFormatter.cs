@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace xSdk.Plugins.WebApi;
 
+[ExcludeFromCodeCoverage(Justification = "MVC TextInputFormatter – requires a running web host with MVC pipeline.")]
 internal class PlainTextFormatter : TextInputFormatter
 {
     public PlainTextFormatter()

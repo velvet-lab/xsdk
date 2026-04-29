@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk;
+
 namespace xSdk.Data;
 
 public class TokenAuthOptionsTests
@@ -105,6 +107,24 @@ public class CertAuthOptionsTests
         options.Key = "key-data";
 
         Assert.Equal("key-data", options.Key);
+    }
+
+    [Fact]
+    public void CertAuthOptions_CreateCertificate_WithInvalidData_ThrowsSdkException()
+    {
+        var options = new CertAuthOptions();
+        options.Certificate = "not-valid-pem";
+        options.Key = "not-valid-pem";
+
+        Assert.Throws<SdkException>(() => options.CreateCertificate());
+    }
+
+    [Fact]
+    public void CertAuthOptions_CreateCertificate_WithNullCertificate_ThrowsSdkException()
+    {
+        var options = new CertAuthOptions();
+
+        Assert.Throws<SdkException>(() => options.CreateCertificate());
     }
 }
 
