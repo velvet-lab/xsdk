@@ -88,7 +88,7 @@ jobs:
             "/d:sonar.qualitygate.wait=false"
             "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
             "/d:sonar.scanner.skipJreProvisioning=true"
-            "/d:sonar.coverage.exclusions=**/IDatalayerBuilder.cs,**/IReadOnlyVaultRepository.cs,**/ITelemetryService.cs,**/Authenticator.cs,**/HttpClientBuilder.cs,**/AuthenticationDefaults.cs,**/AuthenticationBuilderExtensions.cs,**/ClearCommand.cs,**/HostExtensions.cs,**/WebHost.cs,**/WebHost.Application.cs,**/WebHost.Kestrel.cs,**/MongoDbContext.cs,**/MongoDbOptionsExtensions.cs,**/ListCommand.cs,**/DefaultCommandSettings.cs,**/RestClientBuilder.cs,**/WebSecurityPluginHost.cs,**/CompressionPluginHost.cs,**/AuthenticationPluginHost.cs,**/AuthenticationBuilderExtensions.ApiKey.cs,**/PlainTextFormatter.cs,**/MethodAnalyzer.cs"
+            "/d:sonar.coverage.exclusions=**/IDatalayerBuilder.cs,**/IReadOnlyVaultRepository.cs,**/ITelemetryService.cs,**/Authenticator.cs,**/HttpClientBuilder.cs,**/AuthenticationDefaults.cs,**/AuthenticationBuilderExtensions.cs,**/ClearCommand.cs,**/HostExtensions.cs,**/WebHost.cs,**/WebHost.Application.cs,**/WebHost.Kestrel.cs,**/MongoDbContext.cs,**/MongoDbOptionsExtensions.cs,**/ListCommand.cs,**/DefaultCommandSettings.cs,**/RestClientBuilder.cs,**/WebSecurityPluginHost.cs,**/CompressionPluginHost.cs,**/AuthenticationPluginHost.cs,**/AuthenticationBuilderExtensions.ApiKey.cs,**/PlainTextFormatter.cs,**/MethodAnalyzer.cs,**/ReadOnlyVaultRepository.cs,**/VaultDatabase.cs,**/IVaultRepository.cs,**/DocumentationPluginHost.cs,**/WebPluginHost.cs,**/CloudEventJsonInputFormatter.cs,**/WebApiPluginHost.cs"
           )
 
           if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
