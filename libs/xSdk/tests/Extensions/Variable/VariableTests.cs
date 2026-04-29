@@ -64,4 +64,95 @@ public class VariableTests(TestHostFixture fixture) : IClassFixture<TestHostFixt
         Assert.Equal($"{NAME}{PREFIX_SEPERATOR}FILE".ToUpper(), variable.KeyForFile);
         Assert.Equal($"--{NAME}".Replace(SEPERATOR, "-").ToLower(), variable.KeyForCommandline);
     }
+
+    [Fact]
+    public void Variable_GetHashCode_ReturnsConsistentValue()
+    {
+        var variable = Variable.Create(NAME, typeof(string));
+
+        var hash1 = variable.GetHashCode();
+        var hash2 = variable.GetHashCode();
+
+        Assert.Equal(hash1, hash2);
+    }
+
+    [Fact]
+    public void Variable_Equals_SameNameAndType_AreEqual()
+    {
+        var v1 = Variable.Create(NAME, typeof(string));
+        var v2 = Variable.Create(NAME, typeof(string));
+
+        Assert.True(v1.Equals(v2));
+    }
+
+    [Fact]
+    public void Variable_Equals_DifferentName_AreNotEqual()
+    {
+        var v1 = Variable.Create("var_one", typeof(string));
+        var v2 = Variable.Create("var_two", typeof(string));
+
+        Assert.False(v1.Equals(v2));
+    }
+
+    [Fact]
+    public void Variable_Equals_Null_ReturnsFalse()
+    {
+        var variable = Variable.Create(NAME, typeof(string));
+
+        Assert.False(variable.Equals(null));
+    }
+
+    [Fact]
+    public void Variable_ToString_ReturnsKey()
+    {
+        var variable = Variable.Create(NAME, typeof(string));
+
+        var str = variable.ToString();
+
+        Assert.NotNull(str);
+        Assert.Contains(NAME, str, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Variable_KeyForSystem_ReturnsUpperCase()
+    {
+        var variable = Variable.Create(NAME, typeof(string));
+
+        var key = variable.KeyForSystem;
+
+        Assert.Equal(key, key.ToUpperInvariant());
+    }
+
+    [Fact]
+    public void Variable_KeyForFile_ContainsFileMarker()
+    {
+        var variable = Variable.Create(NAME, typeof(string));
+
+        var key = variable.KeyForFile;
+
+        Assert.Contains("FILE", key, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Variable_Generic_Create_ReturnsTypedVariable()
+    {
+        var variable = Variable.Create<string>(NAME);
+
+        Assert.NotNull(variable);
+        Assert.Equal(typeof(string), variable.ValueType);
+    }
+
+    [Fact]
+    public void Variable_Generic_Create_WithConfigure_AppliesConfiguration()
+    {
+        var variable = Variable.Create<string>(NAME, v => v.HelpText = "Help text");
+
+        Assert.Equal("Help text", variable.HelpText);
+    }
+
+    [Fact]
+    public void Variable_Create_WithNullValueType_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => Variable.Create(NAME, null));
+    }
 }

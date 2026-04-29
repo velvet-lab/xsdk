@@ -120,4 +120,52 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
 
         Assert.Equal("Debug", options.LogLevel);
     }
+
+    [Fact]
+    public void EnvironmentOptions_MachineName_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.MachineName));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_OsName_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.OsName));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_OsType_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.OsType));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_Arch_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.Arch));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_OsVersion_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.OsVersion));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_OsDescription_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.OsDescription));
+    }
 }

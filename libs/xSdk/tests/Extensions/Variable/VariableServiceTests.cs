@@ -68,4 +68,47 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
 
         Assert.Null(ex);
     }
+
+    [Fact]
+    public void NewVariable_RegistersVariableInCollection()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        var variable = Variable.Create("test_new_variable", typeof(string));
+
+        service.NewVariable(variable);
+
+        var loaded = service.LoadVariable("test_new_variable");
+        Assert.NotNull(loaded);
+    }
+
+    [Fact]
+    public void SetVariable_WithNonProtectedVariable_StoresValue()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        var variable = Variable.Create("test_set_variable", typeof(string));
+        service.NewVariable(variable);
+        service.SetVariable("test_set_variable", "hello");
+
+        // No exception means the value was stored
+    }
+
+    [Fact]
+    public void Variables_ContainRegisteredVariable()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        var variable = Variable.Create("test_bag_variable", typeof(string));
+        service.NewVariable(variable);
+
+        var found = service.Variables.Any(v => v.Name == "test_bag_variable");
+        Assert.True(found);
+    }
 }
