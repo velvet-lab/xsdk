@@ -1,3 +1,9 @@
+## [2.0.0-next.5](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.4...v2.0.0-next.5) (2026-04-29)
+
+### Features
+
+* **data:** add unit tests for AppRoleAuthOptions and VaultAuthOptions ([994562f](https://github.com/velvet-lab/xsdk/commit/994562f78254240f50b9ce339206e33be7c747ce))
+
 ## [2.0.0-next.4](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.3...v2.0.0-next.4) (2026-04-29)
 
 ### Bug Fixes

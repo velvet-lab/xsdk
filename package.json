@@ -1,6 +1,6 @@
 {
   "name": "xsdk",
-  "version": "2.0.0-next.4",
+  "version": "2.0.0-next.5",
   "description": "Base SDK for generic services",
   "packageManager": "pnpm@10.31.0",
   "author": {
