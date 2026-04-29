@@ -1,3 +1,14 @@
+## [2.0.0-next.10](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.9...v2.0.0-next.10) (2026-04-29)
+
+### Features
+
+* add code coverage exclusions for integration tests ([e64525e](https://github.com/velvet-lab/xsdk/commit/e64525ea073e852b9c6fa1cce173df6c6b947e3d))
+* **ci:** update sonar scan exclusions for improved coverage analysis ([ce0a88a](https://github.com/velvet-lab/xsdk/commit/ce0a88a4feeef321a9ad55ea694fab45a00affb0))
+
+### Bug Fixes
+
+* enforce frozen lockfile during dependency installation ([b61e8c9](https://github.com/velvet-lab/xsdk/commit/b61e8c9adea0f9ca28d9a2983fcfb7c6f2ebebad))
+
 ## [2.0.0-next.9](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.8...v2.0.0-next.9) (2026-04-29)
 
 ### Features
