@@ -1,3 +1,9 @@
+## [2.0.0-next.2](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-04-29)
+
+### Bug Fixes
+
+* update SDK version in global.json and remove unused projects from solution ([c6d79ee](https://github.com/velvet-lab/xsdk/commit/c6d79ee522bb8eb2523f464f673ca401e8851710))
+
 ## [2.0.0-next.1](https://github.com/velvet-lab/xsdk/compare/v1.1.0...v2.0.0-next.1) (2026-04-28)
 
 ### ⚠ BREAKING CHANGES
