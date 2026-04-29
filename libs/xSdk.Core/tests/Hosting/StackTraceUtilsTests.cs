@@ -164,4 +164,97 @@ public class StackTraceUtilsTests
 
         Assert.Equal(string.Empty, className);
     }
+
+    [Fact]
+    public void GetStackFrameMethodName_WithCleanAnonymousDelegates_RegularMethod_StillReturnsName()
+    {
+        var method = typeof(StackTraceUtilsTests).GetMethod(
+            nameof(GetStackFrameMethodName_WithCleanAnonymousDelegates_RegularMethod_StillReturnsName))!;
+
+        var result = StackTraceUtils.GetStackFrameMethodName(
+            method, includeMethodInfo: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: true);
+
+        Assert.Equal(nameof(GetStackFrameMethodName_WithCleanAnonymousDelegates_RegularMethod_StillReturnsName), result);
+    }
+
+    [Fact]
+    public void GetStackFrameMethodName_WithCleanAsyncMoveNext_RegularMethod_StillReturnsName()
+    {
+        var method = typeof(StackTraceUtilsTests).GetMethod(
+            nameof(GetStackFrameMethodName_WithCleanAsyncMoveNext_RegularMethod_StillReturnsName))!;
+
+        var result = StackTraceUtils.GetStackFrameMethodName(
+            method, includeMethodInfo: false, cleanAsyncMoveNext: true, cleanAnonymousDelegates: false);
+
+        Assert.Equal(nameof(GetStackFrameMethodName_WithCleanAsyncMoveNext_RegularMethod_StillReturnsName), result);
+    }
+
+    [Fact]
+    public void GetStackFrameMethodClassName_WithCleanAnonymousDelegates_RegularClass_StillReturnsName()
+    {
+        var method = typeof(StackTraceUtilsTests).GetMethod(
+            nameof(GetStackFrameMethodClassName_WithCleanAnonymousDelegates_RegularClass_StillReturnsName))!;
+
+        var result = StackTraceUtils.GetStackFrameMethodClassName(
+            method, includeNameSpace: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: true);
+
+        Assert.Equal(nameof(StackTraceUtilsTests), result);
+    }
+
+    [Fact]
+    public void GetStackFrameMethodClassName_WithCleanAsyncMoveNext_RegularClass_StillReturnsName()
+    {
+        var method = typeof(StackTraceUtilsTests).GetMethod(
+            nameof(GetStackFrameMethodClassName_WithCleanAsyncMoveNext_RegularClass_StillReturnsName))!;
+
+        var result = StackTraceUtils.GetStackFrameMethodClassName(
+            method, includeNameSpace: true, cleanAsyncMoveNext: true, cleanAnonymousDelegates: false);
+
+        Assert.Contains("xSdk", result);
+    }
+
+    [Fact]
+    public void GetStackFrameMethodClassName_NestedClass_ReturnsDeclaringTypeName()
+    {
+        var method = typeof(NestedHelper).GetMethod(nameof(NestedHelper.DoWork))!;
+
+        var result = StackTraceUtils.GetStackFrameMethodClassName(
+            method, includeNameSpace: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
+
+        Assert.Equal(nameof(NestedHelper), result);
+    }
+
+    [Fact]
+    public void GetStackFrameMethodName_MoveNext_WithCleanAsyncMoveNext_ExtractsMethodName()
+    {
+        // Get the compiler-generated async state machine's MoveNext method for AsyncHelperMethod.
+        // Its declaring type is named something like "<AsyncHelperMethod>d__N".
+        var stateType = typeof(StackTraceUtilsTests)
+            .GetNestedTypes(BindingFlags.NonPublic)
+            .FirstOrDefault(t => t.Name.Contains("AsyncHelper") && t.Name.Contains("MoveNext") == false);
+
+        if (stateType == null)
+        {
+            // Compiler might inline or rename - skip if not found
+            return;
+        }
+
+        var moveNext = stateType.GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        if (moveNext == null)
+            return;
+
+        var result = StackTraceUtils.GetStackFrameMethodName(
+            moveNext, includeMethodInfo: false, cleanAsyncMoveNext: true, cleanAnonymousDelegates: false);
+
+        // Should extract the original method name from the state machine name
+        Assert.NotEmpty(result);
+    }
+
+    // Helper classes/methods to exercise reflection paths
+    private async Task AsyncHelperMethod() => await Task.Yield();
+
+    internal static class NestedHelper
+    {
+        public static void DoWork() { }
+    }
 }

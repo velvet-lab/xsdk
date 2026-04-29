@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,7 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting;
 
+[ExcludeFromCodeCoverage(Justification = "Web host infrastructure – requires full ASP.NET Core runtime to exercise.")]
 public static partial class WebHost
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();

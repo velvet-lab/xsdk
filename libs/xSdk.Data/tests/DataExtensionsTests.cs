@@ -124,4 +124,34 @@ public class DataExtensionsTests
         Assert.Equal("Source", result.Name);
         Assert.Equal(5, result.Age);
     }
+
+    [Fact]
+    public void MappingFactory_CreateMapper_WithConfigure_ReturnsMapper()
+    {
+        bool configureInvoked = false;
+
+        var mapper = MappingFactory.CreateMapper<TestMappingProfile>(config =>
+        {
+            configureInvoked = true;
+        });
+
+        Assert.NotNull(mapper);
+        Assert.True(configureInvoked);
+    }
+
+    [Fact]
+    public void MappingFactory_CreateMapper_WithConfigure_MapsCorrectly()
+    {
+        var mapper = MappingFactory.CreateMapper<TestMappingProfile>(config =>
+        {
+            config.RequireExplicitMapping = false;
+        });
+
+        var entity = new TestEntity { Name = "Test", Age = 21 };
+        var model = mapper.Map<TestModel>(entity);
+
+        Assert.NotNull(model);
+        Assert.Equal("Test", model.Name);
+        Assert.Equal(21, model.Age);
+    }
 }

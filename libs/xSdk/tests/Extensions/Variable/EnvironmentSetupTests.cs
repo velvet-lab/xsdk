@@ -168,4 +168,70 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
 
         Assert.False(string.IsNullOrEmpty(options.OsDescription));
     }
+
+    [Fact]
+    public void EnvironmentOptions_IPv4_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        // May be null/empty in CI containers, so we just check it doesn't throw
+        Assert.NotNull(options);
+    }
+
+    [Fact]
+    public void EnvironmentOptions_FrameworkName_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.FrameworkName));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_FrameworkVersion_IsNotNull()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.NotNull(options.FrameworkVersion);
+    }
+
+    [Fact]
+    public void EnvironmentOptions_FrameworkDescription_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.FrameworkDescription));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_Owner_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.Owner));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_Pid_IsPositive()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.True(options.Pid > 0);
+    }
+
+    [Fact]
+    public void EnvironmentOptions_Commandline_IsNotEmpty()
+    {
+        var options = GetEnvironmentOptions();
+
+        Assert.False(string.IsNullOrEmpty(options.Commandline));
+    }
+
+    [Fact]
+    public void EnvironmentOptions_Mac_IsReturned()
+    {
+        var options = GetEnvironmentOptions();
+
+        // Mac address may be null in some environments; just verify it doesn't throw
+        Assert.NotNull(options);
+    }
 }

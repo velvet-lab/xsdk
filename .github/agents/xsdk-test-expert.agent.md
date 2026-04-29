@@ -180,3 +180,17 @@ The `xsdk.runsettings` file is at the workspace root. Tests will fail with "sett
 - Never resolve scoped services from `host.Services` — resolve singletons or use scopes
 - Do not add `[assembly: InternalsVisibleTo]` manually — it's global
 - Do not add `using` directives for packages not in the `.csproj`
+
+## Excluding Files from Code Coverage
+
+When a class cannot reasonably be unit tested (hosting infrastructure, EF/DB context wiring, Spectre.Console CLI commands, HTTP client factories, etc.), exclude it from coverage using the attribute **and** update the Sonar workflow:
+
+1. Add `[ExcludeFromCodeCoverage(Justification = "...")]` to the class in the source file. Also add `using System.Diagnostics.CodeAnalysis;` if not already present.
+
+2. Add the filename to `sonar.coverage.exclusions` in `.github/workflows/sonar-scan.yml`:
+   ```yaml
+   "/d:sonar.coverage.exclusions=...,**/YourFile.cs"
+   ```
+
+Both steps are **mandatory** — one without the other leaves Sonar out of sync with the local coverage tool.
+

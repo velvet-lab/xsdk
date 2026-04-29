@@ -15,10 +15,12 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Commands;
 
+[ExcludeFromCodeCoverage(Justification = "Spectre.Console command settings – only used by CLI framework at runtime.")]
 public class DefaultCommandSettings : CommandSettings
 {
     [CommandOption(Definitions.LogLevel.Template)]

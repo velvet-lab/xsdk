@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using MongoDB.Driver;
 
 namespace xSdk.Data;
 
+[ExcludeFromCodeCoverage(Justification = "MongoDB driver settings builder – requires a running MongoDB instance to exercise.")]
 public static class MongoDbOptionsExtensions
 {
     public static MongoClientSettings? CreateMongoDbClientSettings(this MongoDbOptions options)

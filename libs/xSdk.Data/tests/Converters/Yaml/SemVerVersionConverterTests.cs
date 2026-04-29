@@ -79,4 +79,16 @@ public class SemVerVersionConverterTests
 
         Assert.Throws<NotImplementedException>(() => converter.WriteYaml(null!, new SemVer("1.0.0"), typeof(SemVer), null!));
     }
+
+    [Fact]
+    public void ReadYaml_WithNullValueDeserializer_ThrowsYamlException()
+    {
+        // The converter's ReadYaml uses ValueDeserializer which must be set externally.
+        // When it is null, YamlDotNet wraps the NullReferenceException in a YamlException.
+        var deserializer = new YamlDotNet.Serialization.DeserializerBuilder()
+            .WithTypeConverter(new SemVerVersionConverter())
+            .Build();
+
+        Assert.Throws<YamlDotNet.Core.YamlException>(() => deserializer.Deserialize<SemVer>("\"1.2.3\""));
+    }
 }
