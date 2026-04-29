@@ -6,7 +6,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <RootNamespace>xSdk</RootNamespace>
-        <BaseOutputPath>$(SolutionDir)dist\$(MSBuildProjectName)</BaseOutputPath>
+        <BaseOutputPath Condition="'$(IsTestProject)' == 'false'">$(SolutionDir)dist\$(MSBuildProjectName)</BaseOutputPath>
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -20,6 +20,7 @@
         <IsApplicationProject Condition="'$(IsApplicationProject)' == ''">false</IsApplicationProject>
         <!-- Disable CLS compliance warnings - this is a C#-only library -->
         <CLSCompliant>false</CLSCompliant>
+        <NoWarn>$(NoWarn);CS3001;CS3002;CS3003;CS3009;CS30024;CS30027;CS1591;</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>

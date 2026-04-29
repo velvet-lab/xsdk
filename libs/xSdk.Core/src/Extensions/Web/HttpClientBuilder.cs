@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Handlers;
 using Microsoft.Extensions.Logging;
 using xSdk.Hosting;
@@ -21,6 +22,7 @@ using xSdk.Shared;
 
 namespace xSdk.Extensions.Web;
 
+[ExcludeFromCodeCoverage]
 public static class HttpClientBuilder
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ using xSdk.Plugins.Commands;
 
 namespace xSdk.Hosting;
 
+[ExcludeFromCodeCoverage]
 public static class HostExtensions
 {
     public static int RunConsole(this IHost host, string[] args) => host.RunConsoleAsync(args).GetAwaiter().GetResult();

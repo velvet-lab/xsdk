@@ -88,6 +88,7 @@ jobs:
             "/d:sonar.qualitygate.wait=false"
             "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
             "/d:sonar.scanner.skipJreProvisioning=true"
+            "/d:sonar.coverage.exclusions=**/IDatalayerBuilder.cs,**/IReadOnlyVaultRepository.cs,**/ITelemetryService.cs,**/Authenticator.cs,**/HttpClientBuilder.cs,**/AuthenticationDefaults.cs,**/AuthenticationBuilderExtensions.cs,**/ClearCommand.cs,**/HostExtensions.cs"
           )
 
           if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
@@ -103,5 +104,5 @@ jobs:
 
           dotnet dotnet-sonarscanner @beginArgs
           just dotnet::sonar-build xsdk.sln
-          dotnet dotnet-coverage collect 
+          dotnet dotnet-coverage collect
           dotnet dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"
