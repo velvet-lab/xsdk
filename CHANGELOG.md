@@ -1,3 +1,9 @@
+## [2.0.0-next.8](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.7...v2.0.0-next.8) (2026-04-29)
+
+### Features
+
+* **extensions:** improve code coverage and exclude untestable classes ([6407cde](https://github.com/velvet-lab/xsdk/commit/6407cde9fc3c3e1bcd6626d212daa908f545c4db))
+
 ## [2.0.0-next.7](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.6...v2.0.0-next.7) (2026-04-29)
 
 ### Features
