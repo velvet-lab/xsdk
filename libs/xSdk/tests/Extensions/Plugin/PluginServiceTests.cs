@@ -68,4 +68,57 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
 
         Assert.NotNull(service);
     }
+
+    [Fact]
+    public async Task AddPluginAsync_ThenRemove_PluginCycleWorks()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        // Add a plugin type
+        await service.AddPluginAsync(typeof(TestPlugin));
+
+        // Remove the plugin type
+        await service.RemovePluginAsync(typeof(TestPlugin));
+    }
+
+    [Fact]
+    public async Task AddPluginsFromAsync_CurrentAssembly_DoesNotThrow()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        var assembly = typeof(PluginServiceTests).Assembly;
+        await service.AddPluginsFromAsync([assembly]);
+    }
+
+    [Fact]
+    public async Task RemovePluginsFromAsync_NonExistentAssembly_DoesNotThrow()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        // Removing something not added should be a no-op
+        var assembly = typeof(PluginServiceTests).Assembly;
+        await service.RemovePluginsFromAsync([assembly]);
+    }
+
+    [Fact]
+    public async Task AddPluginAsync_SameTypeAddedTwice_DoesNotThrow()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        await service.AddPluginAsync(typeof(TestPlugin));
+        await service.AddPluginAsync(typeof(TestPlugin)); // idempotent, should not throw
+    }
+}
+
+/// <summary>Simple stub plugin used only in tests.</summary>
+internal class TestPlugin : IPlugin
+{
 }

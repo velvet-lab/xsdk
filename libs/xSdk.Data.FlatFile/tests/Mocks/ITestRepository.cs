@@ -16,7 +16,7 @@
 
 namespace xSdk.Data.Mocks;
 
-internal interface ITestRepository : IRepository
+internal interface ITestRepository : IRepository<TestEntity, int>
 {
     Task AddDataAsync(IEnumerable<TestEntity> samples, CancellationToken token = default);
 
