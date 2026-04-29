@@ -15,26 +15,30 @@
  */
 
 using AspNetCore.Authentication.ApiKey;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Authentication;
-using xSdk.Hosting;
 using xSdk.Plugins.Authentication.Mocks;
-using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.Authentication;
 
-public class AuthenticationBuilderExtensionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
+public class AuthenticationBuilderExtensionsTests
 {
     [Fact]
     public void AddApiKeyRepository_RegistersIApiKeyHandler()
     {
-        var host = fixture
-            .ConfigureBuilder(builder => builder
-                .EnableWebApi()
-                .EnableAuthentication<ApiKeyAuthenticationBuilderMock>())
-            .BuildHost();
+        // Directly testing the extension method on AuthenticationBuilder
+        // using a minimal ServiceCollection; no host fixture needed.
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions();
+        services.AddAuthentication();
+        var authBuilder = new AuthenticationBuilder(services);
 
-        var handler = host.Services.GetService<IApiKeyHandler>();
+        authBuilder.AddApiKeyRepository<TestApiKeyHandler>();
+
+        var sp = services.BuildServiceProvider();
+        var handler = sp.GetService<IApiKeyHandler>();
 
         Assert.NotNull(handler);
         Assert.IsType<TestApiKeyHandler>(handler);

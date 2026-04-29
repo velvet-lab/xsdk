@@ -28,7 +28,7 @@ namespace xSdk.Plugins.Authentication;
 public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
-    public void EnableAuthentication_RegistersAuthenticationService()
+    public void EnableAuthentication_RegistersAuthenticationSchemeProvider()
     {
         IHost host = fixture
             .ConfigureBuilder(builder => builder
@@ -36,9 +36,10 @@ public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture)
                 .EnableAuthentication())
             .BuildHost();
 
-        IAuthenticationService? authService = host.Services.GetService<IAuthenticationService>();
+        // IAuthenticationSchemeProvider is a singleton and resolvable from the root provider
+        IAuthenticationSchemeProvider? schemeProvider = host.Services.GetService<IAuthenticationSchemeProvider>();
 
-        Assert.NotNull(authService);
+        Assert.NotNull(schemeProvider);
     }
 
     [Fact]
