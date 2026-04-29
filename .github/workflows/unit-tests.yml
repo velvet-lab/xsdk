@@ -49,7 +49,7 @@ jobs:
         if: always()
         with:
           name: 'Test Results Detail'
-          path: '**/test-results.trx'
+          path: 'TestResults/*.trx'
           reporter: dotnet-trx
 
       - name: Publish Test Results Summary
