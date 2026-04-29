@@ -16,9 +16,8 @@
 
 using Microsoft.AspNetCore.Http;
 using xSdk.Data;
-using xSdk.Extensions.Links;
 
-namespace xSdk.Extensions.AspNetCore.Links.Tests;
+namespace xSdk.Extensions.Links;
 
 public class RoutedLinkBuilderTests
 {
@@ -30,8 +29,7 @@ public class RoutedLinkBuilderTests
     [Fact]
     public void Build_WhenDescriptionIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null);
-        // Description is not set, so Build should return null
+        var link = new RoutedLink<TestModel>("self", "GetById", null!);
         var builder = new RoutedLinkBuilder();
 
         var result = builder.Build(link);
@@ -42,14 +40,14 @@ public class RoutedLinkBuilderTests
     [Fact]
     public void Build_WhenContextIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null);
+        var link = new RoutedLink<TestModel>("self", "GetById", null!);
         link.Description = new MethodDescription
         {
             ControllerType = typeof(TestModel),
             MethodName = "GetById",
             HttpMethod = HttpMethod.Get
         };
-        // Context is null, so CreateBaseUrl returns null → Build returns null
+        // Context is null → CreateBaseUrl returns null → Build returns null
         var builder = new RoutedLinkBuilder();
 
         var result = builder.Build(link);
@@ -60,7 +58,7 @@ public class RoutedLinkBuilderTests
     [Fact]
     public void Build_WhenModelIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null);
+        var link = new RoutedLink<TestModel>("self", "GetById", null!);
         link.Description = new MethodDescription
         {
             ControllerType = typeof(TestModel),

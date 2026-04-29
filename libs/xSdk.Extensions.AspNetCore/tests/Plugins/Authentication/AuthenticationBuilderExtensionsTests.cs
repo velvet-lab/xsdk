@@ -15,35 +15,29 @@
  */
 
 using AspNetCore.Authentication.ApiKey;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Authentication;
+using xSdk.Hosting;
+using xSdk.Plugins.Authentication.Mocks;
+using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.Authentication;
 
-public class AuthenticationBuilderExtensionsTests
+public class AuthenticationBuilderExtensionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void AddApiKeyRepository_RegistersIApiKeyHandler()
     {
-        var services = new ServiceCollection();
-        services.AddLogging();
-        services.AddOptions();
-        services.AddAuthentication();
-        var authBuilder = new AuthenticationBuilder(services);
+        var host = fixture
+            .ConfigureBuilder(builder => builder
+                .EnableWebApi()
+                .EnableAuthentication<ApiKeyAuthenticationBuilderMock>())
+            .BuildHost();
 
-        authBuilder.AddApiKeyRepository<TestApiKeyHandler>();
-
-        var sp = services.BuildServiceProvider();
-        var handler = sp.GetService<IApiKeyHandler>();
+        var handler = host.Services.GetService<IApiKeyHandler>();
 
         Assert.NotNull(handler);
         Assert.IsType<TestApiKeyHandler>(handler);
     }
-
-    private class TestApiKeyHandler : IApiKeyHandler
-    {
-        public Task<IApiKey?> GetApiKeyAsync(string key)
-            => Task.FromResult<IApiKey?>(null);
-    }
 }
+

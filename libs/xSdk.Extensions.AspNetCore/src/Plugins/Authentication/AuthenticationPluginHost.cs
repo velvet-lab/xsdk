@@ -33,7 +33,7 @@ internal sealed class AuthenticationPluginHost(IOptions<ApiKeyOptions> apiKeyOpt
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        var authBuilder = services
+        AuthenticationBuilder authBuilder = services
             // Add Auth
             .AddAuthentication(_ =>
             {
@@ -78,7 +78,7 @@ internal sealed class AuthenticationPluginHost(IOptions<ApiKeyOptions> apiKeyOpt
             TryRetrieveAuthenticationScheme(context, out scheme);
             if (!string.IsNullOrEmpty(scheme))
             {
-                Logger.LogTrace($"Found the correct authentication for incomming request: {scheme}");
+                Logger.LogTrace("Found the correct authentication for incomming request: {scheme}", scheme);
                 return scheme;
             }
 

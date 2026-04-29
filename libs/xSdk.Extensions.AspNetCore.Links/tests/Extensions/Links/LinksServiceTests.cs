@@ -16,13 +16,12 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Data;
-using xSdk.Extensions.Links;
 using xSdk.Hosting;
 using xSdk.Plugins.Links;
 using xSdk.Plugins.Links.Mocks;
 using xSdk.Plugins.WebApi;
 
-namespace xSdk.Extensions.AspNetCore.Links.Tests;
+namespace xSdk.Extensions.Links;
 
 public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {

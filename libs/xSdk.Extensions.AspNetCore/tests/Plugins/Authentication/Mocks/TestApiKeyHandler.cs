@@ -14,30 +14,13 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Http;
-using xSdk.Extensions.Links;
+using AspNetCore.Authentication.ApiKey;
+using xSdk.Extensions.Authentication;
 
-namespace xSdk.Extensions.AspNetCore.Links.Tests;
+namespace xSdk.Plugins.Authentication.Mocks;
 
-public class MethodAnalyzerTests
+internal class TestApiKeyHandler : IApiKeyHandler
 {
-    [Fact]
-    public void Analyze_WithNullContext_ReturnsEmptyList()
-    {
-        var result = MethodAnalyzer.Analyze(null);
-
-        Assert.NotNull(result);
-        Assert.Empty(result);
-    }
-
-    [Fact]
-    public void Analyze_WithContextHavingNoEndpoint_ReturnsEmptyList()
-    {
-        var context = new DefaultHttpContext();
-
-        var result = MethodAnalyzer.Analyze(context);
-
-        Assert.NotNull(result);
-        Assert.Empty(result);
-    }
+    public Task<IApiKey?> GetApiKeyAsync(string key)
+        => Task.FromResult<IApiKey?>(null);
 }

@@ -18,33 +18,34 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Authentication;
+using xSdk.Hosting;
+using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.Authentication;
 
-public class DefaultAuthenticationPluginBuilderTests
+public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
-    private static DefaultAuthenticationPluginBuilder CreateBuilder() => new DefaultAuthenticationPluginBuilder();
-
     [Fact]
-    public void ConfigureAuthentication_WithBuilder_DoesNotThrow()
+    public void EnableAuthentication_RegistersAuthenticationService()
     {
-        var builder = CreateBuilder();
-        var services = new ServiceCollection();
-        services.AddLogging();
-        services.AddOptions();
-        services.AddAuthentication();
-        var authBuilder = new AuthenticationBuilder(services);
+        IHost host = fixture
+            .ConfigureBuilder(builder => builder
+                .EnableWebApi()
+                .EnableAuthentication())
+            .BuildHost();
 
-        // Should not throw
-        builder.ConfigureAuthentication(authBuilder);
+        IAuthenticationService? authService = host.Services.GetService<IAuthenticationService>();
+
+        Assert.NotNull(authService);
     }
 
     [Fact]
     public void ConfigureAuthorization_SetsDefaultPolicy()
     {
-        var builder = CreateBuilder();
-        var options = new AuthorizationOptions();
+        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder();
+        AuthorizationOptions options = new AuthorizationOptions();
 
         builder.ConfigureAuthorization(options);
 
@@ -54,11 +55,11 @@ public class DefaultAuthenticationPluginBuilderTests
     [Fact]
     public void TryRetrieveAuthenticationScheme_NoBearerHeader_ReturnsNullScheme()
     {
-        var builder = CreateBuilder();
-        var context = new DefaultHttpContext();
+        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder();
+        DefaultHttpContext context = new DefaultHttpContext();
         context.Request.Headers["Authorization"] = "";
 
-        builder.TryRetrieveAuthenticationScheme(context, out var scheme);
+        builder.TryRetrieveAuthenticationScheme(context, out string? scheme);
 
         Assert.Null(scheme);
     }
@@ -66,11 +67,11 @@ public class DefaultAuthenticationPluginBuilderTests
     [Fact]
     public void TryRetrieveAuthenticationScheme_WithBearerHeader_ReturnsBearerScheme()
     {
-        var builder = CreateBuilder();
-        var context = new DefaultHttpContext();
+        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder();
+        DefaultHttpContext context = new DefaultHttpContext();
         context.Request.Headers["Authorization"] = "Bearer some-token";
 
-        builder.TryRetrieveAuthenticationScheme(context, out var scheme);
+        builder.TryRetrieveAuthenticationScheme(context, out string? scheme);
 
         Assert.Equal("Bearer", scheme);
     }
