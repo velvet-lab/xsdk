@@ -1,3 +1,10 @@
+## [2.0.0-next.4](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.3...v2.0.0-next.4) (2026-04-29)
+
+### Bug Fixes
+
+* **ci:** update coverage collection command for SonarQube analysis ([c5de3f4](https://github.com/velvet-lab/xsdk/commit/c5de3f49bb904e73f8f4a96e74885b2922f77797))
+* **ci:** update coverage report path for SonarCloud analysis ([c41da57](https://github.com/velvet-lab/xsdk/commit/c41da574b99da0c8bab569eb6f9b093dccb6b81e))
+
 ## [2.0.0-next.3](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.2...v2.0.0-next.3) (2026-04-29)
 
 ### Bug Fixes
