@@ -33,7 +33,7 @@ sonar-build solution:
 [group('development')]
 test solution: (build solution)
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx;LogFileName=test-results.trx"
+    dotnet test "{{solution}}" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."
 
 # Collect code coverage for solution in Release configuration without building the solution
@@ -41,5 +41,5 @@ test solution: (build solution)
 [group('development')]
 coverage solution: (build solution)
     @just {{module_name}}::info "Collecting code coverage for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --collect:"XPlat Code Coverage;Format=cobertura" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx;LogFileName=test-results.trx"
+    dotnet test "{{solution}}" --collect:"XPlat Code Coverage;Format=cobertura" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
     @just {{module_name}}::success "Code coverage for solution '{{solution}}' collected successfully."
