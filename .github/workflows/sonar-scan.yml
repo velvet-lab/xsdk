@@ -86,7 +86,7 @@ jobs:
             "/v:$version"
             "/d:sonar.token=$env:SONAR_TOKEN"
             "/d:sonar.qualitygate.wait=false"
-            "/d:sonar.cs.vscoveragexml.reportsPaths=TestResults/**/coverage.cobertura.xml"
+            "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
             "/d:sonar.scanner.skipJreProvisioning=true"
           )
 

@@ -41,5 +41,5 @@ test solution: (build solution)
 [group('development')]
 coverage solution: (build solution)
     @just {{module_name}}::info "Collecting code coverage for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --collect:"XPlat Code Coverage;Format=cobertura" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
+    dotnet test "{{solution}}" --collect:"Code Coverage" --configuration Release --no-build --verbosity quiet
     @just {{module_name}}::success "Code coverage for solution '{{solution}}' collected successfully."
