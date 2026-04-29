@@ -32,8 +32,14 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
     {
         var options = GetEnvironmentOptions();
 
+#if DEBUG
+
         Assert.Equal(Stage.Development, options.Stage);
-    }    
+#else
+
+        Assert.Equal(Stage.Production, options.Stage);
+#endif
+    }
 
     [Fact]
     public void EnvironmentOptions_ContentRoot_IsNotEmpty()
