@@ -1,3 +1,10 @@
+## [2.0.0-next.6](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.5...v2.0.0-next.6) (2026-04-29)
+
+### Features
+
+* **extensions:** add unit tests for LinksService, MethodAnalyzer, and examples ([f74c96b](https://github.com/velvet-lab/xsdk/commit/f74c96bb71ed5c4952959c69b3cd668d847a23af))
+* **extensions:** remove obsolete test files and add new tests for LinksService ([1defff0](https://github.com/velvet-lab/xsdk/commit/1defff0e46100e83a3cf273c209157ed3f606d80))
+
 ## [2.0.0-next.5](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.4...v2.0.0-next.5) (2026-04-29)
 
 ### Features
