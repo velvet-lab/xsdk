@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
+[ExcludeFromCodeCoverage(Justification = "ASP.NET Core OpenAPI/documentation pipeline – requires a running web host.")]
 public sealed class DocumentationPluginHost(IOptions<DocumentationOptions> options) : WebPluginHost
 {
     private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
@@ -69,14 +71,14 @@ public sealed class DocumentationPluginHost(IOptions<DocumentationOptions> optio
                         return Task.CompletedTask;
                     });
 
-                    //options.AddOperationTransformer((operation, context, cancellationToken) =>                
+                    //options.AddOperationTransformer((operation, context, cancellationToken) =>
                     //{
 
                     //    return Task.CompletedTask;
                     //});
 
                     //options.AddSchemaTransformer((schema, context, cancellationToken) =>
-                    //{                    
+                    //{
                     //    return Task.CompletedTask;
                     //});
                 });

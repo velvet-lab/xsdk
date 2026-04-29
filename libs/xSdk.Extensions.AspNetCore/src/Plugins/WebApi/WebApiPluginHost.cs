@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
 using Asp.Versioning;
 using FluentValidation;
@@ -32,6 +33,7 @@ using xSdk.Tools;
 
 namespace xSdk.Plugins.WebApi;
 
+[ExcludeFromCodeCoverage(Justification = "ASP.NET Core MVC/WebApi pipeline configuration – requires a running web host.")]
 internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection) : WebPluginHost
 {
     protected override int Order => 50;

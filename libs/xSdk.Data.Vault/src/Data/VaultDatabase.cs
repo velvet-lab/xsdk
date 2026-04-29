@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;
@@ -22,6 +23,7 @@ using VaultSharp.V1.AuthMethods.Token;
 
 namespace xSdk.Data;
 
+[ExcludeFromCodeCoverage(Justification = "Requires a live HashiCorp Vault instance – integration-only.")]
 internal class VaultDatabase(ILogger<VaultDatabase> logger) : Database(logger)
 {
     public override TDatabaseObject? Open<TDatabaseObject>() where TDatabaseObject : class

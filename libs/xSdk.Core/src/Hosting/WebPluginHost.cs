@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
@@ -22,6 +23,7 @@ using Microsoft.Extensions.Logging;
 
 namespace xSdk.Hosting;
 
+[ExcludeFromCodeCoverage(Justification = "Abstract base with empty virtual methods – only instantiated via ASP.NET Core web host pipeline.")]
 public abstract class WebPluginHost : PluginHost, IWebPluginHost
 {
     protected ILogger Logger => LogManager.GetCurrentClassLogger();

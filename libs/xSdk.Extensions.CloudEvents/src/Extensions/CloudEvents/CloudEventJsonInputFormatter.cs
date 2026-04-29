@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.AspNetCore;
@@ -26,6 +27,7 @@ namespace xSdk.Extensions.CloudEvents;
 /// <summary>
 /// A <see cref="TextInputFormatter"/> that parses HTTP requests into CloudEvents.
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "MVC TextInputFormatter – requires a running ASP.NET Core MVC pipeline.")]
 public class CloudEventJsonInputFormatter : TextInputFormatter
 {
     private readonly CloudEventFormatter _formatter;
