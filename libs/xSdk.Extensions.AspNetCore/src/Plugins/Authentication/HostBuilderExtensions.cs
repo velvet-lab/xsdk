@@ -36,7 +36,7 @@ public static class HostBuilderExtensions
     {
         hostBuilder
             .EnableAuthentication()
-            .RegisterPluginBuilder<TPluginBuilder>();
+            .RegisterPluginBuilder<IAuthenticationPluginBuilder, TPluginBuilder>();
 
         return hostBuilder;
     }

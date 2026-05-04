@@ -53,13 +53,6 @@ public static class SlimHostExtensions
         return builder;
     }
 
-    public static IHostBuilder RegisterPluginBuilder<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : class, IPluginBuilder
-    {
-        builder.GetSlimHost().RegisterPluginBuilder<IPluginBuilder, TPluginBuilder>();
-        return builder;
-    }
-
     public static IHostBuilder RegisterPluginBuilder<TPluginBuilder, TPluginBuilderImplementation>(this IHostBuilder builder)
         where TPluginBuilder : class, IPluginBuilder
         where TPluginBuilderImplementation : class, TPluginBuilder
