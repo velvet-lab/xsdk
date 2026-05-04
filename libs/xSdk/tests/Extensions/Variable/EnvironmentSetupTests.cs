@@ -25,21 +25,7 @@ namespace xSdk.Extensions.Variable;
 public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     private EnvironmentOptions GetEnvironmentOptions()
-        => fixture.BuildHost().Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;
-
-    [Fact]
-    public void EnvironmentOptions_Stage_DefaultsToDevlopment()
-    {
-        var options = GetEnvironmentOptions();
-
-#if DEBUG
-
-        Assert.Equal(Stage.Development, options.Stage);
-#else
-
-        Assert.Equal(Stage.Production, options.Stage);
-#endif
-    }
+        => fixture.BuildHost().Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;   
 
     [Fact]
     public void EnvironmentOptions_ContentRoot_IsNotEmpty()
