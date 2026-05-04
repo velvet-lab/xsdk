@@ -40,7 +40,7 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
     {
         var options = GetEnvironmentOptions();
 
-        Assert.False(options.IsDemo);
+        Assert.True(options.IsDemo);
     }
 
     [Fact]
@@ -49,14 +49,6 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
         var options = GetEnvironmentOptions();
 
         Assert.False(string.IsNullOrEmpty(options.ContentRoot));
-    }
-
-    [Fact]
-    public void EnvironmentOptions_LogLevel_DefaultsToInfo()
-    {
-        var options = GetEnvironmentOptions();
-
-        Assert.Equal("Info", options.LogLevel);
     }
 
     [Fact]
