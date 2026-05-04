@@ -100,7 +100,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
     }
 
     [
-        HttpGet("write"),
+        HttpPost("write"),
         MapToApiVersion(1),
         Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
         EndpointName(nameof(GetReadAndWriteAsync)),
