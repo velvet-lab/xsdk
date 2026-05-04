@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -50,7 +51,6 @@ public static class ServiceCollectionExtensions
                 }
 
                 configure?.Invoke(options);
-
                 validator.ValidateAndThrow(options);
             });
 
@@ -63,8 +63,8 @@ public static class ServiceCollectionExtensions
     private static void SearchAndRegisterValidators<TOptions>(this IServiceCollection services)
         where TOptions : class, IVariableSetup
     {
-        var assembly = typeof(TOptions).Assembly;
-        var validatorTypes = assembly.GetTypes()
+        Assembly assembly = typeof(TOptions).Assembly;
+        IEnumerable<Type> validatorTypes = assembly.GetTypes()
             .Where(type => typeof(AbstractValidator<TOptions>).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface);
 
         if (validatorTypes.Any())

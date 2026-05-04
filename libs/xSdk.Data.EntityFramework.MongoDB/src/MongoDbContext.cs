@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace xSdk.Data;
 
+[ExcludeFromCodeCoverage(Justification = "EF DbContext subclass – requires a running MongoDB instance to exercise.")]
 public class MongoDbContext<TContext> : DbContext
     where TContext : DbContext
 {

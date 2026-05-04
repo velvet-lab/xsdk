@@ -39,7 +39,7 @@ public class DocumentationPluginTests : IClassFixture<WebHostTestFixture>
     [Fact]
     public void CreatePlugin()
     {
-        var pluginHost = _host.Services
+        DocumentationPluginHost? pluginHost = _host.Services
             .GetRequiredService<IPluginService>()
             .GetPlugin<DocumentationPluginHost>();
 

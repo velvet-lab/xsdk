@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace xSdk.Extensions.Links;
 
+[ExcludeFromCodeCoverage(Justification = "Requires a live HttpContext with MVC endpoint metadata – integration-only.")]
 internal static class MethodAnalyzer
 {
     internal static List<MethodDescription> Analyze(HttpContext? context)

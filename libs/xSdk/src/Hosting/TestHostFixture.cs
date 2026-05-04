@@ -126,7 +126,7 @@ public class TestHostFixture : IDisposable
 
     protected static string GetEnvironmentVariable(string key)
     {
-        var imageName = System.Environment.GetEnvironmentVariable(key);
+        string? imageName = System.Environment.GetEnvironmentVariable(key);
         if (string.IsNullOrEmpty(imageName))
         {
             throw new SdkException($"The environment variable '{key}' is not defined.");
@@ -159,12 +159,12 @@ public class TestHostFixture : IDisposable
         IHostBuilder builder = CreateHostBuilder()
             .ConfigureServices((context, services) =>
             {
-                foreach (var configure in _servicesDelegates)
+                foreach (Action<IServiceCollection> configure in _servicesDelegates)
                 {
                     configure?.Invoke(services);
                 }
 
-                foreach (var configure in _servicesWithContextDelegates)
+                foreach (Action<HostBuilderContext, IServiceCollection> configure in _servicesWithContextDelegates)
                 {
                     configure?.Invoke(context, services);
                 }
@@ -184,7 +184,7 @@ public class TestHostFixture : IDisposable
         Initialize();
 
         // Configure the host builder with any additional delegates
-        foreach (var configure in _builderDelegates)
+        foreach (Action<IHostBuilder> configure in _builderDelegates)
         {
             configure?.Invoke(builder);
         }
@@ -195,10 +195,10 @@ public class TestHostFixture : IDisposable
 
         // Start the HostInitializer hosted service if it exists, because in Unit tests the host
         // is not automatically started as in a real application.
-        var hostedServices = _host.Services.GetServices<IHostedService>();
+        IEnumerable<IHostedService> hostedServices = _host.Services.GetServices<IHostedService>();
         if (hostedServices != null)
         {
-            foreach (var hostedService in hostedServices)
+            foreach (IHostedService hostedService in hostedServices)
             {
                 if (hostedService is HostInitializer)
                 {

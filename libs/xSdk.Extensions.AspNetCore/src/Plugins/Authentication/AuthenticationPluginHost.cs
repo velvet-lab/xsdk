@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -29,11 +30,12 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
+[ExcludeFromCodeCoverage(Justification = "ASP.NET Core authentication pipeline – requires a running web host.")]
 internal sealed class AuthenticationPluginHost(IOptions<ApiKeyOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        var authBuilder = services
+        AuthenticationBuilder authBuilder = services
             // Add Auth
             .AddAuthentication(_ =>
             {
@@ -78,7 +80,7 @@ internal sealed class AuthenticationPluginHost(IOptions<ApiKeyOptions> apiKeyOpt
             TryRetrieveAuthenticationScheme(context, out scheme);
             if (!string.IsNullOrEmpty(scheme))
             {
-                Logger.LogTrace($"Found the correct authentication for incomming request: {scheme}");
+                Logger.LogTrace("Found the correct authentication for incomming request: {scheme}", scheme);
                 return scheme;
             }
 

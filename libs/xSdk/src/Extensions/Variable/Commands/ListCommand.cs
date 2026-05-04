@@ -15,12 +15,14 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Variable.Commands;
 
+[ExcludeFromCodeCoverage(Justification = "Spectre.Console command – renders to an interactive terminal and cannot be unit tested.")]
 [Description(Definitions.HelpText)]
 internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> logger) : Command<ListCommandSettings>
 {

@@ -1,3 +1,117 @@
+## [2.0.0-next.10](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.9...v2.0.0-next.10) (2026-04-29)
+
+### Features
+
+* add code coverage exclusions for integration tests ([e64525e](https://github.com/velvet-lab/xsdk/commit/e64525ea073e852b9c6fa1cce173df6c6b947e3d))
+* **ci:** update sonar scan exclusions for improved coverage analysis ([ce0a88a](https://github.com/velvet-lab/xsdk/commit/ce0a88a4feeef321a9ad55ea694fab45a00affb0))
+
+### Bug Fixes
+
+* enforce frozen lockfile during dependency installation ([b61e8c9](https://github.com/velvet-lab/xsdk/commit/b61e8c9adea0f9ca28d9a2983fcfb7c6f2ebebad))
+
+## [2.0.0-next.9](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.8...v2.0.0-next.9) (2026-04-29)
+
+### Features
+
+* **extensions:** add coverage exclusions and improve test coverage ([a03414c](https://github.com/velvet-lab/xsdk/commit/a03414c19dde44700c3ea866a7cbf360caf75768))
+
+## [2.0.0-next.8](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.7...v2.0.0-next.8) (2026-04-29)
+
+### Features
+
+* **extensions:** improve code coverage and exclude untestable classes ([6407cde](https://github.com/velvet-lab/xsdk/commit/6407cde9fc3c3e1bcd6626d212daa908f545c4db))
+
+## [2.0.0-next.7](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.6...v2.0.0-next.7) (2026-04-29)
+
+### Features
+
+* **extensions:** add code coverage exclusions and update tests ([ae906ec](https://github.com/velvet-lab/xsdk/commit/ae906ec297b73529579040ddf909979e0490f585))
+
+## [2.0.0-next.6](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.5...v2.0.0-next.6) (2026-04-29)
+
+### Features
+
+* **extensions:** add unit tests for LinksService, MethodAnalyzer, and examples ([f74c96b](https://github.com/velvet-lab/xsdk/commit/f74c96bb71ed5c4952959c69b3cd668d847a23af))
+* **extensions:** remove obsolete test files and add new tests for LinksService ([1defff0](https://github.com/velvet-lab/xsdk/commit/1defff0e46100e83a3cf273c209157ed3f606d80))
+
+## [2.0.0-next.5](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.4...v2.0.0-next.5) (2026-04-29)
+
+### Features
+
+* **data:** add unit tests for AppRoleAuthOptions and VaultAuthOptions ([994562f](https://github.com/velvet-lab/xsdk/commit/994562f78254240f50b9ce339206e33be7c747ce))
+
+## [2.0.0-next.4](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.3...v2.0.0-next.4) (2026-04-29)
+
+### Bug Fixes
+
+* **ci:** update coverage collection command for SonarQube analysis ([c5de3f4](https://github.com/velvet-lab/xsdk/commit/c5de3f49bb904e73f8f4a96e74885b2922f77797))
+* **ci:** update coverage report path for SonarCloud analysis ([c41da57](https://github.com/velvet-lab/xsdk/commit/c41da574b99da0c8bab569eb6f9b093dccb6b81e))
+
+## [2.0.0-next.3](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.2...v2.0.0-next.3) (2026-04-29)
+
+### Bug Fixes
+
+* **data:** update coverage report path in SonarCloud analysis ([b6780b5](https://github.com/velvet-lab/xsdk/commit/b6780b56361555e7101fd7ef87b041738d07023d))
+
+## [2.0.0-next.2](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.1...v2.0.0-next.2) (2026-04-29)
+
+### Bug Fixes
+
+* update SDK version in global.json and remove unused projects from solution ([c6d79ee](https://github.com/velvet-lab/xsdk/commit/c6d79ee522bb8eb2523f464f673ca401e8851710))
+
+## [2.0.0-next.1](https://github.com/velvet-lab/xsdk/compare/v1.1.0...v2.0.0-next.1) (2026-04-28)
+
+### ⚠ BREAKING CHANGES
+
+* **xsdk:** introduce IPluginHostCollection and refactor SlimHost
+
+### Features
+
+* add comprehensive guidelines for custom instruction files ([1438132](https://github.com/velvet-lab/xsdk/commit/1438132f43314a9e8f4f776b12792b0a9954d85f))
+* add copilot instructions for project-wide guidance ([85bb263](https://github.com/velvet-lab/xsdk/commit/85bb2636096e649d7d82b0ddb7dba09d6c0aa246))
+* add docker compose configuration for aspire-dashboard service ([c9d0543](https://github.com/velvet-lab/xsdk/commit/c9d05431b1d634f012715ea4922b18e3c2e11f22))
+* add new agents for C# Expert, ADR Generator, GitHub Actions Expert, and Technical Debt Remediation Plan ([11d5ee3](https://github.com/velvet-lab/xsdk/commit/11d5ee3ff69d47e53fa779d713540ac63d471e76))
+* add new projects for apps and Proxy to solution ([eb20ab6](https://github.com/velvet-lab/xsdk/commit/eb20ab68c1faaac9c0b058a69c3b59a4b092a048))
+* add SonarQube MCP guidelines and configuration files ([cdd07e1](https://github.com/velvet-lab/xsdk/commit/cdd07e1e8c61916895b83c4f6be9c30c599ee094))
+* **data:** add certificate and vault options with validation ([ea41524](https://github.com/velvet-lab/xsdk/commit/ea41524676e17fdcd208ee2c22db98f927decd2c))
+* **data:** add ClearDataAsync method for test isolation ([5fbddb3](https://github.com/velvet-lab/xsdk/commit/5fbddb381c81d9abeaf63735cd5bd24508b10e13))
+* **data:** add project references and update runsettings for Consul ([42f168e](https://github.com/velvet-lab/xsdk/commit/42f168ea79a4d17d4356e800fa8de83c5c2147ba))
+* **data:** implement comprehensive unit tests for NoSQL functionality ([5d8fda6](https://github.com/velvet-lab/xsdk/commit/5d8fda6af0e094b883cde04a8b60b8625b363bd7))
+* **data:** implement Entity Framework support for data layer ([cb3f5e4](https://github.com/velvet-lab/xsdk/commit/cb3f5e49b7928b367c1738ca8ba01c402ebb1d96))
+* **data:** implement MongoDbSetup and MongoDbSetupExtensions classes ([15e7bbb](https://github.com/velvet-lab/xsdk/commit/15e7bbb5bcf945a8a549086e8973ab2a57328fd2))
+* **data:** introduce flat file database support ([529ccb1](https://github.com/velvet-lab/xsdk/commit/529ccb11608027d659b6dc07d1b38174cd61e64f))
+* **demos:** implement custom host and plugin architecture ([eda04fa](https://github.com/velvet-lab/xsdk/commit/eda04fafd7a09d6466f1499321350dc08c8ebd2d))
+* **docs:** add ADR-024 and ADR-025 for core foundation and Consul provider ([0262dcf](https://github.com/velvet-lab/xsdk/commit/0262dcff6b570d2785b4cdd75dbc81321f763f6b))
+* **docs:** add multiple ADRs for new features and integrations ([a6e2a6a](https://github.com/velvet-lab/xsdk/commit/a6e2a6a96a8e45a617877b1966699a1b7c401528))
+* **docs:** update architectural decision records for plugin model redesign ([3d49f1e](https://github.com/velvet-lab/xsdk/commit/3d49f1e933727893c21d0d641e03881551f8b370))
+* enhance sonar-build solution with code coverage collection ([7f41578](https://github.com/velvet-lab/xsdk/commit/7f41578fa69a00cd37f23ff30c79d5ac5ee53ea8))
+* **extensions:** add ICommandsPluginBuilder interface for command apps ([0edf2ac](https://github.com/velvet-lab/xsdk/commit/0edf2ac22b7a9e3ce14492780c047eea7fbfe3c0))
+* **extensions:** add unit tests for VariableModel and ApiKeySetup ([a178f6f](https://github.com/velvet-lab/xsdk/commit/a178f6f3be6da87def14d450f239014274d1e219))
+* **extensions:** add YARP proxy and telemetry support ([aaf61d9](https://github.com/velvet-lab/xsdk/commit/aaf61d93d15e42355cf06c52dd60cb19de3a05b7))
+* **extensions:** enhance test structure and add service dependencies ([accb90d](https://github.com/velvet-lab/xsdk/commit/accb90da915902951b06c090181829a8624f8c5b))
+* **extensions:** implement EnvironmentProvider for variable management ([c949143](https://github.com/velvet-lab/xsdk/commit/c94914346ad35e21a40cfa7146f38a9c02ea3e16))
+* **extensions:** implement IRoutedLink and IHateoasItem interfaces ([8aaf52b](https://github.com/velvet-lab/xsdk/commit/8aaf52b2a49da7cb1f1bc44bf7135940b1e29cb6))
+* **extensions:** introduce web security and telemetry plugins ([5373be9](https://github.com/velvet-lab/xsdk/commit/5373be9caa1179ab6742922ed53d1b5943a36028))
+* **extensions:** remove obsolete command interfaces and implementations ([6e1f990](https://github.com/velvet-lab/xsdk/commit/6e1f990f238bd1c5e13e9a77db33ab0eda422bf4))
+* **plugin:** add authentication defaults and interfaces ([5daf48e](https://github.com/velvet-lab/xsdk/commit/5daf48e2ed38564011cce87beec17d6c288fc646))
+* **plugin:** add ContentTypes class and ProblemDetailsExtensions methods ([7ee2920](https://github.com/velvet-lab/xsdk/commit/7ee2920c643447d1099849d7d06f01e2085ad2cb))
+* **plugin:** add ILinksPluginBuilder and ITelemetryPluginBuilder interfaces ([8219373](https://github.com/velvet-lab/xsdk/commit/8219373fe068301213f026df8fc2b217d4ba4570))
+* **plugin:** add ITelemetryPluginBuilder interface for telemetry setup ([7ae8065](https://github.com/velvet-lab/xsdk/commit/7ae806509012d9c482bcaaad12a58913c6e5fbe0))
+* **plugin:** add PluginBuilder and generic setup loading functionality ([e67f3c7](https://github.com/velvet-lab/xsdk/commit/e67f3c7908019906697a2eda69a569203250537e))
+* **plugin:** create IPluginHost interface for plugin hosting ([8c31250](https://github.com/velvet-lab/xsdk/commit/8c312505a00e663ccd81689871b0b9802408b050))
+* **plugin:** enhance PluginHost with setup loading functionality ([4b6c11e](https://github.com/velvet-lab/xsdk/commit/4b6c11eee8ab234cdd4d4969fff9c7cac8b27bd9))
+* **plugin:** implement MyPluginHost and logging service ([a2e4287](https://github.com/velvet-lab/xsdk/commit/a2e4287c81d25bf1491c1d9d040cdd694335f37e))
+* reenable consul layer from think-tank ([8b01651](https://github.com/velvet-lab/xsdk/commit/8b01651212998ca54ff4691b314c6879047c538e))
+* **secret-scanning:** add comprehensive guide for secret scanning setup ([f57d4bb](https://github.com/velvet-lab/xsdk/commit/f57d4bb6edd9c5c7401ef094fc6e821ee9571722))
+* update package versions and add new hosted service extensions ([e0e7a57](https://github.com/velvet-lab/xsdk/commit/e0e7a57ed35e0d3ea1ae9477972508b04566a851))
+* update solution file to reflect new project structure ([0de4b6b](https://github.com/velvet-lab/xsdk/commit/0de4b6b73870755c99def34d78ee08079fb7b50d))
+* **xsdk:** add utility tools for networking, object handling, and string manipulation ([ddd13b4](https://github.com/velvet-lab/xsdk/commit/ddd13b4c949f980fedee7d23fd3a4882e265447b))
+* **xsdk:** introduce IPluginHostCollection and refactor SlimHost ([ebdf1fb](https://github.com/velvet-lab/xsdk/commit/ebdf1fb354862255a81c99c95799c98999d99af8))
+
+### Bug Fixes
+
+* correct argument index for shell command in module.just ([10915c3](https://github.com/velvet-lab/xsdk/commit/10915c32018326b0af15b8fdb3d2761b37f41baf))
+
 ## [1.1.0](https://github.com/velvet-lab/xsdk/compare/v1.0.0...v1.1.0) (2026-03-16)
 
 ### Features

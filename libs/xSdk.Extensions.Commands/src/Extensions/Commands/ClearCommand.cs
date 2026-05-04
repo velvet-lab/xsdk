@@ -15,11 +15,13 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Commands;
 
 [Description(Definitions.HelpText)]
+[ExcludeFromCodeCoverage]
 internal class ClearCommand : Command<EmptyCommandSettings>
 {
     internal static class Definitions

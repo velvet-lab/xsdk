@@ -17,7 +17,7 @@
         <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" PrivateAssets="contentfiles;analyzers;build" />
-        <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />        
+        <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="RestSharp" PrivateAssets="contentfiles;analyzers;build;compile" />

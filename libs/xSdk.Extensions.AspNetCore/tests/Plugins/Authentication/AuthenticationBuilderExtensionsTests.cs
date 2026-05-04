@@ -1,0 +1,47 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using AspNetCore.Authentication.ApiKey;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
+using xSdk.Extensions.Authentication;
+using xSdk.Plugins.Authentication.Mocks;
+
+namespace xSdk.Plugins.Authentication;
+
+public class AuthenticationBuilderExtensionsTests
+{
+    [Fact]
+    public void AddApiKeyRepository_RegistersIApiKeyHandler()
+    {
+        // Directly testing the extension method on AuthenticationBuilder
+        // using a minimal ServiceCollection; no host fixture needed.
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddOptions();
+        services.AddAuthentication();
+        var authBuilder = new AuthenticationBuilder(services);
+
+        authBuilder.AddApiKeyRepository<TestApiKeyHandler>();
+
+        var sp = services.BuildServiceProvider();
+        var handler = sp.GetService<IApiKeyHandler>();
+
+        Assert.NotNull(handler);
+        Assert.IsType<TestApiKeyHandler>(handler);
+    }
+}
+

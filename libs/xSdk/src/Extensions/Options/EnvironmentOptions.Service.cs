@@ -59,7 +59,7 @@ public sealed partial class EnvironmentOptions
             if (string.IsNullOrEmpty(currentServiceName))
             {
                 currentServiceName = assemblyName.Name;
-            }
+            }            
 
             if (string.IsNullOrEmpty(currentServiceNamespace))
             {

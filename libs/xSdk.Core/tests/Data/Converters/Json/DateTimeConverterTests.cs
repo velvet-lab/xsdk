@@ -87,4 +87,51 @@ public class DateTimeConverterTests
 
         Assert.Equal(original, result);
     }
+
+    [Fact]
+    public void Read_WithInvalidDateHavingSpace_ReturnsMinValue()
+    {
+        // Exercises the manual-split path: TryParse fails, string contains space → constructor throws → MinValue
+        var json = "\"32-13-9999 99:99:99\"";
+
+        var result = JsonSerializer.Deserialize<DateTime>(json, _options);
+
+        Assert.Equal(DateTime.MinValue, result);
+    }
+
+    [Fact]
+    public void Read_WithNonParseableStringWithSpace_ReturnsMinValue()
+    {
+        // "invalid date" → TryParse fails, split by space gives 2 parts, Convert("invalid") throws → MinValue
+        var json = "\"invalid date\"";
+
+        var result = JsonSerializer.Deserialize<DateTime>(json, _options);
+
+        Assert.Equal(DateTime.MinValue, result);
+    }
+
+    [Fact]
+    public void Read_WithDateOnlyNoSpace_ReturnsMinValue()
+    {
+        // TryParse("notadate") fails, no space → count == 1 → falls through → MinValue
+        var json = "\"notadate\"";
+
+        var result = JsonSerializer.Deserialize<DateTime>(json, _options);
+
+        Assert.Equal(DateTime.MinValue, result);
+    }
+
+    [Theory]
+    [InlineData("2024-01-01 00:00:00", 2024, 1, 1, 0, 0, 0)]
+    [InlineData("2000-12-31 23:59:59", 2000, 12, 31, 23, 59, 59)]
+    public void Write_SerializesAndDeserializes_CorrectComponents(
+        string isoLike, int year, int month, int day, int hour, int minute, int second)
+    {
+        var expected = new DateTime(year, month, day, hour, minute, second);
+        var json = $"\"{isoLike}\"";
+
+        var result = JsonSerializer.Deserialize<DateTime>(json, _options);
+
+        Assert.Equal(expected, result);
+    }
 }

@@ -25,7 +25,7 @@ sonar-build solution:
     # Otherwise, if restore is not run, a error is ok
     @just {{module_name}}::info "Building solution '{{solution}}' for SonarQube analysis..."
     dotnet build "{{solution}}" --configuration Debug --no-incremental --nologo --no-restore
-    dotnet dotnet-coverage collect "dotnet test '{{solution}}' --no-build --no-restore --nologo" --output-format xml --output coverage.xml --nologo
+    dotnet dotnet-coverage collect "dotnet test "{{solution}}" --configuration Debug --no-build --verbosity quiet" --output-format xml --output coverage.xml --nologo
     @just {{module_name}}::success "Solution '{{solution}}' built successfully for SonarQube analysis."
 
 # Run tests for solution in Release configuration without building the solution
@@ -33,13 +33,5 @@ sonar-build solution:
 [group('development')]
 test solution: (build solution)
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx;LogFileName=test-results.trx"
+    dotnet test "{{solution}}" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."
-
-# Collect code coverage for solution in Release configuration without building the solution
-[no-cd]
-[group('development')]
-coverage solution: (build solution)
-    @just {{module_name}}::info "Collecting code coverage for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --collect:"XPlat Code Coverage;Format=cobertura" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx;LogFileName=test-results.trx"
-    @just {{module_name}}::success "Code coverage for solution '{{solution}}' collected successfully."

@@ -55,4 +55,103 @@ public class DataExtensionsTests
         Assert.Contains("Eve", json);
     }
 
+    [Fact]
+    public void ToEntity_Collection_MapsAllItems()
+    {
+        var models = new List<IModel>
+        {
+            new TestModel { Name = "Alice", Age = 30 },
+            new TestModel { Name = "Bob", Age = 25 },
+        };
+
+        var entities = models.ToEntity<TestMappingProfile, TestEntity>();
+
+        Assert.NotNull(entities);
+        Assert.Equal(2, entities.Count());
+    }
+
+    [Fact]
+    public void ToModel_Collection_MapsAllItems()
+    {
+        var entities = new List<IEntity>
+        {
+            new TestEntity { Name = "Alice", Age = 30 },
+            new TestEntity { Name = "Bob", Age = 25 },
+        };
+
+        var models = entities.ToModel<TestMappingProfile, TestModel>();
+
+        Assert.NotNull(models);
+        Assert.Equal(2, models.Count());
+    }
+
+    [Fact]
+    public void CopyToEntity_CopiesProperties()
+    {
+        var source = new TestEntity { Name = "Source", Age = 10 };
+        var dest = new TestEntity { Name = "Dest", Age = 99 };
+
+        var result = source.CopyToEntity(dest);
+
+        Assert.NotNull(result);
+        Assert.Equal("Source", result.Name);
+        Assert.Equal(10, result.Age);
+    }
+
+    [Fact]
+    public void CopyToModel_CopiesProperties()
+    {
+        var source = new TestModel { Name = "Source", Age = 10 };
+        var dest = new TestModel { Name = "Dest", Age = 99 };
+
+        var result = source.CopyToModel(dest);
+
+        Assert.NotNull(result);
+        Assert.Equal("Source", result.Name);
+        Assert.Equal(10, result.Age);
+    }
+
+    [Fact]
+    public void EnrichEntity_CopiesPropertiesViaMapper()
+    {
+        var mapper = MappingFactory.CreateMapper<TestMappingProfile>();
+        var source = new TestEntity { Name = "Source", Age = 5 };
+        var dest = new TestEntity { Name = "Dest", Age = 99 };
+
+        var result = mapper.EnrichEntity(source, dest);
+
+        Assert.NotNull(result);
+        Assert.Equal("Source", result.Name);
+        Assert.Equal(5, result.Age);
+    }
+
+    [Fact]
+    public void MappingFactory_CreateMapper_WithConfigure_ReturnsMapper()
+    {
+        bool configureInvoked = false;
+
+        var mapper = MappingFactory.CreateMapper<TestMappingProfile>(config =>
+        {
+            configureInvoked = true;
+        });
+
+        Assert.NotNull(mapper);
+        Assert.True(configureInvoked);
+    }
+
+    [Fact]
+    public void MappingFactory_CreateMapper_WithConfigure_MapsCorrectly()
+    {
+        var mapper = MappingFactory.CreateMapper<TestMappingProfile>(config =>
+        {
+            config.RequireExplicitMapping = false;
+        });
+
+        var entity = new TestEntity { Name = "Test", Age = 21 };
+        var model = mapper.Map<TestModel>(entity);
+
+        Assert.NotNull(model);
+        Assert.Equal("Test", model.Name);
+        Assert.Equal(21, model.Age);
+    }
 }

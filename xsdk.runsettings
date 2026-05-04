@@ -7,5 +7,14 @@
             <MONGODB_IMAGE_NAME>mongo:8.0</MONGODB_IMAGE_NAME>
             <VAULT_IMAGE_NAME>openbao/openbao:2.5.2</VAULT_IMAGE_NAME>
         </EnvironmentVariables>
-    </RunConfiguration>    
+    </RunConfiguration>
+    <DataCollectionRunSettings>
+        <DataCollectors>
+            <DataCollector friendlyName="XPlat Code Coverage">
+                <Configuration>
+                    <ExcludeByFile>**/*.generated.cs,**/obj/**/*.cs</ExcludeByFile>
+                </Configuration>
+            </DataCollector>
+        </DataCollectors>
+    </DataCollectionRunSettings>
 </RunSettings>

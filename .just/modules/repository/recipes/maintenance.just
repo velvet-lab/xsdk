@@ -3,7 +3,7 @@
 [group('maintenance')]
 install:
     @just {{module_name}}::info "Installing dependencies for repository '{{repo_name}}'..."
-    @pnpm install
+    @pnpm install --frozen-lockfile
     @just {{module_name}}::success "Dependencies installed for repository '{{repo_name}}'."
 
 # Update repository dependencies with pnpm

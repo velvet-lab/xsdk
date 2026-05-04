@@ -30,4 +30,29 @@ public class FakerTests
         Assert.NotNull(entity.Name);
         Assert.True(entity.Age > 0);
     }
+
+    [Fact]
+    public void Generate_WithContext_ReturnsEntity()
+    {
+        var entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>("default");
+
+        Assert.NotNull(entity);
+    }
+
+    [Fact]
+    public void Generate_WithStrictMode_ReturnsEntity()
+    {
+        var entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>(true);
+
+        Assert.NotNull(entity);
+    }
+
+    [Fact]
+    public void Fakes_GetExamples_ReturnsEntity()
+    {
+        var fakes = new TestEntityFakes();
+        var entity = fakes.GetExamples();
+
+        Assert.NotNull(entity);
+    }
 }

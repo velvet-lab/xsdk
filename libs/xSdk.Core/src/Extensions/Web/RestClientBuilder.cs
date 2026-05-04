@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -24,6 +25,7 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
 
+[ExcludeFromCodeCoverage(Justification = "HTTP client factory – requires live network endpoints to exercise.")]
 public static class RestClientBuilder
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();

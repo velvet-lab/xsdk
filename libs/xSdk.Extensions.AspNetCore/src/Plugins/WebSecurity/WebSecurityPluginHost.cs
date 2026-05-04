@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +27,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
+[ExcludeFromCodeCoverage(Justification = "ASP.NET Core request pipeline configuration – requires a running web host.")]
 internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
