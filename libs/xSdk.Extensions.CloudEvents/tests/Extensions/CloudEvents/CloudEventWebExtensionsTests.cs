@@ -19,7 +19,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class CloudEventWebExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventWebExtensionsTests()
 {
     [Fact]
     public void ToJson_WithValidCloudEvent_ReturnsJsonString()

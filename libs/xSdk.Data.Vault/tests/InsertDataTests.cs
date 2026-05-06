@@ -26,9 +26,9 @@ public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFi
         var repo = fixture.Factory.CreateRepository<IVaultRepository>();
 
         var fake = FakeGenerator.Generate<TestEntityFakes, TestEntity>();
-        await repo.AddSecretAsync(fake.Key, fake.Value);
+        await repo.AddSecretAsync(fake.Key, fake.Value, TestContext.Current.CancellationToken);
 
-        var data = await repo.GetSecretsAsync();
+        var data = await repo.GetSecretsAsync(TestContext.Current.CancellationToken);
         var entity = data.FirstOrDefault();
 
         Assert.Equal(fake.Key, entity.Key);

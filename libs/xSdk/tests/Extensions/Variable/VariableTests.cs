@@ -18,7 +18,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable;
 
-public class VariableTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class VariableTests()
 {
     private const string PREFIX = "MyPrefix";
     private const string NAME = "my_variable";
@@ -46,8 +46,7 @@ public class VariableTests(TestHostFixture fixture) : IClassFixture<TestHostFixt
 
         Assert.NotNull(variable);
         Assert.Equal(PREFIX.ToLower(), variable.Prefix);
-
-        //Assert.Equal($"{fixture.AppPrefix}{PREFIX_SEPERATOR}{PREFIX}{PREFIX_SEPERATOR}{NAME}{PREFIX_SEPERATOR}FILE".ToUpper(), variable.KeyForFile);
+        
         Assert.Equal($"--{PREFIX}{SEPERATOR}{NAME}".Replace(SEPERATOR, "-").ToLower(), variable.KeyForCommandline);
     }
 

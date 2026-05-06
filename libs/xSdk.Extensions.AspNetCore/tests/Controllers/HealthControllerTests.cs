@@ -34,7 +34,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetStatus_ReturnsOkResult()
     {
-        var result = await _controller.GetStatus();
+        var result = await _controller.GetStatus(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -42,7 +42,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetStatus_ReturnsOkString()
     {
-        var result = await _controller.GetStatus() as OkObjectResult;
+        var result = await _controller.GetStatus(TestContext.Current.CancellationToken) as OkObjectResult;
 
         Assert.NotNull(result);
         Assert.Equal("ok", result.Value);
@@ -51,7 +51,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetPong_ReturnsOkResult()
     {
-        var result = await _controller.GetPong();
+        var result = await _controller.GetPong(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -59,7 +59,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetPong_ReturnsOkString()
     {
-        var result = await _controller.GetPong() as OkObjectResult;
+        var result = await _controller.GetPong(TestContext.Current.CancellationToken) as OkObjectResult;
 
         Assert.NotNull(result);
         Assert.Equal("pong", result.Value);

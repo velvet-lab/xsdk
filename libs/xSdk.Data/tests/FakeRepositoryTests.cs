@@ -29,7 +29,7 @@ public class FakeRepositoryTests
         var repo = CreateRepository();
         var entity = new TestEntity { Name = "Alice", Age = 30 };
 
-        var result = await repo.InsertAsync(entity);
+        var result = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         Assert.True(result);
     }
@@ -39,9 +39,9 @@ public class FakeRepositoryTests
     {
         var repo = CreateRepository();
         var entity = new TestEntity { Name = "Bob", Age = 25 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var found = await repo.SelectAsync(entity.Id);
+        var found = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
 
         Assert.NotNull(found);
         Assert.Equal(entity.Name, found.Name);
@@ -58,7 +58,7 @@ public class FakeRepositoryTests
             new TestEntity { Name = "Charlie", Age = 35 }
         };
 
-        var count = await repo.InsertAsync(entities);
+        var count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
 
         Assert.Equal(3, count);
     }
@@ -72,9 +72,9 @@ public class FakeRepositoryTests
             new TestEntity { Name = "Alice", Age = 30 },
             new TestEntity { Name = "Bob", Age = 25 }
         };
-        await repo.InsertAsync(entities);
+        await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
 
-        var result = await repo.SelectListAsync();
+        var result = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, result.Count());
     }
@@ -84,10 +84,10 @@ public class FakeRepositoryTests
     {
         var repo = CreateRepository();
         var entity = new TestEntity { Name = "ToRemove", Age = 20 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var result = await repo.RemoveAsync(entity.Id);
-        var all = await repo.SelectListAsync();
+        var result = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
+        var all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.True(result);
         Assert.Empty(all);
@@ -98,10 +98,10 @@ public class FakeRepositoryTests
     {
         var repo = CreateRepository();
         var entity = new TestEntity { Name = "ToRemove", Age = 20 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var result = await repo.RemoveAsync(entity);
-        var all = await repo.SelectListAsync();
+        var result = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
+        var all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.True(result);
         Assert.Empty(all);
@@ -112,14 +112,13 @@ public class FakeRepositoryTests
     {
         var repo = CreateRepository();
         var entity = new TestEntity { Name = "Original", Age = 20 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
         var updatedEntity = new TestEntity { Name = "Updated", Age = 21 };
         updatedEntity.Id = entity.Id;
 
-        var updateResult = await repo.UpdateAsync(entity.Id, updatedEntity);
-
+        var updateResult = await repo.UpdateAsync(entity.Id, updatedEntity, TestContext.Current.CancellationToken);
         Assert.True(updateResult);
-        var all = await repo.SelectListAsync();
+        var all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
         Assert.Single(all);
         Assert.Equal("Updated", all.First().Name);
     }
@@ -129,11 +128,11 @@ public class FakeRepositoryTests
     {
         var repo = CreateRepository();
         var entity = new TestEntity { Name = "Original", Age = 20 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
         entity.Name = "Upserted";
 
-        await repo.UpsertAsync(entity);
-        var found = await repo.SelectAsync(entity.Id);
+        await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
+        var found = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
 
         Assert.NotNull(found);
         Assert.Equal("Upserted", found.Name);
@@ -144,7 +143,7 @@ public class FakeRepositoryTests
     {
         var repo = CreateRepository();
 
-        var result = await repo.SelectAsync(Guid.NewGuid());
+        var result = await repo.SelectAsync(Guid.NewGuid(), TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -158,10 +157,10 @@ public class FakeRepositoryTests
             new TestEntity { Name = "Alice", Age = 30 },
             new TestEntity { Name = "Bob", Age = 25 }
         };
-        await repo.InsertAsync(entities);
+        await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
 
-        var result = await repo.RemoveAsync(entities);
-        var all = await repo.SelectListAsync();
+        var result = await repo.RemoveAsync(entities, TestContext.Current.CancellationToken);
+        var all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, result);
         Assert.Empty(all);
@@ -176,12 +175,11 @@ public class FakeRepositoryTests
             new TestEntity { Name = "Alice", Age = 30 },
             new TestEntity { Name = "Bob", Age = 25 }
         };
-        await repo.InsertAsync(entities);
+        await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
         var keys = entities.Select(e => e.Id);
 
-        var result = await repo.RemoveAsync(keys);
-        var all = await repo.SelectListAsync();
-
+        var result = await repo.RemoveAsync(keys, TestContext.Current.CancellationToken);
+        var all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, result);
         Assert.Empty(all);
     }

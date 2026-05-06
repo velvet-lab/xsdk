@@ -20,7 +20,7 @@ using xSdk.Data;
 
 namespace xSdk.Extensions.Links;
 
-internal sealed partial class LinksService(LinksOptions linksOptions, IHttpContextAccessor context, IServiceProvider _, ILogger<LinksService> __) : ILinksService
+internal sealed partial class LinksService(LinksOptions linksOptions, IHttpContextAccessor context, ILogger<LinksService> logger) : ILinksService
 {
     public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
@@ -87,6 +87,7 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
                 }
             }
         }
+
         return default;
     }
 

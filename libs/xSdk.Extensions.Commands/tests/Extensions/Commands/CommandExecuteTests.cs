@@ -26,7 +26,7 @@ public class CommandExecuteTests
         var app = new CommandApp();
         app.Configure(cfg => cfg.AddCommand<ConsoleCommand>("console"));
 
-        var result = app.Run(["console"]);
+        var result = app.Run(["console"], TestContext.Current.CancellationToken);
 
         Assert.Equal(0, result);
     }
@@ -37,7 +37,7 @@ public class CommandExecuteTests
         var app = new CommandApp();
         app.Configure(cfg => cfg.AddCommand<ExitCommand>("exit"));
 
-        var result = app.Run(["exit"]);
+        var result = app.Run(["exit"], TestContext.Current.CancellationToken);
 
         Assert.Equal(0, result);
     }
@@ -48,7 +48,7 @@ public class CommandExecuteTests
         var app = new CommandApp();
         app.Configure(cfg => cfg.AddCommand<DefaultCommand>("run"));
 
-        var result = app.Run(["run"]);
+        var result = app.Run(["run"], TestContext.Current.CancellationToken);
 
         Assert.Equal(0, result);
     }

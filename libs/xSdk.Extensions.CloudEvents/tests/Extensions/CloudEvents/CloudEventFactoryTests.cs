@@ -19,7 +19,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventFactoryTests()
 {
     [Fact]
     public void CreateCloudEvent_WithScopeAndType_ReturnsValidCloudEvent()

@@ -19,13 +19,13 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventExtensionsTests()
 {
     [Fact]
     public void AddAttribute_AddsAttributeToCloudEvent()
     {
         var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
-        var attr = CloudEventFactory.CreateAttribute("customattr", CloudEventAttributeType.String);
+        CloudEventFactory.CreateAttribute("customattr", CloudEventAttributeType.String);
 
         cloudEvent.AddAttribute("customattr", CloudEventAttributeType.String, "test-value");
 

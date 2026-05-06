@@ -20,17 +20,14 @@ using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
-public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbContext> factory, IOptionsMonitor<EntityFrameworkDatabaseOptions> options, ILogger<EntityFrameworkDatabase<TDbContext>> logger) : Database(logger)
+public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbContext> factory, ILogger<EntityFrameworkDatabase<TDbContext>> logger) : Database(logger)
     where TDbContext : DbContext
 {
     private TDbContext? _dbContext = null;
 
     public override TDatabaseObject? Open<TDatabaseObject>() where TDatabaseObject : class
     {
-        if (_dbContext == null)
-        {
-            _dbContext = factory.CreateDbContext();
-        }
+        _dbContext ??= factory.CreateDbContext();
 
         return _dbContext as TDatabaseObject;
     }

@@ -18,7 +18,6 @@ using Zio;
 
 namespace xSdk.Extensions.IO;
 
-[CLSCompliant(false)]
 public static class FileSystemExtensions
 {
     public static string GetFullPath(this IFileSystem fileSystem) => fileSystem.GetFullPath("/");

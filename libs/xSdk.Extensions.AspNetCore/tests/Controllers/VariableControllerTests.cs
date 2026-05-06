@@ -38,7 +38,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     {
         var controller = CreateController();
 
-        var result = await controller.GetVariables();
+        var result = await controller.GetVariables(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -48,7 +48,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     {
         var controller = CreateController();
 
-        var result = await controller.GetVariables();
+        var result = await controller.GetVariables(TestContext.Current.CancellationToken);
         var ok = result.Result as OkObjectResult;
 
         Assert.NotNull(ok);
@@ -61,7 +61,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
         var controller = CreateController();
 
         // Get any variable that exists
-        var allResult = await controller.GetVariables();
+        var allResult = await controller.GetVariables(TestContext.Current.CancellationToken);
         var allOk = allResult.Result as OkObjectResult;
         var variables = allOk?.Value as IEnumerable<VariableModel>;
         var firstVar = variables?.FirstOrDefault();
@@ -72,7 +72,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
             return;
         }
 
-        var result = await controller.GetVariable(firstVar.Name);
+        var result = await controller.GetVariable(firstVar.Name, TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -82,7 +82,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     {
         var controller = CreateController();
 
-        var result = await controller.GetResourceNames();
+        var result = await controller.GetResourceNames(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -92,7 +92,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     {
         var controller = CreateController();
 
-        var result = await controller.GetValues();
+        var result = await controller.GetValues(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -102,7 +102,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     {
         var controller = CreateController();
 
-        var result = await controller.GetValues();
+        var result = await controller.GetValues(TestContext.Current.CancellationToken);
         var ok = result.Result as OkObjectResult;
 
         Assert.NotNull(ok);

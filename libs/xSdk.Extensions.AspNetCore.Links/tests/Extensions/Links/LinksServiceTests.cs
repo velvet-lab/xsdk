@@ -50,7 +50,7 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
         var service = BuildService();
         var model = new TestModel { Name = "Test" };
 
-        var ex = await Record.ExceptionAsync(() => service.AddLinksAsync(model));
+        var ex = await Record.ExceptionAsync(() => service.AddLinksAsync(model, TestContext.Current.CancellationToken));
 
         Assert.Null(ex);
     }
@@ -65,7 +65,7 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
             new TestModel { Name = "B" },
         };
 
-        var ex = await Record.ExceptionAsync(() => service.AddLinksAsync(models));
+        var ex = await Record.ExceptionAsync(() => service.AddLinksAsync(models, TestContext.Current.CancellationToken));
 
         Assert.Null(ex);
     }
@@ -76,7 +76,7 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
         var service = BuildService();
         var model = new TestModel { Name = "Test" };
 
-        await service.AddLinksAsync(model);
+        await service.AddLinksAsync(model, TestContext.Current.CancellationToken);
 
         // With no active HttpContext (accessor returns null), _links will be an empty dict
         var linksEntry = model.AdditionalData?["_links"];

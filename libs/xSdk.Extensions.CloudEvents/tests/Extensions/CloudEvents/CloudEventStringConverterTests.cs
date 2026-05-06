@@ -18,14 +18,14 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class CloudEventStringConverterTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class CloudEventStringConverterTests()
 {
     [Fact]
     public void FromJson_WithValidJson_ReturnsCloudEvent()
     {
         var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         var formatter = CloudEventFactory.CreateFormatter();
-        var jsonBytes = formatter.EncodeStructuredModeMessage(cloudEvent, out var contentType);
+        var jsonBytes = formatter.EncodeStructuredModeMessage(cloudEvent, out _);
         var json = System.Text.Encoding.UTF8.GetString(jsonBytes.ToArray());
 
         var result = CloudEventStringConverter.FromJson(json);

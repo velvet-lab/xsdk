@@ -30,7 +30,7 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
         await repo.RemoveAll();
 
         Assert.NotNull(repo);
-        var result = await repo.GetDataAsync();
+        var result = await repo.GetDataAsync(TestContext.Current.CancellationToken);
 
         Assert.Empty(result);
     }
@@ -41,10 +41,10 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
         var repo = CreateRepo();
         var entity = new TestEntity { Name = "Alice", Age = 30 };
 
-        var inserted = await repo.InsertAsync(entity);
+        var inserted = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(inserted);
 
-        var result = await repo.SelectAsync(entity.Id);
+        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.NotNull(result);
         Assert.Equal("Alice", result.Name);
     }
@@ -59,7 +59,7 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
             new TestEntity { Name = "Carol", Age = 35 },
         };
 
-        var count = await repo.InsertAsync(entities);
+        var count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
         Assert.Equal(2, count);
     }
 
@@ -68,13 +68,13 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
     {
         var repo = CreateRepo();
         var entity = new TestEntity { Name = "Dave", Age = 40 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         entity.Name = "Dave Updated";
-        var updated = await repo.UpdateAsync(entity.Id, entity);
+        var updated = await repo.UpdateAsync(entity.Id, entity, TestContext.Current.CancellationToken);
 
         Assert.True(updated);
-        var result = await repo.SelectAsync(entity.Id);
+        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Equal("Dave Updated", result?.Name);
     }
 
@@ -83,12 +83,12 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
     {
         var repo = CreateRepo();
         var entity = new TestEntity { Name = "Eve", Age = 22 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity);
+        var removed = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(removed);
 
-        var result = await repo.SelectAsync(entity.Id);
+        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
@@ -97,9 +97,9 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
     {
         var repo = CreateRepo();
         var entity = new TestEntity { Name = "Frank", Age = 28 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity.Id);
+        var removed = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.True(removed);
     }
 
@@ -109,7 +109,7 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
         var repo = CreateRepo();
         var entity = new TestEntity { Name = "Grace", Age = 33 };
 
-        var result = await repo.UpsertAsync(entity);
+        var result = await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(result);
     }
 
@@ -118,13 +118,13 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
     {
         var repo = CreateRepo();
         var entity = new TestEntity { Name = "Hank", Age = 44 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         entity.Age = 55;
-        var result = await repo.UpsertAsync(entity);
+        var result = await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(result);
 
-        var updated = await repo.SelectAsync(entity.Id);
+        var updated = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Equal(55, updated?.Age);
     }
 
@@ -134,9 +134,9 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
         var repo = CreateRepo();
         var e1 = new TestEntity { Name = "Irene", Age = 11 };
         var e2 = new TestEntity { Name = "John", Age = 12 };
-        await repo.InsertAsync(new[] { e1, e2 });
+        await repo.InsertAsync(new[] { e1, e2 }, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(new[] { e1, e2 });
+        var removed = await repo.RemoveAsync(new[] { e1, e2 }, TestContext.Current.CancellationToken);
         Assert.Equal(2, removed);
     }
 }

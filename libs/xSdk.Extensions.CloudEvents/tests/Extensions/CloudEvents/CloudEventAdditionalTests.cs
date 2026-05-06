@@ -20,7 +20,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class CloudEventExtensionsAdditionalTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventExtensionsAdditionalTests()
 {
     private record TestPayload(string Name, int Value);
 
@@ -88,13 +88,14 @@ public class CloudEventExtensionsAdditionalTests(TestHostFixture _) : IClassFixt
     }
 }
 
-public class CloudEventStringConverterAdditionalTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventStringConverterAdditionalTests()
 {
     private static string CreateValidCloudEventJson()
     {
         var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         var formatter = CloudEventFactory.CreateFormatter();
-        var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out var contentType);
+
+        var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out _);
         return Encoding.UTF8.GetString(bytes.ToArray());
     }
 

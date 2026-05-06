@@ -27,7 +27,6 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
         var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
-
         var entity = new TestEntity
         {
             Id = Guid.Parse("c0000000-0000-0000-0000-000000000001"),
@@ -35,7 +34,7 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             Age = 18
         };
 
-        var result = await repo.InsertAsync(entity);
+        var result = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         Assert.True(result);
     }
@@ -53,7 +52,7 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000011"), Name = "Legolas", Age = 2931 },
         };
 
-        var count = await repo.InsertAsync(entities);
+        var count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
 
         Assert.Equal(2, count);
     }
@@ -70,9 +69,9 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000020"), Name = "Gimli", Age = 139 },
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000021"), Name = "Boromir", Age = 41 },
         };
-        await testRepo.AddDataAsync(entities);
+        await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var all = (await repo!.SelectListAsync()).ToList();
+        var all = (await repo!.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
 
         Assert.Contains(all, x => x.Name == "Gimli");
         Assert.Contains(all, x => x.Name == "Boromir");
@@ -90,12 +89,12 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000030"), Name = "Wormtongue", Age = 60 },
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000031"), Name = "Saruman", Age = 1000 },
         };
-        await testRepo.AddDataAsync(entities);
+        await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var removed = await repo!.RemoveAsync(entities);
+        var removed = await repo!.RemoveAsync(entities, TestContext.Current.CancellationToken);
 
         Assert.Equal(2, removed);
-        var all = (await repo.SelectListAsync()).ToList();
+        var all = (await repo.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
         Assert.DoesNotContain(all, x => x.Name == "Wormtongue");
         Assert.DoesNotContain(all, x => x.Name == "Saruman");
     }
@@ -114,10 +113,10 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             Age = 3000
         };
 
-        var result = await repo!.UpsertAsync(entity);
+        var result = await repo!.UpsertAsync(entity, TestContext.Current.CancellationToken);
 
         Assert.True(result);
-        var all = (await repo.SelectListAsync()).ToList();
+        var all = (await repo.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
         Assert.Contains(all, x => x.Name == "Treebeard");
     }
 }

@@ -104,7 +104,7 @@ public sealed class SemVer
             var baseVersion = version._versionObject.BaseVersion();
             if (_rangeObject.IsSatisfied(baseVersion))
             {
-                if (!version.IsPreRelease || version.IsPreRelease && includePreRelease)
+                if (!version.IsPreRelease || (version.IsPreRelease && includePreRelease))
                 {
                     if (highestVersion == null)
                     {
@@ -167,6 +167,7 @@ public sealed class SemVer
         {
             fieldCount = currentCount;
         }
+
         return new Version(Version).ToString(fieldCount);
     }
 
@@ -184,6 +185,7 @@ public sealed class SemVer
             if (right is null)
                 return false;
         }
+
         return left.VersionObject == right.VersionObject;
     }
 
@@ -203,6 +205,7 @@ public sealed class SemVer
             if (right is null)
                 return true;
         }
+
         return left.VersionObject > right.VersionObject;
     }
 
@@ -222,27 +225,29 @@ public sealed class SemVer
             if (right is null)
                 return true;
         }
+
         return left.VersionObject >= right.VersionObject;
     }
 
     public static bool operator <=(SemVer left, SemVer right) => !(left <= right);
 
-    public static bool HasRangeStrings(string value) => (value.IndexOf("~") > -1 || value.IndexOf("^") > -1 || value.IndexOf(".x") > -1);
+    public static bool HasRangeStrings(string value) => value.IndexOf("~") > -1 || value.IndexOf("^") > -1 || value.IndexOf(".x") > -1;
 
     private static string ReplaceRangeStrings(string value)
     {
         var result = value.Replace("~", "").Replace("^", "").Replace(".x", "");
-        if (result.IndexOf("-") != -1)
+        if (result.Contains('-', StringComparison.CurrentCulture))
         {
             result = result.Substring(0, result.IndexOf("-"));
         }
+
         return result;
     }
 
     private static string ConvertToSemVer(string value)
     {
         var preReleaseString = string.Empty;
-        if (value.IndexOf("-") != -1)
+        if (value.Contains('-', StringComparison.CurrentCulture))
         {
             preReleaseString = value.Substring(value.IndexOf("-"));
         }
@@ -257,7 +262,7 @@ public sealed class SemVer
         if (tempValue.Count(x => x == '.') < 2)
             tempValue = $"{tempValue}.0";
 
-        if (tempValue.IndexOf(".") == -1)
+        if (!tempValue.Contains('.', StringComparison.CurrentCulture))
             tempValue = $"{tempValue}.0.0";
 
         return $"{tempValue}{preReleaseString}";

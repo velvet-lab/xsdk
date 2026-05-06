@@ -15,6 +15,7 @@
  */
 
 using xSdk.Extensions.Variable.Attributes;
+using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
@@ -31,7 +32,7 @@ public class Variable : IVariable
             throw new ArgumentNullException("valueType");
 
         ValueType = valueType;
-
+        
         _applicationPrefix = "none";// SlimHost.Instance.AppPrefix;
     }
 
@@ -136,6 +137,7 @@ public class Variable : IVariable
             {
                 result = $"{prefix}{Globals.Constants.VARIABLE_SEPERATOR}{result}";
             }
+
             result = $"--{result.Replace(Globals.Constants.VARIABLE_SEPERATOR, "-")}";
         }
         else
@@ -144,6 +146,7 @@ public class Variable : IVariable
             {
                 result = $"{appPrefix}{Globals.Constants.PREFIX_SEPERATOR}{result}";
             }
+
             result = result.Replace("-", Globals.Constants.VARIABLE_SEPERATOR);
         }
 

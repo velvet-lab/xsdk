@@ -30,6 +30,7 @@ public static class FileSystemHelper
         {
             folder = Path.GetDirectoryName(assembly.Location);
         }
+
         return folder;
     }
 
@@ -42,6 +43,7 @@ public static class FileSystemHelper
                 path = "/" + path;
             }
         }
+
         return path;
     }
 
@@ -51,19 +53,11 @@ public static class FileSystemHelper
         return fs.ConvertPathFromInternal(path);
     }
 
-    public static string CreateSpecificDataFolder(FileSystemContext context, string folder)
-    {
-        //var root = SlimHost.Instance.FileSystem.RequestFileSystem(context);
-        //return CreateSpecificDataFolder(root, folder);
-        throw new NotImplementedException();
-    }
-
     public static string CreateSpecificDataFolder(IFileSystemResult fileSystem, string folder)
     {
         return CreateSpecificDataFolder(fileSystem.Data, folder);
     }
 
-    [CLSCompliant(false)]
     public static string CreateSpecificDataFolder(IFileSystem fileSystem, string folder)
     {
         if (!fileSystem.DirectoryExists(folder))
@@ -96,46 +90,49 @@ public static class FileSystemHelper
         return false;
     }
 
-    //public static bool IsDirectoryWritable(DirectoryInfo dir)
-    //    => IsDirectoryWritable(dir.FullName);
+    public static bool IsDirectoryWritable(DirectoryInfo dir)
+        => IsDirectoryWritable(dir.FullName);
 
-    //public static bool IsDirectoryWritable(string dirPath)
-    //{
-    //    try
-    //    {
-    //        if (Directory.Exists(dirPath))
-    //        {
-    //            using (FileStream fs = File.Create(Path.Combine(dirPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose))
-    //            { }
-    //            return true;
-    //        }
-    //        else
-    //            return false;
-    //    }
-    //    catch
-    //    {
-    //        return false;
-    //    }
-    //}
+    public static bool IsDirectoryWritable(string dirPath)
+    {
+        try
+        {
+            if (Directory.Exists(dirPath))
+            {
+                using (FileStream fs = File.Create(Path.Combine(dirPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose))
+                {
+                    // Nothing to do here, just testing if we can create a file in the directory
+                }
 
-    //public static bool IsDirectoryReadable(DirectoryInfo dir)
-    //    => IsDirectoryReadable(dir.FullName);
+                return true;
+            }
+            else
+                return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
-    //public static bool IsDirectoryReadable(string dirPath)
-    //{
-    //    try
-    //    {
-    //        if (Directory.Exists(dirPath))
-    //        {
-    //            Directory.GetFiles(dirPath, "*.*", SearchOption.AllDirectories);
-    //            return true;
-    //        }
-    //        else
-    //            return false;
-    //    }
-    //    catch
-    //    {
-    //        return false;
-    //    }
-    //}
+    public static bool IsDirectoryReadable(DirectoryInfo dir)
+        => IsDirectoryReadable(dir.FullName);
+
+    public static bool IsDirectoryReadable(string dirPath)
+    {
+        try
+        {
+            if (Directory.Exists(dirPath))
+            {
+                Directory.GetFiles(dirPath, "*.*", SearchOption.AllDirectories);
+                return true;
+            }
+            else
+                return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

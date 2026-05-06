@@ -92,9 +92,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
             var objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
             var logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
 
-            EnvironmentOptions? environmentOptions = provider.GetService<IOptions<EnvironmentOptions>>()?.Value;
-
-            var poolHandler = new DatabaseHandler<TDatabase>(objectPool, environmentOptions, logger);
+            var poolHandler = new DatabaseHandler<TDatabase>(objectPool, logger);
             poolHandler.DatalayerName = datalayerName;
             poolHandler.Services = provider;
             return poolHandler;

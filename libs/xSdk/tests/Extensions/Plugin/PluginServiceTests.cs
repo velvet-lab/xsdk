@@ -32,7 +32,7 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
 
         Assert.NotNull(plugins);
         Assert.False(plugins.Any());
-    }    
+    }
 
     [Fact]
     public async Task GetPluginAsync_NoPluginsLoaded_ReturnsNull()
@@ -64,7 +64,7 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
             .Services.GetRequiredService<IPluginService>();
 
         // Add a plugin type        
-        await service.AddPluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);        
+        await service.AddPluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);
 
         // Remove the plugin type
         await service.RemovePluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);

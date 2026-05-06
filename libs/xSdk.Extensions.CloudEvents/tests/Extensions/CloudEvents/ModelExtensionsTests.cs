@@ -19,7 +19,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
 
-public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class ModelExtensionsTests()
 {
     // Test model class
     private class TestModel : Model
