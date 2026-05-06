@@ -8,6 +8,9 @@
             <VAULT_IMAGE_NAME>openbao/openbao:2.5.2</VAULT_IMAGE_NAME>
         </EnvironmentVariables>
     </RunConfiguration>
+    <xUnit>
+        <ParallelizeTestCollections>true</ParallelizeTestCollections>
+    </xUnit>
     <DataCollectionRunSettings>
         <DataCollectors>
             <DataCollector friendlyName="XPlat Code Coverage">

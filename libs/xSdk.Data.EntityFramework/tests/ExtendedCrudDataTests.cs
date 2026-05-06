@@ -33,9 +33,9 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
             Name = "Merry",
             Age = 36
         };
-        await repo!.InsertAsync(entity);
+        await repo!.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var result = await repo.SelectAsync(entity.Id);
+        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.Equal("Merry", result.Name);
@@ -50,7 +50,7 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
 
         var pk = Guid.Parse("e0000000-ffff-ffff-ffff-000000000001");
 
-        var result = await repo!.SelectAsync(pk);
+        var result = await repo!.SelectAsync(pk, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -68,12 +68,12 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
             Name = "Sauron",
             Age = 99999
         };
-        await repo!.InsertAsync(entity);
+        await repo!.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity.Id);
+        var removed = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
 
         Assert.True(removed);
-        var result = await repo.SelectAsync(entity.Id);
+        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
@@ -90,9 +90,9 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
             Name = "Shelob",
             Age = 5000
         };
-        await repo!.InsertAsync(entity);
+        await repo!.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity);
+        var removed = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
 
         Assert.True(removed);
     }
@@ -109,9 +109,9 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
             new TestEntity { Id = Guid.Parse("e0000000-0000-0000-0000-000000000010"), Name = "Eowyn", Age = 24 },
             new TestEntity { Id = Guid.Parse("e0000000-0000-0000-0000-000000000011"), Name = "Theoden", Age = 71 },
         };
-        await testRepo.AddDataAsync(entities);
+        await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var all = (await repo!.SelectListAsync()).ToList();
+        var all = (await repo!.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
 
         Assert.Contains(all, x => x.Name == "Eowyn");
         Assert.Contains(all, x => x.Name == "Theoden");
@@ -126,6 +126,6 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
 
         var primaryKeys = new[] { (Guid.NewGuid()) };
 
-        await Assert.ThrowsAsync<NotImplementedException>(() => repo!.RemoveAsync(primaryKeys));
+        await Assert.ThrowsAsync<NotImplementedException>(() => repo!.RemoveAsync(primaryKeys, TestContext.Current.CancellationToken));
     }
 }

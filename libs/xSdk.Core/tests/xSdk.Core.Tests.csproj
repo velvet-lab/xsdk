@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        <SonarQubeExclude>true</SonarQubeExclude>
+        <IsPackable>false</IsPackable>
+        <SonarQubeExclude>true</SonarQubeExclude>        
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="coverlet.collector">
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
+        <PackageReference Include="AspNetCore.Authentication.ApiKey" />        
+        <PackageReference Include="coverlet.collector" />
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />        
         <PackageReference Include="SemanticVersioning" />
         <PackageReference Include="xunit.v3" />
         <PackageReference Include="xunit.runner.visualstudio">
