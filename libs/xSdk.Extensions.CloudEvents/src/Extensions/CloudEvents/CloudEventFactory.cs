@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using System.Net.Mime;
 using System.Text.Json;
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Web;
 using xSdk.Hosting;
 using xSdk.Tools;
 
@@ -31,25 +33,28 @@ public static class CloudEventFactory
     internal static string SourceBaseUrl = $"{BaseUrl}/events/spec/v1";
     internal static string SchemeBaseUrl = $"{BaseUrl}/schemes/v1";
 
-    public static CloudEvent CreateCloudEvent(string scope, string type) => CreateCloudEvent(scope, type, null, null, null);
+    public static CloudEvent CreateCloudEvent(string scope, string type)
+        => CreateCloudEvent(scope, type, null, null, null);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, IEnumerable<CloudEventAttribute> extensions) =>
-        CreateCloudEvent(scope, type, null, null, extensions);
+    public static CloudEvent CreateCloudEvent(string scope, string type, IEnumerable<CloudEventAttribute> extensions)
+        => CreateCloudEvent(scope, type, null, null, extensions);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, string subject) => CreateCloudEvent(scope, type, subject, null, null);
+    public static CloudEvent CreateCloudEvent(string scope, string type, string subject)
+        => CreateCloudEvent(scope, type, subject, null, null);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, string subject, IEnumerable<CloudEventAttribute> extensions) =>
-        CreateCloudEvent(scope, type, subject, null, extensions);
+    public static CloudEvent CreateCloudEvent(string scope, string type, string subject, IEnumerable<CloudEventAttribute> extensions)
+        => CreateCloudEvent(scope, type, subject, null, extensions);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, object payload) => CreateCloudEvent(scope, type, null, payload, null);
+    public static CloudEvent CreateCloudEvent(string scope, string type, object payload)
+        => CreateCloudEvent(scope, type, null, payload, null);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, object payload, IEnumerable<CloudEventAttribute> extensions) =>
-        CreateCloudEvent(scope, type, null, payload, extensions);
+    public static CloudEvent CreateCloudEvent(string scope, string type, object payload, IEnumerable<CloudEventAttribute> extensions)
+        => CreateCloudEvent(scope, type, null, payload, extensions);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, string subject, object payload) =>
-        CreateCloudEvent(scope, type, subject, payload, null);
+    public static CloudEvent CreateCloudEvent(string scope, string type, string subject, object payload)
+        => CreateCloudEvent(scope, type, subject, payload, null);
 
-    public static CloudEvent CreateCloudEvent(string scope, string type, string subject, object payload, IEnumerable<CloudEventAttribute> extensions)
+    public static CloudEvent CreateCloudEvent(string scope, string type, string? subject, object? payload, IEnumerable<CloudEventAttribute>? extensions)
     {
         var (sourceBaseUrl, schemeBaseUrl) = CreateBaseUrls(scope);
 
@@ -57,12 +62,12 @@ public static class CloudEventFactory
         if (payload == null)
         {
             // Event without a Data Object
-            cloudEvent = CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, true, extensions);
+            cloudEvent = CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, default, extensions);
         }
         else
         {
             // Event with Data Object
-            cloudEvent = CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, false, extensions);
+            cloudEvent = CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, ContentTypes.ApplicationJson, extensions);
             cloudEvent.SetDataObject(payload);
         }
 
@@ -105,9 +110,9 @@ public static class CloudEventFactory
         string sourceBaseUrl,
         string scope,
         string type,
-        string subject,
-        bool empty,
-        IEnumerable<CloudEventAttribute> extensions
+        string? subject,
+        string? contentType,
+        IEnumerable<CloudEventAttribute>? extensions
     )
     {
         if (string.IsNullOrEmpty(type))
@@ -141,9 +146,9 @@ public static class CloudEventFactory
             Source = new Uri(sourceBaseUrl.ToLower(), UriKind.RelativeOrAbsolute),
         };
 
-        if (!empty)
+        if (!string.IsNullOrEmpty(contentType) && contentType != ContentTypes.None)
             // The Data Object Type
-            cloudEvent.DataContentType = "application/json";
+            cloudEvent.DataContentType = contentType;
 
         if (!string.IsNullOrEmpty(subject))
             cloudEvent.Subject = subject;
@@ -164,7 +169,7 @@ public static class CloudEventFactory
     public static JsonEventFormatter CreateFormatter(JsonSerializerOptions serializer, JsonDocumentOptions document) =>
         new JsonEventFormatter(serializer, document);
 
-    internal static IEnumerable<CloudEventAttribute> MergeAttributes(IEnumerable<CloudEventAttribute> attributes)
+    internal static IEnumerable<CloudEventAttribute> MergeAttributes(IEnumerable<CloudEventAttribute>? attributes)
     {
         if (attributes == null)
             attributes = new List<CloudEventAttribute>();
@@ -182,11 +187,11 @@ public static class CloudEventFactory
         return attributesAsList;
     }
 
-    internal static bool TryGetValueForAttribute(CloudEventAttribute attribute, out object value)
+    internal static bool TryGetValueForAttribute(CloudEventAttribute attribute, out object? value)
     {
         var defaultAttributes = LoadDefaultAttributes();
 
-        value = null;
+        value = default;
         if (defaultAttributes.Any(x => string.Compare(x.Key.Name, attribute.Name, true) == 0))
         {
             var ce = defaultAttributes.SingleOrDefault(x => string.Compare(x.Key.Name, attribute.Name, true) == 0);

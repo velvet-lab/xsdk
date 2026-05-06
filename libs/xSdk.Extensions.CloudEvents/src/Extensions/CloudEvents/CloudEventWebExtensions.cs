@@ -159,7 +159,7 @@ public static class CloudEventWebExtensions
         string url,
         JsonSerializerOptions serializer,
         JsonDocumentOptions document,
-        IDictionary<string, string> additionalHeaders,
+        IDictionary<string, string>? additionalHeaders,
         CancellationToken token = default
     )
     {

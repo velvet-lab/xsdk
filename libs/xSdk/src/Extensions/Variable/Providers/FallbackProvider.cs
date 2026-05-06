@@ -34,7 +34,7 @@ internal sealed class FallbackProvider(ApplicationOptions? options) : VariablePr
 
     protected override object? ReadVariable(IVariable variable)
     {
-        string result = default;
+        string? result = default;
         if (options == null)
         {
             return result;

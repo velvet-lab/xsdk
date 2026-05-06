@@ -61,7 +61,7 @@ internal partial class VariableService
 
     public void NewVariable<TValueType>(IVariable variable, TValueType value) => NewVariable<TValueType>(variable, value, false);
 
-    public void NewVariable<TValueType>(IVariable variable, TValueType value, bool throwIfAlreadyExists)
+    public void NewVariable<TValueType>(IVariable variable, TValueType? value, bool throwIfAlreadyExists)
     {
         AddVariableInternal(variable, throwIfAlreadyExists);
         if (value != null)
@@ -72,7 +72,7 @@ internal partial class VariableService
 
     private void ReplaceVariable(Variable variable, bool ignoreWriteProtection) => ReplaceVariable<object>(variable, null, ignoreWriteProtection);
 
-    private void ReplaceVariable<TValueType>(Variable variable, TValueType value, bool ignoreWriteProtection)
+    private void ReplaceVariable<TValueType>(Variable variable, TValueType? value, bool ignoreWriteProtection)
     {
         // Replace a existing Variable
         var item = LoadVariableInternal(variable?.Name);

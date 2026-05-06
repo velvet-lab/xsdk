@@ -21,7 +21,7 @@ namespace xSdk.Shared;
 
 public static class TypeConverter
 {
-    private static readonly HashSet<Type> _numericTypes = new HashSet<Type>
+    private static readonly HashSet<Type> _numericTypes = new()
     {
         typeof(int),
         typeof(double),
@@ -36,19 +36,23 @@ public static class TypeConverter
         typeof(float),
     };
 
-    public static TValue ConvertTo<TValue>(object value)
+    public static TValue? ConvertTo<TValue>(object value)
     {
-        TValue result = default;
+        TValue? result = default;
 
         try
         {
-            var tmp = ConvertTo(value, typeof(TValue));
+            object? tmp = ConvertTo(value, typeof(TValue));
             if (tmp != null)
+            {
                 // Try cast
                 result = (TValue)tmp;
+            }
             else if (value != null)
+            {
                 // Try direct cast
                 result = (TValue)value;
+            }
         }
         catch
         {
@@ -56,7 +60,9 @@ public static class TypeConverter
             {
                 // Try direct Cast
                 if (value != null)
+                {
                     result = (TValue)value;
+                }
             }
             catch
             {
@@ -67,9 +73,9 @@ public static class TypeConverter
         return result;
     }
 
-    public static object ConvertTo(object value, Type targetType)
+    public static object? ConvertTo(object? value, Type targetType)
     {
-        object result = default;
+        object? result = default;
 
         try
         {
@@ -85,35 +91,70 @@ public static class TypeConverter
             try
             {
                 if (targetType == typeof(int))
+                {
                     result = Convert.ToInt32(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(short))
+                {
                     result = Convert.ToInt16(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(long))
+                {
                     result = Convert.ToInt64(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(double))
+                {
                     result = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(float))
+                {
                     result = Convert.ToSingle(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(bool))
+                {
                     result = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(char))
+                {
                     result = Convert.ToChar(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(string))
+                {
                     result = Convert.ToString(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(byte))
+                {
                     result = Convert.ToByte(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(decimal))
+                {
                     result = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(sbyte))
+                {
                     result = Convert.ToSByte(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(DateTime))
+                {
                     result = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
+                }
                 else if (targetType == typeof(TimeSpan))
+                {
                     result = TimeSpanParser.Parse(value);
+                }
                 else if (targetType == typeof(Guid))
+                {
                     result = Guid.Parse(value.ToString());
+                }
                 else if (targetType.IsEnum)
-                    result = Enum.Parse(targetType, value.ToString());
+                {
+                    if (value != null)
+                    {
+#pragma warning disable CS8604 // Possible null reference argument.
+                        result = Enum.Parse(targetType, value.ToString());
+#pragma warning restore CS8604 // Possible null reference argument.
+                    }
+                }
             }
             catch
             {
@@ -124,20 +165,28 @@ public static class TypeConverter
         return result;
     }
 
-    public static Type GetValueType(object value)
+    public static Type GetValueType(object? value)
     {
         if (value == null)
+        {
             return typeof(object);
+        }
 
         try
         {
             var token = JToken.Parse($"{value}");
             if (token.Type == JTokenType.Integer)
+            {
                 return typeof(int);
+            }
             else if (token.Type == JTokenType.Float)
+            {
                 return typeof(float);
+            }
             else if (token.Type == JTokenType.Boolean)
+            {
                 return typeof(bool);
+            }
         }
         catch
         {
@@ -155,15 +204,25 @@ public static class TypeConverter
 
             var token = JToken.Parse($"'{valueAsString}'");
             if (token.Type == JTokenType.String)
+            {
                 return typeof(string);
+            }
             else if (token.Type == JTokenType.Date)
+            {
                 return typeof(DateTime);
+            }
             else if (token.Type == JTokenType.Guid)
+            {
                 return typeof(Guid);
+            }
             else if (token.Type == JTokenType.Uri)
+            {
                 return typeof(Uri);
+            }
             else if (token.Type == JTokenType.TimeSpan)
+            {
                 return typeof(TimeSpan);
+            }
         }
         catch
         {
@@ -173,51 +232,86 @@ public static class TypeConverter
         return default;
     }
 
-    public static bool IsEmpty(object value, Type targetType)
+    public static bool IsEmpty(object? value, Type targetType)
     {
+        if (value == null)
+        {
+            return true;
+        }
+
         try
         {
             if (targetType == typeof(Guid))
             {
                 if (Guid.TryParse(value.ToString(), out Guid tmp))
+                {
                     return tmp == Guid.Empty;
+                }
             }
             else if (targetType == typeof(TimeSpan))
             {
                 if (value is string tmpValue1)
+                {
                     return string.IsNullOrEmpty(tmpValue1);
+                }
                 else if (value is TimeSpan tmpValue2)
+                {
                     return tmpValue2 == TimeSpan.Zero;
+                }
             }
             else if (IsNumeric(targetType))
             {
                 if (value is int tmpValue1)
+                {
                     return tmpValue1 == 0;
+                }
                 else if (value is double tmpValue2)
+                {
                     return tmpValue2 == 0.0;
+                }
                 else if (value is decimal tmpValue3)
+                {
                     return tmpValue3 == 0;
+                }
                 else if (value is long tmpValue4)
+                {
                     return tmpValue4 == 0;
+                }
                 else if (value is short tmpValue5)
+                {
                     return tmpValue5 == 0;
+                }
                 else if (value is sbyte tmpValue6)
+                {
                     return tmpValue6 == 0;
+                }
                 else if (value is byte tmpValue7)
+                {
                     return tmpValue7 == 0;
+                }
                 else if (value is ulong tmpValue8)
+                {
                     return tmpValue8 == 0;
+                }
                 else if (value is ushort tmpValue9)
+                {
                     return tmpValue9 == 0;
+                }
                 else if (value is uint tmpValue10)
+                {
                     return tmpValue10 == 0;
+                }
                 else if (value is float tmpValue11)
+                {
                     return tmpValue11 == 0.0;
+                }
             }
             else if (targetType == typeof(string))
             {
                 if (value != null)
+                {
                     return string.IsNullOrEmpty(value.ToString());
+                }
 
                 return true;
             }
@@ -226,6 +320,7 @@ public static class TypeConverter
         {
             // Nothing to tell
         }
+
         return false;
     }
 

@@ -41,7 +41,7 @@ public static partial class WebHost
         // Remove Kestrel Header for security reasons
         options.AddServerHeader = false;
 
-        if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2 cert))
+        if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2? cert))
         {
             certAvailable = true;
             httpPort = webSetup.Https;
@@ -114,10 +114,16 @@ public static partial class WebHost
         }
     }
 
-    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService fileService, WebHostOptions webSetup, out X509Certificate2? cert)
+    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService? fileService, WebHostOptions webSetup, out X509Certificate2? cert)
     {
         if (webSetup.IsHttpsEnabled)
         {
+            if (fileService == null)
+            {
+                cert = null;
+                return false;
+            }
+
             var certLocation = fileService.Machine.Data.GetFullPath("/certs");
             if (Debugger.IsAttached)
                 certLocation = Environment.CurrentDirectory;

@@ -24,7 +24,7 @@ public class TypeConverterTests
     [InlineData("-1", -1)]
     public void ConvertTo_IntFromString_ReturnsCorrectValue(string input, int expected)
     {
-        var result = TypeConverter.ConvertTo<int>(input);
+        int result = TypeConverter.ConvertTo<int>(input);
 
         Assert.Equal(expected, result);
     }
@@ -32,7 +32,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_DoubleFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<double>("3.14");
+        double result = TypeConverter.ConvertTo<double>("3.14");
 
         Assert.Equal(3.14, result, precision: 2);
     }
@@ -40,7 +40,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_BoolFromString_ReturnsTrue()
     {
-        var result = TypeConverter.ConvertTo<bool>("true");
+        bool result = TypeConverter.ConvertTo<bool>("true");
 
         Assert.True(result);
     }
@@ -48,7 +48,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_BoolFromString_ReturnsFalse()
     {
-        var result = TypeConverter.ConvertTo<bool>("false");
+        bool result = TypeConverter.ConvertTo<bool>("false");
 
         Assert.False(result);
     }
@@ -56,7 +56,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_LongFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<long>("9999999999");
+        long result = TypeConverter.ConvertTo<long>("9999999999");
 
         Assert.Equal(9999999999L, result);
     }
@@ -64,7 +64,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_StringFromInt_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<string>(42);
+        string? result = TypeConverter.ConvertTo<string>(42);
 
         Assert.Equal("42", result);
     }
@@ -74,7 +74,7 @@ public class TypeConverterTests
     {
         var guid = Guid.NewGuid();
 
-        var result = TypeConverter.ConvertTo<Guid>(guid.ToString());
+        Guid result = TypeConverter.ConvertTo<Guid>(guid.ToString());
 
         Assert.Equal(guid, result);
     }
@@ -82,7 +82,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_InvalidInput_ReturnsDefault()
     {
-        var result = TypeConverter.ConvertTo<int>("not-a-number");
+        int result = TypeConverter.ConvertTo<int>("not-a-number");
 
         Assert.Equal(0, result);
     }
@@ -93,7 +93,7 @@ public class TypeConverterTests
     [InlineData("true", typeof(bool), true)]
     public void ConvertTo_WithTargetType_ReturnsCorrectValue(string input, Type targetType, object expected)
     {
-        var result = TypeConverter.ConvertTo(input, targetType);
+        object? result = TypeConverter.ConvertTo(input, targetType);
 
         Assert.NotNull(result);
         Assert.Equal(expected, result);
@@ -102,7 +102,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_WithNullValue_ReturnsDefaultForValueType()
     {
-        var result = TypeConverter.ConvertTo(null, typeof(int));
+        object? result = TypeConverter.ConvertTo(null, typeof(int));
 
         // For value types, null input returns the default value (0)
         Assert.Equal(0, result);
@@ -111,7 +111,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_DecimalFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<decimal>("123.45");
+        decimal result = TypeConverter.ConvertTo<decimal>("123.45");
 
         Assert.Equal(123.45m, result);
     }
@@ -119,7 +119,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_ByteFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<byte>("200");
+        byte result = TypeConverter.ConvertTo<byte>("200");
 
         Assert.Equal((byte)200, result);
     }
@@ -127,7 +127,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_FloatFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<float>("1.5");
+        float result = TypeConverter.ConvertTo<float>("1.5");
 
         Assert.Equal(1.5f, result, precision: 1);
     }
@@ -135,7 +135,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_ShortFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<short>("100");
+        short result = TypeConverter.ConvertTo<short>("100");
 
         Assert.Equal((short)100, result);
     }
@@ -143,7 +143,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_DateTimeFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<DateTime>("2024-01-15");
+        DateTime result = TypeConverter.ConvertTo<DateTime>("2024-01-15");
 
         Assert.Equal(new DateTime(2024, 1, 15), result.Date);
     }
@@ -152,7 +152,7 @@ public class TypeConverterTests
     public void ConvertTo_TimeSpanFromString_ReturnsCorrectValue()
     {
         // TimeSpanParser uses a custom format: number + unit suffix (ms, s, m, h, d)
-        var result = TypeConverter.ConvertTo<TimeSpan>("90m");
+        TimeSpan result = TypeConverter.ConvertTo<TimeSpan>("90m");
 
         Assert.Equal(TimeSpan.FromMinutes(90), result);
     }
@@ -160,7 +160,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_EnumFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<DayOfWeek>("Monday");
+        DayOfWeek result = TypeConverter.ConvertTo<DayOfWeek>("Monday");
 
         Assert.Equal(DayOfWeek.Monday, result);
     }
@@ -170,7 +170,7 @@ public class TypeConverterTests
     {
         var guid = Guid.NewGuid();
 
-        var result = TypeConverter.ConvertTo(guid.ToString(), typeof(Guid));
+        object? result = TypeConverter.ConvertTo(guid.ToString(), typeof(Guid));
 
         Assert.Equal(guid, result);
     }
@@ -178,7 +178,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_IntegerString_ReturnsInt()
     {
-        var result = TypeConverter.GetValueType("42");
+        Type result = TypeConverter.GetValueType("42");
 
         Assert.Equal(typeof(int), result);
     }
@@ -186,7 +186,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_FloatString_ReturnsFloat()
     {
-        var result = TypeConverter.GetValueType("3.14");
+        Type result = TypeConverter.GetValueType("3.14");
 
         Assert.Equal(typeof(float), result);
     }
@@ -194,7 +194,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_BoolString_ReturnsBool()
     {
-        var result = TypeConverter.GetValueType("true");
+        Type result = TypeConverter.GetValueType("true");
 
         Assert.Equal(typeof(bool), result);
     }
@@ -202,7 +202,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_PlainString_ReturnsString()
     {
-        var result = TypeConverter.GetValueType("hello");
+        Type result = TypeConverter.GetValueType("hello");
 
         Assert.Equal(typeof(string), result);
     }
@@ -210,7 +210,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_NullValue_ReturnsObject()
     {
-        var result = TypeConverter.GetValueType(null);
+        Type result = TypeConverter.GetValueType(null);
 
         Assert.Equal(typeof(object), result);
     }
@@ -218,7 +218,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_EmptyGuid_ReturnsTrue()
     {
-        var result = TypeConverter.IsEmpty(Guid.Empty, typeof(Guid));
+        bool result = TypeConverter.IsEmpty(Guid.Empty, typeof(Guid));
 
         Assert.True(result);
     }
@@ -226,7 +226,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_NonEmptyGuid_ReturnsFalse()
     {
-        var result = TypeConverter.IsEmpty(Guid.NewGuid(), typeof(Guid));
+        bool result = TypeConverter.IsEmpty(Guid.NewGuid(), typeof(Guid));
 
         Assert.False(result);
     }
@@ -234,7 +234,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_ZeroInt_ReturnsTrue()
     {
-        var result = TypeConverter.IsEmpty(0, typeof(int));
+        bool result = TypeConverter.IsEmpty(0, typeof(int));
 
         Assert.True(result);
     }
@@ -242,7 +242,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_NonZeroInt_ReturnsFalse()
     {
-        var result = TypeConverter.IsEmpty(5, typeof(int));
+        bool result = TypeConverter.IsEmpty(5, typeof(int));
 
         Assert.False(result);
     }
@@ -250,7 +250,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_EmptyString_ReturnsTrue()
     {
-        var result = TypeConverter.IsEmpty("", typeof(string));
+        bool result = TypeConverter.IsEmpty("", typeof(string));
 
         Assert.True(result);
     }
@@ -258,7 +258,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_NonEmptyString_ReturnsFalse()
     {
-        var result = TypeConverter.IsEmpty("hello", typeof(string));
+        bool result = TypeConverter.IsEmpty("hello", typeof(string));
 
         Assert.False(result);
     }
@@ -266,7 +266,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_ZeroTimeSpan_ReturnsTrue()
     {
-        var result = TypeConverter.IsEmpty(TimeSpan.Zero, typeof(TimeSpan));
+        bool result = TypeConverter.IsEmpty(TimeSpan.Zero, typeof(TimeSpan));
 
         Assert.True(result);
     }
@@ -274,7 +274,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_NonZeroTimeSpan_ReturnsFalse()
     {
-        var result = TypeConverter.IsEmpty(TimeSpan.FromHours(1), typeof(TimeSpan));
+        bool result = TypeConverter.IsEmpty(TimeSpan.FromHours(1), typeof(TimeSpan));
 
         Assert.False(result);
     }
@@ -282,7 +282,7 @@ public class TypeConverterTests
     [Fact]
     public void IsEmpty_EmptyStringTimeSpan_ReturnsTrue()
     {
-        var result = TypeConverter.IsEmpty("", typeof(TimeSpan));
+        bool result = TypeConverter.IsEmpty("", typeof(TimeSpan));
 
         Assert.True(result);
     }
@@ -392,7 +392,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_CharFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<char>("A");
+        char result = TypeConverter.ConvertTo<char>("A");
 
         Assert.Equal('A', result);
     }
@@ -400,7 +400,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_SbyteFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<sbyte>("127");
+        sbyte result = TypeConverter.ConvertTo<sbyte>("127");
 
         Assert.Equal((sbyte)127, result);
     }
@@ -408,7 +408,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_UlongFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<ulong>("9999");
+        ulong result = TypeConverter.ConvertTo<ulong>("9999");
 
         Assert.Equal(9999UL, result);
     }
@@ -416,7 +416,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_UintFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<uint>("200");
+        uint result = TypeConverter.ConvertTo<uint>("200");
 
         Assert.Equal(200U, result);
     }
@@ -424,7 +424,7 @@ public class TypeConverterTests
     [Fact]
     public void ConvertTo_UshortFromString_ReturnsCorrectValue()
     {
-        var result = TypeConverter.ConvertTo<ushort>("100");
+        ushort result = TypeConverter.ConvertTo<ushort>("100");
 
         Assert.Equal((ushort)100, result);
     }

@@ -74,7 +74,9 @@ public class ModelExtensionsTests()
         var model = new TestModel { Name = "Test", Value = 42 };
         var type = "model.created";
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         var cloudEvent = model.ToCloudEvent(null, type);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         Assert.NotNull(cloudEvent);
         Assert.Contains(type, cloudEvent.Type);

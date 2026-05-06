@@ -50,12 +50,12 @@ public static class VariableServiceExtensions
                 mainPrefix = null;
             }
 
-            foreach (var property in setupType.GetProperties())
+            foreach (PropertyInfo property in setupType.GetProperties())
             {
                 VariableAttribute? attr = property.GetAttribute<VariableAttribute>();
                 if (attr != null)
                 {
-                    object defaultValue = attr.DefaultValue;
+                    object? defaultValue = attr.DefaultValue;
                     object? currentValue = null;
                     try
                     {
@@ -90,7 +90,7 @@ public static class VariableServiceExtensions
                             name = attr.Name;
                         }
 
-                        Variable? variable = genericCreateMethod.Invoke(null, [name.ToLower()]) as Variable;
+                        var variable = genericCreateMethod.Invoke(null, [name.ToLower()]) as Variable;
                         if (variable != null)
                         {
                             if (!string.IsNullOrEmpty(mainPrefix))
@@ -188,6 +188,7 @@ public static class VariableServiceExtensions
                 }
             }
         }
+
         return false;
     }
 }

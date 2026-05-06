@@ -29,8 +29,8 @@ public sealed class ClaimsConverter : JsonConverter<IEnumerable<Claim>>
         if (reader.TokenType != JsonTokenType.StartArray)
             return result;
 
-        Dictionary<string, string?> tmp = null;
-        string propertyName = default;
+        Dictionary<string, string?>? tmp = null;
+        string? propertyName = default;
         while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
         {
             if (reader.TokenType == JsonTokenType.StartObject)
@@ -38,7 +38,7 @@ public sealed class ClaimsConverter : JsonConverter<IEnumerable<Claim>>
 
             if (reader.TokenType == JsonTokenType.EndObject)
             {
-                if (tmp != null && tmp.Any())
+                if (tmp != null)
                 {
                     var claim = ConvertToClaim(tmp);
                     if (claim != null)
@@ -51,7 +51,10 @@ public sealed class ClaimsConverter : JsonConverter<IEnumerable<Claim>>
 
             if (reader.TokenType == JsonTokenType.String && !string.IsNullOrEmpty(propertyName))
             {
-                tmp.Add(propertyName, reader.GetString());
+                if (tmp != null)
+                {
+                    tmp.Add(propertyName, reader.GetString());
+                }
                 propertyName = default;
             }
         }
@@ -78,28 +81,40 @@ public sealed class ClaimsConverter : JsonConverter<IEnumerable<Claim>>
     private Claim? ConvertToClaim(Dictionary<string, string?> values)
     {
         values.TryGetValue("type", out string? type);
-        values.TryGetValue("value", out string value);
-        values.TryGetValue("valueType", out string valueType);
-        values.TryGetValue("issuer", out string issuer);
-        values.TryGetValue("originalIssuer", out string originalIssuer);
+        values.TryGetValue("value", out string? value);
+        values.TryGetValue("valueType", out string? valueType);
+        values.TryGetValue("issuer", out string? issuer);
+        values.TryGetValue("originalIssuer", out string? originalIssuer);
 
         if (string.IsNullOrEmpty(type))
+        {
             return null;
+        }
 
         if (string.IsNullOrEmpty(value))
+        {
             return null;
+        }
 
         if (string.IsNullOrEmpty(valueType) && string.IsNullOrEmpty(issuer) && string.IsNullOrEmpty(originalIssuer))
+        {
             return new Claim(type, value);
+        }
 
         if (!string.IsNullOrEmpty(valueType) && string.IsNullOrEmpty(issuer) && string.IsNullOrEmpty(originalIssuer))
+        {
             return new Claim(type, value, valueType);
+        }
 
         if (!string.IsNullOrEmpty(valueType) && !string.IsNullOrEmpty(issuer) && string.IsNullOrEmpty(originalIssuer))
+        {
             return new Claim(type, value, valueType, issuer);
+        }
 
         if (!string.IsNullOrEmpty(valueType) && !string.IsNullOrEmpty(issuer) && !string.IsNullOrEmpty(originalIssuer))
+        {
             return new Claim(type, value, valueType, issuer, originalIssuer);
+        }
 
         return null;
     }

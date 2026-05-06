@@ -20,14 +20,15 @@ namespace xSdk.Data.Converters.Mapper;
 
 public static class ObjectIdConverter
 {
-    public static string Convert(ObjectId sourceMember)
+    public static string? Convert(ObjectId sourceMember)
     {
-        if (TryConvert(sourceMember, out string result))
+        if (TryConvert(sourceMember, out string? result))
         {
             return result;
         }
         return default;
     }
+
     public static ObjectId Convert(string sourceMember)
     {
         if (TryConvert(sourceMember, out ObjectId result))
@@ -37,7 +38,7 @@ public static class ObjectIdConverter
         return default;
     }
 
-    internal static bool TryConvert(object value, out string converted)
+    internal static bool TryConvert(object value, out string? converted)
     {
         converted = default;
         if (value != null && value is ObjectId objectIdValue)

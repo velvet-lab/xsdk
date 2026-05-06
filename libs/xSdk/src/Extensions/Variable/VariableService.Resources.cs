@@ -66,7 +66,7 @@ internal partial class VariableService
             var pattern = oldKey.Substring(oldKey.IndexOf("{{") + 2);
             pattern = pattern.Substring(0, pattern.IndexOf("}}"));
 
-            if (resources.TryGetValue(pattern, out object value))
+            if (resources.TryGetValue(pattern, out object? value))
             {
                 var newKey = oldKey.Replace(pattern, value.ToString());
                 newKey = newKey.Replace("{{", "").Replace("}}", "");

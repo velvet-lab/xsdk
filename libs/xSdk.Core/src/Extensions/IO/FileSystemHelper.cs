@@ -24,7 +24,7 @@ public static class FileSystemHelper
 {
     public static string GetExecutingFolder()
     {
-        var folder = Environment.CurrentDirectory;
+        string? folder = Environment.CurrentDirectory;
         var assembly = Assembly.GetEntryAssembly();
         if (assembly != null)
         {
@@ -34,7 +34,7 @@ public static class FileSystemHelper
         return folder;
     }
 
-    public static string NormalizePath(string path)
+    public static string? NormalizePath(string? path)
     {
         if (!string.IsNullOrEmpty(path))
         {
@@ -68,7 +68,7 @@ public static class FileSystemHelper
         return fileSystem.GetFullPath(folder);
     }
 
-    public static string SearchGitRoot(string root)
+    public static string SearchGitRoot(string? root)
     {
         if (string.IsNullOrEmpty(root) || new DirectoryInfo(root).Parent == null)
         {
@@ -76,16 +76,20 @@ public static class FileSystemHelper
         }
 
         if (IsGitRoot(root))
+        {
             return root;
+        }
 
         return SearchGitRoot(Path.Combine(root, ".."));
     }
 
     private static bool IsGitRoot(string root)
     {
-        var current = Path.Combine(root, ".git");
+        string current = Path.Combine(root, ".git");
         if (!string.IsNullOrEmpty(current) && Directory.Exists(current))
+        {
             return true;
+        }
 
         return false;
     }
@@ -99,15 +103,16 @@ public static class FileSystemHelper
         {
             if (Directory.Exists(dirPath))
             {
-                using (FileStream fs = File.Create(Path.Combine(dirPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose))
-                {
-                    // Nothing to do here, just testing if we can create a file in the directory
-                }
+                using FileStream fs = File.Create(Path.Combine(dirPath, Path.GetRandomFileName()), 1, FileOptions.DeleteOnClose);
+
+                // Nothing to do here, just testing if we can create a file in the directory
 
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
         catch
         {
@@ -128,7 +133,9 @@ public static class FileSystemHelper
                 return true;
             }
             else
+            {
                 return false;
+            }
         }
         catch
         {

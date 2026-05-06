@@ -27,7 +27,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
     private readonly Assembly _assembly = assembly;
     private readonly string _namespace = @namespace;
 
-    public bool TryReadResource(string fileName, out string content)
+    public bool TryReadResource(string fileName, out string? content)
     {
         var resourceName = FormatResourceName(_namespace, fileName);
 
@@ -88,7 +88,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
         var items = new List<string>();
         parts.ForEach(x =>
         {
-            if (Version.TryParse(x, out Version version))
+            if (Version.TryParse(x, out Version? version))
             {
                 var versionAsString = $"_{version.Major}._{version.Minor}._{version.Build}";
                 if (version.Revision > 0)

@@ -34,7 +34,7 @@ public static class CloudEventStringConverter
 
     public static CloudEvent FromBase64(string raw, IEnumerable<CloudEventAttribute> extensions) => FromBase64Internal(raw, extensions);
 
-    private static CloudEvent FromBase64Internal(string raw, IEnumerable<CloudEventAttribute> extensions)
+    private static CloudEvent FromBase64Internal(string raw, IEnumerable<CloudEventAttribute>? extensions)
     {
         if (Base64Tools.IsBase64(raw))
         {
@@ -57,9 +57,9 @@ public static class CloudEventStringConverter
 
     public static CloudEvent FromJson(string json, CloudEventAttribute extension) => FromJsonInternal(json, new List<CloudEventAttribute> { extension });
 
-    public static CloudEvent FromJson(string json, IEnumerable<CloudEventAttribute> extensions) => FromJsonInternal(json, extensions);
+    public static CloudEvent FromJson(string json, IEnumerable<CloudEventAttribute>? extensions) => FromJsonInternal(json, extensions);
 
-    private static CloudEvent FromJsonInternal(string json, IEnumerable<CloudEventAttribute> extensions)
+    private static CloudEvent FromJsonInternal(string json, IEnumerable<CloudEventAttribute>? extensions)
     {
         if (JsonTools.IsJson(json))
         {

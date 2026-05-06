@@ -93,11 +93,11 @@ public sealed class SemVer
     [JsonIgnore]
     public bool IsRange => HasRangeStrings(_origin);
 
-    public SemVer MaxSatisfying(IEnumerable<SemVer> versions) => MaxSatisfying(versions, false);
+    public SemVer? MaxSatisfying(IEnumerable<SemVer> versions) => MaxSatisfying(versions, false);
 
-    public SemVer MaxSatisfying(IEnumerable<SemVer> versions, bool includePreRelease)
+    public SemVer? MaxSatisfying(IEnumerable<SemVer> versions, bool includePreRelease)
     {
-        SemanticVersioning.Version highestVersion = null;
+        SemanticVersioning.Version? highestVersion = null;
 
         foreach (var version in versions)
         {

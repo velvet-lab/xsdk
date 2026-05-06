@@ -55,8 +55,10 @@ public class RoutedLinkTests
     public void RoutedLink_ConcreteModel_WhenModelIsCompatibleType_ReturnsModel()
     {
         var model = new TestModel { Name = "Test" };
-        var link = new RoutedLink<TestModel>("self", "GetById", null);
-        link.Model = model;
+        var link = new RoutedLink<TestModel>("self", "GetById", null)
+        {
+            Model = model
+        };
 
         var result = link.ConcreteModel;
 

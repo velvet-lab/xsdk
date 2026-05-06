@@ -44,7 +44,7 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
         return 0;
     }
 
-    private void PrintAsTable(string format = default)
+    private void PrintAsTable(string format)
     {
         logger.LogInformation("Print variables as table");
 

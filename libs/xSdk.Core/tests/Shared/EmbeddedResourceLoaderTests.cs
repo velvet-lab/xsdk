@@ -28,7 +28,7 @@ public class EmbeddedResourceLoaderTests
     {
         var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
 
-        var found = loader.TryReadResource("Resources/test.txt", out string content);
+        bool found = loader.TryReadResource("Resources/test.txt", out string? content);
 
         Assert.True(found);
         Assert.Contains("Hello from embedded resource", content);
@@ -39,7 +39,7 @@ public class EmbeddedResourceLoaderTests
     {
         var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
 
-        var found = loader.TryReadResource("does-not-exist.txt", out string content);
+        bool found = loader.TryReadResource("does-not-exist.txt", out string? content);
 
         Assert.False(found);
         Assert.Null(content);
@@ -50,7 +50,7 @@ public class EmbeddedResourceLoaderTests
     {
         var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
 
-        var found = loader.TryReadBinaryResource("Resources/test.txt", out byte[] buffer);
+        bool found = loader.TryReadBinaryResource("Resources/test.txt", out byte[] buffer);
 
         Assert.True(found);
         Assert.NotEmpty(buffer);
@@ -61,7 +61,7 @@ public class EmbeddedResourceLoaderTests
     {
         var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
 
-        var found = loader.TryReadBinaryResource("does-not-exist.bin", out byte[] buffer);
+        bool found = loader.TryReadBinaryResource("does-not-exist.bin", out byte[] buffer);
 
         Assert.False(found);
         Assert.Empty(buffer);
@@ -72,7 +72,7 @@ public class EmbeddedResourceLoaderTests
     {
         var loader = new EmbeddedResourceLoader(_testAssembly, "Wrong.Namespace");
 
-        var found = loader.TryReadResource("Resources/test.txt", out string content);
+        bool found = loader.TryReadResource("Resources/test.txt", out string? content);
 
         Assert.False(found);
         Assert.Null(content);
@@ -84,7 +84,7 @@ public class EmbeddedResourceLoaderTests
         // Path contains a version segment — exercises the version branch in FormatResourceName
         var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
 
-        var found = loader.TryReadResource("1.0.0/test.txt", out string content);
+        bool found = loader.TryReadResource("1.0.0/test.txt", out string? content);
 
         // Resource doesn't actually exist; only branch coverage matters here
         Assert.False(found);
@@ -96,7 +96,7 @@ public class EmbeddedResourceLoaderTests
         // 1.0.0.1 has a Revision > 0, exercising the extra revision format line
         var loader = new EmbeddedResourceLoader(_testAssembly, TestNamespace);
 
-        var found = loader.TryReadResource("1.0.0.1/test.txt", out string content);
+        bool found = loader.TryReadResource("1.0.0.1/test.txt", out string? content);
 
         Assert.False(found);
     }

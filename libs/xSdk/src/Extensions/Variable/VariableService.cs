@@ -43,12 +43,11 @@ internal partial class VariableService : IVariableService
     public Dictionary<string, object> ToDictionary()
     {
         var result = new Dictionary<string, object>();
-
-        foreach (var variable in Variables)
+        foreach (IVariable variable in Variables)
         {
             try
             {
-                if (TryReadVariableValue<object>(variable.Name, out object value))
+                if (TryReadVariableValue<object>(variable.Name, out object? value))
                 {
                     result.AddOrNew(variable.Name, value);
                 }
@@ -68,13 +67,13 @@ internal partial class VariableService : IVariableService
 
     internal void AddEnvironmentVariables()
     {
-        var items = Environment.GetEnvironmentVariables();
+        IDictionary items = Environment.GetEnvironmentVariables();
 
         // GetPrimaryKey Items to Dictionary
         var dic = new ConcurrentDictionary<string, object>();
         foreach (DictionaryEntry item in items)
         {
-            dic.AddOrNew(item.Key.ToString(), item.Value);
+            dic?.AddOrNew(item.Key.ToString(), item.Value);            
         }
 
         // Execute in Parallel
@@ -82,13 +81,13 @@ internal partial class VariableService : IVariableService
             dic,
             item =>
             {
-                var value = item.Value?.ToString();
-                var valueType = TypeConverter.GetValueType(value);
+                string? value = item.Value?.ToString();
+                Type valueType = TypeConverter.GetValueType(value);
 
                 if (valueType != null)
                 {
-                    var name = item.Key.ToString();
-                    var variable = LoadVariableInternal(name);
+                    string name = item.Key.ToString();
+                    IVariable? variable = LoadVariableInternal(name);
                     if (variable == null)
                     {
                         variable = Variable.Create(name, valueType).Protect().DisablePrefix().Hide();

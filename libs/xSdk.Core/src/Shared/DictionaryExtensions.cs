@@ -20,8 +20,13 @@ public static class DictionaryExtensions
 {
     private static readonly object _lock = new object();
 
-    public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+    public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue? value)
     {
+        if(value == null)
+        {
+            return;
+        }
+
         if (key != null)
         {
             lock (_lock)
@@ -34,8 +39,13 @@ public static class DictionaryExtensions
         }
     }
 
-    public static void AddOrNew<TValue>(this IDictionary<string, string> dictionary, string key, TValue value)
+    public static void AddOrNew<TValue>(this IDictionary<string, string> dictionary, string key, TValue? value)
     {
+        if(value == null)
+        {
+            return;
+        }
+
         if (!string.IsNullOrEmpty(key))
         {
             if (dictionary.ContainsKey(key))
@@ -53,11 +63,11 @@ public static class DictionaryExtensions
             dictionary.Add(item.Key, item.Value);
     }
 
-    public static TValue GetValue<TValue>(this IDictionary<string, string> dictionary, string key)
+    public static TValue? GetValue<TValue>(this IDictionary<string, string> dictionary, string key)
     {
         if (!string.IsNullOrEmpty(key))
         {
-            if (dictionary.TryGetValue(key, out string value))
+            if (dictionary.TryGetValue(key, out string? value))
             {
                 return TypeConverter.ConvertTo<TValue>(value);
             }

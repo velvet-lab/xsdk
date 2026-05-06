@@ -23,7 +23,7 @@ public partial class CommandlineParser
 {
     private CommandlineParser() { }
 
-    public string[] Arguments { get; private set; } = Array.Empty<string>();
+    public string[] Arguments { get; private set; } = [];
 
     public static CommandlineParser Parse()
     {
@@ -52,17 +52,17 @@ public partial class CommandlineParser
         return parser;
     }
 
-    public CommandlineParser AddDefaultArgs(string[] args)
+    public CommandlineParser AddDefaultArgs(string[]? args)
     {
         if (args != null && args.Length > 0)
         {
-            var result = Arguments.ToList();
+            List<string> result = Arguments.ToList();
             var parser = CommandlineParser.Parse(args);
-            foreach (var arg in args)
+            foreach (string arg in args)
             {
                 if (!ContainsPattern(arg) && IsPattern(arg))
                 {
-                    var value = parser.ReadPattern(arg);
+                    string value = parser.ReadPattern(arg);
                     result.Add(arg);
                     if (!string.IsNullOrEmpty(value))
                     {
@@ -77,9 +77,9 @@ public partial class CommandlineParser
         return this;
     }
 
-    public bool ContainsPattern(string pattern)
+    public bool ContainsPattern(string? pattern)
     {
-        var result = false;
+        bool result = false;
 
         if (Arguments != null && !string.IsNullOrEmpty(pattern))
         {
@@ -89,19 +89,20 @@ public partial class CommandlineParser
                 result = true;
             }
         }
+
         return result;
     }
 
-    public string ReadPattern(string pattern, string defaultValue = default)
+    public string ReadPattern(string pattern, string? defaultValue = default)
     {
         var comparer = new PatternComparer();
-        for (var i = 0; i < Arguments.Length; i++)
+        for (int i = 0; i < Arguments.Length; i++)
         {
             if (comparer.Equals(Arguments[i], pattern))
             {
                 try
                 {
-                    var currentValue = Arguments[i];
+                    string currentValue = Arguments[i];
                     string? nextValue = null;
                     if ((i + 1) < Arguments.Length)
                     {
@@ -146,7 +147,7 @@ public partial class CommandlineParser
                 input = input.Replace("'", "");
             }
 
-            var splittedCommandline = input.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedCommandline = input.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (splittedCommandline.Length == 1)
             {
                 if (string.Compare(input, Assembly.GetEntryAssembly()?.Location, true) == 0)
@@ -155,9 +156,9 @@ public partial class CommandlineParser
                 }
             }
 
-            var optionStarted = false;
-            var currentValue = string.Empty;
-            foreach (var splitValue in splittedCommandline)
+            bool optionStarted = false;
+            string currentValue = string.Empty;
+            foreach (string splitValue in splittedCommandline)
             {
                 if ((splitValue.StartsWith('-') || splitValue.StartsWith("--")) && !TestOptionIsNumeric(splitValue))
                 {
@@ -169,7 +170,7 @@ public partial class CommandlineParser
                     currentValue = string.Empty;
                     optionStarted = true;
 
-                    var (optionKey, optionValue) = ValidateCommandArg(splitValue.Trim());
+                    (string? optionKey, string? optionValue) = ValidateCommandArg(splitValue.Trim());
                     result.Add(optionKey);
                     if (!string.IsNullOrEmpty(optionValue))
                     {
@@ -210,9 +211,9 @@ public partial class CommandlineParser
 
     private string CleanCommandArg(string pattern)
     {
-        var letters = new string[] { "\\", "\"" };
+        string[] letters = new string[] { "\\", "\"" };
 
-        foreach (var letter in letters)
+        foreach (string letter in letters)
         {
             do
             {
@@ -289,19 +290,19 @@ public partial class CommandlineParser
 
         if (value.IndexOf("=") > -1 || value.IndexOf(":") > -1)
         {
-            var equalStart = value.IndexOf("=");
-            var colonStart = value.IndexOf(":");
+            int equalStart = value.IndexOf("=");
+            int colonStart = value.IndexOf(":");
 
             if (equalStart > -1)
             {
-                var splittedOptions = value.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] splittedOptions = value.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
                 option = splittedOptions[0].Trim();
                 optionValue = splittedOptions[1].Trim();
             }
 
             if (colonStart > -1 && colonStart < equalStart)
             {
-                var splittedOptions = value.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] splittedOptions = value.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 option = splittedOptions[0].Trim();
                 optionValue = splittedOptions[1].Trim();
             }
@@ -314,10 +315,10 @@ public partial class CommandlineParser
     {
         if (args.Length > 1)
         {
-            var firstItem = args.First();
+            string firstItem = args.First();
             if (firstItem != null)
             {
-                if (firstItem == Assembly.GetEntryAssembly().Location)
+                if (firstItem == Assembly.GetEntryAssembly()?.Location)
                 {
                     return args.Skip(1).ToArray();
                 }
@@ -343,10 +344,10 @@ public partial class CommandlineParser
         // Remove not needed Commandline Params
         if (ContainsPattern(pattern))
         {
-            var template = Arguments.SingleOrDefault(x => x.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) > -1);
+            string? template = Arguments.SingleOrDefault(x => x.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) > -1);
             if (!string.IsNullOrEmpty(template))
             {
-                var value = ReadPattern(pattern);
+                string value = ReadPattern(pattern);
                 result.Add(template);
                 if (!string.IsNullOrEmpty(value))
                 {

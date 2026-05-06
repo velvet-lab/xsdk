@@ -34,7 +34,7 @@ public class SdkExceptionTests
     [Fact]
     public void Constructor_WithMessage_SetsMessage()
     {
-        var message = "Test error message";
+        string message = "Test error message";
 
         var ex = new SdkException(message);
 
@@ -44,7 +44,7 @@ public class SdkExceptionTests
     [Fact]
     public void Constructor_WithMessageAndInnerException_SetsBoth()
     {
-        var message = "Outer error";
+        string message = "Outer error";
         var inner = new InvalidOperationException("Inner error");
 
         var ex = new SdkException(message, inner);
@@ -64,14 +64,14 @@ public class SdkExceptionTests
     [Fact]
     public void SdkException_CanBeThrown()
     {
-        void Throw() => throw new SdkException("thrown");
+        static void Throw() => throw new SdkException("thrown");
         Assert.Throws<SdkException>(Throw);
     }
 
     [Fact]
     public void SdkException_CanBeCaught_AsException()
     {
-        Exception caught = null;
+        Exception? caught = null;
         try
         {
             throw new SdkException("thrown");

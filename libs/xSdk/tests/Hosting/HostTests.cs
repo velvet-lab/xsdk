@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Hosting;
+
 namespace xSdk.Hosting;
 
 public class HostTests
@@ -21,7 +23,9 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithNullArgs_ReturnsNonNull()
     {
-        var builder = Host.CreateBuilder(null);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+        IHostBuilder builder = Host.CreateBuilder(null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         Assert.NotNull(builder);
     }
@@ -29,7 +33,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithEmptyArgs_ReturnsNonNull()
     {
-        var builder = Host.CreateBuilder(new string[] { });
+        IHostBuilder builder = Host.CreateBuilder(Array.Empty<string>());
 
         Assert.NotNull(builder);
     }
@@ -37,7 +41,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithAppName_ReturnsNonNull()
     {
-        var builder = Host.CreateBuilder(new string[] { }, "myapp");
+        IHostBuilder builder = Host.CreateBuilder([], "myapp");
 
         Assert.NotNull(builder);
     }
@@ -45,7 +49,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithAppNameAndPrefix_ReturnsNonNull()
     {
-        var builder = Host.CreateBuilder(new string[] { }, "myapp", "MYAPP");
+        IHostBuilder builder = Host.CreateBuilder(new string[] { }, "myapp", "MYAPP");
 
         Assert.NotNull(builder);
     }
@@ -53,7 +57,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithAllParams_ReturnsNonNull()
     {
-        var builder = Host.CreateBuilder(new string[] { }, "myapp", "mycompany", "MYAPP");
+        IHostBuilder builder = Host.CreateBuilder(new string[] { }, "myapp", "mycompany", "MYAPP");
 
         Assert.NotNull(builder);
     }

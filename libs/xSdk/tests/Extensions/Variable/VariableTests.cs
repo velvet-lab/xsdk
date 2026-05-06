@@ -29,7 +29,7 @@ public class VariableTests()
     [Fact]
     public void CreateVariable()
     {
-        var name = "my_variable";
+        string name = "my_variable";
         var variable = Variable.Create(name, typeof(string));
 
         Assert.NotNull(variable);
@@ -69,8 +69,8 @@ public class VariableTests()
     {
         var variable = Variable.Create(NAME, typeof(string));
 
-        var hash1 = variable.GetHashCode();
-        var hash2 = variable.GetHashCode();
+        int hash1 = variable.GetHashCode();
+        int hash2 = variable.GetHashCode();
 
         Assert.Equal(hash1, hash2);
     }
@@ -106,7 +106,7 @@ public class VariableTests()
     {
         var variable = Variable.Create(NAME, typeof(string));
 
-        var str = variable.ToString();
+        string str = variable.ToString();
 
         Assert.NotNull(str);
         Assert.Contains(NAME, str, StringComparison.OrdinalIgnoreCase);
@@ -117,7 +117,7 @@ public class VariableTests()
     {
         var variable = Variable.Create(NAME, typeof(string));
 
-        var key = variable.KeyForSystem;
+        string key = variable.KeyForSystem;
 
         Assert.Equal(key, key.ToUpperInvariant());
     }
@@ -127,7 +127,7 @@ public class VariableTests()
     {
         var variable = Variable.Create(NAME, typeof(string));
 
-        var key = variable.KeyForFile;
+        string key = variable.KeyForFile;
 
         Assert.Contains("FILE", key, StringComparison.OrdinalIgnoreCase);
     }
@@ -152,6 +152,8 @@ public class VariableTests()
     [Fact]
     public void Variable_Create_WithNullValueType_ThrowsArgumentNullException()
     {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<ArgumentNullException>(() => Variable.Create(NAME, null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }

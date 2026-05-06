@@ -24,7 +24,7 @@ public class TimeSpanParserTests
     [InlineData("1ms", 1)]
     public void Parse_WithMilliseconds_ReturnsCorrectTimeSpan(string input, double expectedMilliseconds)
     {
-        var result = TimeSpanParser.Parse(input);
+        TimeSpan result = TimeSpanParser.Parse(input);
 
         Assert.Equal(TimeSpan.FromMilliseconds(expectedMilliseconds), result);
     }
@@ -35,7 +35,7 @@ public class TimeSpanParserTests
     [InlineData("30S", 30)]
     public void Parse_WithSeconds_ReturnsCorrectTimeSpan(string input, double expectedSeconds)
     {
-        var result = TimeSpanParser.Parse(input);
+        TimeSpan result = TimeSpanParser.Parse(input);
 
         Assert.Equal(TimeSpan.FromSeconds(expectedSeconds), result);
     }
@@ -46,7 +46,7 @@ public class TimeSpanParserTests
     [InlineData("1M", 1)]
     public void Parse_WithMinutes_ReturnsCorrectTimeSpan(string input, double expectedMinutes)
     {
-        var result = TimeSpanParser.Parse(input);
+        TimeSpan result = TimeSpanParser.Parse(input);
 
         Assert.Equal(TimeSpan.FromMinutes(expectedMinutes), result);
     }
@@ -57,7 +57,7 @@ public class TimeSpanParserTests
     [InlineData("1H", 1)]
     public void Parse_WithHours_ReturnsCorrectTimeSpan(string input, double expectedHours)
     {
-        var result = TimeSpanParser.Parse(input);
+        TimeSpan result = TimeSpanParser.Parse(input);
 
         Assert.Equal(TimeSpan.FromHours(expectedHours), result);
     }
@@ -68,7 +68,7 @@ public class TimeSpanParserTests
     [InlineData("30D", 30)]
     public void Parse_WithDays_ReturnsCorrectTimeSpan(string input, double expectedDays)
     {
-        var result = TimeSpanParser.Parse(input);
+        TimeSpan result = TimeSpanParser.Parse(input);
 
         Assert.Equal(TimeSpan.FromDays(expectedDays), result);
     }
@@ -76,7 +76,7 @@ public class TimeSpanParserTests
     [Fact]
     public void Parse_WithoutUnit_DefaultsToSeconds()
     {
-        var result = TimeSpanParser.Parse("42");
+        TimeSpan result = TimeSpanParser.Parse("42");
 
         Assert.Equal(TimeSpan.FromSeconds(42), result);
     }
@@ -87,22 +87,28 @@ public class TimeSpanParserTests
     [InlineData("0.5h", 0.5)]
     public void Parse_WithDecimalValues_ReturnsCorrectTimeSpan(string input, double expectedValue)
     {
-        var result = TimeSpanParser.Parse(input);
+        TimeSpan result = TimeSpanParser.Parse(input);
 
         if (input.EndsWith("s"))
+        {
             Assert.Equal(TimeSpan.FromSeconds(expectedValue), result);
+        }
         else if (input.EndsWith("m"))
+        {
             Assert.Equal(TimeSpan.FromMinutes(expectedValue), result);
+        }
         else if (input.EndsWith("h"))
+        {
             Assert.Equal(TimeSpan.FromHours(expectedValue), result);
+        }
     }
 
     [Fact]
     public void TryParse_WithValidValue_ReturnsTrue()
     {
-        var input = "10s";
+        string input = "10s";
 
-        var success = TimeSpanParser.TryParse(input, out var result);
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
 
         Assert.True(success);
         Assert.Equal(TimeSpan.FromSeconds(10), result);
@@ -111,7 +117,7 @@ public class TimeSpanParserTests
     [Fact]
     public void TryParse_WithNull_ReturnsFalse()
     {
-        var success = TimeSpanParser.TryParse(null, out var result);
+        bool success = TimeSpanParser.TryParse(null, out TimeSpan result);
 
         Assert.False(success);
         Assert.Equal(TimeSpan.Zero, result);
@@ -120,9 +126,9 @@ public class TimeSpanParserTests
     [Fact]
     public void TryParse_WithValidMilliseconds_ReturnsTrueAndCorrectValue()
     {
-        var input = "500ms";
+        string input = "500ms";
 
-        var success = TimeSpanParser.TryParse(input, out var result);
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
 
         Assert.True(success);
         Assert.Equal(TimeSpan.FromMilliseconds(500), result);
@@ -131,9 +137,9 @@ public class TimeSpanParserTests
     [Fact]
     public void TryParse_WithValidMinutes_ReturnsTrueAndCorrectValue()
     {
-        var input = "5m";
+        string input = "5m";
 
-        var success = TimeSpanParser.TryParse(input, out var result);
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
 
         Assert.True(success);
         Assert.Equal(TimeSpan.FromMinutes(5), result);
@@ -142,9 +148,9 @@ public class TimeSpanParserTests
     [Fact]
     public void TryParse_WithValidHours_ReturnsTrueAndCorrectValue()
     {
-        var input = "2h";
+        string input = "2h";
 
-        var success = TimeSpanParser.TryParse(input, out var result);
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
 
         Assert.True(success);
         Assert.Equal(TimeSpan.FromHours(2), result);
@@ -153,9 +159,9 @@ public class TimeSpanParserTests
     [Fact]
     public void TryParse_WithValidDays_ReturnsTrueAndCorrectValue()
     {
-        var input = "7d";
+        string input = "7d";
 
-        var success = TimeSpanParser.TryParse(input, out var result);
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
 
         Assert.True(success);
         Assert.Equal(TimeSpan.FromDays(7), result);
@@ -164,7 +170,7 @@ public class TimeSpanParserTests
     [Fact]
     public void Parse_WithZeroValue_ReturnsZeroTimeSpan()
     {
-        var result = TimeSpanParser.Parse("0s");
+        TimeSpan result = TimeSpanParser.Parse("0s");
 
         Assert.Equal(TimeSpan.Zero, result);
     }
@@ -175,8 +181,8 @@ public class TimeSpanParserTests
     [InlineData("10m")]
     public void Parse_CaseInsensitive_ParsesCorrectly(string input)
     {
-        var resultLower = TimeSpanParser.Parse(input.ToLower());
-        var resultUpper = TimeSpanParser.Parse(input.ToUpper());
+        TimeSpan resultLower = TimeSpanParser.Parse(input.ToLower());
+        TimeSpan resultUpper = TimeSpanParser.Parse(input.ToUpper());
 
         Assert.Equal(resultLower, resultUpper);
     }

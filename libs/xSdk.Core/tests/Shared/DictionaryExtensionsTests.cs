@@ -47,7 +47,7 @@ public class DictionaryExtensionsTests
     {
         var dictionary = new Dictionary<string, string>();
 
-        dictionary.AddOrNew<string, string>(null, "value");
+        dictionary.AddOrNew<string, string>("", "value");
 
         Assert.Empty(dictionary);
     }
@@ -155,7 +155,7 @@ public class DictionaryExtensionsTests
             { "age", "42" }
         };
 
-        var result = dictionary.GetValue<int>("age");
+        int result = dictionary.GetValue<int>("age");
 
         Assert.Equal(42, result);
     }
@@ -165,7 +165,7 @@ public class DictionaryExtensionsTests
     {
         var dictionary = new Dictionary<string, string>();
 
-        var result = dictionary.GetValue<int>("nonexistent");
+        int result = dictionary.GetValue<int>("nonexistent");
 
         Assert.Equal(0, result); // default for int
     }
@@ -178,7 +178,7 @@ public class DictionaryExtensionsTests
             { "key1", "value1" }
         };
 
-        var result = dictionary.GetValue<string>(string.Empty);
+        string? result = dictionary.GetValue<string>(string.Empty);
 
         Assert.Null(result);
     }
@@ -191,7 +191,7 @@ public class DictionaryExtensionsTests
             { "key1", "value1" }
         };
 
-        var result = dictionary.GetValue<string>(null);
+        string? result = dictionary.GetValue<string>("NoKey");
 
         Assert.Null(result);
     }
@@ -204,7 +204,7 @@ public class DictionaryExtensionsTests
             { "isActive", "true" }
         };
 
-        var result = dictionary.GetValue<bool>("isActive");
+        bool result = dictionary.GetValue<bool>("isActive");
 
         Assert.True(result);
     }
@@ -217,7 +217,7 @@ public class DictionaryExtensionsTests
             { "price", "19.99" }
         };
 
-        var result = dictionary.GetValue<double>("price");
+        double result = dictionary.GetValue<double>("price");
 
         Assert.Equal(19.99, result);
     }

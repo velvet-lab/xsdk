@@ -30,26 +30,26 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
 {
     private static readonly ILogger _logger = LogManager.CreateLogger<ReadOnlyVaultRepository>();
 
-
     public async Task<IDictionary<string, string>> GetSecretsAsync(string? mountPoint, string path, CancellationToken token = default)
     {
         var result = new Dictionary<string, string>();
 
-        IDatabase? database = this.DatabaseHandler.Retrieve();
+        IDatabase? database = DatabaseHandler.Retrieve();
 
         if (database != null)
         {
             try
             {
-                var setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer);
-                var client = database.Open<VaultClient>();
+                VaultDatabaseOptions? setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer) ?? throw new SdkException("VaultDatabaseOptions is not configured properly.");
+                VaultClient? client = database.Open<VaultClient>() ?? throw new SdkException("Vault client could not be opened from the database.");
 
-                var pathFormater = setup.PathFormatFactory;
-                if (pathFormater != null)
+                if (setup.PathFormatFactory != null)
                 {
-                    var env = GetOptions<EnvironmentOptions>();
-                    path = pathFormater(env.Stage, path);
-                }
+                    EnvironmentOptions? env = GetOptions<EnvironmentOptions>() ?? throw new SdkException("EnvironmentOptions is not configured properly.");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                    path = setup.PathFormatFactory?.Invoke(env.Stage, path);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                }                
 
                 Secret<SecretData>? secret = null;
 
@@ -65,15 +65,15 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
 
                 if (secret != null)
                 {
-                    var data = secret.Data.Data;
+                    IDictionary<string, object> data = secret.Data.Data;
                     if (data == null || data.Count == 0)
                     {
                         throw new SdkException($"No Secrets found in Vault '{path}'");
                     }
 
-                    foreach (var item in data)
+                    foreach (KeyValuePair<string, object> item in data)
                     {
-                        var value = item.Value;
+                        object value = item.Value;
                         if (value != null)
                         {
                             string? itemValue = null;
@@ -98,6 +98,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
                 {
                     throw new SdkException($"No Secrets found in Vault '{path}'");
                 }
+
             }
             catch (Exception ex)
             {
@@ -106,7 +107,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
             }
             finally
             {
-                this.DatabaseHandler.Return(database);
+                DatabaseHandler.Return(database);
             }
         }
 

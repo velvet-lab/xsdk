@@ -16,6 +16,7 @@
 
 using CloudNative.CloudEvents;
 using xSdk.Data;
+using xSdk.Extensions.Web;
 
 namespace xSdk.Extensions.CloudEvents;
 
@@ -60,14 +61,14 @@ public static class ModelExtensions
     /// <param name="type">Event Type for the Model, e.g. model.created</param>
     /// <param name="subject">A specific Subject to use. It could be tenant orientated Informations</param>
     /// <returns>A <see cref="CloudEvent"/></returns>
-    public static CloudEvent ToCloudEvent<TModel>(this TModel model, string scope, string type, string subject)
+    public static CloudEvent ToCloudEvent<TModel>(this TModel model, string? scope, string? type, string? subject)
         where TModel : IModel
     {
         if (string.IsNullOrEmpty(scope))
             scope = model.GetType().Name;
 
         var (sourceBaseUrl, schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
-        var cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, false, null);
+        var cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, ContentTypes.ApplicationJson, null);
 
         // The Data Object
         cloudEvent.SetDataObject(model);

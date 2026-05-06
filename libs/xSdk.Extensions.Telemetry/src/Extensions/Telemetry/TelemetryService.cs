@@ -54,24 +54,24 @@ internal partial class TelemetryService : ITelemetryService
         return activity;
     }
 
-    public Counter<T> CreateCounter<T>(string name, string unit = null, string description = null)
+    public Counter<T> CreateCounter<T>(string name, string? unit = null, string? description = null)
         where T : struct => CreateInstrument<Counter<T>, T>(meter => meter.CreateCounter<T>(name, unit, description));
 
-    public Histogram<T> CreateHistogram<T>(string name, string unit = null, string description = null)
+    public Histogram<T> CreateHistogram<T>(string name, string? unit = null, string? description = null)
         where T : struct => CreateInstrument<Histogram<T>, T>(meter => meter.CreateHistogram<T>(name, unit, description));
 
-    public UpDownCounter<T> CreateUpDownCounter<T>(string name, string unit = null, string description = null)
+    public UpDownCounter<T> CreateUpDownCounter<T>(string name, string? unit = null, string? description = null)
         where T : struct => CreateInstrument<UpDownCounter<T>, T>(meter => meter.CreateUpDownCounter<T>(name, unit, description));
 
-    public ObservableUpDownCounter<T> CreateObservableUpDownCounter<T>(string name, Func<T> observeValue, string unit = null, string description = null)
+    public ObservableUpDownCounter<T> CreateObservableUpDownCounter<T>(string name, Func<T> observeValue, string? unit = null, string? description = null)
         where T : struct =>
         CreateObservableInstrument<ObservableUpDownCounter<T>, T>(meter => meter.CreateObservableUpDownCounter(name, observeValue, unit, description));
 
-    public ObservableCounter<T> CreateObservableCounter<T>(string name, Func<T> observeValue, string unit = null, string description = null)
+    public ObservableCounter<T> CreateObservableCounter<T>(string name, Func<T> observeValue, string? unit = null, string? description = null)
         where T : struct =>
         CreateObservableInstrument<ObservableCounter<T>, T>(meter => meter.CreateObservableCounter(name, observeValue, unit, description));
 
-    public ObservableGauge<T> CreateObservableGauge<T>(string name, Func<T> observeValue, string unit = null, string description = null)
+    public ObservableGauge<T> CreateObservableGauge<T>(string name, Func<T> observeValue, string? unit = null, string? description = null)
         where T : struct => CreateObservableInstrument<ObservableGauge<T>, T>(meter => meter.CreateObservableGauge(name, observeValue, unit, description));
 
     private ActivitySource CreateMainActivitySource()

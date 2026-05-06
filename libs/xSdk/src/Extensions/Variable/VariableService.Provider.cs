@@ -104,7 +104,7 @@ internal partial class VariableService
         if (variable != null)
         {
             // First we try to read already loaded Variable
-            if (!Providers[nameof(MemoryProvider)].TryReadVariable(variable, out TType value))
+            if (!Providers[nameof(MemoryProvider)].TryReadVariable(variable, out TType? value))
             {
                 // then read from Commandline
                 if (!Providers[nameof(CommandlineProvider)].TryReadVariable(variable, out value))

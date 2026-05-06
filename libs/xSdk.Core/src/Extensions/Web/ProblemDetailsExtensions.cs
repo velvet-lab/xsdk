@@ -73,7 +73,7 @@ public static class ProblemDetailsExtensions
 
     public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message) => controller.NotFoundAsProblem(message, null);
 
-    public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message, string details)
+    public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message, string? details)
     {
         var problem = new ProblemDetails
         {
@@ -83,7 +83,9 @@ public static class ProblemDetailsExtensions
         };
 
         if (!string.IsNullOrEmpty(details))
+        {
             problem.Detail = details;
+        }
 
         return new NotFoundObjectResult(problem);
     }

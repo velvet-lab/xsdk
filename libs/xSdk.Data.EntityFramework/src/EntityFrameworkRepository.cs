@@ -168,9 +168,9 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     private async Task<TResult?> ExecuteInternalAsync<TResult>(Func<TDbContext, Task<TResult>> func, bool withTransaction, CancellationToken token)
     {
-        TResult result = default;
-        IDbContextTransaction transaction = null;
-        var shouldUseTransaction = withTransaction;
+        TResult? result = default;
+        IDbContextTransaction? transaction = null;
+        bool shouldUseTransaction = withTransaction;
 
         IDatabase? database = DatabaseHandler?.Retrieve();
 

@@ -28,8 +28,7 @@ public class Variable : IVariable
     protected Variable(string name, Type valueType)
     {
         Name = name;
-        if (valueType == null)
-            throw new ArgumentNullException("valueType");
+        ArgumentNullException.ThrowIfNull(valueType);
 
         ValueType = valueType;
         
@@ -94,14 +93,14 @@ public class Variable : IVariable
 
     public override string ToString() => CreateKey(false, false);
 
-    public override bool Equals(object obj) =>
+    public override bool Equals(object? obj) =>
         ObjectTools.Equals<Variable>(this, obj, (source, dest) => string.CompareOrdinal(source.ToString(), dest.ToString()) == 0);
 
     internal string CreateKey(bool forCommandline, bool withApplicationPrefix)
     {
-        var variableName = Name;
-        var appPrefix = _applicationPrefix;
-        var prefix = Prefix;
+        string? variableName = Name;
+        string? appPrefix = _applicationPrefix;
+        string? prefix = Prefix;
 
         if (NoPrefix)
         {
@@ -109,7 +108,7 @@ public class Variable : IVariable
             prefix = string.Empty;
         }
 
-        var result = $"{prefix}{Globals.Constants.PREFIX_SEPERATOR}";
+        string? result = $"{prefix}{Globals.Constants.PREFIX_SEPERATOR}";
         if (!string.IsNullOrEmpty(result) && result.StartsWith(Globals.Constants.PREFIX_SEPERATOR))
         {
             result = result.Substring(Globals.Constants.PREFIX_SEPERATOR.Length);
@@ -120,7 +119,7 @@ public class Variable : IVariable
             result = "";
         }
 
-        var key = variableName;
+        string? key = variableName;
         if (!string.IsNullOrEmpty(prefix))
         {
             if (key.StartsWith(prefix))
@@ -155,7 +154,7 @@ public class Variable : IVariable
 
     private string CreateTemplate(string value)
     {
-        var templateValue = value;
+        string? templateValue = value;
         if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf("<") > -1)
         {
             templateValue = templateValue.Substring(templateValue.IndexOf("<") + 1);

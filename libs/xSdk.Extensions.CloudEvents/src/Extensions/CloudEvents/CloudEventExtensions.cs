@@ -21,12 +21,11 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
-
 public static class CloudEventExtensions
 {
     public static CloudEvent AddAttribute<TValue>(this CloudEvent cloudEvent, string name, CloudEventAttributeType type, TValue value)
     {
-        var attr = CloudEventFactory.CreateAttribute(name, type);
+        CloudEventAttribute attr = CloudEventFactory.CreateAttribute(name, type);
         cloudEvent[attr] = value;
 
         return cloudEvent;
@@ -34,28 +33,32 @@ public static class CloudEventExtensions
 
     public static CloudEvent RemoveAttribute(this CloudEvent cloudEvent, string name)
     {
-        foreach (var attribute in cloudEvent.GetPopulatedAttributes())
+        foreach (KeyValuePair<CloudEventAttribute, object> attribute in cloudEvent.GetPopulatedAttributes())
         {
             if (string.Compare(attribute.Key.Name, name, true) == 0)
+            {
                 cloudEvent[attribute.Key] = null;
+            }
         }
 
         return cloudEvent;
     }
 
-    public static TValue GetAttributeValue<TValue>(this CloudEvent cloudEvent, string name)
+    public static TValue? GetAttributeValue<TValue>(this CloudEvent cloudEvent, string name)
     {
-        TValue result = default;
+        TValue? result = default;
 
-        var attributes = cloudEvent.GetPopulatedAttributes();
-        var cleanedName = StringTools.RemoveSpecialChars(name);
+        IEnumerable<KeyValuePair<CloudEventAttribute, object>> attributes = cloudEvent.GetPopulatedAttributes();
+        string cleanedName = StringTools.RemoveSpecialChars(name);
 
-        var kvp = attributes.SingleOrDefault(x => string.Compare(x.Key.Name, cleanedName, true) == 0);
+        KeyValuePair<CloudEventAttribute, object> kvp = attributes.SingleOrDefault(x => string.Compare(x.Key.Name, cleanedName, true) == 0);
 
         try
         {
             if (kvp.Value != null)
+            {
                 result = TypeConverter.ConvertTo<TValue>(kvp.Value);
+            }
         }
         catch { }
 
@@ -64,10 +67,12 @@ public static class CloudEventExtensions
 
     public static string GetScope(this CloudEvent cloudEvent)
     {
-        var scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SourceBaseUrl, "");
+        string scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SourceBaseUrl, "");
 
         if (scope.StartsWith("/"))
+        {
             scope = scope.Substring(1);
+        }
 
         return scope;
     }
@@ -75,10 +80,12 @@ public static class CloudEventExtensions
     public static void SetDataObject(this CloudEvent cloudEvent, object data)
     {
         if (data == null)
+        {
             return;
+        }
 
-        var scope = cloudEvent.GetScope();
-        var uri = CreateDataObjectSchemeUri(data.GetType(), scope);
+        string scope = cloudEvent.GetScope();
+        Uri uri = CreateDataObjectSchemeUri(data.GetType(), scope);
         if (data is Exception ex)
         {
             uri = CreateDataObjectSchemeUri(ex.GetType(), scope);
@@ -91,13 +98,18 @@ public static class CloudEventExtensions
         return;
     }
 
-    internal static CloudEvent EnrichAttributes(this CloudEvent cloudEvent, IEnumerable<CloudEventAttribute> attributes)
+    internal static CloudEvent EnrichAttributes(this CloudEvent cloudEvent, IEnumerable<CloudEventAttribute>? attributes)
     {
-        var extensions = CloudEventFactory.MergeAttributes(attributes);
-        foreach (var extension in extensions)
+        IEnumerable<CloudEventAttribute> extensions = CloudEventFactory.MergeAttributes(attributes);
+        foreach (CloudEventAttribute extension in extensions)
         {
-            if (CloudEventFactory.TryGetValueForAttribute(extension, out object value))
-                cloudEvent[extension] = value;
+            if (CloudEventFactory.TryGetValueForAttribute(extension, out object? value))
+            {
+                if (value != null)
+                {
+                    cloudEvent[extension] = value;
+                }
+            }
         }
 
         return cloudEvent;
@@ -123,124 +135,151 @@ public static class CloudEventExtensions
 
     public static object GetDataObject(this CloudEvent cloudEvent)
     {
-        var requestedDataType = cloudEvent.GetDataObjectType();
+        Type? requestedDataType = cloudEvent.GetDataObjectType();
         return cloudEvent.GetDataObject(requestedDataType);
     }
 
-    public static TValue GetDataObject<TValue>(this CloudEvent cloudEvent)
+    public static TValue? GetDataObject<TValue>(this CloudEvent cloudEvent)
         where TValue : class
     {
-        var requestedDataType = cloudEvent.GetDataObjectType();
-        if (requestedDataType == null)
-            requestedDataType = typeof(TValue);
-
-        var result = cloudEvent.GetDataObject(requestedDataType);
+        Type requestedDataType = cloudEvent.GetDataObjectType() ?? typeof(TValue);
+        object? result = cloudEvent.GetDataObject(requestedDataType);
         if (result != null)
+        {
             return result as TValue;
+        }
 
         return default;
     }
 
-    public static Type GetDataObjectType(this CloudEvent cloudEvent) => cloudEvent.GetDataObjectType(null);
+    public static Type? GetDataObjectType(this CloudEvent cloudEvent) => cloudEvent.GetDataObjectType(null);
 
-    private static Type GetDataObjectType(this CloudEvent cloudEvent, Type dataType)
+    private static Type? GetDataObjectType(this CloudEvent cloudEvent, Type? dataType)
     {
-        Type result = default;
+        Type? result = default;
         if (cloudEvent.Data != null)
         {
-            var scope = cloudEvent.GetScope();
+            string scope = cloudEvent.GetScope();
 
-            var dataSchemeUri = cloudEvent.DataSchema;
+            Uri? dataSchemeUri = cloudEvent.DataSchema;
             if (dataSchemeUri == null && dataType != null)
+            {
                 dataSchemeUri = CreateDataObjectSchemeUri(dataType, scope);
+            }
 
             if (dataSchemeUri != null)
+            {
                 result = ParseDataObjectSchemeUrl(dataSchemeUri.OriginalString, scope);
+            }
         }
+
         return result;
     }
 
-    private static object ConvertDataObject(JsonElement element, Type dataType)
+    private static object? ConvertDataObject(JsonElement element, Type dataType)
     {
-        object result = null;
+        object? result = null;
 
-        var jsonAsString = string.Empty;
+        string? jsonAsString = string.Empty;
         if (element.ValueKind == JsonValueKind.Object)
+        {
             jsonAsString = element.GetRawText();
+        }
         else if (element.ValueKind == JsonValueKind.String)
+        {
             jsonAsString = element.GetString();
+        }
         else
+        {
             throw new SdkException("CloudEvent has a Json Value as DataObject, because no Conversion exists");
+        }
 
         if (!string.IsNullOrEmpty(jsonAsString))
         {
             if (JsonTools.IsJson(jsonAsString))
+            {
                 result = JsonSerializer.Deserialize(jsonAsString, dataType, JsonTools.GetSerializerOptions());
+            }
             else
+            {
                 throw new SdkException("CloudEvent has a unknown Json Format as DataObject");
+            }
         }
 
         return result;
     }
 
-    private static object GetDataObject(this CloudEvent cloudEvent, Type requestedDataType)
+    private static object? GetDataObject(this CloudEvent cloudEvent, Type requestedDataType)
     {
         if (cloudEvent != null && cloudEvent.Data != null)
         {
             if (cloudEvent.Data is JsonElement json)
             {
                 if (requestedDataType == null)
+                {
                     requestedDataType = typeof(object);
+                }
 
                 return ConvertDataObject(json, requestedDataType);
             }
             else
+            {
                 return cloudEvent.Data;
+            }
         }
-        return null;
+
+        return default;
     }
 
     private static Uri CreateDataObjectSchemeUri(Type dataType, string scope)
     {
-        var (sourceBaseUrl, schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
+        (string? sourceBaseUrl, string? schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
 
-        var assemblyName = dataType.Assembly.GetName().Name;
+        string? assemblyName = dataType.Assembly.GetName().Name;
 
         return new Uri($"{schemeBaseUrl}/{assemblyName}?type={dataType.FullName}".ToLower(), UriKind.Absolute);
     }
 
-    private static Type ParseDataObjectSchemeUrl(string dataSchemeUrl, string scope)
+    private static Type? ParseDataObjectSchemeUrl(string dataSchemeUrl, string scope)
     {
-        Type result = default;
+        Type? result = default;
 
-        var (sourceBaseUrl, schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
-        var dataTypeUrl = dataSchemeUrl.Replace(schemeBaseUrl, "");
+        (string? sourceBaseUrl, string? schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
+        string dataTypeUrl = dataSchemeUrl.Replace(schemeBaseUrl, "");
 
         if (!string.IsNullOrEmpty(dataTypeUrl))
         {
-            var assemblyName = string.Empty;
-            var typeName = string.Empty;
+            string assemblyName = string.Empty;
+            string typeName = string.Empty;
 
             if (dataTypeUrl.IndexOf("?") > -1)
             {
-                var splitted = dataTypeUrl.Split("?", StringSplitOptions.RemoveEmptyEntries);
+                string[] splitted = dataTypeUrl.Split("?", StringSplitOptions.RemoveEmptyEntries);
                 assemblyName = splitted[0];
 
                 if (splitted.Length > 1)
                 {
                     splitted = splitted[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
                     if (splitted.Length > 1)
+                    {
                         typeName = splitted[1];
+                    }
                 }
             }
             else
+            {
                 assemblyName = dataTypeUrl;
+            }
 
             if (assemblyName.StartsWith("/"))
+            {
                 assemblyName = assemblyName.Substring(1);
+            }
 
             if (!string.IsNullOrEmpty(typeName))
+            {
                 result = Type.GetType($"{typeName.Trim()}, {assemblyName.Trim()}", false, true);
+            }
         }
 
         return result;

@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
+using System.Reflection;
+
 namespace xSdk.Tools;
 
 public static class ObjectTools
 {
     public static int CreateAutomaticHashCode(object obj)
     {
-        var hash = 0;
-        var objectType = obj.GetType();
+        int hash = 0;
+        Type objectType = obj.GetType();
 
-        var properties = objectType.GetProperties();
+        PropertyInfo[] properties = objectType.GetProperties();
         if (properties != null)
         {
-            foreach (var property in properties)
+            foreach (PropertyInfo property in properties)
             {
                 CalcHash(property.GetValue(obj), ref hash);
             }
         }
 
-        var fields = objectType.GetFields();
+        FieldInfo[] fields = objectType.GetFields();
         if (fields != null)
         {
-            foreach (var field in fields)
+            foreach (FieldInfo field in fields)
             {
                 CalcHash(field.GetValue(obj), ref hash);
             }
@@ -44,20 +46,25 @@ public static class ObjectTools
         return hash;
     }
 
-    public static int CreateHashCode<TType>(TType value)
+    public static int CreateHashCode<TType>(TType? value)
     {
-        var hash = 0;
+        int hash = 0;
         CalcHash(value, ref hash);
         return hash;
     }
 
-    public static bool Equals<TType>(object source, object dest, Func<TType, TType, bool> compare)
+    public static bool Equals<TType>(object? source, object? dest, Func<TType, TType, bool> compare)
     {
         try
         {
-            TType sourceCasted = (TType)source;
-            TType destCasted = (TType)dest;
-            return compare(sourceCasted, destCasted);
+            if (source != null && dest != null)
+            {
+                var sourceCasted = (TType)source;
+                var destCasted = (TType)dest;
+                return compare(sourceCasted, destCasted);
+            }
+
+            return false;
         }
         catch
         {
@@ -65,7 +72,7 @@ public static class ObjectTools
         }
     }
 
-    private static void CalcHash(object value, ref int hash)
+    private static void CalcHash(object? value, ref int hash)
     {
         const int index = 397;
         if (value != null)

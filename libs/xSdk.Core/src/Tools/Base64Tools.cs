@@ -20,19 +20,19 @@ namespace xSdk.Tools;
 
 public static class Base64Tools
 {
-    public static string ConvertFromBase64(string encoded)
+    public static string? ConvertFromBase64(string? encoded)
     {
-        var result = encoded;
+        string? result = encoded;
         try
         {
             if (!string.IsNullOrEmpty(encoded) && IsBase64(encoded))
             {
                 var encodings = new Encoding[] { Encoding.UTF8, Encoding.Unicode };
 
-                var stringAsBytes = Convert.FromBase64String(encoded);
-                foreach (var encoding in encodings)
+                byte[] stringAsBytes = Convert.FromBase64String(encoded);
+                foreach (Encoding encoding in encodings)
                 {
-                    var value = Decode(stringAsBytes, encoding);
+                    string? value = Decode(stringAsBytes, encoding);
                     if (!string.IsNullOrEmpty(value))
                     {
                         result = value;
@@ -46,21 +46,21 @@ public static class Base64Tools
         return result;
     }
 
-    public static string ConvertToBase64(string value) => ConvertToBase64(value, Encoding.UTF8);
+    public static string? ConvertToBase64(string? value) => ConvertToBase64(value, Encoding.UTF8);
 
-    public static string ConvertToBase64(string value, Encoding encoding)
+    public static string? ConvertToBase64(string? value, Encoding encoding)
     {
-        if (string.IsNullOrEmpty(value))
+        if (!string.IsNullOrEmpty(value))
         {
-            value = "";
+            return Convert.ToBase64String(encoding.GetBytes(value));
         }
 
-        return Convert.ToBase64String(encoding.GetBytes(value));
+        return default;
     }
 
-    public static bool IsBase64(string encoded)
+    public static bool IsBase64(string? encoded)
     {
-        var result = false;
+        bool result = false;
 
         if (!string.IsNullOrEmpty(encoded))
         {
@@ -72,10 +72,10 @@ public static class Base64Tools
                 {
                     var encodings = new Encoding[] { Encoding.UTF8, Encoding.Unicode };
 
-                    var stringAsBytes = Convert.FromBase64String(encoded);
-                    foreach (var encoding in encodings)
+                    byte[] stringAsBytes = Convert.FromBase64String(encoded);
+                    foreach (Encoding encoding in encodings)
                     {
-                        var value = Decode(stringAsBytes, encoding);
+                        string? value = Decode(stringAsBytes, encoding);
                         if (!string.IsNullOrEmpty(value))
                         {
                             result = true;
@@ -92,13 +92,13 @@ public static class Base64Tools
         return result;
     }
 
-    private static string Decode(byte[] encoded, Encoding encoding)
+    private static string? Decode(byte[] encoded, Encoding encoding)
     {
         if (encoded.Any())
         {
             try
             {
-                var value = encoding.GetString(encoded);
+                string value = encoding.GetString(encoded);
                 if (value.IndexOf('\0') > -1)
                 {
                     return null;
@@ -111,7 +111,8 @@ public static class Base64Tools
             }
             catch { }
         }
-        return null;
+
+        return default;
     }
 
     private static bool IsUnicode(string value)

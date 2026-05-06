@@ -29,14 +29,14 @@ public sealed class SemVerVersionConverter : IYamlTypeConverter
 
     public bool Accepts(Type type) => type == typeof(SemVer);
 
-    public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
+    public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {
-        SemVer result = default;
+        SemVer? result = default;
 
-        var version = ValueDeserializer.DeserializeValue(parser, typeof(string), new SerializerState(), ValueDeserializer);
+        object? version = ValueDeserializer.DeserializeValue(parser, typeof(string), new SerializerState(), ValueDeserializer);
         if (version != null)
         {
-            result = new SemVer(version.ToString());
+            result = new SemVer((string)version);
         }
         return result;
     }

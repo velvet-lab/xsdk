@@ -23,9 +23,24 @@ namespace xSdk.Data;
 
 public abstract class Repository : IRepository
 {
+    private IServiceProvider? _serviceProvider;
+
     public string? DatalayerName { get; internal set; }
 
-    public IServiceProvider? Services { get; internal set; }
+    public IServiceProvider Services {
+        get
+        {
+            if(_serviceProvider == null)
+            {
+                throw new SdkException("ServiceProvider is not set for Repository. This should be set by the RepositoryFactory when creating the Repository.");
+            }
+            return _serviceProvider;
+        }
+        internal set
+        {
+            _serviceProvider = value;
+        }
+    }
 
     protected bool IsDemoMode
     {
@@ -40,11 +55,11 @@ public abstract class Repository : IRepository
         }
     }
 
-    protected IDatabaseHandler? DatabaseHandler => Services?.GetRequiredKeyedService<IDatabaseHandler>(DatalayerName);
+    protected IDatabaseHandler DatabaseHandler => Services.GetRequiredKeyedService<IDatabaseHandler>(DatalayerName);
 
     protected TOptions? GetOptions<TOptions>(OptionsScope scope = OptionsScope.Default)
     {
-        var options = Services?.GetService<IOptionsMonitor<TOptions>>();
+        var options = Services.GetService<IOptionsMonitor<TOptions>>();
         if (options != null)
         {
             if (scope == OptionsScope.Datalayer)
@@ -86,9 +101,9 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
         return name;
     }
 
-    private string GetTableNameFromType(Type type)
+    private string? GetTableNameFromType(Type type)
     {
-        string name = default;
+        string? name = default;
         if (Attribute.GetCustomAttribute(type, typeof(TableAttribute)) is TableAttribute attribute)
             name = attribute.Name;
 

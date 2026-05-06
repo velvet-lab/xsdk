@@ -49,7 +49,7 @@ public sealed partial class EnvironmentOptions
     {
         string? currentServiceName = ServiceName;
         string? currentServiceNamespace = ServiceNamespace;
-        string currentServiceVersion = ServiceVersion;
+        string? currentServiceVersion = ServiceVersion;
 
         if (string.IsNullOrEmpty(currentServiceName) || string.IsNullOrEmpty(currentServiceNamespace) || string.IsNullOrEmpty(currentServiceVersion))
         {
