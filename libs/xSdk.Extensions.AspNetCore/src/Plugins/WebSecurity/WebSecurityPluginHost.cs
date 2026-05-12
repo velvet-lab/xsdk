@@ -27,6 +27,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
+[SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core request pipeline configuration – requires a running web host.")]
 internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
 {
@@ -60,7 +61,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
     {
         PreBuild(app);
 
-        var stage = environmentOptions.Value.Stage;
+        Stage stage = environmentOptions.Value.Stage;
         if (stage == Stage.Development)
         {
             app.UseDeveloperExceptionPage();
@@ -74,7 +75,9 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
         app.UseStaticFiles();
 
         if (websecurityOptions.Value.IsCorsEnabled)
+        {
             app.UseCors();
+        }
 
         PostBuild(app);
     }
@@ -93,7 +96,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
 
         Logger.LogDebug("Configure Forwarded Headers");
         var fordwardedHeaderOptions = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
-        fordwardedHeaderOptions.KnownNetworks.Clear();
+        fordwardedHeaderOptions.KnownIPNetworks.Clear();
         fordwardedHeaderOptions.KnownProxies.Clear();
         app.UseForwardedHeaders(fordwardedHeaderOptions);
     }
@@ -102,15 +105,12 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
     {
         Logger.LogDebug("Configure HSTS");
         app.UseHsts()
-            .UseReferrerPolicy(_ =>
-            {
-                _.NoReferrer();
-            });
+            .UseReferrerPolicy(_ => _.NoReferrer());
     }
 
     private void PostBuild(IApplicationBuilder app)
     {
-        var origins = GetOrigins();
+        string[] origins = GetOrigins();
 
         Logger.LogDebug("Configure Security Headers");
         app.UseXXssProtection(options => options.EnabledWithBlockMode());
@@ -118,27 +118,16 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
 
         app.UseNoCacheHttpHeaders();
         app.UseXfo(options => options.Deny());
-        app.UseCsp(options =>
-        {
-            options
+        app.UseCsp(options => options
                 .BlockAllMixedContent()
                 .BaseUris(_ =>
                 {
                     _.Self();
                     _.CustomSources = origins;
                 })
-                .ObjectSources(_ =>
-                {
-                    _.None();
-                })
-                .Sandbox(_ =>
-                {
-                    _.AllowForms().AllowSameOrigin().AllowScripts().AllowPopups().AllowModals();
-                })
-                .FrameSources(_ =>
-                {
-                    _.Self();
-                })
+                .ObjectSources(_ => _.None())
+                .Sandbox(_ => _.AllowForms().AllowSameOrigin().AllowScripts().AllowPopups().AllowModals())
+                .FrameSources(_ => _.Self())
                 .ConnectSources(_ =>
                 {
                     _.Enabled = true;
@@ -149,13 +138,13 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
                 {
                     _.Enabled = true;
                     _.SelfSrc = true;
-                    _.CustomSources = origins.Concat(new List<string> { "data:" });
+                    _.CustomSources = origins.Concat(["data:"]);
                 })
                 .FontSources(_ =>
                 {
                     _.Enabled = true;
                     _.SelfSrc = true;
-                    _.CustomSources = origins.Concat(new List<string> { "data:" });
+                    _.CustomSources = origins.Concat(["data:"]);
                 })
                 .ScriptSources(_ =>
                 {
@@ -177,31 +166,29 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityOptions> websecu
                     _.Enabled = true;
                     _.SelfSrc = true;
                     _.CustomSources = origins;
-                });
-        });
+                }));
     }
 
     private string[] GetOrigins()
     {
-        IEnumerable<string> additionalOrigins = new List<string>();
+        IEnumerable<string> additionalOrigins = [];
         if (!string.IsNullOrEmpty(websecurityOptions.Value.Origins))
         {
-            var splittedOrigins = websecurityOptions.Value.Origins
+            string[] splittedOrigins = websecurityOptions.Value.Origins
                 .Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            additionalOrigins = new List<string>(splittedOrigins);
+            additionalOrigins = [.. splittedOrigins];
         }
 
-        IEnumerable<string> origins = new List<string>();
+        IEnumerable<string> origins = [];
         if (additionalOrigins.Any())
+        {
             origins = origins.Concat(additionalOrigins);
+        }
 
-        Logger.LogInformation("Cors Origins configured: {0}", string.Join(", ", origins));
+        Logger.LogInformation("Cors Origins configured: {origins}", string.Join(", ", origins));
 
-        return origins.ToArray();
+        return [.. origins];
     }
 
-    private static string CleanDomain(string domain)
-    {
-        return domain.Replace("http://", "").Replace("https://", "");
-    }
+    private static string CleanDomain(string domain) => domain.Replace("http://", "").Replace("https://", "");
 }

@@ -25,7 +25,7 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
     public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
     {
-        foreach (var item in model)
+        foreach (TModel item in model)
         {
             AddLinksInternal(item);
         }
@@ -43,17 +43,17 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
     private void AddLinksInternal<TModel>(TModel model)
         where TModel : class, IModel
     {
-        var descriptions = MethodAnalyzer.Analyze(context.HttpContext);
+        List<MethodDescription> descriptions = MethodAnalyzer.Analyze(context.HttpContext);
         var links = new Dictionary<string, IHateoasItem>();
 
-        foreach (var description in descriptions)
+        foreach (MethodDescription description in descriptions)
         {
-            var link = SearchPolicyLink(model, description, context.HttpContext);
+            RoutedLink? link = SearchPolicyLink(model, description, context.HttpContext);
             if (link != null && !links.ContainsKey(link.Name))
             {
                 if (link is RoutedLink routedLink)
                 {
-                    var linkItem = routedLink.Build();
+                    IHateoasItem? linkItem = routedLink.Build();
                     if (linkItem != null)
                     {
                         links.Add(link.Name, linkItem);
@@ -67,13 +67,11 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
 
     private RoutedLink? SearchPolicyLink(IModel model, MethodDescription description, HttpContext? context)
     {
-        foreach (var policy in linksOptions.Policies)
+        foreach (IPolicy policy in linksOptions.Policies)
         {
-            foreach (var link in policy.Links)
+            foreach (IRoutedLink link in policy.Links)
             {
-                RoutedLink? linkInstance = link as RoutedLink;
-
-                if (linkInstance == null)
+                if (link is not RoutedLink linkInstance)
                 {
                     continue;
                 }
@@ -91,13 +89,15 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
         return default;
     }
 
-    private void SaveLinks(IModel model, IDictionary<string, IHateoasItem> links)
+    private static void SaveLinks(IModel model, IDictionary<string, IHateoasItem> links)
     {
         if (model is Model concreteModel)
         {
             var converted = links.ToDictionary(x => x.Key, x => x.Value);
-            concreteModel.AdditionalData = new Dictionary<string, object>();
-            concreteModel.AdditionalData.Add("_links", converted);
+            concreteModel.AdditionalData = new Dictionary<string, object>
+            {
+                { "_links", converted }
+            };
         }
     }
 }

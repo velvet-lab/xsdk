@@ -38,7 +38,7 @@ internal class DatabaseHandler<TDatabase>(ObjectPool<TDatabase> pool, ILogger<Da
     {
         logger.LogTrace("Try to open Database");
 
-        var database = pool.Get();
+        TDatabase database = pool.Get();
         if (database is Database concreteDatabase)
         {
             concreteDatabase.DatalayerName = DatalayerName;

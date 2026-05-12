@@ -15,18 +15,19 @@
  */
 
 using System.Text.Json;
+using CloudNative.CloudEvents;
 using xSdk.Hosting;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
 public class CloudEventWebExtensionsTests()
 {
     [Fact]
     public void ToJson_WithValidCloudEvent_ReturnsJsonString()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var json = cloudEvent.ToJson();
+        string json = cloudEvent.ToJson();
 
         Assert.NotNull(json);
         Assert.NotEmpty(json);
@@ -36,9 +37,9 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToBase64_WithValidCloudEvent_ReturnsBase64String()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var base64 = cloudEvent.ToBase64();
+        string base64 = cloudEvent.ToBase64();
 
         Assert.NotNull(base64);
         Assert.NotEmpty(base64);
@@ -48,9 +49,9 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToHttpContent_WithValidCloudEvent_ReturnsBytesAndContentType()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var (body, contentType) = cloudEvent.ToHttpContent();
+        (ReadOnlyMemory<byte> body, System.Net.Mime.ContentType? contentType) = cloudEvent.ToHttpContent();
 
         Assert.False(body.IsEmpty);
         Assert.NotNull(contentType);
@@ -59,10 +60,10 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToHttpContent_WithJsonSerializerOptions_ReturnsBytesAndContentType()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-        var (body, contentType) = cloudEvent.ToHttpContent(options);
+        (ReadOnlyMemory<byte> body, System.Net.Mime.ContentType? contentType) = cloudEvent.ToHttpContent(options);
 
         Assert.False(body.IsEmpty);
         Assert.NotNull(contentType);
@@ -71,11 +72,11 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToHttpContent_WithJsonSerializerOptionsAndDocument_ReturnsBytesAndContentType()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         var options = new JsonSerializerOptions();
         var documentOptions = new JsonDocumentOptions();
 
-        var (body, contentType) = cloudEvent.ToHttpContent(options, documentOptions);
+        (ReadOnlyMemory<byte> body, System.Net.Mime.ContentType? contentType) = cloudEvent.ToHttpContent(options, documentOptions);
 
         Assert.False(body.IsEmpty);
         Assert.NotNull(contentType);
@@ -84,10 +85,10 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToJson_RoundTrip_CanBeConvertedBack()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var json = cloudEvent.ToJson();
-        var restored = CloudEventStringConverter.FromJson(json);
+        string json = cloudEvent.ToJson();
+        CloudEvent restored = CloudEventStringConverter.FromJson(json);
 
         Assert.NotNull(restored);
         Assert.Equal(cloudEvent.Type, restored.Type);
@@ -96,10 +97,10 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToBase64_RoundTrip_CanBeConvertedBack()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var base64 = cloudEvent.ToBase64();
-        var restored = CloudEventStringConverter.FromBase64(base64);
+        string base64 = cloudEvent.ToBase64();
+        CloudEvent restored = CloudEventStringConverter.FromBase64(base64);
 
         Assert.NotNull(restored);
         Assert.Equal(cloudEvent.Type, restored.Type);
@@ -108,10 +109,10 @@ public class CloudEventWebExtensionsTests()
     [Fact]
     public void ToJson_WithDataPayload_JsonContainsData()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         cloudEvent.SetDataObject(new { Name = "TestPayload" });
 
-        var json = cloudEvent.ToJson();
+        string json = cloudEvent.ToJson();
 
         Assert.NotNull(json);
         Assert.Contains("TestPayload", json);
@@ -120,11 +121,13 @@ public class CloudEventWebExtensionsTests()
     private static bool IsBase64(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
+        {
             return false;
+        }
 
         try
         {
-            var decoded = Convert.FromBase64String(value);
+            byte[] decoded = Convert.FromBase64String(value);
             return decoded.Length >= 0;
         }
         catch

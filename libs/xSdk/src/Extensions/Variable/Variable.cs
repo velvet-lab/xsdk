@@ -55,7 +55,7 @@ public class Variable : IVariable
 
     public bool IsHidden { get; internal set; }
 
-    internal Func<object> TelemetryResourceValue { get; set; }
+    internal Func<object?> TelemetryResourceValue { get; set; }
 
     internal VariableAttribute Attribute { get; set; }
 
@@ -155,10 +155,10 @@ public class Variable : IVariable
     private string CreateTemplate(string value)
     {
         string? templateValue = value;
-        if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf("<") > -1)
+        if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf('<') > -1)
         {
-            templateValue = templateValue.Substring(templateValue.IndexOf("<") + 1);
-            templateValue = templateValue.Substring(0, templateValue.IndexOf(">"));
+            templateValue = templateValue.Substring(templateValue.IndexOf('<') + 1);
+            templateValue = templateValue.Substring(0, templateValue.IndexOf('>'));
         }
         else
         {

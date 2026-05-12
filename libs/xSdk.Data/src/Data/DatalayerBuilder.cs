@@ -28,9 +28,10 @@ namespace xSdk.Data;
 public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBuilder
 {
     private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-    private readonly List<string> _logicalNames = new();
-    private readonly Dictionary<object, object> _objectPools = new();
+    private readonly List<string> _logicalNames = [];
+    private readonly Dictionary<object, object> _objectPools = [];
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public IDatabaseBuilder ConfigureDatabase<TDatabase, TDatabaseOptions>(string? name, Action<TDatabaseOptions>? factory)
         where TDatabase : class, IDatabase
         where TDatabaseOptions : class, IVariableSetup
@@ -57,7 +58,9 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
     private void TryAddLogicalName(string name)
     {
         if (_logicalNames.Any(x => string.Compare(x, name, true) == 0))
-            throw new SdkException($"Database with name '{name}' is already registered. Please choose another name to register the database layer");
+        {
+            throw new SdkException(string.Format("Database with name '{0}' is already registered. Please choose another name to register the database layer", name));
+        }
 
         _logicalNames.Add(name);
     }
@@ -67,7 +70,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
     {
         services.TryAddKeyedSingleton<ObjectPool<TDatabase>>(name, (provider, key) =>
         {
-            if (!_objectPools.ContainsKey(key))
+            if (!_objectPools.TryGetValue(key, out object? value))
             {
                 var policy = new DatabasePoolPolicy<TDatabase>(provider);
                 var objectPool = new DefaultObjectPool<TDatabase>(policy);
@@ -76,7 +79,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
             }
             else
             {
-                return (ObjectPool<TDatabase>)_objectPools[key];
+                return (ObjectPool<TDatabase>)value;
             }
         });
     }
@@ -89,12 +92,14 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
         {
             string datalayerName = (string)key;
 
-            var objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
-            var logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
+            ObjectPool<TDatabase> objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
+            ILogger<DatabaseHandler<TDatabase>> logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
 
-            var poolHandler = new DatabaseHandler<TDatabase>(objectPool, logger);
-            poolHandler.DatalayerName = datalayerName;
-            poolHandler.Services = provider;
+            var poolHandler = new DatabaseHandler<TDatabase>(objectPool, logger)
+            {
+                DatalayerName = datalayerName,
+                Services = provider
+            };
             return poolHandler;
         });
     }

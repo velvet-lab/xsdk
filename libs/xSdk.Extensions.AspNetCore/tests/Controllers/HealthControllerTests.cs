@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using xSdk.Controllers;
 
-namespace xSdk.Extensions.AspNetCore.Tests.Controllers;
+namespace xSdk.Controllers;
 
 public class HealthControllerTests
 {
@@ -27,14 +27,14 @@ public class HealthControllerTests
 
     public HealthControllerTests()
     {
-        var logger = NullLogger<HealthController>.Instance;
+        NullLogger<HealthController> logger = NullLogger<HealthController>.Instance;
         _controller = new HealthController(logger);
     }
 
     [Fact]
     public async Task GetStatus_ReturnsOkResult()
     {
-        var result = await _controller.GetStatus(TestContext.Current.CancellationToken);
+        ActionResult result = await _controller.GetStatus();
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -42,7 +42,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetStatus_ReturnsOkString()
     {
-        var result = await _controller.GetStatus(TestContext.Current.CancellationToken) as OkObjectResult;
+        var result = await _controller.GetStatus() as OkObjectResult;
 
         Assert.NotNull(result);
         Assert.Equal("ok", result.Value);
@@ -51,7 +51,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetPong_ReturnsOkResult()
     {
-        var result = await _controller.GetPong(TestContext.Current.CancellationToken);
+        ActionResult result = await _controller.GetPong();
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -59,7 +59,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetPong_ReturnsOkString()
     {
-        var result = await _controller.GetPong(TestContext.Current.CancellationToken) as OkObjectResult;
+        var result = await _controller.GetPong() as OkObjectResult;
 
         Assert.NotNull(result);
         Assert.Equal("pong", result.Value);

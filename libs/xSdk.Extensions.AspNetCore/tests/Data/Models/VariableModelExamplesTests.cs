@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Data.Models;
-
-namespace xSdk.Extensions.AspNetCore.Tests.Data.Models;
+namespace xSdk.Data.Models;
 
 public class VariableModelExamplesTests
 {
@@ -25,7 +23,7 @@ public class VariableModelExamplesTests
     {
         var examples = new VariableModelExamples();
 
-        var result = examples.GetExamples();
+        VariableModel result = examples.GetExamples();
 
         Assert.NotNull(result);
     }
@@ -35,7 +33,7 @@ public class VariableModelExamplesTests
     {
         var examples = new VariableModelExamples();
 
-        var result = examples.GetExamples();
+        VariableModel result = examples.GetExamples();
 
         Assert.False(string.IsNullOrEmpty(result.Name));
     }
@@ -45,8 +43,8 @@ public class VariableModelExamplesTests
     {
         var examples = new VariableModelExamples();
 
-        var result1 = examples.GetExamples();
-        var result2 = examples.GetExamples();
+        VariableModel result1 = examples.GetExamples();
+        VariableModel result2 = examples.GetExamples();
 
         Assert.NotNull(result1);
         Assert.NotNull(result2);

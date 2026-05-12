@@ -42,7 +42,7 @@ public static class PrimaryKeyTools
         throw new NotSupportedException($"Automatic generation of primary key for type {typeof(TTargetType)} is not supported.");
     }
 
-    public static TTargetType Convert<TTargetType>(string? value)
+    public static TTargetType? Convert<TTargetType>(string? value)
     {
         TTargetType? result = default;
 

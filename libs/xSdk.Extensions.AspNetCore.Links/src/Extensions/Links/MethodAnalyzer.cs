@@ -39,14 +39,15 @@ internal static class MethodAnalyzer
                 var httpAttribute = method.GetCustomAttribute<HttpMethodAttribute>();
                 if (httpAttribute != null && httpAttribute.HttpMethods.Any() && !string.IsNullOrEmpty(httpAttribute.Name))
                 {
-                    var description = new MethodDescription();
-                    description.Action = method;
-                    description.ControllerType = classType;
-
-                    description.HttpMethod = HttpMethod.Parse(httpAttribute.HttpMethods.First());
-                    description.MethodName = httpAttribute.Name;
-                    description.RouteTemplate = httpAttribute.Template;
-
+                    var description = new MethodDescription
+                    {
+                        Action = method,
+                        ControllerType = classType,
+                        HttpMethod = HttpMethod.Parse(httpAttribute.HttpMethods.First()),
+                        MethodName = httpAttribute.Name,
+                        RouteTemplate = httpAttribute.Template
+                    };
+                    
                     var linksAttribute = method.GetCustomAttribute<LinksAttribute>();
                     if (linksAttribute != null)
                     {

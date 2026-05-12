@@ -32,18 +32,19 @@ public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbCon
         return _dbContext as TDatabaseObject;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public override bool Close()
     {
         if (_dbContext != null)
         {
-            logger.LogInformation("Closing Entity Framework database connection for datalayer '{DatalayerName}'.", this.DatalayerName);
+            logger.LogInformation("Closing Entity Framework database connection for datalayer '{DatalayerName}'.", DatalayerName);
             _dbContext.Dispose();
             _dbContext = null;
             return true;
         }
         else
         {
-            logger.LogWarning("Attempted to close Entity Framework database connection for datalayer '{DatalayerName}', but no active connection was found.", this.DatalayerName);
+            logger.LogWarning("Attempted to close Entity Framework database connection for datalayer '{DatalayerName}', but no active connection was found.", DatalayerName);
             return false;
         }
     }

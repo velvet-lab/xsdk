@@ -79,7 +79,7 @@ public sealed class TelemetryOptions : VariableSetup
         helpText: Definitions.Endpoint.HelpText,
         defaultValue: Definitions.Endpoint.DefaultValue
     )]
-    public string Endpoint
+    public string? Endpoint
     {
         get => this.ReadValue<string>(Definitions.Endpoint.Name);
         set => this.SetValue(Definitions.Endpoint.Name, value);
@@ -91,7 +91,7 @@ public sealed class TelemetryOptions : VariableSetup
         helpText: Definitions.LogLevel.HelpText,
         defaultValue: Definitions.LogLevel.DefaultValue
     )]
-    public string LogLevel
+    public string? LogLevel
     {
         get => this.ReadValue<string>(Definitions.LogLevel.Name);
         set => this.SetValue(Definitions.LogLevel.Name, value);
@@ -103,7 +103,7 @@ public sealed class TelemetryOptions : VariableSetup
         helpText: Definitions.SdkLogLevel.HelpText,
         defaultValue: Definitions.SdkLogLevel.DefaultValue
     )]
-    public string SdkLogLevel
+    public string? SdkLogLevel
     {
         get => this.ReadValue<string>(Definitions.SdkLogLevel.Name);
         set => this.SetValue(Definitions.SdkLogLevel.Name, value);
@@ -115,7 +115,7 @@ public sealed class TelemetryOptions : VariableSetup
         helpText: Definitions.OtlpLogLevel.HelpText,
         defaultValue: Definitions.OtlpLogLevel.DefaultValue
     )]
-    public string OtlpLogLevel
+    public string? OtlpLogLevel
     {
         get => this.ReadValue<string>(Definitions.OtlpLogLevel.Name);
         set => this.SetValue(Definitions.OtlpLogLevel.Name, value);

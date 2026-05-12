@@ -165,7 +165,7 @@ public static class TypeConverter
         return result;
     }
 
-    public static Type GetValueType(object? value)
+    public static Type? GetValueType(object? value)
     {
         if (value == null)
         {

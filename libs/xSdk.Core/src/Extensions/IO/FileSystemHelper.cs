@@ -24,11 +24,11 @@ public static class FileSystemHelper
 {
     public static string GetExecutingFolder()
     {
-        string? folder = Environment.CurrentDirectory;
+        string folder = Environment.CurrentDirectory;
         var assembly = Assembly.GetEntryAssembly();
         if (assembly != null)
         {
-            folder = Path.GetDirectoryName(assembly.Location);
+            folder = Path.GetDirectoryName(assembly.Location) ?? folder;
         }
 
         return folder;
@@ -38,7 +38,7 @@ public static class FileSystemHelper
     {
         if (!string.IsNullOrEmpty(path))
         {
-            if (!path.StartsWith("/"))
+            if (!path.StartsWith('/'))
             {
                 path = "/" + path;
             }
@@ -53,10 +53,7 @@ public static class FileSystemHelper
         return fs.ConvertPathFromInternal(path);
     }
 
-    public static string CreateSpecificDataFolder(IFileSystemResult fileSystem, string folder)
-    {
-        return CreateSpecificDataFolder(fileSystem.Data, folder);
-    }
+    public static string CreateSpecificDataFolder(IFileSystemResult fileSystem, string folder) => CreateSpecificDataFolder(fileSystem.Data, folder);
 
     public static string CreateSpecificDataFolder(IFileSystem fileSystem, string folder)
     {

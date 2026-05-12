@@ -25,12 +25,12 @@ public sealed class SemVerConverter : JsonConverter<SemVer>
 {
     public override SemVer Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        var value = reader.GetString();
+        string? value = reader.GetString();
 
         if (Base64Tools.IsBase64(value))
         {
-            var converted = Base64Tools.ConvertFromBase64(value);
-            var splitted = converted.Split(";", StringSplitOptions.RemoveEmptyEntries);
+            string? converted = Base64Tools.ConvertFromBase64(value);
+            string[]? splitted = converted?.Split(";", StringSplitOptions.RemoveEmptyEntries);
 
             return new SemVer(splitted[0], splitted[1]);
         }

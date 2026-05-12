@@ -34,25 +34,25 @@ public class MaxAttribute : DataAnnotationAttribute
         if (IsIntValue())
         {
             var configured = GetIntValue();
-            var current = (int)Value;
+            int? current = (int?) Value;
 
-            if (current > configured)
+            if (current != null && current > configured)
                 return false;
         }
         else if (IsDoubleValue())
         {
             var configured = GetDoubleValue();
-            var current = (double)Value;
+            double? current = (double?) Value;
 
-            if (current > configured)
+            if (current != null && current > configured)
                 return false;
         }
         else if (IsTimeSpanValue())
         {
             var configured = GetTimeSpanValue();
-            var current = (TimeSpan)Value;
+            TimeSpan? current = (TimeSpan?) Value;
 
-            if (current > configured)
+            if (current != null && current > configured)
                 return false;
         }
 

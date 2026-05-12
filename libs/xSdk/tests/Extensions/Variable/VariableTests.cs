@@ -18,6 +18,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Generische Überladung bevorzugen, wenn der Typ bekannt ist", Justification = "<Ausstehend>")]
 public class VariableTests()
 {
     private const string PREFIX = "MyPrefix";
@@ -75,7 +76,7 @@ public class VariableTests()
         Assert.Equal(hash1, hash2);
     }
 
-    [Fact]
+    [Fact]    
     public void Variable_Equals_SameNameAndType_AreEqual()
     {
         var v1 = Variable.Create(NAME, typeof(string));
@@ -150,10 +151,9 @@ public class VariableTests()
     }
 
     [Fact]
-    public void Variable_Create_WithNullValueType_ThrowsArgumentNullException()
-    {
+    public void Variable_Create_WithNullValueType_ThrowsArgumentNullException() =>
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<ArgumentNullException>(() => Variable.Create(NAME, null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
-    }
+
 }

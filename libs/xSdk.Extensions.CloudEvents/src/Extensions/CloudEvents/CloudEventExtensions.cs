@@ -33,13 +33,11 @@ public static class CloudEventExtensions
 
     public static CloudEvent RemoveAttribute(this CloudEvent cloudEvent, string name)
     {
-        foreach (KeyValuePair<CloudEventAttribute, object> attribute in cloudEvent.GetPopulatedAttributes())
-        {
-            if (string.Compare(attribute.Key.Name, name, true) == 0)
-            {
-                cloudEvent[attribute.Key] = null;
-            }
-        }
+        cloudEvent
+            .GetPopulatedAttributes()
+            .Where(x => string.Compare(x.Key.Name, name, true) == 0)
+            .ToList()
+            .ForEach(x => cloudEvent[x.Key] = null);
 
         return cloudEvent;
     }
@@ -60,7 +58,10 @@ public static class CloudEventExtensions
                 result = TypeConverter.ConvertTo<TValue>(kvp.Value);
             }
         }
-        catch { }
+        catch
+        {
+            // Ignore conversion errors and return default value
+        }
 
         return result;
     }
@@ -69,7 +70,7 @@ public static class CloudEventExtensions
     {
         string scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SourceBaseUrl, "");
 
-        if (scope.StartsWith("/"))
+        if (scope.StartsWith('/'))
         {
             scope = scope.Substring(1);
         }
@@ -94,8 +95,6 @@ public static class CloudEventExtensions
 
         cloudEvent.Data = data;
         cloudEvent.DataSchema = uri;
-
-        return;
     }
 
     internal static CloudEvent EnrichAttributes(this CloudEvent cloudEvent, IEnumerable<CloudEventAttribute>? attributes)
@@ -180,7 +179,7 @@ public static class CloudEventExtensions
     {
         object? result = null;
 
-        string? jsonAsString = string.Empty;
+        string? jsonAsString;
         if (element.ValueKind == JsonValueKind.Object)
         {
             jsonAsString = element.GetRawText();
@@ -233,7 +232,7 @@ public static class CloudEventExtensions
 
     private static Uri CreateDataObjectSchemeUri(Type dataType, string scope)
     {
-        (string? sourceBaseUrl, string? schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
+        (string? _, string? schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
 
         string? assemblyName = dataType.Assembly.GetName().Name;
 
@@ -244,22 +243,22 @@ public static class CloudEventExtensions
     {
         Type? result = default;
 
-        (string? sourceBaseUrl, string? schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
+        (_, string? schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
         string dataTypeUrl = dataSchemeUrl.Replace(schemeBaseUrl, "");
 
         if (!string.IsNullOrEmpty(dataTypeUrl))
         {
-            string assemblyName = string.Empty;
             string typeName = string.Empty;
 
-            if (dataTypeUrl.IndexOf("?") > -1)
+            string assemblyName;
+            if (dataTypeUrl.IndexOf('?') > -1)
             {
-                string[] splitted = dataTypeUrl.Split("?", StringSplitOptions.RemoveEmptyEntries);
+                string[] splitted = dataTypeUrl.Split('?', StringSplitOptions.RemoveEmptyEntries);
                 assemblyName = splitted[0];
 
                 if (splitted.Length > 1)
                 {
-                    splitted = splitted[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
+                    splitted = splitted[1].Split('=', StringSplitOptions.RemoveEmptyEntries);
                     if (splitted.Length > 1)
                     {
                         typeName = splitted[1];
@@ -271,7 +270,7 @@ public static class CloudEventExtensions
                 assemblyName = dataTypeUrl;
             }
 
-            if (assemblyName.StartsWith("/"))
+            if (assemblyName.StartsWith('/'))
             {
                 assemblyName = assemblyName.Substring(1);
             }

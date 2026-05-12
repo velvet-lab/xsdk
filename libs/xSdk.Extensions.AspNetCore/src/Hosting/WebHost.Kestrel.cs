@@ -50,20 +50,21 @@ public static partial class WebHost
             {
                 _.ClientCertificateMode = ClientCertificateMode.NoCertificate;
                 if (Debugger.IsAttached)
+                {
                     _.CheckCertificateRevocation = false;
+                }
 
                 _.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; // DevSkim: ignore DS440001,DS440020,DS112836
                 _.ServerCertificate = cert;
             });
 
-            options.ConfigureEndpointDefaults(_ =>
-            {
-                _.UseHttps();
-            });
+            options.ConfigureEndpointDefaults(_ => _.UseHttps());
         }
 
         if (httpPort <= 1024 && !webSetup.AllowSystemPorts)
+        {
             throw new SdkException($"Port '{httpPort}' is not allowed");
+        }
 
         if (httpPort == grpcPort)
         {
@@ -81,9 +82,13 @@ public static partial class WebHost
             if (httpPort > 0)
             {
                 if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
+                {
                     options.ListenLocalhost(httpPort, setup => setup.Protocols = protocols);
+                }
                 else
+                {
                     options.ListenAnyIP(httpPort, setup => setup.Protocols = protocols);
+                }
             }
             else
             {
@@ -98,9 +103,13 @@ public static partial class WebHost
                 if (certAvailable)
                 {
                     if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
+                    {
                         options.ListenLocalhost(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                    }
                     else
+                    {
                         options.ListenAnyIP(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                    }
                 }
                 else
                 {
@@ -126,7 +135,9 @@ public static partial class WebHost
 
             var certLocation = fileService.Machine.Data.GetFullPath("/certs");
             if (Debugger.IsAttached)
+            {
                 certLocation = Environment.CurrentDirectory;
+            }
 
             var certFilePath = Path.Combine(certLocation, webSetup.TlsCertFile);
             if (File.Exists(certFilePath))
@@ -138,8 +149,7 @@ public static partial class WebHost
                     {
                         _logger.LogInformation("Load Certificate from certificate and key File");
                         var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
-                        // cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
-                        cert = new X509Certificate2(innerCert.Export(X509ContentType.Pkcs12));
+                        cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
 
                         return true;
                     }
@@ -149,10 +159,14 @@ public static partial class WebHost
                     }
                 }
                 else
+                {
                     _logger.LogWarning("Https is enabled, but no key file '{0}' could not found", keyFilePath);
+                }
             }
             else
+            {
                 _logger.LogWarning("Https is enabled, but no certificate file '{0}' could not found", certFilePath);
+            }
         }
 
         cert = null;

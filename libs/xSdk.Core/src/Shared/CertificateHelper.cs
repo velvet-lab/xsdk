@@ -36,7 +36,7 @@ public static class CertificateHelper
         {
             var item = certString.Replace("-----BEGIN CERTIFICATE-----", null).Replace("-----END CERTIFICATE-----", null).Trim();
 
-            var cert = new X509Certificate2(Encoding.ASCII.GetBytes(item));
+            var cert = X509CertificateLoader.LoadCertificate(Encoding.ASCII.GetBytes(item));
             certs.Add(cert);
         }
 

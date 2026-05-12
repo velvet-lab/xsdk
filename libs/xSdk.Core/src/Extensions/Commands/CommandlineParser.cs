@@ -93,7 +93,7 @@ public partial class CommandlineParser
         return result;
     }
 
-    public string ReadPattern(string pattern, string? defaultValue = default)
+    public string? ReadPattern(string pattern, string? defaultValue = default)
     {
         var comparer = new PatternComparer();
         for (int i = 0; i < Arguments.Length; i++)

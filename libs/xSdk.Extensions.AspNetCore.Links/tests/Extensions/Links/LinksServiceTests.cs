@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Data;
 using xSdk.Hosting;
 using xSdk.Plugins.Links;
@@ -32,13 +33,10 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
 
     private ILinksService BuildService()
     {
-        var host = fixture
-            .ConfigureBuilder(builder =>
-            {
-                builder
+        IHost host = fixture
+            .ConfigureBuilder(builder => builder
                     .EnableWebApi()
-                    .EnableLinks<LinksPluginBuilderMock>();
-            })
+                    .EnableLinks<LinksPluginBuilderMock>())
             .BuildHost();
 
         return host.Services.GetRequiredService<ILinksService>();
@@ -47,10 +45,10 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
     [Fact]
     public async Task AddLinksAsync_SingleModel_DoesNotThrow()
     {
-        var service = BuildService();
+        ILinksService service = BuildService();
         var model = new TestModel { Name = "Test" };
 
-        var ex = await Record.ExceptionAsync(() => service.AddLinksAsync(model, TestContext.Current.CancellationToken));
+        Exception? ex = await Record.ExceptionAsync(() => service.AddLinksAsync(model, TestContext.Current.CancellationToken));
 
         Assert.Null(ex);
     }
@@ -58,14 +56,14 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
     [Fact]
     public async Task AddLinksAsync_Collection_DoesNotThrow()
     {
-        var service = BuildService();
-        var models = new List<TestModel>
-        {
+        ILinksService service = BuildService();
+        List<TestModel> models =
+        [
             new TestModel { Name = "A" },
             new TestModel { Name = "B" },
-        };
+        ];
 
-        var ex = await Record.ExceptionAsync(() => service.AddLinksAsync(models, TestContext.Current.CancellationToken));
+        Exception? ex = await Record.ExceptionAsync(() => service.AddLinksAsync(models, TestContext.Current.CancellationToken));
 
         Assert.Null(ex);
     }
@@ -73,13 +71,13 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
     [Fact]
     public async Task AddLinksAsync_WhenNoHttpContext_NoLinksAdded()
     {
-        var service = BuildService();
+        ILinksService service = BuildService();
         var model = new TestModel { Name = "Test" };
 
         await service.AddLinksAsync(model, TestContext.Current.CancellationToken);
 
         // With no active HttpContext (accessor returns null), _links will be an empty dict
-        var linksEntry = model.AdditionalData?["_links"];
+        object? linksEntry = model.AdditionalData?["_links"];
         var linksDict = linksEntry as IDictionary<string, IHateoasItem>;
         Assert.NotNull(linksDict);
         Assert.Empty(linksDict);

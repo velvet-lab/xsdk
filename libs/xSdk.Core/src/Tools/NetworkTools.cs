@@ -89,7 +89,7 @@ public static class NetworkTools
         throw new SdkException("No network adapters with an IPv4 address in the system!");
     }
 
-    public static string GetMacAddress()
+    public static string? GetMacAddress()
     {
         return NetworkInterface
             .GetAllNetworkInterfaces()

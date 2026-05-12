@@ -54,7 +54,7 @@ public sealed partial class EnvironmentOptions
         template: DefaultCommandSettings.Definitions.ContentRoot.Template,
         helpText: DefaultCommandSettings.Definitions.ContentRoot.HelpText
     )]
-    public string ContentRoot
+    public string? ContentRoot
     {
         get => ReadValue<string>(DefaultCommandSettings.Definitions.ContentRoot.Name);
         set => SetValue(DefaultCommandSettings.Definitions.ContentRoot.Name, value);
@@ -66,7 +66,7 @@ public sealed partial class EnvironmentOptions
         helpText: DefaultCommandSettings.Definitions.LogLevel.HelpText,
         defaultValue: DefaultCommandSettings.Definitions.LogLevel.DefaultValue
     )]
-    public string LogLevel
+    public string? LogLevel
     {
         get => ReadValue<string>(DefaultCommandSettings.Definitions.LogLevel.Name);
         set => SetValue(DefaultCommandSettings.Definitions.LogLevel.Name, value);

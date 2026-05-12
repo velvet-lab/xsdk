@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using xSdk.Shared;
 
 namespace xSdk.Data.Annotations;
@@ -22,7 +23,7 @@ namespace xSdk.Data.Annotations;
 public abstract class DataAnnotationAttribute : ValidationAttribute
 {
     private object _configuredValue;
-    private object _currentValue;
+    private object? _currentValue;
     private Type _currentType;
 
     protected DataAnnotationAttribute(object value)
@@ -42,7 +43,7 @@ public abstract class DataAnnotationAttribute : ValidationAttribute
 
     internal TimeSpan GetTimeSpanValue() => TimeSpanParser.Parse(_configuredValue);
 
-    internal object Value => _currentValue;
+    internal object? Value => _currentValue;
 
     internal Type Type => _currentType;
 
@@ -56,10 +57,16 @@ public abstract class DataAnnotationAttribute : ValidationAttribute
 
     internal bool IsStringValue() => _currentType == typeof(string);
 
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
     {
         // TRICKY: This will only used to convert the correct Value to Destination Type
-        var property = validationContext.ObjectType.GetProperty(validationContext.MemberName);
+        string? memberName = validationContext.MemberName;
+        if (string.IsNullOrEmpty(memberName))
+        {
+            return new ValidationResult("Validation failed.");
+        }
+
+        PropertyInfo? property = validationContext.ObjectType.GetProperty(memberName);
         if (property != null)
         {
             _currentValue = property.GetValue(validationContext.ObjectInstance);

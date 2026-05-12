@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace xSdk.Extensions.Web;
 
-[CLSCompliant(false)]
 public static class ProblemDetailsExtensions
 {
     public static ProblemDetails AsProblem(this Exception ex) => ex.AsProblem(StatusCodes.Status500InternalServerError, null);
@@ -42,7 +41,9 @@ public static class ProblemDetailsExtensions
         }
 
         if (!string.IsNullOrEmpty(path))
+        {
             result.Instance = path;
+        }
 
         return result;
     }
@@ -66,7 +67,9 @@ public static class ProblemDetailsExtensions
         };
 
         if (!string.IsNullOrEmpty(details))
+        {
             problem.Detail = details;
+        }
 
         return new BadRequestObjectResult(problem);
     }

@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -74,7 +75,7 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
                 };
             })
             .OrderBy(x => x.Prefix)
-            .OrderBy(x => x.Template);
+            .ThenBy(x => x.Template);
 
         logger.LogTrace("Create table");
         var table = new Table().Border(TableBorder.MinimalHeavyHead).Title("Overview of loaded Variable");
@@ -92,15 +93,18 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
             var rowItems = new List<string>();
             foreach (var field in fields)
             {
-                var property = itemType.GetProperty(field);
-                var value = property.GetValue(item, null);
-                if (value != null)
+                PropertyInfo? property = itemType.GetProperty(field);
+                if (property != null)
                 {
-                    rowItems.Add(value.ToString());
-                }
-                else
-                {
-                    rowItems.Add("");
+                    object? value = property.GetValue(item, null);
+                    if (value != null)
+                    {
+                        rowItems.Add(value.ToString());
+                    }
+                    else
+                    {
+                        rowItems.Add("");
+                    }
                 }
             }
             table.AddRow(rowItems.ToArray());

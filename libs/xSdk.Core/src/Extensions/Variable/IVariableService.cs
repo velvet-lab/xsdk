@@ -22,7 +22,7 @@ public interface IVariableService
 {
     ConcurrentBag<IVariable> Variables { get; }
 
-    TType ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false);
+    TType? ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false);
 
     void SetVariable<TValueType>(string name, TValueType value);
 
@@ -38,7 +38,7 @@ public interface IVariableService
 
     void NewVariable<TValueType>(IVariable variable, TValueType value, bool throwIfAlreadyExists);
 
-    IVariable LoadVariable(string name);
+    IVariable? LoadVariable(string name);
 
     Dictionary<string, object> ToDictionary();
 

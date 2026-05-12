@@ -18,7 +18,7 @@ using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
 using xSdk.Extensions.Web;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
 public class CloudEventFactoryTests()
 {
@@ -119,10 +119,7 @@ public class CloudEventFactoryTests()
     }
 
     [Fact]
-    public void CreateBaseUrls_WithEmptyScope_ThrowsSdkException()
-    {
-        Assert.Throws<SdkException>(() => CloudEventFactory.CreateBaseUrls(string.Empty));
-    }
+    public void CreateBaseUrls_WithEmptyScope_ThrowsSdkException() => Assert.Throws<SdkException>(() => CloudEventFactory.CreateBaseUrls(string.Empty));
 
     [Fact]
     public void CreateAttribute_WithValidName_ReturnsAttribute()

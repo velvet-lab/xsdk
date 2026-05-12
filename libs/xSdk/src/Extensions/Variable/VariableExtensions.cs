@@ -43,8 +43,8 @@ internal static class VariableExtensions
         return variable;
     }
 
-    internal static IVariable SetTelemetryResourceValueDelegate(this IVariable variable, Func<object> resourceDelegate)
-    {
+    internal static IVariable SetTelemetryResourceValueDelegate(this IVariable variable, Func<object?> resourceDelegate)
+    {        
         if (variable.TryCast(out Variable casted))
         {
             casted.TelemetryResourceValue = resourceDelegate;

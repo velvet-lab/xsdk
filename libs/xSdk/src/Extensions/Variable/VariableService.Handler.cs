@@ -23,7 +23,7 @@ internal partial class VariableService
 {
     public ConcurrentBag<IVariable> Variables { get; private set; } = new ConcurrentBag<IVariable>();
 
-    public IVariable LoadVariable(string name) => LoadVariableInternal(name);
+    public IVariable? LoadVariable(string name) => LoadVariableInternal(name);
 
     public void SetVariable<TValueType>(string name, TValueType value)
     {

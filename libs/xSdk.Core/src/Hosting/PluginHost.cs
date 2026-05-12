@@ -23,8 +23,6 @@ namespace xSdk.Hosting;
 
 public abstract class PluginHost : PluginDescription, IPluginHost
 {
-    protected ILogger Logger => LogManager.GetCurrentClassLogger();
-
     public IServiceProvider Services { get; internal set; }
 
     public virtual void ConfigureServices(IServiceCollection services) { }
@@ -36,7 +34,9 @@ public abstract class PluginHost : PluginDescription, IPluginHost
         where TPluginBuilder : IPluginBuilder
     {
         if (Services == null)
+        {
             throw new InvalidOperationException("Services must be set before invoking the plugin builder.");
+        }
 
         var builder = Services.GetService<TPluginBuilder>();
         if (builder != null)
@@ -51,7 +51,9 @@ public abstract class PluginHost : PluginDescription, IPluginHost
         where TPluginBuilder : IPluginBuilder
     {
         if (Services == null)
+        {
             throw new InvalidOperationException("Services must be set before invoking the plugin builders.");
+        }
 
         var builders = Services.GetServices<TPluginBuilder>();
         foreach (var builder in builders)
@@ -65,7 +67,9 @@ public abstract class PluginHost : PluginDescription, IPluginHost
         where TBuilder : IPluginBuilder
     {
         if (Services == null)
+        {
             throw new InvalidOperationException("Services must be set before getting the plugin builder.");
+        }
 
         return Services.GetService<TBuilder>();
     }

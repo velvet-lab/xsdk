@@ -18,7 +18,7 @@ using System.Text.Json;
 using CloudNative.CloudEvents;
 using xSdk.Hosting;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
 public class ExceptionExtensionsTests()
 {
@@ -180,7 +180,7 @@ public class ExceptionExtensionsTests()
             Data = "Argument error message"
         };
 
-        var exception = cloudEvent.ToException<ArgumentException>();
+        ArgumentException? exception = cloudEvent.ToException<ArgumentException>();
 
         Assert.NotNull(exception);
         Assert.IsType<ArgumentException>(exception);
@@ -190,11 +190,11 @@ public class ExceptionExtensionsTests()
     [Fact]
     public void RoundTrip_ExceptionToCloudEventToException_PreservesMessage()
     {
-        var originalMessage = "Original error message";
+        string originalMessage = "Original error message";
         var originalException = new InvalidOperationException(originalMessage);
 
         var cloudEvent = originalException.ToCloudEvent("test/scope");
-        var reconstructedException = cloudEvent.ToException<InvalidOperationException>();
+        InvalidOperationException? reconstructedException = cloudEvent.ToException<InvalidOperationException>();
 
         Assert.NotNull(reconstructedException);
         Assert.Equal(originalMessage, reconstructedException.Message);

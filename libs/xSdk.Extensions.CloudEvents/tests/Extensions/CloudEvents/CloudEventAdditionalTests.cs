@@ -16,9 +16,10 @@
 
 using System.Text;
 using CloudNative.CloudEvents;
+using CloudNative.CloudEvents.SystemTextJson;
 using xSdk.Hosting;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
 public class CloudEventExtensionsAdditionalTests()
 {
@@ -27,10 +28,10 @@ public class CloudEventExtensionsAdditionalTests()
     [Fact]
     public void GetDataObject_WithStringData_ReturnsData()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         cloudEvent.SetDataObject("some string");
 
-        var data = cloudEvent.GetDataObject();
+        object data = cloudEvent.GetDataObject();
 
         Assert.NotNull(data);
     }
@@ -38,9 +39,9 @@ public class CloudEventExtensionsAdditionalTests()
     [Fact]
     public void GetDataObject_WithNoData_ReturnsNull()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var data = cloudEvent.GetDataObject();
+        object data = cloudEvent.GetDataObject();
 
         Assert.Null(data);
     }
@@ -48,10 +49,10 @@ public class CloudEventExtensionsAdditionalTests()
     [Fact]
     public void GetDataObjectType_WithSchemaUri_ReturnsType()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         cloudEvent.SetDataObject("test string value");
 
-        var dataType = cloudEvent.GetDataObjectType();
+        Type? dataType = cloudEvent.GetDataObjectType();
 
         // When DataSchema is set, returns a Type; for non-complex types this may be null
         // The method returns non-null when schema can be resolved
@@ -61,9 +62,9 @@ public class CloudEventExtensionsAdditionalTests()
     [Fact]
     public void GetDataObjectType_WithNoData_ReturnsNull()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var dataType = cloudEvent.GetDataObjectType();
+        Type? dataType = cloudEvent.GetDataObjectType();
 
         Assert.Null(dataType);
     }
@@ -71,10 +72,10 @@ public class CloudEventExtensionsAdditionalTests()
     [Fact]
     public void GetDataObject_Generic_WithStringData_ReturnsTypedData()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         cloudEvent.SetDataObject("some string value");
 
-        var data = cloudEvent.GetDataObject<string>();
+        string? data = cloudEvent.GetDataObject<string>();
 
         Assert.NotNull(data);
     }
@@ -82,7 +83,7 @@ public class CloudEventExtensionsAdditionalTests()
     [Fact]
     public void ToModel_WithValidModelData_ReturnsModel()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
         Assert.NotNull(cloudEvent);
     }
@@ -92,25 +93,25 @@ public class CloudEventStringConverterAdditionalTests()
 {
     private static string CreateValidCloudEventJson()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
-        var formatter = CloudEventFactory.CreateFormatter();
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        JsonEventFormatter formatter = CloudEventFactory.CreateFormatter();
 
-        var bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out _);
+        ReadOnlyMemory<byte> bytes = formatter.EncodeStructuredModeMessage(cloudEvent, out _);
         return Encoding.UTF8.GetString(bytes.ToArray());
     }
 
     private static string CreateValidCloudEventBase64()
     {
-        var json = CreateValidCloudEventJson();
+        string json = CreateValidCloudEventJson();
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
     }
 
     [Fact]
     public void FromJson_WithExtensionName_ReturnsCloudEvent()
     {
-        var json = CreateValidCloudEventJson();
+        string json = CreateValidCloudEventJson();
 
-        var result = CloudEventStringConverter.FromJson(json, "testextension", CloudEventAttributeType.String);
+        CloudEvent result = CloudEventStringConverter.FromJson(json, "testextension", CloudEventAttributeType.String);
 
         Assert.NotNull(result);
     }
@@ -118,10 +119,10 @@ public class CloudEventStringConverterAdditionalTests()
     [Fact]
     public void FromJson_WithExtensionAttribute_ReturnsCloudEvent()
     {
-        var json = CreateValidCloudEventJson();
-        var attr = CloudEventFactory.CreateAttribute("myext", CloudEventAttributeType.String);
+        string json = CreateValidCloudEventJson();
+        CloudEventAttribute attr = CloudEventFactory.CreateAttribute("myext", CloudEventAttributeType.String);
 
-        var result = CloudEventStringConverter.FromJson(json, attr);
+        CloudEvent result = CloudEventStringConverter.FromJson(json, attr);
 
         Assert.NotNull(result);
     }
@@ -129,13 +130,13 @@ public class CloudEventStringConverterAdditionalTests()
     [Fact]
     public void FromJson_WithExtensionList_ReturnsCloudEvent()
     {
-        var json = CreateValidCloudEventJson();
+        string json = CreateValidCloudEventJson();
         var attrs = new List<CloudEventAttribute>
         {
             CloudEventFactory.CreateAttribute("ext1", CloudEventAttributeType.String)
         };
 
-        var result = CloudEventStringConverter.FromJson(json, attrs);
+        CloudEvent result = CloudEventStringConverter.FromJson(json, attrs);
 
         Assert.NotNull(result);
     }
@@ -143,9 +144,9 @@ public class CloudEventStringConverterAdditionalTests()
     [Fact]
     public void FromBase64_WithExtensionName_ReturnsCloudEvent()
     {
-        var base64 = CreateValidCloudEventBase64();
+        string base64 = CreateValidCloudEventBase64();
 
-        var result = CloudEventStringConverter.FromBase64(base64, "testextension", CloudEventAttributeType.String);
+        CloudEvent result = CloudEventStringConverter.FromBase64(base64, "testextension", CloudEventAttributeType.String);
 
         Assert.NotNull(result);
     }
@@ -153,10 +154,10 @@ public class CloudEventStringConverterAdditionalTests()
     [Fact]
     public void FromBase64_WithExtensionAttribute_ReturnsCloudEvent()
     {
-        var base64 = CreateValidCloudEventBase64();
-        var attr = CloudEventFactory.CreateAttribute("myext", CloudEventAttributeType.String);
+        string base64 = CreateValidCloudEventBase64();
+        CloudEventAttribute attr = CloudEventFactory.CreateAttribute("myext", CloudEventAttributeType.String);
 
-        var result = CloudEventStringConverter.FromBase64(base64, attr);
+        CloudEvent result = CloudEventStringConverter.FromBase64(base64, attr);
 
         Assert.NotNull(result);
     }
@@ -164,13 +165,13 @@ public class CloudEventStringConverterAdditionalTests()
     [Fact]
     public void FromBase64_WithExtensionList_ReturnsCloudEvent()
     {
-        var base64 = CreateValidCloudEventBase64();
+        string base64 = CreateValidCloudEventBase64();
         var attrs = new List<CloudEventAttribute>
         {
             CloudEventFactory.CreateAttribute("ext1", CloudEventAttributeType.String)
         };
 
-        var result = CloudEventStringConverter.FromBase64(base64, attrs);
+        CloudEvent result = CloudEventStringConverter.FromBase64(base64, attrs);
 
         Assert.NotNull(result);
     }

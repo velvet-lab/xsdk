@@ -74,7 +74,7 @@ internal partial class VariableService
             .Any(x => x.Value.ContainsVariable(variable));
     }
 
-    public TType ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false) =>
+    public TType? ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false) =>
         ReadVariableValueInternal<TType>(name, shouldThrowIfNotFound, true);
 
     internal bool TryReadVariableValue<TType>(string name, out TType? value)

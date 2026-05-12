@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Data.Models;
-
-namespace xSdk.Extensions.AspNetCore.Tests.Data.Models;
+namespace xSdk.Data.Models;
 
 public class VariableModelTests
 {
@@ -36,9 +34,10 @@ public class VariableModelTests
     [Fact]
     public void VariableModel_SetName_StoresValue()
     {
-        var model = new VariableModel();
-
-        model.Name = "my-variable";
+        var model = new VariableModel
+        {
+            Name = "my-variable"
+        };
 
         Assert.Equal("my-variable", model.Name);
     }
@@ -46,9 +45,10 @@ public class VariableModelTests
     [Fact]
     public void VariableModel_SetHelpText_StoresValue()
     {
-        var model = new VariableModel();
-
-        model.HelpText = "This is help text";
+        var model = new VariableModel
+        {
+            HelpText = "This is help text"
+        };
 
         Assert.Equal("This is help text", model.HelpText);
     }
@@ -56,9 +56,10 @@ public class VariableModelTests
     [Fact]
     public void VariableModel_SetPrefix_StoresValue()
     {
-        var model = new VariableModel();
-
-        model.Prefix = "app";
+        var model = new VariableModel
+        {
+            Prefix = "app"
+        };
 
         Assert.Equal("app", model.Prefix);
     }
@@ -66,9 +67,10 @@ public class VariableModelTests
     [Fact]
     public void VariableModel_SetIsHidden_StoresValue()
     {
-        var model = new VariableModel();
-
-        model.IsHidden = true;
+        var model = new VariableModel
+        {
+            IsHidden = true
+        };
 
         Assert.True(model.IsHidden);
     }
@@ -76,9 +78,10 @@ public class VariableModelTests
     [Fact]
     public void VariableModel_SetIsProtected_StoresValue()
     {
-        var model = new VariableModel();
-
-        model.IsProtected = true;
+        var model = new VariableModel
+        {
+            IsProtected = true
+        };
 
         Assert.True(model.IsProtected);
     }
@@ -86,9 +89,10 @@ public class VariableModelTests
     [Fact]
     public void VariableModel_SetNoPrefix_StoresValue()
     {
-        var model = new VariableModel();
-
-        model.NoPrefix = true;
+        var model = new VariableModel
+        {
+            NoPrefix = true
+        };
 
         Assert.True(model.NoPrefix);
     }
