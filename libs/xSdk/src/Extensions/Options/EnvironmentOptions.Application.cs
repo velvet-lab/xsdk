@@ -18,7 +18,7 @@ using System.Diagnostics;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Options;
 

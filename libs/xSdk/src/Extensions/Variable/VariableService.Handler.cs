@@ -16,6 +16,7 @@
 
 using System.Collections.Concurrent;
 using xSdk.Extensions.Variable.Providers;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 
@@ -29,9 +30,9 @@ internal partial class VariableService
     {
         // Sets a Value for a existing Variable
         var variable = LoadVariableInternal(name);
-        if (value != null)
+        if (!TypeConverter.IsEmpty(value, typeof(TValueType)))
         {
-            if (!variable.IsProtected)
+            if (variable != null && !variable.IsProtected)
             {
                 SaveValueToMemoryProvider(variable, value);
             }
@@ -140,7 +141,7 @@ internal partial class VariableService
         }
     }
 
-    private void SaveValueToMemoryProvider(IVariable variable, object value)
+    private void SaveValueToMemoryProvider(IVariable variable, object? value)
     {
         var memoryProvider = Providers[nameof(MemoryProvider)] as MemoryProvider;
         if (memoryProvider != null)

@@ -17,12 +17,12 @@
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public static class TypeConverter
 {
-    private static readonly HashSet<Type> _numericTypes = new()
-    {
+    private static readonly HashSet<Type> _numericTypes =
+    [
         typeof(int),
         typeof(double),
         typeof(decimal),
@@ -34,7 +34,7 @@ public static class TypeConverter
         typeof(ushort),
         typeof(uint),
         typeof(float),
-    };
+    ];
 
     public static TValue? ConvertTo<TValue>(object value)
     {
@@ -144,16 +144,19 @@ public static class TypeConverter
                 }
                 else if (targetType == typeof(Guid))
                 {
-                    result = Guid.Parse(value.ToString());
+                    string? valueAsString = value?.ToString();
+                    if(!string.IsNullOrEmpty(valueAsString))
+                    {
+                        result = Guid.Parse(valueAsString);
+                    }
                 }
                 else if (targetType.IsEnum)
                 {
-                    if (value != null)
+                    string? valueAsString = value?.ToString();
+                    if (!string.IsNullOrEmpty(valueAsString))
                     {
-#pragma warning disable CS8604 // Possible null reference argument.
-                        result = Enum.Parse(targetType, value.ToString());
-#pragma warning restore CS8604 // Possible null reference argument.
-                    }
+                        result = Enum.Parse(targetType, valueAsString);
+                    }                    
                 }
             }
             catch
@@ -324,10 +327,9 @@ public static class TypeConverter
         return false;
     }
 
-    public static bool IsNumeric<TType>() => IsNumeric(typeof(TType));
+    public static bool IsNumeric<TType>()
+        => IsNumeric(typeof(TType));
 
     public static bool IsNumeric(Type myType)
-    {
-        return _numericTypes.Contains(Nullable.GetUnderlyingType(myType) ?? myType);
-    }
+        => _numericTypes.Contains(Nullable.GetUnderlyingType(myType) ?? myType);
 }

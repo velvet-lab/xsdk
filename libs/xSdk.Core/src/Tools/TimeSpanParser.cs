@@ -16,7 +16,7 @@
 
 using System.Globalization;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public static class TimeSpanParser
 {
@@ -39,13 +39,13 @@ public static class TimeSpanParser
         return false;
     }
 
-    public static TimeSpan Parse(object value)
-    {
-        try
-        {
-            string? stringValue = value.ToString();
-            stringValue = ValidateString(stringValue);
+    public static TimeSpan Parse(object? value)
+    {        
+        string? stringValue = value?.ToString();
+        stringValue = ValidateString(stringValue);
 
+        if (stringValue != null)
+        {
             string unit = stringValue.Substring(stringValue.Length - 2);
             if (!IsValidUnit(unit))
             {
@@ -85,24 +85,25 @@ public static class TimeSpanParser
             {
                 return TimeSpan.FromDays(doubleValue);
             }
+        }
 
-            return TimeSpan.Zero;
-        }
-        catch
-        {
-            throw;
-        }
+        return TimeSpan.Zero;        
     }
 
     private static bool IsValidUnit(string value)
     {
-        string[] units = new string[] { "ms", "s", "m", "h", "d" };
+        string[] units = ["ms", "s", "m", "h", "d"];
 
         return units.Contains(value.ToLower());
     }
 
-    private static string ValidateString(string value)
+    private static string? ValidateString(string? value)
     {
+        if(value == null)
+        {
+            return null;
+        }
+
         bool existUnit = false;
         new List<string>() { "ms", "s", "m", "h", "d" }
             .ToList()

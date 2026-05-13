@@ -16,6 +16,7 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace xSdk.Data;
@@ -28,7 +29,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var item = await dbContext.AddAsync(entity, token);
+                await dbContext.AddAsync(entity, token);
                 return await dbContext.SaveChangesAsync(token) > 0;
             },
             true,
@@ -48,21 +49,19 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         );
 
     public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default)
-    {
-        throw new NotImplementedException();
-    }
+        => throw new NotImplementedException();
 
     public override Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id.Equals(primaryKey));
-
+                TEntity? trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id.Equals(primaryKey));
                 if (trackedItem != null)
                 {
                     dbContext.Remove(trackedItem);
                     return await dbContext.SaveChangesAsync(token) > 0;
                 }
+
                 return false;
             },
             true,
@@ -73,12 +72,13 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var existing = await SelectAsync(entity.Id, token);
+                TEntity? existing = await SelectAsync(entity.Id, token);
                 if (existing != null)
                 {
                     dbContext.Remove(entity);
                     return await dbContext.SaveChangesAsync(token) > 0;
                 }
+
                 return true;
             },
             true,
@@ -98,10 +98,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     public override Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
-            (dbContext) =>
-            {
-                return dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
-            },
+            (dbContext) => dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token),
             false,
             token
         );
@@ -109,25 +106,30 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
     protected Task<TEntity?> SelectAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().SingleOrDefaultAsync(filter), false, token);
 
-    public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default) =>
+    public override Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default) =>
         ExecuteInternalAsync(async (dbContext) =>
         {
-            var dbSet = dbContext.Set<TEntity>();
+            DbSet<TEntity> dbSet = dbContext.Set<TEntity>();
             IEnumerable<TEntity> entities = await dbSet.ToListAsync(token);
-            if (entities == null)
-                entities = new List<TEntity>();
+            entities ??= [];
 
             return entities;
         }, false, token);
 
-    protected Task<IEnumerable<TEntity>> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
-        ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().Where(filter).ToListAsync() as Task<IEnumerable<TEntity>>, false, token);
+    protected Task<IEnumerable<TEntity>?> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
+        ExecuteInternalAsync(dbContext => {
+            var result = dbContext
+                .Set<TEntity>()
+                .Where(filter)
+                .ToListAsync(token) as Task<IEnumerable<TEntity>>;
 
+            return result ?? Task.FromResult<IEnumerable<TEntity>>([]);
+        }, false, token);
     public override Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default) =>
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
+                TEntity? trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
 
                 if (trackedItem != null)
                 {
@@ -148,7 +150,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                var trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), token);
+                TEntity? trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), token);
 
                 if (trackedItem == null)
                 {
@@ -184,7 +186,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
                     shouldUseTransaction = false;
                 }
 
-                var dbContext = database.Open<TDbContext>();
+                TDbContext? dbContext = database.Open<TDbContext>();
                 if (dbContext != null)
                 {
 
@@ -195,13 +197,15 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
                     }
 
                     if (shouldUseTransaction)
-                        transaction = await dbContext.Database.BeginTransactionAsync();
+                    {
+                        transaction = await dbContext.Database.BeginTransactionAsync(token);
+                    }
 
-                    result = await func(dbContext);
+                    result = await func(dbContext);                    
 
                     if (shouldUseTransaction && transaction != null)
                     {
-                        await transaction.CommitAsync();
+                        await transaction.CommitAsync(token);
                     }
                 }
                 else
@@ -213,11 +217,13 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
             {
                 if (shouldUseTransaction && transaction != null)
                 {
-                    await transaction.RollbackAsync();
+                    await transaction.RollbackAsync(token);
                     throw new SdkException("A Error occurred while Operation with Transaction will executed", ex);
                 }
                 else
+                {
                     throw new SdkException("A Error occured while a Operation will executed", ex);
+                }
             }
             finally
             {

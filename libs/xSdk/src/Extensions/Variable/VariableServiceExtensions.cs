@@ -16,7 +16,7 @@
 
 using System.Reflection;
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 

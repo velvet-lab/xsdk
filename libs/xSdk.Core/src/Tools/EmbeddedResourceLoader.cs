@@ -18,7 +18,7 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using xSdk.Hosting;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 {

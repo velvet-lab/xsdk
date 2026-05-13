@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public class TimeSpanParserTests
 {

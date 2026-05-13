@@ -16,7 +16,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Data.Annotations;
 

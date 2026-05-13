@@ -15,7 +15,7 @@
  */
 
 using xSdk.Extensions.Variable.Providers;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 
@@ -63,15 +63,19 @@ internal partial class VariableService
     {
         var variable = LoadVariable(name);
 
-        return Providers
-            .Where(x =>
-                string.Compare(x.Key, nameof(FileProvider), true) == 0
-                || string.Compare(x.Key, nameof(EnvironmentProvider), true) == 0
-                || string.Compare(x.Key, nameof(CommandlineProvider), true) == 0
-                || string.Compare(x.Key, nameof(OptionProvider), true) == 0
-                || string.Compare(x.Key, nameof(MemoryProvider), true) == 0
-            )
-            .Any(x => x.Value.ContainsVariable(variable));
+        if (variable != null)
+        {
+            return Providers
+                .Where(x =>
+                    string.Compare(x.Key, nameof(FileProvider), true) == 0
+                    || string.Compare(x.Key, nameof(EnvironmentProvider), true) == 0
+                    || string.Compare(x.Key, nameof(CommandlineProvider), true) == 0
+                    || string.Compare(x.Key, nameof(OptionProvider), true) == 0
+                    || string.Compare(x.Key, nameof(MemoryProvider), true) == 0
+                )
+                .Any(x => x.Value.ContainsVariable(variable));
+        }
+        return false;
     }
 
     public TType? ReadVariableValue<TType>(string name, bool shouldThrowIfNotFound = false) =>

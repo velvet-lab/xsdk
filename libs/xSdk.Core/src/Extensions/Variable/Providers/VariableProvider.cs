@@ -24,7 +24,7 @@ public abstract class VariableProvider
 
     public bool TryReadVariable<TType>(IVariable variable, out TType? value)
     {
-        var result = ReadVariable(variable);
+        object? result = ReadVariable(variable);
         return TryConvertValue(result, variable, out value);
     }
 
@@ -46,8 +46,12 @@ public abstract class VariableProvider
                 {
                     try
                     {
-                        result = (TType)Enum.Parse(variable.ValueType, value.ToString(), true);
-                        return true;
+                        string? valueString = value.ToString();
+                        if(!string.IsNullOrEmpty(valueString))
+                        {
+                            result = (TType)Enum.Parse(variable.ValueType, valueString, true);
+                            return true;
+                        }
                     }
                     catch
                     {

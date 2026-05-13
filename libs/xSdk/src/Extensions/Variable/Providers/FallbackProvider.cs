@@ -49,8 +49,15 @@ internal sealed class FallbackProvider(ApplicationOptions? options) : VariablePr
         return result;
     }
 
-    private string CreateFileName(IVariable variable) =>
-        Path.Combine(GetDefaultProfilePath(), options.Prefix.ToLower(), "config", $"{variable.Name}.env");
+    private string CreateFileName(IVariable variable)
+    {
+        if (options != null && !string.IsNullOrEmpty(options.Prefix))
+        {
+            return Path.Combine(GetDefaultProfilePath(), options.Prefix.ToLower(), "config", $"{variable.Name}.env");
+        }
+
+        throw new InvalidOperationException("Options must be provided to create a file name.");
+    }
 
     private static string GetDefaultProfilePath()
     {
@@ -59,7 +66,10 @@ internal sealed class FallbackProvider(ApplicationOptions? options) : VariablePr
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             var userProfileBase = Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile));
-            defaultProfileBase = Path.Combine(userProfileBase.FullName, "Default", "AppData", "Local");
+            if (userProfileBase != null)
+            {
+                defaultProfileBase = Path.Combine(userProfileBase.FullName, "Default", "AppData", "Local");
+            }
         }
 
         return defaultProfileBase;

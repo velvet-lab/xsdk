@@ -25,25 +25,30 @@ public static class ExtensionDataConverter
     {
         if (!string.IsNullOrEmpty(sourceMember))
         {
-            var options = JsonTools.GetSerializerOptions();
+            JsonSerializerOptions options = JsonTools.GetSerializerOptions();
             options.WriteIndented = false;
 
-            var result = JsonSerializer.Deserialize<IDictionary<string, object>>(sourceMember, options);
-            return result;
+            IDictionary<string, object>? result = JsonSerializer.Deserialize<IDictionary<string, object>>(sourceMember, options);
+            if (result != null)
+            {
+                return result;
+            }
         }
-        return null;
+
+        return new Dictionary<string, object>();
     }
 
-    public static string Convert(IDictionary<string, object> sourceMember)
+    public static string? Convert(IDictionary<string, object> sourceMember)
     {
         if (sourceMember != null)
         {
-            var options = JsonTools.GetSerializerOptions();
+            JsonSerializerOptions options = JsonTools.GetSerializerOptions();
             options.WriteIndented = false;
 
-            var json = JsonSerializer.Serialize(sourceMember, options);
+            string json = JsonSerializer.Serialize(sourceMember, options);
             return json;
         }
-        return null;
+
+        return default;
     }
 }

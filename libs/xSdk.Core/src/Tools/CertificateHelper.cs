@@ -21,7 +21,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using xSdk.Hosting;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public static class CertificateHelper
 {

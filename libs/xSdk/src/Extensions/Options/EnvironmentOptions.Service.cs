@@ -54,11 +54,11 @@ public sealed partial class EnvironmentOptions
         if (string.IsNullOrEmpty(currentServiceName) || string.IsNullOrEmpty(currentServiceNamespace) || string.IsNullOrEmpty(currentServiceVersion))
         {
             Assembly? assembly = Assembly.GetEntryAssembly();
-            AssemblyName assemblyName = assembly.GetName();
+            AssemblyName? assemblyName = assembly?.GetName();
 
             if (string.IsNullOrEmpty(currentServiceName))
             {
-                currentServiceName = assemblyName.Name;
+                currentServiceName = assemblyName?.Name;
             }
 
             if (string.IsNullOrEmpty(currentServiceNamespace))
@@ -72,7 +72,7 @@ public sealed partial class EnvironmentOptions
 
             if (string.IsNullOrEmpty(currentServiceVersion))
             {
-                currentServiceVersion = assemblyName.Version.ToString();
+                currentServiceVersion = assemblyName?.Version?.ToString();
             }
         }
 
@@ -92,17 +92,17 @@ public sealed partial class EnvironmentOptions
         ServiceVersion = currentServiceVersion;
     }
 
-    private static string? ReadServiceNamespace(Assembly assembly)
+    private static string? ReadServiceNamespace(Assembly? assembly)
     {
-        Type[] types = assembly.GetExportedTypes();
-        if (types != null && types.Any())
+        if (assembly != null)
         {
-            return types.Select(x => x.Namespace).Where(x => x != null).OrderBy(x => x.Length).FirstOrDefault();
+            Type[] types = assembly.GetExportedTypes();
+            if (types != null && types.Any())
+            {
+                return types.Select(x => x.Namespace).Where(x => x != null).OrderBy(x => x?.Length).FirstOrDefault();
+            }
         }
-        else
-        {
-            return string.Empty;
-        }
+        return null;
     }
 
     private static partial class Definitions

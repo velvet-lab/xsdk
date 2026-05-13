@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using System.ComponentModel;
+using ComponentModel = System.ComponentModel;
 
 namespace xSdk.Tools;
 
@@ -63,7 +63,7 @@ public static class PrimaryKeyTools
             }
             else
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(targetType);
+                ComponentModel.TypeConverter converter = ComponentModel.TypeDescriptor.GetConverter(targetType);
                 if (converter != null && converter.CanConvertFrom(typeof(string)))
                 {
                     result = (TTargetType)converter.ConvertFromString(value)!;

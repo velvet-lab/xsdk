@@ -16,7 +16,6 @@
 
 using System.Text.Json;
 using CloudNative.CloudEvents;
-using xSdk.Shared;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
@@ -132,7 +131,7 @@ public static class CloudEventExtensions
     //    return default;
     //}
 
-    public static object GetDataObject(this CloudEvent cloudEvent)
+    public static object? GetDataObject(this CloudEvent cloudEvent)
     {
         Type? requestedDataType = cloudEvent.GetDataObjectType();
         return cloudEvent.GetDataObject(requestedDataType);

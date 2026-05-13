@@ -20,11 +20,11 @@ namespace xSdk.Extensions.Links;
 
 internal sealed class MethodDescription
 {
-    public required MethodInfo Action { get; internal set; }
+    public MethodInfo Action { get; internal set; } = default;
 
-    public required Type ControllerType { get; internal set; }
+    public Type ControllerType { get; internal set; }
 
-    public required HttpMethod HttpMethod { get; internal set; }
+    public HttpMethod HttpMethod { get; internal set; }
 
     public string? MethodName { get; internal set; }
 

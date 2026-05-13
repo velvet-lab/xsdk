@@ -26,13 +26,13 @@ public sealed class WebSecurityOptions : VariableSetup
         template: Definitions.Origins.Template,
         helpText: Definitions.Origins.HelpText,
         protect: true)]
-    public string Origins
+    public string? Origins
     {
         get => ReadValue<string>(Definitions.Origins.Name);
         set => SetValue(Definitions.Origins.Name, value);
     }
 
-    public bool IsCorsEnabled => !string.IsNullOrEmpty(this.Origins);
+    public bool IsCorsEnabled => !string.IsNullOrEmpty(Origins);
 
     public static class Definitions
     {

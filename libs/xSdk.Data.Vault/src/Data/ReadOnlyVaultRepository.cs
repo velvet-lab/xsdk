@@ -21,7 +21,7 @@ using VaultSharp;
 using VaultSharp.V1.Commons;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Data;
 

@@ -16,7 +16,7 @@
 
 using System.Reflection;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 /// <summary>
 /// <see cref="PropertyInfo"/> extension methods.

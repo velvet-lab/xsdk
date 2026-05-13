@@ -27,7 +27,7 @@ public class PluginHostExtensionsTests
 
     private sealed class FakePluginHost : PluginDescription, IPluginHost
     {
-        public new IServiceProvider Services => null!;
+        public IServiceProvider Services => null!;
         public void ConfigureServices(IServiceCollection services) { }
         public void ConfigureServices(Microsoft.Extensions.Hosting.HostBuilderContext context, IServiceCollection services) { }
     }

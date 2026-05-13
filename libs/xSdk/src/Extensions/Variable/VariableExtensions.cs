@@ -99,6 +99,7 @@ internal static class VariableExtensions
         {
             casted.NoPrefix = true;
         }
+
         return variable;
     }
 
@@ -108,12 +109,12 @@ internal static class VariableExtensions
         result = default;
 #nullable restore
 
-        var casted = variable as Variable;
-        if (casted != null)
+        if (variable is Variable casted)
         {
             result = casted;
             return true;
         }
+
         return false;
     }
 }

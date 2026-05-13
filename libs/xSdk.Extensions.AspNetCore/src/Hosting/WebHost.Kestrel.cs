@@ -31,101 +31,108 @@ public static partial class WebHost
 {
     private static void ConfigureKestrel(KestrelServerOptions options)
     {
-        var webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
-        var fileService = options.ApplicationServices.GetService<IFileSystemService>();
-        var certAvailable = false;
+        WebHostOptions? webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
+        IFileSystemService? fileService = options.ApplicationServices.GetService<IFileSystemService>();
+        bool certAvailable = false;
 
-        var httpPort = webSetup.Http;
-        var grpcPort = webSetup.Grpc;
-
-        // Remove Kestrel Header for security reasons
-        options.AddServerHeader = false;
-
-        if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2? cert))
+        if (webSetup == null)
         {
-            certAvailable = true;
-            httpPort = webSetup.Https;
+            _logger.LogDebug("No WebHostOptions found, using default Kestrel configuration");
+        }
+        else
+        {
+            int httpPort = webSetup.Http;
+            int grpcPort = webSetup.Grpc;
 
-            options.ConfigureHttpsDefaults(_ =>
+            // Remove Kestrel Header for security reasons
+            options.AddServerHeader = false;
+
+            if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2? cert))
             {
-                _.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                if (Debugger.IsAttached)
+                certAvailable = true;
+                httpPort = webSetup.Https;
+
+                options.ConfigureHttpsDefaults(_ =>
                 {
-                    _.CheckCertificateRevocation = false;
-                }
+                    _.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                    if (Debugger.IsAttached)
+                    {
+                        _.CheckCertificateRevocation = false;
+                    }
 
-                _.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; // DevSkim: ignore DS440001,DS440020,DS112836
-                _.ServerCertificate = cert;
-            });
+                    _.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; // DevSkim: ignore DS440001,DS440020,DS112836
+                    _.ServerCertificate = cert;
+                });
 
-            options.ConfigureEndpointDefaults(_ => _.UseHttps());
-        }
-
-        if (httpPort <= 1024 && !webSetup.AllowSystemPorts)
-        {
-            throw new SdkException($"Port '{httpPort}' is not allowed");
-        }
-
-        if (httpPort == grpcPort)
-        {
-            throw new SdkException($"Http Port must be different to gRpc Port");
-        }
-
-        var protocols = HttpProtocols.Http1;
-        if (certAvailable)
-        {
-            protocols = HttpProtocols.Http1AndHttp2;
-        }
-
-        if (httpPort > 1024 || webSetup.AllowSystemPorts)
-        {
-            if (httpPort > 0)
-            {
-                if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
-                {
-                    options.ListenLocalhost(httpPort, setup => setup.Protocols = protocols);
-                }
-                else
-                {
-                    options.ListenAnyIP(httpPort, setup => setup.Protocols = protocols);
-                }
+                options.ConfigureEndpointDefaults(_ => _.UseHttps());
             }
-            else
-            {
-                _logger.LogDebug("Http Port is not set");
-            }
-        }
 
-        if (grpcPort > 1024 || webSetup.AllowSystemPorts)
-        {
-            if (grpcPort > 0)
+            if (httpPort <= 1024 && !webSetup.AllowSystemPorts)
             {
-                if (certAvailable)
+                throw new SdkException(string.Format("Port '{0}' is not allowed", httpPort));
+            }
+
+            if (httpPort == grpcPort)
+            {
+                throw new SdkException("Http Port must be different to gRpc Port");
+            }
+
+            var protocols = HttpProtocols.Http1;
+            if (certAvailable)
+            {
+                protocols = HttpProtocols.Http1AndHttp2;
+            }
+
+            if (httpPort > 1024 || webSetup.AllowSystemPorts)
+            {
+                if (httpPort > 0)
                 {
                     if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
                     {
-                        options.ListenLocalhost(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                        options.ListenLocalhost(httpPort, setup => setup.Protocols = protocols);
                     }
                     else
                     {
-                        options.ListenAnyIP(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                        options.ListenAnyIP(httpPort, setup => setup.Protocols = protocols);
                     }
                 }
                 else
                 {
-                    _logger.LogError("Https configuration is needed for gRpc");
+                    _logger.LogDebug("Http Port is not set");
                 }
             }
-            else
+
+            if (grpcPort > 1024 || webSetup.AllowSystemPorts)
             {
-                _logger.LogDebug("gRpc Port is not set");
+                if (grpcPort > 0)
+                {
+                    if (certAvailable)
+                    {
+                        if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
+                        {
+                            options.ListenLocalhost(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                        }
+                        else
+                        {
+                            options.ListenAnyIP(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogError("Https configuration is needed for gRpc");
+                    }
+                }
+                else
+                {
+                    _logger.LogDebug("gRpc Port is not set");
+                }
             }
         }
     }
 
-    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService? fileService, WebHostOptions webSetup, out X509Certificate2? cert)
+    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService? fileService, WebHostOptions? webSetup, out X509Certificate2? cert)
     {
-        if (webSetup.IsHttpsEnabled)
+        if (webSetup != null && webSetup.IsHttpsEnabled)
         {
             if (fileService == null)
             {

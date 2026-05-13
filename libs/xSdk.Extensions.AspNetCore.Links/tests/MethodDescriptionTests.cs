@@ -31,7 +31,7 @@ public class MethodDescriptionTests
     [Fact]
     public void MethodDescription_ToString_WhenMethodNameIsNull_ReturnsTypeName()
     {
-        var desc = new MethodDescription();
+        var desc = new MethodDescription { Action = default };
 
         var result = desc.ToString();
 

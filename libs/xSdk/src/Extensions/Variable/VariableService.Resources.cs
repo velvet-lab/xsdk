@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 

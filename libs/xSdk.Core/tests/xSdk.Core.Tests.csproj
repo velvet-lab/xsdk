@@ -35,5 +35,6 @@
 
     <ItemGroup>
       <Folder Include="Data\Converters\Mapper\" />
+      <Folder Include="Shared\" />
     </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ public static class ModelExtensions
     /// <typeparam name="TModel">A Model Type <see cref="IModel"/></typeparam>
     /// <param name="cloudEvent">A <see cref="CloudEvent"/> Object</param>
     /// <returns>The Model</returns>
-    public static TModel ToModel<TModel>(this CloudEvent cloudEvent)
+    public static TModel? ToModel<TModel>(this CloudEvent cloudEvent)
         where TModel : class, IModel => cloudEvent.GetDataObject<TModel>();
 
     /// <summary>
@@ -65,10 +65,12 @@ public static class ModelExtensions
         where TModel : IModel
     {
         if (string.IsNullOrEmpty(scope))
+        {
             scope = model.GetType().Name;
+        }
 
-        var (sourceBaseUrl, schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
-        var cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, ContentTypes.ApplicationJson, null);
+        (string? sourceBaseUrl, string? _) = CloudEventFactory.CreateBaseUrls(scope);
+        CloudEvent cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, ContentTypes.ApplicationJson, null);
 
         // The Data Object
         cloudEvent.SetDataObject(model);

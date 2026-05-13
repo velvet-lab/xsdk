@@ -32,4 +32,8 @@
             <_Parameter1>xSdk</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Shared\" />
+    </ItemGroup>
 </Project>

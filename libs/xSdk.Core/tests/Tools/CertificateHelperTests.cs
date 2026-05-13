@@ -17,7 +17,7 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public class CertificateHelperTests
 {

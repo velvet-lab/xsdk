@@ -15,7 +15,7 @@
  */
 
 using System.Reflection;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Plugin;
 

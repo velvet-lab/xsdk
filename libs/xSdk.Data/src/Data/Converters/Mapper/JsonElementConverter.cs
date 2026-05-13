@@ -25,16 +25,16 @@ public static class JsonElementConverter
     {
         if (!string.IsNullOrEmpty(sourceMember))
         {
-            var json = Base64Tools.ConvertFromBase64(sourceMember.Trim());
+            string? json = Base64Tools.ConvertFromBase64(sourceMember.Trim());
             return JsonDocument.Parse(json).RootElement;
         }
 
         return JsonDocument.Parse("{}").RootElement;
     }
 
-    public static string Convert(JsonElement sourceMember)
+    public static string? Convert(JsonElement sourceMember)
     {
-        var json = sourceMember.GetRawText();
+        string json = sourceMember.GetRawText();
         return Base64Tools.ConvertToBase64(json);
     }
 }

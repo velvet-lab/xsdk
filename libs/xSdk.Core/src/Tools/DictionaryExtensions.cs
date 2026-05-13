@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-namespace xSdk.Shared;
+namespace xSdk.Tools;
 
 public static class DictionaryExtensions
 {
-    private static readonly object _lock = new object();
+    private static readonly Lock _lock = new();
 
     public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue? value)
     {
@@ -32,9 +32,13 @@ public static class DictionaryExtensions
             lock (_lock)
             {
                 if (dictionary.ContainsKey(key))
+                {
                     dictionary[key] = value;
+                }
                 else
+                {
                     dictionary.Add(key, value);
+                }
             }
         }
     }
@@ -48,19 +52,31 @@ public static class DictionaryExtensions
 
         if (!string.IsNullOrEmpty(key))
         {
-            if (dictionary.ContainsKey(key))
-                dictionary[key] = value.ToString();
-            else
-                dictionary.Add(key, value.ToString());
+            string? valueString = value.ToString();
+            if (!string.IsNullOrEmpty(valueString))
+            {
+                if (dictionary.ContainsKey(key))
+                {
+                    dictionary[key] = valueString;
+                }
+                else
+                {
+                    dictionary.Add(key, valueString);
+                }
+            }
         }
     }
 
     public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, KeyValuePair<TKey, TValue> item)
     {
         if (dictionary.ContainsKey(item.Key))
+        {
             dictionary[item.Key] = item.Value;
+        }
         else
+        {
             dictionary.Add(item.Key, item.Value);
+        }
     }
 
     public static TValue? GetValue<TValue>(this IDictionary<string, string> dictionary, string key)
