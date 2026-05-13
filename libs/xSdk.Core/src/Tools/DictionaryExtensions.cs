@@ -20,7 +20,7 @@ public static class DictionaryExtensions
 {
     private static readonly Lock _lock = new();
 
-    public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue? value)
+    public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey? key, TValue? value)
     {
         if(value == null)
         {
