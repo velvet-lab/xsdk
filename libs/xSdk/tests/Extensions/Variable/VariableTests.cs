@@ -47,7 +47,7 @@ public class VariableTests()
 
         Assert.NotNull(variable);
         Assert.Equal(PREFIX.ToLower(), variable.Prefix);
-        
+
         Assert.Equal($"--{PREFIX}{SEPERATOR}{NAME}".Replace(SEPERATOR, "-").ToLower(), variable.KeyForCommandline);
     }
 
@@ -76,7 +76,7 @@ public class VariableTests()
         Assert.Equal(hash1, hash2);
     }
 
-    [Fact]    
+    [Fact]
     public void Variable_Equals_SameNameAndType_AreEqual()
     {
         var v1 = Variable.Create(NAME, typeof(string));

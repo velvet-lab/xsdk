@@ -49,7 +49,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                     path = setup.PathFormatFactory?.Invoke(env.Stage, path);
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-                }                
+                }
 
                 Secret<SecretData>? secret = null;
 

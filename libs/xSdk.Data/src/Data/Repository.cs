@@ -27,10 +27,11 @@ public abstract class Repository : IRepository
 
     public string? DatalayerName { get; internal set; }
 
-    public IServiceProvider Services {
+    public IServiceProvider Services
+    {
         get
         {
-            if(_serviceProvider == null)
+            if (_serviceProvider == null)
             {
                 throw new SdkException("ServiceProvider is not set for Repository. This should be set by the RepositoryFactory when creating the Repository.");
             }

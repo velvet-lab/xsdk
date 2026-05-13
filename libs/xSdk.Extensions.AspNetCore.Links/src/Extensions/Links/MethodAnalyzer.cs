@@ -47,7 +47,7 @@ internal static class MethodAnalyzer
                         MethodName = httpAttribute.Name,
                         RouteTemplate = httpAttribute.Template
                     };
-                    
+
                     var linksAttribute = method.GetCustomAttribute<LinksAttribute>();
                     if (linksAttribute != null)
                     {

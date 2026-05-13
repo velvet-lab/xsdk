@@ -145,7 +145,7 @@ public static class TypeConverter
                 else if (targetType == typeof(Guid))
                 {
                     string? valueAsString = value?.ToString();
-                    if(!string.IsNullOrEmpty(valueAsString))
+                    if (!string.IsNullOrEmpty(valueAsString))
                     {
                         result = Guid.Parse(valueAsString);
                     }
@@ -156,7 +156,7 @@ public static class TypeConverter
                     if (!string.IsNullOrEmpty(valueAsString))
                     {
                         result = Enum.Parse(targetType, valueAsString);
-                    }                    
+                    }
                 }
             }
             catch

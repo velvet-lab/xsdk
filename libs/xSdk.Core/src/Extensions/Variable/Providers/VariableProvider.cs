@@ -47,7 +47,7 @@ public abstract class VariableProvider
                     try
                     {
                         string? valueString = value.ToString();
-                        if(!string.IsNullOrEmpty(valueString))
+                        if (!string.IsNullOrEmpty(valueString))
                         {
                             result = (TType)Enum.Parse(variable.ValueType, valueString, true);
                             return true;

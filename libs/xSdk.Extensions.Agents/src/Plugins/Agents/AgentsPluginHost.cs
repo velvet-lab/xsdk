@@ -10,9 +10,9 @@ internal class AgentsPluginHost : WebPluginHost
         IMcpServerBuilder builder = services
             .AddMcpServer(options =>
             {
-            
+
             });
 
-        
+
     }
 }

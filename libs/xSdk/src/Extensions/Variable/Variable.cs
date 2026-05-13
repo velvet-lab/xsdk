@@ -31,7 +31,7 @@ public class Variable : IVariable
         ArgumentNullException.ThrowIfNull(valueType);
 
         ValueType = valueType;
-        
+
         _applicationPrefix = "none";// SlimHost.Instance.AppPrefix;
     }
 

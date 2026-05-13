@@ -22,7 +22,7 @@ public static class DictionaryExtensions
 
     public static void AddOrNew<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey? key, TValue? value)
     {
-        if(value == null)
+        if (value == null)
         {
             return;
         }
@@ -45,7 +45,7 @@ public static class DictionaryExtensions
 
     public static void AddOrNew<TValue>(this IDictionary<string, string> dictionary, string key, TValue? value)
     {
-        if(value == null)
+        if (value == null)
         {
             return;
         }

@@ -117,7 +117,8 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         }, false, token);
 
     protected Task<IEnumerable<TEntity>?> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
-        ExecuteInternalAsync(dbContext => {
+        ExecuteInternalAsync(dbContext =>
+        {
             var result = dbContext
                 .Set<TEntity>()
                 .Where(filter)
@@ -201,7 +202,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
                         transaction = await dbContext.Database.BeginTransactionAsync(token);
                     }
 
-                    result = await func(dbContext);                    
+                    result = await func(dbContext);
 
                     if (shouldUseTransaction && transaction != null)
                     {

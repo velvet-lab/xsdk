@@ -40,7 +40,7 @@ public static class TimeSpanParser
     }
 
     public static TimeSpan Parse(object? value)
-    {        
+    {
         string? stringValue = value?.ToString();
         stringValue = ValidateString(stringValue);
 
@@ -87,7 +87,7 @@ public static class TimeSpanParser
             }
         }
 
-        return TimeSpan.Zero;        
+        return TimeSpan.Zero;
     }
 
     private static bool IsValidUnit(string value)
@@ -99,7 +99,7 @@ public static class TimeSpanParser
 
     private static string? ValidateString(string? value)
     {
-        if(value == null)
+        if (value == null)
         {
             return null;
         }

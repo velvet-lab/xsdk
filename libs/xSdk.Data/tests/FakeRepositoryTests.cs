@@ -52,7 +52,7 @@ public class FakeRepositoryTests
     {
         FakeRepository<TestEntity, Guid> repo = CreateRepository();
         List<TestEntity> entities =
-        [        
+        [
             new TestEntity { Name = "Alice", Age = 30 },
             new TestEntity { Name = "Bob", Age = 25 },
             new TestEntity { Name = "Charlie", Age = 35 }

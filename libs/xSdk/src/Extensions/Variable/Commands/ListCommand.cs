@@ -101,10 +101,10 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
                     if (value != null)
                     {
                         string? valueAsString = value.ToString();
-                        if(!string.IsNullOrEmpty(valueAsString))
+                        if (!string.IsNullOrEmpty(valueAsString))
                         {
                             rowItems.Add(valueAsString);
-                        }                       
+                        }
                     }
                     else
                     {

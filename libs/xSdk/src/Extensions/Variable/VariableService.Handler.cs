@@ -75,7 +75,7 @@ internal partial class VariableService
 
     private void ReplaceVariable<TValueType>(Variable variable, TValueType? value, bool ignoreWriteProtection)
     {
-        if(variable == null)
+        if (variable == null)
         {
             throw new SdkException($"Variable could not replaced, because variable is null");
         }

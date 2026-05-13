@@ -13,6 +13,6 @@ public static class HostBuilderExtensions
     {
         return hostBuilder
             .RegisterPluginHost<AgentsPluginHost>();
-            //.RegisterPluginBuilder<ILinksPluginBuilder, TPluginBuilder>();
+        //.RegisterPluginBuilder<ILinksPluginBuilder, TPluginBuilder>();
     }
 }
