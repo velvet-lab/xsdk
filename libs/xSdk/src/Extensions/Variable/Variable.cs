@@ -120,11 +120,11 @@ public class Variable : IVariable
         }
 
         string? key = variableName;
-        if (!string.IsNullOrEmpty(prefix))
+        if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(key))
         {
             if (key.StartsWith(prefix))
             {
-                key = key.Substring(prefix.Length)?.Trim();
+                key = key.Substring(prefix.Length).Trim();
                 key = RemoveUnwantedCharsOnFirstPosition(key);
             }
         }

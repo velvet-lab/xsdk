@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
+using xSdk.Hosting;
 
 namespace xSdk.Data;
 
@@ -24,14 +25,14 @@ internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatab
     where TDatabase : class
 {
     private readonly IServiceProvider _provider;
-    private readonly ILogger<DatabasePoolPolicy<TDatabase>>? _logger;
+    private readonly ILogger _logger;
     private readonly ObjectFactory _factory;
     private readonly bool _isResettable;
 
     public DatabasePoolPolicy(IServiceProvider provider)
     {
         _provider = provider;
-        _logger = provider.GetService<ILogger<DatabasePoolPolicy<TDatabase>>>();
+        _logger = provider.GetService<ILogger<DatabasePoolPolicy<TDatabase>>>() ?? LogManager.GetCurrentClassLogger();
         _factory = ActivatorUtilities.CreateFactory(typeof(TDatabase), Type.EmptyTypes);
         _isResettable = typeof(IResettable).IsAssignableFrom(typeof(TDatabase));
     }
@@ -43,9 +44,6 @@ internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatab
 
     public TDatabase Create()
     {
-        //var database = ActivatorUtilities.CreateInstance<TDatabase>(_provider);
-        //return database;
-
         try
         {
             var objectFactory = _factory(_provider, Array.Empty<object?>());

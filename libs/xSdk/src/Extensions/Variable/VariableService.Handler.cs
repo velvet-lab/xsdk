@@ -76,7 +76,7 @@ internal partial class VariableService
     private void ReplaceVariable<TValueType>(Variable variable, TValueType? value, bool ignoreWriteProtection)
     {
         // Replace a existing Variable
-        var item = LoadVariableInternal(variable?.Name);
+        var item = LoadVariableInternal(variable.Name);
         if (item != null)
         {
             if (!item.IsProtected || ignoreWriteProtection)
@@ -127,7 +127,7 @@ internal partial class VariableService
     private void AddVariableInternal(IVariable variable, bool throwIfAlreadyExists)
     {
         // Adds a variable if not exists
-        var item = LoadVariableInternal(variable?.Name);
+        var item = LoadVariableInternal(variable.Name);
         if (item == null)
         {
             Variables.Add(variable);

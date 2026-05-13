@@ -26,7 +26,10 @@ public static class JsonElementConverter
         if (!string.IsNullOrEmpty(sourceMember))
         {
             string? json = Base64Tools.ConvertFromBase64(sourceMember.Trim());
-            return JsonDocument.Parse(json).RootElement;
+            if (!string.IsNullOrEmpty(json))
+            {
+                return JsonDocument.Parse(json).RootElement;
+            }
         }
 
         return JsonDocument.Parse("{}").RootElement;

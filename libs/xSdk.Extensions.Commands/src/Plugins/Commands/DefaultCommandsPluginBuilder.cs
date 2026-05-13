@@ -35,6 +35,11 @@ internal sealed class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> 
 
     public void Configure(IConfigurator setup)
     {
+        if(string.IsNullOrEmpty(options.Value.Name))
+        {
+            throw new InvalidOperationException("Application name must be set in order to use the default commands plugin.");
+        }
+
         setup.SetApplicationName(options.Value.Name);
 
         setup.AddVariableCommands();

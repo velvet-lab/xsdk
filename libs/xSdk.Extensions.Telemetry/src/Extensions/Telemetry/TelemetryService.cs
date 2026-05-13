@@ -79,6 +79,7 @@ internal partial class TelemetryService : ITelemetryService
         if (_mainActivitySource == null)
         {
             _logger.LogInformation("Create main activity source for tracing");
+            if(_envSetup)
             _mainActivitySource = new ActivitySource(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
         }
 

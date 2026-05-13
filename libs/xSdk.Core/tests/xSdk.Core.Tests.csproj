@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Shared\**" />
+      <EmbeddedResource Remove="Shared\**" />
+      <None Remove="Shared\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="AspNetCore.Authentication.ApiKey" />        
         <PackageReference Include="coverlet.collector" />
         <PackageReference Include="FluentValidation" />
@@ -35,6 +41,5 @@
 
     <ItemGroup>
       <Folder Include="Data\Converters\Mapper\" />
-      <Folder Include="Shared\" />
     </ItemGroup>
 </Project>
