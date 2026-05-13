@@ -35,7 +35,10 @@ internal sealed class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> 
 
     public void Configure(IConfigurator setup)
     {
-        setup.SetApplicationName(options.Value.Name);
+        if (!string.IsNullOrEmpty(options.Value.Name))
+        {
+            setup.SetApplicationName(options.Value.Name);
+        }
 
         setup.AddVariableCommands();
 

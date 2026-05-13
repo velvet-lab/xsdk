@@ -73,7 +73,7 @@ internal partial class VariableService : IVariableService
         var dic = new ConcurrentDictionary<string, object>();
         foreach (DictionaryEntry item in items)
         {
-            dic?.AddOrNew(item.Key.ToString(), item.Value);            
+            dic.AddOrNew(item.Key.ToString(), item.Value);            
         }
 
         // Execute in Parallel

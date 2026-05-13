@@ -289,19 +289,23 @@ public class SemVerTests
     [Fact]
     public void EqualityOperator_WithLeftNull_ReturnsFalse()
     {
-        SemVer? a = null;
+#pragma warning disable CS8604 // Mögliches Nullverweisargument.
+        SemVer? a = default;
         var b = new SemVer("1.0.0");
 
         Assert.False(a == b);
+#pragma warning restore CS8604 // Mögliches Nullverweisargument.
     }
 
     [Fact]
     public void EqualityOperator_WithBothNull_ReturnsTrue()
     {
-        SemVer? a = null;
-        SemVer? b = null;
+#pragma warning disable CS8604 // Mögliches Nullverweisargument.
+        SemVer? a = default;
+        SemVer? b = default;
 
         Assert.True(a == b);
+#pragma warning restore CS8604 // Mögliches Nullverweisargument.
     }
 
     [Fact]

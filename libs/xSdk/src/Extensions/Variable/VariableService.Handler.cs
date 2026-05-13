@@ -75,8 +75,13 @@ internal partial class VariableService
 
     private void ReplaceVariable<TValueType>(Variable variable, TValueType? value, bool ignoreWriteProtection)
     {
+        if(variable == null)
+        {
+            throw new SdkException($"Variable could not replaced, because variable is null");
+        }
+
         // Replace a existing Variable
-        var item = LoadVariableInternal(variable?.Name);
+        var item = LoadVariableInternal(variable.Name);
         if (item != null)
         {
             if (!item.IsProtected || ignoreWriteProtection)
@@ -86,7 +91,7 @@ internal partial class VariableService
                 tmp.Add(variable);
                 Variables = new ConcurrentBag<IVariable>(tmp);
 
-                if (value != null)
+                if (!TypeConverter.IsEmpty(value, typeof(TValueType)))
                 {
                     SaveValueToMemoryProvider(variable, value);
                 }
@@ -127,7 +132,7 @@ internal partial class VariableService
     private void AddVariableInternal(IVariable variable, bool throwIfAlreadyExists)
     {
         // Adds a variable if not exists
-        var item = LoadVariableInternal(variable?.Name);
+        var item = LoadVariableInternal(variable.Name);
         if (item == null)
         {
             Variables.Add(variable);
