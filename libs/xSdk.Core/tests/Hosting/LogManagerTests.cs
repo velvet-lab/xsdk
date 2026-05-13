@@ -39,7 +39,7 @@ public class LogManagerTests
     [Fact]
     public void CreateLogger_WithType_ReturnsNonNullLogger()
     {
-        ILogger logger = LogManager.CreateLogger(typeof(LogManagerTests));
+        ILogger logger = LogManager.CreateLogger<LogManagerTests>();
 
         Assert.NotNull(logger);
     }
@@ -47,7 +47,7 @@ public class LogManagerTests
     [Fact]
     public void CreateLogger_WithType_ReturnsILogger()
     {
-        ILogger logger = LogManager.CreateLogger(typeof(string));
+        ILogger logger = LogManager.CreateLogger<string>();
 
         Assert.IsAssignableFrom<ILogger>(logger);
     }
@@ -75,7 +75,7 @@ public class LogManagerTests
         ILoggerFactory factory = LoggerFactory.Create(b => b.AddConsole());
         LogManager.Initialize(factory);
 
-        ILogger logger = LogManager.CreateLogger(typeof(LogManagerTests));
+        ILogger logger = LogManager.CreateLogger<LogManagerTests>();
         Assert.NotNull(logger);
     }
 

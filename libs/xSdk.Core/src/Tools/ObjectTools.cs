@@ -79,7 +79,7 @@ public static class ObjectTools
         {
             unchecked
             {
-                hash = hash * index ^ value.GetHashCode();
+                hash = (hash * index) ^ value.GetHashCode();
             }
         }
     }

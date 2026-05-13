@@ -24,29 +24,29 @@ public sealed class TelemetryOptions : VariableSetup
     [Variable(name: Definitions.DisableAll.Name, template: Definitions.DisableAll.Template, helpText: Definitions.DisableAll.HelpText)]
     public bool IsDisabled
     {
-        get => this.ReadValue<bool>(Definitions.DisableAll.Name);
-        set => this.SetValue(Definitions.DisableAll.Name, value);
+        get => ReadValue<bool>(Definitions.DisableAll.Name);
+        set => SetValue(Definitions.DisableAll.Name, value);
     }
 
     [Variable(name: Definitions.LoggingDisabled.Name, template: Definitions.LoggingDisabled.Template, helpText: Definitions.LoggingDisabled.HelpText)]
     public bool IsLoggingDisabled
     {
-        get => this.ReadValue<bool>(Definitions.LoggingDisabled.Name);
-        set => this.SetValue(Definitions.LoggingDisabled.Name, value);
+        get => ReadValue<bool>(Definitions.LoggingDisabled.Name);
+        set => SetValue(Definitions.LoggingDisabled.Name, value);
     }
 
     [Variable(name: Definitions.TracingDisabled.Name, template: Definitions.TracingDisabled.Template, helpText: Definitions.TracingDisabled.HelpText)]
     public bool IsTracingDisabled
     {
-        get => this.ReadValue<bool>(Definitions.TracingDisabled.Name);
-        set => this.SetValue(Definitions.TracingDisabled.Name, value);
+        get => ReadValue<bool>(Definitions.TracingDisabled.Name);
+        set => SetValue(Definitions.TracingDisabled.Name, value);
     }
 
     [Variable(name: Definitions.MetricsDisabled.Name, template: Definitions.MetricsDisabled.Template, helpText: Definitions.MetricsDisabled.HelpText)]
     public bool IsMetricsDisabled
     {
-        get => this.ReadValue<bool>(Definitions.MetricsDisabled.Name);
-        set => this.SetValue(Definitions.MetricsDisabled.Name, value);
+        get => ReadValue<bool>(Definitions.MetricsDisabled.Name);
+        set => SetValue(Definitions.MetricsDisabled.Name, value);
     }
 
     [Variable(
@@ -57,8 +57,8 @@ public sealed class TelemetryOptions : VariableSetup
     )]
     public bool IsOtlpExporterDisabled
     {
-        get => this.ReadValue<bool>(Definitions.OtlpExporterDisabled.Name);
-        set => this.SetValue(Definitions.OtlpExporterDisabled.Name, value);
+        get => ReadValue<bool>(Definitions.OtlpExporterDisabled.Name);
+        set => SetValue(Definitions.OtlpExporterDisabled.Name, value);
     }
 
     [Variable(
@@ -69,8 +69,8 @@ public sealed class TelemetryOptions : VariableSetup
     )]
     public bool IsConsoleEnabled
     {
-        get => this.ReadValue<bool>(Definitions.ConsoleEnabled.Name);
-        set => this.SetValue(Definitions.ConsoleEnabled.Name, value);
+        get => ReadValue<bool>(Definitions.ConsoleEnabled.Name);
+        set => SetValue(Definitions.ConsoleEnabled.Name, value);
     }
 
     [Variable(
@@ -81,8 +81,8 @@ public sealed class TelemetryOptions : VariableSetup
     )]
     public string? Endpoint
     {
-        get => this.ReadValue<string>(Definitions.Endpoint.Name);
-        set => this.SetValue(Definitions.Endpoint.Name, value);
+        get => ReadValue<string>(Definitions.Endpoint.Name);
+        set => SetValue(Definitions.Endpoint.Name, value);
     }
 
     [Variable(
@@ -93,8 +93,8 @@ public sealed class TelemetryOptions : VariableSetup
     )]
     public string? LogLevel
     {
-        get => this.ReadValue<string>(Definitions.LogLevel.Name);
-        set => this.SetValue(Definitions.LogLevel.Name, value);
+        get => ReadValue<string>(Definitions.LogLevel.Name);
+        set => SetValue(Definitions.LogLevel.Name, value);
     }
 
     [Variable(
@@ -105,8 +105,8 @@ public sealed class TelemetryOptions : VariableSetup
     )]
     public string? SdkLogLevel
     {
-        get => this.ReadValue<string>(Definitions.SdkLogLevel.Name);
-        set => this.SetValue(Definitions.SdkLogLevel.Name, value);
+        get => ReadValue<string>(Definitions.SdkLogLevel.Name);
+        set => SetValue(Definitions.SdkLogLevel.Name, value);
     }
 
     [Variable(
@@ -117,8 +117,8 @@ public sealed class TelemetryOptions : VariableSetup
     )]
     public string? OtlpLogLevel
     {
-        get => this.ReadValue<string>(Definitions.OtlpLogLevel.Name);
-        set => this.SetValue(Definitions.OtlpLogLevel.Name, value);
+        get => ReadValue<string>(Definitions.OtlpLogLevel.Name);
+        set => SetValue(Definitions.OtlpLogLevel.Name, value);
     }
 
     public ITelemetryPluginBuilder Configuration { get; set; }

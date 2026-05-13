@@ -22,14 +22,14 @@ namespace xSdk.Extensions.Variable;
 
 internal partial class VariableService
 {
-    public ConcurrentBag<IVariable> Variables { get; private set; } = new ConcurrentBag<IVariable>();
+    public ConcurrentBag<IVariable> Variables { get; private set; } = [];
 
     public IVariable? LoadVariable(string name) => LoadVariableInternal(name);
 
     public void SetVariable<TValueType>(string name, TValueType value)
     {
         // Sets a Value for a existing Variable
-        var variable = LoadVariableInternal(name);
+        IVariable? variable = LoadVariableInternal(name);
         if (!TypeConverter.IsEmpty(value, typeof(TValueType)))
         {
             if (variable != null && !variable.IsProtected)
@@ -45,7 +45,7 @@ internal partial class VariableService
 
     internal void AddVariableFromSetupInitialize(Variable variable)
     {
-        var exists = LoadVariable(variable.Name);
+        IVariable? exists = LoadVariable(variable.Name);
         if (exists == null)
         {
             NewVariable(variable);
@@ -81,7 +81,7 @@ internal partial class VariableService
         }
 
         // Replace a existing Variable
-        var item = LoadVariableInternal(variable.Name);
+        IVariable? item = LoadVariableInternal(variable.Name);
         if (item != null)
         {
             if (!item.IsProtected || ignoreWriteProtection)
@@ -89,7 +89,7 @@ internal partial class VariableService
                 var tmp = Variables.ToList();
                 tmp.Remove(item);
                 tmp.Add(variable);
-                Variables = new ConcurrentBag<IVariable>(tmp);
+                Variables = [.. tmp];
 
                 if (!TypeConverter.IsEmpty(value, typeof(TValueType)))
                 {
@@ -109,7 +109,7 @@ internal partial class VariableService
 
     private IVariable? LoadVariableInternal(string name)
     {
-        var result = Variables.Where(x => string.Compare(x.Name, name, true) == 0);
+        IEnumerable<IVariable> result = Variables.Where(x => string.Compare(x.Name, name, true) == 0);
         if (result.Any())
         {
             if (result.Count() > 1)
@@ -132,7 +132,7 @@ internal partial class VariableService
     private void AddVariableInternal(IVariable variable, bool throwIfAlreadyExists)
     {
         // Adds a variable if not exists
-        var item = LoadVariableInternal(variable.Name);
+        IVariable? item = LoadVariableInternal(variable.Name);
         if (item == null)
         {
             Variables.Add(variable);
@@ -149,9 +149,6 @@ internal partial class VariableService
     private void SaveValueToMemoryProvider(IVariable variable, object? value)
     {
         var memoryProvider = Providers[nameof(MemoryProvider)] as MemoryProvider;
-        if (memoryProvider != null)
-        {
-            memoryProvider.SaveVariableValue(variable, value);
-        }
+        memoryProvider?.SaveVariableValue(variable, value);
     }
 }

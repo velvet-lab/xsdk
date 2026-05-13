@@ -21,14 +21,11 @@ namespace xSdk.Hosting;
 
 internal static class StackTraceUtils
 {
-    private static readonly Assembly nlogAssembly = typeof(StackTraceUtils).Assembly;
-    private static readonly Assembly mscorlibAssembly = typeof(string).Assembly;
-    private static readonly Assembly systemAssembly = typeof(Debug).Assembly;
+    private static readonly Assembly _nlogAssembly = typeof(StackTraceUtils).Assembly;
+    private static readonly Assembly _mscorlibAssembly = typeof(string).Assembly;
+    private static readonly Assembly _systemAssembly = typeof(Debug).Assembly;
 
-    public static int GetFrameCount(this StackTrace strackTrace)
-    {
-        return strackTrace.FrameCount;
-    }
+    public static int GetFrameCount(this StackTrace strackTrace) => strackTrace.FrameCount;
 
     public static string GetStackFrameMethodName(MethodBase? method, bool includeMethodInfo, bool cleanAsyncMoveNext, bool cleanAnonymousDelegates)
     {
@@ -40,13 +37,13 @@ internal static class StackTraceUtils
         string methodName = method.Name;
 
         Type? callerClassType = method.DeclaringType;
-        if (cleanAsyncMoveNext && methodName == "MoveNext" && callerClassType?.DeclaringType != null && callerClassType.Name.IndexOf('<') == 0)
+        if (cleanAsyncMoveNext && methodName == "MoveNext" && callerClassType?.DeclaringType != null && callerClassType.Name.StartsWith('<'))
         {
             int endIndex = callerClassType.Name.IndexOf('>', 1);
             if (endIndex > 1)
             {
                 methodName = callerClassType.Name.Substring(1, endIndex - 1);
-                if (methodName.IndexOf('<') == 0)
+                if (methodName.StartsWith('<'))
                 {
                     methodName = methodName.Substring(1);    // Local functions, and anonymous-methods in Task.Run()
                 }
@@ -56,7 +53,7 @@ internal static class StackTraceUtils
         // Clean up the function name if it is an anonymous delegate
         // <.ctor>b__0
         // <Main>b__2
-        if (cleanAnonymousDelegates && (methodName.IndexOf('<') == 0 && methodName.IndexOf("__", StringComparison.Ordinal) >= 0 && methodName.IndexOf('>') >= 0))
+        if (cleanAnonymousDelegates && methodName.StartsWith('<') && methodName.IndexOf("__", StringComparison.Ordinal) >= 0 && methodName.IndexOf('>') >= 0)
         {
             int startIndex = methodName.IndexOf('<') + 1;
             int endIndex = methodName.IndexOf('>');
@@ -122,7 +119,7 @@ internal static class StackTraceUtils
     private static string GetNamespaceFromTypeAssembly(Type? callerClassType)
     {
         Assembly? classAssembly = callerClassType?.Assembly;
-        if (classAssembly != null && classAssembly != mscorlibAssembly && classAssembly != systemAssembly)
+        if (classAssembly != null && classAssembly != _mscorlibAssembly && classAssembly != _systemAssembly)
         {
             string? assemblyFullName = classAssembly.FullName;
             if (assemblyFullName?.IndexOf(',') >= 0 && !assemblyFullName.StartsWith("System.", StringComparison.Ordinal) && !assemblyFullName.StartsWith("Microsoft.", StringComparison.Ordinal))
@@ -184,17 +181,17 @@ internal static class StackTraceUtils
         Assembly? assembly = method.DeclaringType?.Assembly ?? method.Module?.Assembly;
 
         // skip stack frame if the method declaring type assembly is from hidden assemblies list
-        if (assembly == nlogAssembly)
+        if (assembly == _nlogAssembly)
         {
             return null;
         }
 
-        if (assembly == mscorlibAssembly)
+        if (assembly == _mscorlibAssembly)
         {
             return null;
         }
 
-        if (assembly == systemAssembly)
+        if (assembly == _systemAssembly)
         {
             return null;
         }

@@ -94,7 +94,7 @@ public static class Base64Tools
 
     private static string? Decode(byte[] encoded, Encoding encoding)
     {
-        if (encoded.Any())
+        if (encoded.Length != 0)
         {
             try
             {

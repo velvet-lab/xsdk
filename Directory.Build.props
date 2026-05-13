@@ -18,7 +18,7 @@
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <!-- Disable CLS compliance warnings - this is a C#-only library -->
         <CLSCompliant>false</CLSCompliant>
-        <NoWarn>$(NoWarn);CS3001;CS3002;CS3003;CS3009;CS30024;CS30027;CS1591;</NoWarn>
+        <NoWarn>$(NoWarn);CS3001;CS3002;CS3003;CS3009;CS30024;CS30027;CS1591;IDE0057</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>

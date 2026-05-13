@@ -253,7 +253,7 @@ public class StackTraceUtilsTests
     }
 
     // Helper classes/methods to exercise reflection paths
-    private async Task AsyncHelperMethod() => await Task.Yield();
+    private static async Task AsyncHelperMethod() => await Task.Yield();
 
     internal static class NestedHelper
     {

@@ -28,9 +28,9 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;
 
-    public IPluginDescription Description { get; private set; }
+    public IPluginDescription? Description { get; private set; }
 
-    public string Key { get; private set; }
+    public string? Key { get; private set; }
 
     public object? Plugin
     {
@@ -55,15 +55,13 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
                     Initialize();
                 }
             }
+
             return _concretePlugin;
         }
     }
     public Weikio.PluginFramework.Abstractions.Plugin WeikioPlugin => weikioPlugin;
 
-    public override string ToString()
-    {
-        return string.Format("{0} v{1}", Description.Name, Description.Version);
-    }
+    public override string ToString() => string.Format("{0} v{1}", Description.Name, Description.Version);
 
     private void Initialize()
     {
@@ -80,7 +78,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
             Order = description.Order;
 
-            var key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
+            string key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
             Key = HashTools.GetHashString(key);
             Description = description;
         }

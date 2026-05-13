@@ -31,7 +31,7 @@ namespace xSdk.Hosting;
 public static class LogManager
 {
     private static ILoggerFactory _factory = LoggerFactory.Create(b => b.AddConsole());
-    private static readonly object _lock = new();
+    private static readonly Lock _lock = new();
 
     internal static void Initialize(ILoggerFactory? factory)
     {

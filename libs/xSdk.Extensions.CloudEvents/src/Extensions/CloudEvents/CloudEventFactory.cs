@@ -56,7 +56,7 @@ public static class CloudEventFactory
 
     public static CloudEvent CreateCloudEvent(string scope, string type, string? subject, object? payload, IEnumerable<CloudEventAttribute>? extensions)
     {
-        var (sourceBaseUrl, schemeBaseUrl) = CreateBaseUrls(scope);
+        (string? sourceBaseUrl, string? schemeBaseUrl) = CreateBaseUrls(scope);
 
         CloudEvent cloudEvent;
         if (payload == null)
@@ -80,7 +80,9 @@ public static class CloudEventFactory
         name = StringTools.RemoveSpecialChars(name);
 
         if (name.Length > 20)
+        {
             name = name.Substring(0, 20);
+        }
 
         var attr = CloudEventAttribute.CreateExtension(name, type);
         return attr;
@@ -89,44 +91,58 @@ public static class CloudEventFactory
     public static (string, string) CreateBaseUrls(string scope)
     {
         if (string.IsNullOrEmpty(scope))
+        {
             throw new SdkException("A Scope is needed for CloudEvent");
+        }
 
-        if (scope.StartsWith("/"))
+        if (scope.StartsWith('/'))
+        {
             scope = scope.Substring(1);
+        }
 
-        if (scope.IndexOf(".") > -1)
+        if (scope.IndexOf('.') > -1)
+        {
             scope = scope.Replace(".", "/");
+        }
 
-        var sourceBaseUrl = $"{SourceBaseUrl}/{scope}".ToLower();
-        var schemeBaseUrl = $"{SchemeBaseUrl}/{scope}".ToLower();
+        string sourceBaseUrl = $"{SourceBaseUrl}/{scope}".ToLower();
+        string schemeBaseUrl = $"{SchemeBaseUrl}/{scope}".ToLower();
 
         if (!scope.StartsWith("http"))
+        {
             sourceBaseUrl = $"{SourceBaseUrl}/{scope}".ToLower();
+        }
 
         return (sourceBaseUrl, schemeBaseUrl);
     }
 
     public static CloudEvent CreateRawCloudEvent(
         string sourceBaseUrl,
-        string scope,
-        string type,
+        string? scope,
+        string? type,
         string? subject,
         string? contentType,
         IEnumerable<CloudEventAttribute>? extensions
     )
     {
         if (string.IsNullOrEmpty(type))
+        {
             throw new SdkException("A Type is needed for CloudEvent");
+        }
 
         if (string.IsNullOrEmpty(scope))
+        {
             throw new SdkException("A Scope is neededA Scope is needed for CloudEvent");
+        }
 
-        if (type.StartsWith("/"))
+        if (type.StartsWith('/'))
+        {
             type = type.Substring(1);
+        }
 
         type = type.Replace("/", ".");
 
-        var msgLength = 16; // Convert NsqMessage.MsgIdLength
+        int msgLength = 16; // Convert NsqMessage.MsgIdLength
         var cloudEvent = new CloudEvent(CloudEventsSpecVersion.V1_0)
         {
             // Global Unique ID
@@ -147,14 +163,20 @@ public static class CloudEventFactory
         };
 
         if (!string.IsNullOrEmpty(contentType) && contentType != ContentTypes.None)
+        {
             // The Data Object Type
             cloudEvent.DataContentType = contentType;
+        }
 
         if (!string.IsNullOrEmpty(subject))
+        {
             cloudEvent.Subject = subject;
+        }
 
         if (!cloudEvent.IsValid)
+        {
             _logger.LogWarning("Cloud Event is not valid. Some Attributes missing");
+        }
 
         // Add Default Attributes
         cloudEvent.EnrichAttributes(extensions);
@@ -172,11 +194,13 @@ public static class CloudEventFactory
     internal static IEnumerable<CloudEventAttribute> MergeAttributes(IEnumerable<CloudEventAttribute>? attributes)
     {
         if (attributes == null)
-            attributes = new List<CloudEventAttribute>();
+        {
+            attributes = [];
+        }
 
-        var defaultAttributes = LoadDefaultAttributes();
+        Dictionary<CloudEventAttribute, object> defaultAttributes = LoadDefaultAttributes();
         var attributesAsList = attributes.ToList();
-        foreach (var defaultAttribute in defaultAttributes)
+        foreach (KeyValuePair<CloudEventAttribute, object> defaultAttribute in defaultAttributes)
         {
             if (!attributes.Any(x => string.Compare(x.Name, defaultAttribute.Key.Name, true) == 0))
             {
@@ -189,12 +213,12 @@ public static class CloudEventFactory
 
     internal static bool TryGetValueForAttribute(CloudEventAttribute attribute, out object? value)
     {
-        var defaultAttributes = LoadDefaultAttributes();
+        Dictionary<CloudEventAttribute, object> defaultAttributes = LoadDefaultAttributes();
 
         value = default;
         if (defaultAttributes.Any(x => string.Compare(x.Key.Name, attribute.Name, true) == 0))
         {
-            var ce = defaultAttributes.SingleOrDefault(x => string.Compare(x.Key.Name, attribute.Name, true) == 0);
+            KeyValuePair<CloudEventAttribute, object> ce = defaultAttributes.SingleOrDefault(x => string.Compare(x.Key.Name, attribute.Name, true) == 0);
             value = ce.Value;
             return true;
         }

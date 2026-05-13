@@ -134,7 +134,12 @@ public static class CloudEventExtensions
     public static object? GetDataObject(this CloudEvent cloudEvent)
     {
         Type? requestedDataType = cloudEvent.GetDataObjectType();
-        return cloudEvent.GetDataObject(requestedDataType);
+        if (requestedDataType != null)
+        {
+            return cloudEvent.GetDataObject(requestedDataType);
+        }
+
+        return default;
     }
 
     public static TValue? GetDataObject<TValue>(this CloudEvent cloudEvent)

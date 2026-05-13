@@ -20,16 +20,11 @@ using xSdk.Tools;
 
 namespace xSdk.Data.Annotations;
 
-public abstract class DataAnnotationAttribute : ValidationAttribute
+public abstract class DataAnnotationAttribute(object value) : ValidationAttribute
 {
-    private object _configuredValue;
+    private object _configuredValue = value;
     private object? _currentValue;
     private Type _currentType;
-
-    protected DataAnnotationAttribute(object value)
-    {
-        _configuredValue = value;
-    }
 
     internal int GetIntValue() => (int)_configuredValue;
 
@@ -73,10 +68,14 @@ public abstract class DataAnnotationAttribute : ValidationAttribute
             _currentType = property.PropertyType;
 
             if (_currentValue != null)
+            {
                 _currentValue = Convert.ChangeType(_currentValue, _currentType);
+            }
 
             if (_configuredValue != null && _currentType != typeof(TimeSpan))
+            {
                 _configuredValue = Convert.ChangeType(_configuredValue, _currentType);
+            }
         }
 
         return base.IsValid(value, validationContext);

@@ -17,41 +17,29 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
 
 namespace xSdk.Extensions.Telemetry;
 
-internal partial class TelemetryService : ITelemetryService
+internal partial class TelemetryService(IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryService> logger) : ITelemetryService
 {
     private ActivitySource? _mainActivitySource;
     private Meter? _mainMeter;
-    private readonly EnvironmentOptions _envSetup;
-    private readonly ILogger<TelemetryService> _logger;
+    private readonly EnvironmentOptions _envSetup = environmentOptions.Value;
 
     public ActivitySource MainActivitySource => CreateMainActivitySource();
 
     public Meter MainMeter => CreateMainMeter();
 
-    public TelemetryService(IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryService> logger)
-    {
-        this._envSetup = environmentOptions.Value;
-        this._logger = logger;
-    }
-
-
     public Activity? StartActivity(ActivityKind kind = ActivityKind.Internal, [CallerMemberName] string name = "")
     {
-        var source = CreateMainActivitySource();
+        ActivitySource source = CreateMainActivitySource();
 
-        var activity = source.StartActivity(name, kind);
-        if (activity == null)
-        {
-            throw new SdkException("Activity could not started");
-        }
-
-        return activity;
+        Activity? activity = source.StartActivity(name, kind);
+        return activity ?? throw new SdkException("Activity could not started");
     }
 
     public Counter<T> CreateCounter<T>(string name, string? unit = null, string? description = null)
@@ -78,15 +66,8 @@ internal partial class TelemetryService : ITelemetryService
     {
         if (_mainActivitySource == null)
         {
-            _logger.LogInformation("Create main activity source for tracing");
-            if (!string.IsNullOrEmpty(_envSetup.ServiceFullName))
-            {
-                _mainActivitySource = new ActivitySource(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
-            }
-            else
-            {
-                _mainActivitySource = new ActivitySource("xSdk.Extensions.Telemetry");
-            }
+            logger.LogInformation("Create main activity source for tracing");
+            _mainActivitySource = new ActivitySource(_envSetup.ServiceName, _envSetup.ServiceVersion);
         }
 
         return _mainActivitySource;
@@ -96,8 +77,8 @@ internal partial class TelemetryService : ITelemetryService
     {
         if (_mainMeter == null)
         {
-            _logger.LogInformation("Create main meter for metrics");
-            _mainMeter = new Meter(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
+            logger.LogInformation("Create main meter for metrics");
+            _mainMeter = new Meter(_envSetup.ServiceFullName, _envSetup.ServiceVersion);            
         }
 
         return _mainMeter;
@@ -107,27 +88,19 @@ internal partial class TelemetryService : ITelemetryService
         where TInstrument : Instrument<T>
         where T : struct
     {
-        var meter = CreateMainMeter();
+        Meter meter = CreateMainMeter();
 
-        var instrument = configure(meter);
-        if (instrument == null)
-        {
-            throw new SdkException("Meter could not created");
-        }
-        return instrument;
+        TInstrument instrument = configure(meter);
+        return instrument ?? throw new SdkException("Meter could not created");
     }
 
     private TInstrument CreateObservableInstrument<TInstrument, T>(Func<Meter, TInstrument> configure)
         where TInstrument : ObservableInstrument<T>
         where T : struct
     {
-        var meter = CreateMainMeter();
+        Meter meter = CreateMainMeter();
 
-        var instrument = configure(meter);
-        if (instrument == null)
-        {
-            throw new SdkException("Meter could not created");
-        }
-        return instrument;
+        TInstrument instrument = configure(meter);
+        return instrument ?? throw new SdkException("Meter could not created");
     }
 }

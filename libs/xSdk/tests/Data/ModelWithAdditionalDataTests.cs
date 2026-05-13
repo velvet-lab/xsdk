@@ -15,6 +15,7 @@
  */
 
 using System.Text.Json;
+using FluentValidation.Results;
 using xSdk.Data.Mocks;
 
 namespace xSdk.Data;
@@ -41,7 +42,7 @@ public sealed class ModelWithAdditionalDataTests
             Name = "TestName"
         };
 
-        var json = JsonSerializer.Serialize(model);
+        string json = JsonSerializer.Serialize(model);
 
         Assert.NotNull(json);
         Assert.Equal(@"{""Name"":""TestName"",""Id"":""1""}", json);
@@ -55,8 +56,8 @@ public sealed class ModelWithAdditionalDataTests
             Name = "TestName"
         };
 
-        var json = JsonSerializer.Serialize(model);
-        var actual = JsonSerializer.Deserialize<TestModel>(json);
+        string json = JsonSerializer.Serialize(model);
+        TestModel? actual = JsonSerializer.Deserialize<TestModel>(json);
 
         Assert.NotNull(actual);
         Assert.Equal(actual.Name, model.Name);
@@ -70,11 +71,11 @@ public sealed class ModelWithAdditionalDataTests
             Name = "TestName"
         };
 
-        var json = JsonSerializer.Serialize(model);
-        var actual = JsonSerializer.Deserialize<TestModel>(json);
+        string json = JsonSerializer.Serialize(model);
+        TestModel? actual = JsonSerializer.Deserialize<TestModel>(json);
 
         var validator = new TestModelValidation();
-        var result = validator.Validate(actual);
+        ValidationResult result = validator.Validate(actual);
 
         Assert.NotNull(actual);
         Assert.Equal(actual.Name, model.Name);

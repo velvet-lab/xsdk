@@ -48,7 +48,7 @@ public class CommandlineParserTests
     [Fact]
     public void Parse_ArrayInput_JoinsAndParsesArguments()
     {
-        string[] args = new[] { "--host", "localhost", "--port", "8080" };
+        string[] args = ["--host", "localhost", "--port", "8080"];
 
         var result = CommandlineParser.Parse(args);
 

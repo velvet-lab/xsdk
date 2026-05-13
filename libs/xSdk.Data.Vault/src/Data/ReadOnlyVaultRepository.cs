@@ -98,7 +98,6 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
                 {
                     throw new SdkException($"No Secrets found in Vault '{path}'");
                 }
-
             }
             catch (Exception ex)
             {
@@ -114,7 +113,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
         return result;
     }
 
-    protected string? ValidateMountPoint(string? mountPoint)
+    protected static string? ValidateMountPoint(string? mountPoint)
     {
         string defaultMountPoint = "secret";
         if (string.IsNullOrEmpty(mountPoint))

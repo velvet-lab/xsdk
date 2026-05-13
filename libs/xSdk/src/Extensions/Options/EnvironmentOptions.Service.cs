@@ -21,104 +21,56 @@ namespace xSdk.Extensions.Options;
 
 public sealed partial class EnvironmentOptions
 {
+    private ServiceDescription _serviceDescription = ServiceDescription.Create();
+
     [Variable(name: Definitions.ServiceName.Name, template: Definitions.ServiceName.Template, helpText: Definitions.ServiceName.HelpText)]
-    public string? ServiceName
+    public string ServiceName
     {
-        get => ReadValue<string>(Definitions.ServiceName.Name);
+        get => ReadValue<string>(Definitions.ServiceName.Name) ?? _serviceDescription.ServiceName;
         set => SetValue(Definitions.ServiceName.Name, value);
     }
 
     [Variable(name: Definitions.ServiceNamespace.Name, template: Definitions.ServiceNamespace.Template, helpText: Definitions.ServiceNamespace.HelpText)]
-    public string? ServiceNamespace
+    public string ServiceNamespace
     {
-        get => ReadValue<string>(Definitions.ServiceNamespace.Name);
+        get => ReadValue<string>(Definitions.ServiceNamespace.Name) ?? _serviceDescription.ServiceNamespace;
         set => SetValue(Definitions.ServiceNamespace.Name, value);
     }
 
     [Variable(name: Definitions.ServiceVersion.Name, template: Definitions.ServiceVersion.Template, helpText: Definitions.ServiceVersion.HelpText)]
-    public string? ServiceVersion
+    public string ServiceVersion
     {
-        get => ReadValue<string>(Definitions.ServiceVersion.Name);
+        get => ReadValue<string>(Definitions.ServiceVersion.Name) ?? _serviceDescription.ServiceVersion;
         set => SetValue(Definitions.ServiceVersion.Name, value);
     }
 
     [Variable(name: Definitions.ServiceFullName.Name, helpText: Definitions.ServiceFullName.HelpText, protect: true, hidden: true)]
-    public string? ServiceFullName { get; private set; }
+    public string ServiceFullName => _serviceDescription.ServiceFullName;
 
     private void InitializeService()
     {
-        string? currentServiceName = ServiceName;
-        string? currentServiceNamespace = ServiceNamespace;
-        string? currentServiceVersion = ServiceVersion;
+        _serviceDescription = ServiceDescription.Create(ServiceName, ServiceNamespace, ServiceVersion);
 
-        if (string.IsNullOrEmpty(currentServiceName) || string.IsNullOrEmpty(currentServiceNamespace) || string.IsNullOrEmpty(currentServiceVersion))
-        {
-            Assembly? assembly = Assembly.GetEntryAssembly();
-            AssemblyName? assemblyName = assembly?.GetName();
+        ServiceName = _serviceDescription.ServiceName;
+        ServiceNamespace = _serviceDescription.ServiceNamespace;
+        ServiceVersion = _serviceDescription.ServiceVersion;
+    }    
 
-            if (string.IsNullOrEmpty(currentServiceName))
-            {
-                currentServiceName = assemblyName?.Name;
-            }
-
-            if (string.IsNullOrEmpty(currentServiceNamespace))
-            {
-                currentServiceNamespace = ReadServiceNamespace(assembly);
-                if (string.IsNullOrEmpty(currentServiceNamespace))
-                {
-                    currentServiceNamespace = Definitions.ServiceNamespace.DefaultValue;
-                }
-            }
-
-            if (string.IsNullOrEmpty(currentServiceVersion))
-            {
-                currentServiceVersion = assemblyName?.Version?.ToString();
-            }
-        }
-
-        if (!string.IsNullOrEmpty(currentServiceName) && !string.IsNullOrEmpty(currentServiceNamespace))
-        {
-            string seperator = ".";
-            if (currentServiceNamespace.EndsWith('.'))
-            {
-                currentServiceNamespace = currentServiceNamespace.Substring(currentServiceNamespace.Length - 1);
-            }
-
-            ServiceFullName = $"{currentServiceNamespace}{seperator}{currentServiceName}".Trim();
-        }
-
-        ServiceName = currentServiceName;
-        ServiceNamespace = currentServiceNamespace;
-        ServiceVersion = currentServiceVersion;
-    }
-
-    private static string? ReadServiceNamespace(Assembly? assembly)
-    {
-        if (assembly != null)
-        {
-            Type[] types = assembly.GetExportedTypes();
-            if (types != null && types.Any())
-            {
-                return types.Select(x => x.Namespace).Where(x => x != null).OrderBy(x => x?.Length).FirstOrDefault();
-            }
-        }
-        return null;
-    }
-
-    private static partial class Definitions
+    internal static partial class Definitions
     {
         public static class ServiceName
         {
             public const string Name = "service-name";
             public const string Template = "--service-name <name>";
-            public const string HelpText = "Service name to identify the application in MaaS environments";
+            public const string HelpText = "Service name to identify the application in OpenTelemetry environments";
+            public const string DefaultValue = "DefaultService";
         }
 
         public static class ServiceNamespace
         {
             public const string Name = "service-namespace";
             public const string Template = "--service-namespace <namespace>";
-            public const string HelpText = "Service namespace to identify the application in MaaS environments";
+            public const string HelpText = "Service namespace to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "xSdk";
         }
 
@@ -126,13 +78,14 @@ public sealed partial class EnvironmentOptions
         {
             public const string Name = "service-version";
             public const string Template = "--service-version <version>";
-            public const string HelpText = "Service version to identify the application in MaaS environments";
+            public const string HelpText = "Service version to identify the application in OpenTelemetry environments";
+            public const string DefaultValue = "stable";
         }
 
         public static class ServiceFullName
         {
             public const string Name = "service-fullname";
-            public const string HelpText = "Fullname for the service identify the application in MaaS environments";
+            public const string HelpText = "Fullname for the service identify the application in OpenTelemetry environments";
         }
     }
 }

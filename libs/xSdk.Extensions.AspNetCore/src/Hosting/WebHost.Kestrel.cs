@@ -77,7 +77,7 @@ public static partial class WebHost
                 throw new SdkException("Http Port must be different to gRpc Port");
             }
 
-            var protocols = HttpProtocols.Http1;
+            HttpProtocols protocols = HttpProtocols.Http1;
             if (certAvailable)
             {
                 protocols = HttpProtocols.Http1AndHttp2;
@@ -140,39 +140,49 @@ public static partial class WebHost
                 return false;
             }
 
-            var certLocation = fileService.Machine.Data.GetFullPath("/certs");
+            string certLocation = fileService.Machine.Data.GetFullPath("/certs");
             if (Debugger.IsAttached)
             {
                 certLocation = Environment.CurrentDirectory;
             }
 
-            var certFilePath = Path.Combine(certLocation, webSetup.TlsCertFile);
-            if (File.Exists(certFilePath))
-            {
-                var keyFilePath = Path.Combine(certLocation, webSetup.TlsKeyFile);
-                if (File.Exists(keyFilePath))
-                {
-                    try
-                    {
-                        _logger.LogInformation("Load Certificate from certificate and key File");
-                        var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
-                        cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
+            string? tlsCertFile = webSetup.TlsCertFile;
+            string? tlsKeyFile = webSetup.TlsKeyFile;
 
-                        return true;
-                    }
-                    catch (Exception ex)
+            if (!string.IsNullOrEmpty(tlsCertFile) && !string.IsNullOrEmpty(tlsKeyFile))
+            {
+                string certFilePath = Path.Combine(certLocation, tlsCertFile);
+                if (File.Exists(certFilePath))
+                {
+                    string keyFilePath = Path.Combine(certLocation, tlsKeyFile);
+                    if (File.Exists(keyFilePath))
                     {
-                        _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {0})", ex.Message);
+                        try
+                        {
+                            _logger.LogInformation("Load Certificate from certificate and key File");
+                            var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
+                            cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
+
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {message})", ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Https is enabled, but no key file '{file}' could not found", keyFilePath);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("Https is enabled, but no key file '{0}' could not found", keyFilePath);
+                    _logger.LogWarning("Https is enabled, but no certificate file '{file}' could not found", certFilePath);
                 }
             }
             else
             {
-                _logger.LogWarning("Https is enabled, but no certificate file '{0}' could not found", certFilePath);
+                _logger.LogWarning("Https is enabled, but no certificate and key file specified");
             }
         }
 

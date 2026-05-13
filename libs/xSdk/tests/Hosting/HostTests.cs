@@ -33,7 +33,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithEmptyArgs_ReturnsNonNull()
     {
-        IHostBuilder builder = Host.CreateBuilder(Array.Empty<string>());
+        IHostBuilder builder = Host.CreateBuilder([]);
 
         Assert.NotNull(builder);
     }
@@ -49,7 +49,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithAppNameAndPrefix_ReturnsNonNull()
     {
-        IHostBuilder builder = Host.CreateBuilder(new string[] { }, "myapp", "MYAPP");
+        IHostBuilder builder = Host.CreateBuilder([], "myapp", "MYAPP");
 
         Assert.NotNull(builder);
     }
@@ -57,7 +57,7 @@ public class HostTests
     [Fact]
     public void CreateBuilder_WithAllParams_ReturnsNonNull()
     {
-        IHostBuilder builder = Host.CreateBuilder(new string[] { }, "myapp", "mycompany", "MYAPP");
+        IHostBuilder builder = Host.CreateBuilder([], "myapp", "mycompany", "MYAPP");
 
         Assert.NotNull(builder);
     }

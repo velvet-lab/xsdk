@@ -27,27 +27,30 @@ public partial class CommandlineParser
 
     public static CommandlineParser Parse()
     {
-        var parser = new CommandlineParser();
-
-        parser.Arguments = parser.ParseInternal(Environment.CommandLine);
+        var parser = new CommandlineParser
+        {
+            Arguments = ParseInternal(Environment.CommandLine)
+        };
 
         return parser;
     }
 
     public static CommandlineParser Parse(string? input)
     {
-        var parser = new CommandlineParser();
-
-        parser.Arguments = parser.ParseInternal(input);
+        var parser = new CommandlineParser
+        {
+            Arguments = ParseInternal(input)
+        };
 
         return parser;
     }
 
     public static CommandlineParser Parse(string[] input)
     {
-        var parser = new CommandlineParser();
-
-        parser.Arguments = parser.ParseInternal(string.Join(" ", input));
+        var parser = new CommandlineParser
+        {
+            Arguments = ParseInternal(string.Join(" ", input))
+        };
 
         return parser;
     }
@@ -56,7 +59,7 @@ public partial class CommandlineParser
     {
         if (args != null && args.Length > 0)
         {
-            List<string> result = Arguments.ToList();
+            List<string> result = [.. Arguments];
             var parser = CommandlineParser.Parse(args);
             foreach (string arg in args)
             {
@@ -71,7 +74,7 @@ public partial class CommandlineParser
                 }
             }
 
-            Arguments = result.ToArray();
+            Arguments = [.. result];
         }
 
         return this;
@@ -132,27 +135,27 @@ public partial class CommandlineParser
         return defaultValue;
     }
 
-    private string[] ParseInternal(string? input)
+    private static string[] ParseInternal(string? input)
     {
         var result = new List<string>();
         if (!string.IsNullOrEmpty(input))
         {
-            while (input.IndexOf("\"") > -1)
+            while (input.IndexOf('\"') > -1)
             {
                 input = input.Replace("\"", "");
             }
 
-            while (input.IndexOf("'") > -1)
+            while (input.IndexOf('\'') > -1)
             {
                 input = input.Replace("'", "");
             }
 
-            string[] splittedCommandline = input.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] splittedCommandline = input.Split([' '], StringSplitOptions.RemoveEmptyEntries);
             if (splittedCommandline.Length == 1)
             {
                 if (string.Compare(input, Assembly.GetEntryAssembly()?.Location, true) == 0)
                 {
-                    return result.ToArray();
+                    return [.. result];
                 }
             }
 
@@ -206,12 +209,12 @@ public partial class CommandlineParser
             }
         }
 
-        return RemoveEntryAssemblyIfExists(result.ToArray());
+        return RemoveEntryAssemblyIfExists([.. result]);
     }
 
-    private string CleanCommandArg(string pattern)
+    private static string CleanCommandArg(string pattern)
     {
-        string[] letters = new string[] { "\\", "\"" };
+        string[] letters = ["\\", "\""];
 
         foreach (string letter in letters)
         {
@@ -232,7 +235,7 @@ public partial class CommandlineParser
         return pattern;
     }
 
-    private bool TestOptionIsNumeric(string option)
+    private static bool TestOptionIsNumeric(string option)
     {
         option = CleanCommandArg(option);
         if (short.TryParse(option, out _))
@@ -283,26 +286,26 @@ public partial class CommandlineParser
         return false;
     }
 
-    private (string, string) ValidateCommandArg(string value)
+    private static (string, string) ValidateCommandArg(string value)
     {
         string option = value;
         string optionValue = "";
 
-        if (value.IndexOf("=") > -1 || value.IndexOf(":") > -1)
+        if (value.IndexOf('=') > -1 || value.IndexOf(':') > -1)
         {
-            int equalStart = value.IndexOf("=");
-            int colonStart = value.IndexOf(":");
+            int equalStart = value.IndexOf('=');
+            int colonStart = value.IndexOf(':');
 
             if (equalStart > -1)
             {
-                string[] splittedOptions = value.Split(new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] splittedOptions = value.Split(['='], StringSplitOptions.RemoveEmptyEntries);
                 option = splittedOptions[0].Trim();
                 optionValue = splittedOptions[1].Trim();
             }
 
             if (colonStart > -1 && colonStart < equalStart)
             {
-                string[] splittedOptions = value.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] splittedOptions = value.Split([':'], StringSplitOptions.RemoveEmptyEntries);
                 option = splittedOptions[0].Trim();
                 optionValue = splittedOptions[1].Trim();
             }
@@ -311,7 +314,7 @@ public partial class CommandlineParser
         return (option, optionValue);
     }
 
-    private string[] RemoveEntryAssemblyIfExists(string[] args)
+    private static string[] RemoveEntryAssemblyIfExists(string[] args)
     {
         if (args.Length > 1)
         {
@@ -320,7 +323,7 @@ public partial class CommandlineParser
             {
                 if (firstItem == Assembly.GetEntryAssembly()?.Location)
                 {
-                    return args.Skip(1).ToArray();
+                    return [.. args.Skip(1)];
                 }
             }
         }
@@ -336,7 +339,7 @@ public partial class CommandlineParser
         ExtractDefaultArgs(DefaultCommandSettings.Definitions.Stage.Name, ref result);
         ExtractDefaultArgs(DefaultCommandSettings.Definitions.Demo.Name, ref result);
 
-        return result.ToArray();
+        return [.. result];
     }
 
     private void ExtractDefaultArgs(string pattern, ref List<string> result)
@@ -357,25 +360,18 @@ public partial class CommandlineParser
         }
     }
 
-    private bool IsPattern(string value)
-    {
-        return value.StartsWith('-') || value.StartsWith("--");
-    }
+    private static bool IsPattern(string value) => value.StartsWith('-') || value.StartsWith("--");
 }
 
 internal class PatternComparer : IEqualityComparer<string>
 {
     public bool Equals(string x, string y)
     {
-        return (
+        return 
             string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase) == 0
             || string.Compare(x, $"--{y}", StringComparison.InvariantCultureIgnoreCase) == 0
-            || string.Compare(x, $"-{y}", StringComparison.InvariantCultureIgnoreCase) == 0
-        );
+            || string.Compare(x, $"-{y}", StringComparison.InvariantCultureIgnoreCase) == 0;
     }
 
-    public int GetHashCode([DisallowNull] string obj)
-    {
-        return obj.GetHashCode();
-    }
+    public int GetHashCode([DisallowNull] string obj) => obj.GetHashCode();
 }

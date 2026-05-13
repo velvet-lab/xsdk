@@ -28,10 +28,7 @@ internal sealed class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> 
 {
     private const string Prompt = ">";
 
-    public Func<string> PromptFactory => () =>
-    {
-        return string.Format("{0} {1} ", options.Value.Name, Prompt);
-    };
+    public Func<string> PromptFactory => () => string.Format("{0} {1} ", options.Value.Name, Prompt);
 
     public void Configure(IConfigurator setup)
     {

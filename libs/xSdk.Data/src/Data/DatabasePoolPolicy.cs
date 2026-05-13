@@ -21,21 +21,12 @@ using xSdk.Hosting;
 
 namespace xSdk.Data;
 
-internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatabase>
+internal sealed class DatabasePoolPolicy<TDatabase>(IServiceProvider provider) : IPooledObjectPolicy<TDatabase>
     where TDatabase : class
 {
-    private readonly IServiceProvider _provider;
-    private readonly ILogger _logger;
-    private readonly ObjectFactory _factory;
-    private readonly bool _isResettable;
-
-    public DatabasePoolPolicy(IServiceProvider provider)
-    {
-        _provider = provider;
-        _logger = provider.GetService<ILogger<DatabasePoolPolicy<TDatabase>>>() ?? LogManager.GetCurrentClassLogger();
-        _factory = ActivatorUtilities.CreateFactory(typeof(TDatabase), Type.EmptyTypes);
-        _isResettable = typeof(IResettable).IsAssignableFrom(typeof(TDatabase));
-    }
+    private readonly ILogger _logger = provider.GetService<ILogger<DatabasePoolPolicy<TDatabase>>>() ?? LogManager.GetCurrentClassLogger();
+    private readonly ObjectFactory _factory = ActivatorUtilities.CreateFactory(typeof(TDatabase), Type.EmptyTypes);
+    private readonly bool _isResettable = typeof(IResettable).IsAssignableFrom(typeof(TDatabase));
 
     /// <summary>
     /// Create a <typeparamref name="T"/>.
@@ -46,7 +37,7 @@ internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatab
     {
         try
         {
-            var objectFactory = _factory(_provider, Array.Empty<object?>());
+            object objectFactory = _factory(provider, []);
             return (TDatabase)objectFactory;
         }
         catch (Exception ex)

@@ -21,7 +21,7 @@ namespace xSdk;
 
 public sealed class SemVer
 {
-    private readonly string _origin;
+    private readonly string? _origin;
 
     public SemVer(string version)
     {
@@ -242,7 +242,15 @@ public sealed class SemVer
 
     public static bool operator <=(SemVer left, SemVer right) => !(left <= right);
 
-    public static bool HasRangeStrings(string value) => value.IndexOf('~') > -1 || value.IndexOf('^') > -1 || value.IndexOf(".x") > -1;
+    public static bool HasRangeStrings(string? value)
+    {
+        if(string.IsNullOrEmpty(value))
+        {
+            return false;
+        }
+
+        return value.IndexOf('~') > -1 || value.IndexOf('^') > -1 || value.IndexOf(".x") > -1;
+    }
 
     private static string ReplaceRangeStrings(string value)
     {

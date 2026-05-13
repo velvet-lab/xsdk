@@ -53,7 +53,7 @@ internal partial class VariableService : IVariableService
                 }
                 else
                 {
-                    _logger.LogWarning("Variable Value '{0}' not found", variable.Name);
+                    _logger.LogWarning("Variable Value '{name}' not found", variable.Name);
                 }
             }
             catch

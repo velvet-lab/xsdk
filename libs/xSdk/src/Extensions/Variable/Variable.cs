@@ -22,7 +22,7 @@ namespace xSdk.Extensions.Variable;
 
 public class Variable : IVariable
 {
-    private string _template;
+    private string? _template;
     private readonly string _applicationPrefix;
 
     protected Variable(string name, Type valueType)
@@ -152,7 +152,7 @@ public class Variable : IVariable
         return result;
     }
 
-    private string CreateTemplate(string value)
+    private string CreateTemplate(string? value)
     {
         string? templateValue = value;
         if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf('<') > -1)

@@ -25,6 +25,7 @@ public sealed class SemVerVersionConverter : IYamlTypeConverter
     // Unfortunately the API does not provide those in the ReadYaml and WriteYaml
     // methods, so we are forced to set them after creation.
     public IValueSerializer ValueSerializer { get; set; }
+
     public IValueDeserializer ValueDeserializer { get; set; }
 
     public bool Accepts(Type type) => type == typeof(SemVer);
@@ -38,16 +39,11 @@ public sealed class SemVerVersionConverter : IYamlTypeConverter
         {
             result = new SemVer((string)version);
         }
+
         return result;
     }
 
-    public void WriteYaml(IEmitter emitter, object value, Type type)
-    {
-        throw new SdkException("Yaml Serializing is not implemented");
-    }
+    public void WriteYaml(IEmitter emitter, object value, Type type) => throw new SdkException("Yaml Serializing is not implemented");
 
-    public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer)
-    {
-        throw new NotImplementedException();
-    }
+    public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer) => throw new NotImplementedException();
 }
