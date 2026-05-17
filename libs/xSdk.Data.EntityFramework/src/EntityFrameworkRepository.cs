@@ -89,7 +89,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     public override Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
     {
-        if(entities == null)
+        if (entities == null)
         {
             return Task.FromResult(0);
         }

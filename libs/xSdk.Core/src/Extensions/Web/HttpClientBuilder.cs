@@ -78,7 +78,7 @@ public static class HttpClientBuilder
         //}
 
         //string? userAgent = string.Empty;
-        
+
         //string? appPrefix = SlimHost.Instance.AppPrefix;
         //string? appVersion = SlimHost.Instance.AppVersion;
 

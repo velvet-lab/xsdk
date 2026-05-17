@@ -60,7 +60,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
     public override string ToString()
     {
-        if(Description == null)
+        if (Description == null)
         {
             return base.ToString() ?? string.Empty;
         }

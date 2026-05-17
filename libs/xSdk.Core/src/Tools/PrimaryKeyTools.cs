@@ -80,11 +80,11 @@ public static class PrimaryKeyTools
 
     public static string? Convert<TSourceType>(TSourceType value)
     {
-        if(value is not null)
+        if (value is not null)
         {
             return value.ToString();
         }
-        
+
         return default;
     }
 }

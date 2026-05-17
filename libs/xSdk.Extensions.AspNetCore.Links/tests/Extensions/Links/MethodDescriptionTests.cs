@@ -22,7 +22,8 @@ public class MethodDescriptionTests
     public void MethodDescription_ToString_ReturnsMethodName()
     {
 #pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
-        var desc = new MethodDescription {
+        var desc = new MethodDescription
+        {
             Action = default,
             ControllerType = default,
             HttpMethod = default,
@@ -37,7 +38,8 @@ public class MethodDescriptionTests
     public void MethodDescription_ToString_WhenMethodNameIsNull_ReturnsTypeName()
     {
 #pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
-        var desc = new MethodDescription {
+        var desc = new MethodDescription
+        {
             Action = default,
             ControllerType = default,
             HttpMethod = default,
@@ -69,11 +71,13 @@ public class MethodDescriptionTests
     public void MethodDescription_ShouldAuthorize_WhenAuthPolicyNotEmpty_ReturnsTrue()
     {
 #pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
-        var desc = new MethodDescription {
+        var desc = new MethodDescription
+        {
             Action = default,
             ControllerType = default,
             HttpMethod = default,
-            AuthPolicy = "RequireAuthenticated" };
+            AuthPolicy = "RequireAuthenticated"
+        };
 #pragma warning restore CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
 
         Assert.True(desc.ShouldAuthorize);
@@ -100,7 +104,8 @@ public class MethodDescriptionTests
     public void MethodDescription_DefaultAuthRoles_IsEmptyArray()
     {
 #pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
-        var desc = new MethodDescription {
+        var desc = new MethodDescription
+        {
             Action = default,
             ControllerType = default,
             HttpMethod = default,

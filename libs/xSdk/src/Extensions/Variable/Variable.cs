@@ -161,7 +161,7 @@ public class Variable : IVariable
             templateValue = string.Empty;
         }
 
-        templateValue = $" <{templateValue?.Trim()}>";        
+        templateValue = $" <{templateValue?.Trim()}>";
 
         return $"{KeyForCommandline}{templateValue}".Trim();
     }

@@ -22,7 +22,7 @@ internal class TestEntity : Entity<Guid>
 {
     public TestEntity()
     {
-        Id = PrimaryKeyTools.Generate<Guid>();        
+        Id = PrimaryKeyTools.Generate<Guid>();
     }
 
     public string? Name { get; set; }

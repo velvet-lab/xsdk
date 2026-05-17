@@ -58,7 +58,7 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
     public void ConfigureTracing(TracerProviderBuilder builder)
     {
         EnvironmentOptions envSetup = environmentOptions.Value;
-        
+
         builder
             .AddSource(envSetup.ServiceFullName)
             .AddAspNetCoreInstrumentation()
@@ -75,7 +75,7 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
         TelemetryOptions telemetrySetup = telemetryOptions.Value;
         if (!telemetrySetup.IsOtlpExporterDisabled)
         {
-            if(telemetrySetup.Endpoint == null)
+            if (telemetrySetup.Endpoint == null)
             {
                 throw new InvalidOperationException("Endpoint for OtlpExporter must be setted, when OtlpExporter is enabled");
             }

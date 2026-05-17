@@ -103,7 +103,7 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
 
     public virtual int Insert(IEnumerable<TEntity> entities) => InsertAsync(entities).GetAwaiter().GetResult();
 
-    public abstract Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);    
+    public abstract Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
 
     public abstract Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
 
@@ -117,7 +117,7 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
 
     public abstract Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
 
-    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);    
+    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
 
     public abstract Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default);
 

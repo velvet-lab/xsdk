@@ -54,7 +54,7 @@ public sealed partial class EnvironmentOptions
         ServiceName = _serviceDescription.ServiceName;
         ServiceNamespace = _serviceDescription.ServiceNamespace;
         ServiceVersion = _serviceDescription.ServiceVersion;
-    }    
+    }
 
     internal static partial class Definitions
     {

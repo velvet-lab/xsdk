@@ -367,7 +367,7 @@ internal class PatternComparer : IEqualityComparer<string>
             return false;
         }
 
-        return 
+        return
             string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase) == 0
             || string.Compare(x, $"--{y}", StringComparison.InvariantCultureIgnoreCase) == 0
             || string.Compare(x, $"-{y}", StringComparison.InvariantCultureIgnoreCase) == 0;

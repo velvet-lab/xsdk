@@ -22,7 +22,7 @@ using xSdk.Hosting;
 namespace xSdk.Extensions.CloudEvents;
 
 public class CloudEventExtensionsAdditionalTests()
-{   
+{
 
     [Fact]
     public void GetDataObject_WithStringData_ReturnsData()

@@ -78,7 +78,7 @@ internal partial class TelemetryService(IOptions<EnvironmentOptions> environment
         if (_mainMeter == null)
         {
             logger.LogInformation("Create main meter for metrics");
-            _mainMeter = new Meter(_envSetup.ServiceFullName, _envSetup.ServiceVersion);            
+            _mainMeter = new Meter(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
         }
 
         return _mainMeter;

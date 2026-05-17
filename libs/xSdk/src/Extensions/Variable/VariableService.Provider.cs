@@ -113,11 +113,11 @@ internal partial class VariableService
         if (saveVariable && value is not null)
         {
             SaveValueToMemoryProvider(variable, value);
-        }        
+        }
 
         if (shouldThrowIfNotFound && value is null)
         {
-           throw new SdkException($"Automation variable '{name}' has no value.");            
+            throw new SdkException($"Automation variable '{name}' has no value.");
         }
 
         return value;
@@ -180,11 +180,11 @@ internal partial class VariableService
             {
                 value = tmpValue;
                 found = true;
-                break;                
+                break;
             }
         }
 
-        
+
         return found;
     }
 
@@ -201,7 +201,7 @@ internal partial class VariableService
         {
             value = tmpValue1;
             return true;
-        }            
+        }
 
         // then read from Commandline
         if (Providers[nameof(CommandlineProvider)].TryReadVariable(variable, out TType? tmpValue2))

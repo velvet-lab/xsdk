@@ -67,7 +67,7 @@ public static class CloudEventExtensions
 
     public static string GetScope(this CloudEvent cloudEvent)
     {
-        if(cloudEvent.Source == null)
+        if (cloudEvent.Source == null)
         {
             throw new SdkException("CloudEvent has no Source defined, so Scope cannot be determined");
         }

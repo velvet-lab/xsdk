@@ -35,7 +35,7 @@ public static class MongoDbOptionsExtensions
         settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
         settings.Credential = MongoCredential.CreatePlainCredential(options.Database, options.Username, options.Password);
 
-        if(options.Hosts == null || options.Hosts.Length == 0)
+        if (options.Hosts == null || options.Hosts.Length == 0)
         {
             throw new InvalidOperationException("The Hosts property must contain at least one host.");
         }

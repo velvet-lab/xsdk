@@ -35,7 +35,7 @@ internal sealed class DatabasePoolPolicy<TDatabase>(IServiceProvider provider) :
     public TDatabase Create()
     {
         object objectFactory = _factory(provider, []);
-        return (TDatabase)objectFactory;        
+        return (TDatabase)objectFactory;
     }
 
     /// <summary>

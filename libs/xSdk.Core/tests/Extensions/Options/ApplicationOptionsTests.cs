@@ -22,7 +22,7 @@ using Microsoft.Extensions.Options;
 namespace xSdk.Extensions.Options;
 
 public class ApplicationOptionsTests
-{   
+{
 
     [Fact]
     public void Constructor_SetsVersionFromAssembly()

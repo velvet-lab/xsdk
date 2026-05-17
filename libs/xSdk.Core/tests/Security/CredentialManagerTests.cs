@@ -35,7 +35,7 @@ public class CredentialManagerTests : IDisposable
 
     ~CredentialManagerTests()
     {
-        Dispose(false);   
+        Dispose(false);
     }
 
     [Fact]

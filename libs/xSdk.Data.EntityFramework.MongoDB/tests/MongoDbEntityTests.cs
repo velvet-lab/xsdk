@@ -26,7 +26,7 @@ public class MongoDbEntityTests
     {
         var entity = new TestEntity();
 
-        Assert.NotNull(entity);        
+        Assert.NotNull(entity);
         Assert.Equal(entity.Id, entity.Id);
         Assert.IsType<ObjectId>(entity.Id);
     }
@@ -40,7 +40,7 @@ public class MongoDbEntityTests
             Id = pk
         };
 
-        Assert.NotNull(entity);        
+        Assert.NotNull(entity);
         Assert.Equal(entity.Id, entity.Id);
         Assert.IsType<ObjectId>(entity.Id);
     }

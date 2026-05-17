@@ -106,7 +106,7 @@ public sealed class SemVer
                 if (version.VersionObject > highestVersion)
                 {
                     highestVersion = version.VersionObject;
-                }                
+                }
             }
         }
 
@@ -238,7 +238,7 @@ public sealed class SemVer
 
     public static bool HasRangeStrings(string? value)
     {
-        if(string.IsNullOrEmpty(value))
+        if (string.IsNullOrEmpty(value))
         {
             return false;
         }
