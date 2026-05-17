@@ -22,8 +22,7 @@ using xSdk.Hosting;
 namespace xSdk.Extensions.CloudEvents;
 
 public class CloudEventExtensionsAdditionalTests()
-{
-    private record TestPayload(string Name, int Value);
+{   
 
     [Fact]
     public void GetDataObject_WithStringData_ReturnsData()
@@ -31,7 +30,7 @@ public class CloudEventExtensionsAdditionalTests()
         CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         cloudEvent.SetDataObject("some string");
 
-        object data = cloudEvent.GetDataObject();
+        object? data = cloudEvent.GetDataObject();
 
         Assert.NotNull(data);
     }
@@ -41,7 +40,7 @@ public class CloudEventExtensionsAdditionalTests()
     {
         CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        object data = cloudEvent.GetDataObject();
+        object? data = cloudEvent.GetDataObject();
 
         Assert.Null(data);
     }

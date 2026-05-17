@@ -30,12 +30,12 @@ public static class PrimaryKeyTools
         }
         else if (primaryKeyType == typeof(int))
         {
-            Bogus.Randomizer randomizer = new Bogus.Randomizer();
+            var randomizer = new Bogus.Randomizer();
             return (TTargetType)(object)randomizer.Int();
         }
         else if (primaryKeyType == typeof(long))
         {
-            Bogus.Randomizer randomizer = new Bogus.Randomizer();
+            var randomizer = new Bogus.Randomizer();
             return (TTargetType)(object)randomizer.Long();
         }
 
@@ -80,6 +80,11 @@ public static class PrimaryKeyTools
 
     public static string? Convert<TSourceType>(TSourceType value)
     {
-        return value.ToString();
+        if(value is not null)
+        {
+            return value.ToString();
+        }
+        
+        return default;
     }
 }

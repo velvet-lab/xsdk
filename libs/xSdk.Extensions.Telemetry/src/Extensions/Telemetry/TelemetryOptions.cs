@@ -121,8 +121,6 @@ public sealed class TelemetryOptions : VariableSetup
         set => SetValue(Definitions.OtlpLogLevel.Name, value);
     }
 
-    public ITelemetryPluginBuilder Configuration { get; set; }
-
     internal static class Definitions
     {
         public static class DisableAll

@@ -44,10 +44,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
                     tmpPlugin = ActivatorUtilities.CreateInstance(provider, weikioPlugin);
                 }
 
-                if (tmpPlugin == null)
-                {
-                    tmpPlugin = Activator.CreateInstance(weikioPlugin);
-                }
+                tmpPlugin ??= Activator.CreateInstance(weikioPlugin);
 
                 if (tmpPlugin != null)
                 {
@@ -61,13 +58,23 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     }
     public Weikio.PluginFramework.Abstractions.Plugin WeikioPlugin => weikioPlugin;
 
-    public override string ToString() => string.Format("{0} v{1}", Description.Name, Description.Version);
+    public override string ToString()
+    {
+        if(Description == null)
+        {
+            return base.ToString() ?? string.Empty;
+        }
+
+        return string.Format("{0} v{1}", Description.Name, Description.Version);
+    }
 
     private void Initialize()
     {
         if (weikioPlugin != null && _concretePlugin is PluginDescription description)
         {
-            _logger.LogInformation("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
+#pragma warning disable CA1873 // Potenziell kostspielige Protokollierung vermeiden
+            _logger.LogInformation("Initializing plugin {name} v{version}", weikioPlugin.Name, weikioPlugin.Version);
+#pragma warning restore CA1873 // Potenziell kostspielige Protokollierung vermeiden
 
             description.Name = weikioPlugin.Name;
             description.Version = weikioPlugin.Version;

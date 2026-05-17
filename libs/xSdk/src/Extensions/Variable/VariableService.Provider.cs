@@ -21,27 +21,22 @@ namespace xSdk.Extensions.Variable;
 
 internal partial class VariableService
 {
-    private Dictionary<string, VariableProvider> _systemProviders;
     private readonly Dictionary<string, VariableProvider> _registeredProviders = [];
 
-    private Dictionary<string, VariableProvider> Providers => _systemProviders;
+    private Dictionary<string, VariableProvider> Providers { get; set; } = [];
 
     public void RegisterProvider(Type providerType)
     {
-        var providerName = providerType.Name;
-        if (!_registeredProviders.ContainsKey(providerName))
+        string providerName = providerType.Name;
+        if (!_registeredProviders.ContainsKey(providerName) && Activator.CreateInstance(providerType) is VariableProvider concreteProvider)
         {
-            var concreteProvider = Activator.CreateInstance(providerType) as VariableProvider;
-            if (concreteProvider != null)
-            {
-                _registeredProviders.Add(providerName, concreteProvider);
-            }
+            _registeredProviders.Add(providerName, concreteProvider);
         }
     }
 
     private void InitProviders()
     {
-        _systemProviders = new Dictionary<string, VariableProvider>
+        Providers = new Dictionary<string, VariableProvider>
         {
             { nameof(FileProvider), new FileProvider() },
             { nameof(EnvironmentProvider), new EnvironmentProvider() },
@@ -51,17 +46,17 @@ internal partial class VariableService
 
         if (_applicationOptions != null)
         {
-            _systemProviders.Add(nameof(FallbackProvider), new FallbackProvider(_applicationOptions));
+            Providers.Add(nameof(FallbackProvider), new FallbackProvider(_applicationOptions));
             if (_config != null)
             {
-                _systemProviders.Add(nameof(OptionProvider), new OptionProvider(_config, _applicationOptions));
+                Providers.Add(nameof(OptionProvider), new OptionProvider(_config, _applicationOptions));
             }
         }
     }
 
     public bool ExistsVariable(string name)
     {
-        var variable = LoadVariable(name);
+        IVariable? variable = LoadVariable(name);
 
         if (variable != null)
         {
@@ -75,6 +70,7 @@ internal partial class VariableService
                 )
                 .Any(x => x.Value.ContainsVariable(variable));
         }
+
         return false;
     }
 
@@ -85,7 +81,7 @@ internal partial class VariableService
     {
         if (ExistsVariable(name))
         {
-            var tmpValue = ReadVariableValueInternal<TType>(name, false, false, out bool valueFound);
+            TType? tmpValue = ReadVariableValueInternal<TType>(name, false, false, out bool valueFound);
             if (valueFound)
             {
                 value = tmpValue;
@@ -104,81 +100,27 @@ internal partial class VariableService
     {
         valueFound = true;
 
-        var variable = LoadVariableInternal(name);
-        if (variable != null)
+        IVariable? variable = LoadVariableInternal(name);
+        if (TryReadValuesFromProviders(variable, shouldThrowIfNotFound, out TType? value) && value is null)
         {
-            // First we try to read already loaded Variable
-            if (!Providers[nameof(MemoryProvider)].TryReadVariable(variable, out TType? value))
+            object? defaultValue = TryReadDefaultValue<TType>(variable);
+            if (defaultValue != null)
             {
-                // then read from Commandline
-                if (!Providers[nameof(CommandlineProvider)].TryReadVariable(variable, out value))
-                {
-                    // then from System Environment
-                    if (!Providers[nameof(EnvironmentProvider)].TryReadVariable(variable, out value))
-                    {
-                        // then from File
-                        if (!Providers[nameof(FileProvider)].TryReadVariable(variable, out value))
-                        {
-                            const string optionsProviderKey = nameof(OptionProvider);
-                            if (Providers.ContainsKey(optionsProviderKey))
-                            {
-                                if (!Providers[optionsProviderKey].TryReadVariable(variable, out value))
-                                {
-                                    // Last Chance, try to load the Fallback
-                                    if (!Fallback(variable, shouldThrowIfNotFound, out value))
-                                    {
-                                        valueFound = false;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Last Chance, try to load the Fallback
-                                if (!Fallback(variable, shouldThrowIfNotFound, out value))
-                                {
-                                    valueFound = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!valueFound)
-            {
-                var defaultValue = TryReadDefaultValue<TType>(variable);
-                if (defaultValue != null)
-                {
-                    value = TypeConverter.ConvertTo<TType>(defaultValue);
-                }
-            }
-
-            if (value == null)
-            {
-                valueFound = false;
-            }
-            else
-            {
-                if (saveVariable)
-                {
-                    SaveValueToMemoryProvider(variable, value);
-                }
-
-                valueFound = true;
-                return value;
+                value = TypeConverter.ConvertTo<TType>(defaultValue);
             }
         }
-        else
+
+        if (saveVariable && value is not null)
         {
-            valueFound = false;
+            SaveValueToMemoryProvider(variable, value);
+        }        
+
+        if (shouldThrowIfNotFound && value is null)
+        {
+           throw new SdkException($"Automation variable '{name}' has no value.");            
         }
 
-        if (!valueFound && shouldThrowIfNotFound)
-        {
-            throw new SdkException($"Automation variable '{name}' has no value.");
-        }
-
-        return default;
+        return value;
     }
 
     private bool Fallback<TType>(IVariable variable, bool shouldThrowIfNotFound, out TType? value)
@@ -189,14 +131,9 @@ internal partial class VariableService
             return true;
         }
 
-        string fallbackProviderKey = nameof(FallbackProvider);
-        if (Providers.ContainsKey(fallbackProviderKey))
+        if (Providers.TryGetValue(nameof(FallbackProvider), out VariableProvider? provider) && provider.TryReadVariable(variable, out value))
         {
-            // Last Chance, try to load the Fallback
-            if (Providers[fallbackProviderKey].TryReadVariable(variable, out value))
-            {
-                return true;
-            }
+            return true;
         }
 
         if (shouldThrowIfNotFound)
@@ -207,17 +144,16 @@ internal partial class VariableService
         return false;
     }
 
-    private static object? TryReadDefaultValue<TType>(IVariable variable)
+    private static object? TryReadDefaultValue<TType>(IVariable? variable)
     {
-        var typedVariable = variable as Variable<TType>;
-        if (typedVariable == null)
+        if (variable is not Variable<TType> typedVariable)
         {
-            if (variable.ValueType == typeof(bool))
+            if (variable?.ValueType == typeof(bool))
             {
                 var item = variable as Variable<bool>;
                 return item?.DefaultValue;
             }
-            else if (variable.ValueType == typeof(string))
+            else if (variable?.ValueType == typeof(string))
             {
                 var item = variable as Variable<string>;
                 return item?.DefaultValue;
@@ -227,23 +163,82 @@ internal partial class VariableService
         {
             return typedVariable.DefaultValue;
         }
+
         return default;
     }
 
     private bool TryLoadFromRegisteredProviders<TType>(IVariable variable, out TType value)
     {
         bool found = false;
+#pragma warning disable CS8601 // Mögliche Nullverweiszuweisung.
         value = default;
+#pragma warning restore CS8601 // Mögliche Nullverweiszuweisung.
 
-        foreach (var registeredProvider in _registeredProviders.Values)
+        foreach (VariableProvider registeredProvider in _registeredProviders.Values)
         {
-            if (registeredProvider.TryReadVariable(variable, out value))
+            if (registeredProvider.TryReadVariable(variable, out TType? tmpValue) && tmpValue is not null)
             {
+                value = tmpValue;
                 found = true;
-                break;
+                break;                
             }
         }
 
+        
         return found;
+    }
+
+    private bool TryReadValuesFromProviders<TType>(IVariable? variable, bool shouldThrowIfNotFound, out TType? value)
+    {
+        if (variable == null)
+        {
+            value = default;
+            return false;
+        }
+
+        // First we try to read already loaded Variable
+        if (Providers[nameof(MemoryProvider)].TryReadVariable(variable, out TType? tmpValue1))
+        {
+            value = tmpValue1;
+            return true;
+        }            
+
+        // then read from Commandline
+        if (Providers[nameof(CommandlineProvider)].TryReadVariable(variable, out TType? tmpValue2))
+        {
+            value = tmpValue2;
+            return true;
+        }
+
+        // then from System Environment
+        if (Providers[nameof(EnvironmentProvider)].TryReadVariable(variable, out TType? tmpValue3))
+        {
+            value = tmpValue3;
+            return true;
+        }
+
+        // then from File
+        if (Providers[nameof(FileProvider)].TryReadVariable(variable, out TType? tmpValue4))
+        {
+            value = tmpValue4;
+            return true;
+        }
+
+        // then from Options
+        if (Providers.TryGetValue(nameof(OptionProvider), out VariableProvider? optionsProvider) && optionsProvider.TryReadVariable(variable, out TType? tmpValue5))
+        {
+            value = tmpValue5;
+            return true;
+        }
+
+        // last Chance, try to load the Fallback
+        if (!Fallback(variable, shouldThrowIfNotFound, out TType? tmpValue6))
+        {
+            value = tmpValue6;
+            return true;
+        }
+
+        value = default;
+        return false;
     }
 }

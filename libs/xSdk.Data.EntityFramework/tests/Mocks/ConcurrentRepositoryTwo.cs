@@ -20,11 +20,11 @@ internal class ConcurrentRepositoryTwo : EntityFrameworkRepository<TestDbContext
 {
     public Task AddDataAsync(ConcurrentEntityTwo[] samples, CancellationToken token = default)
     {
-        return this.InsertAsync(samples, token);
+        return InsertAsync(samples, token);
     }
 
-    public Task<IEnumerable<ConcurrentEntityTwo>> GetDataAsync(CancellationToken token = default)
+    public Task<IEnumerable<ConcurrentEntityTwo>?> GetDataAsync(CancellationToken token = default)
     {
-        return this.SelectListAsync(token);
+        return SelectListAsync(token);
     }
 }

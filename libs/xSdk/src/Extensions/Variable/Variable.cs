@@ -22,7 +22,6 @@ namespace xSdk.Extensions.Variable;
 
 public class Variable : IVariable
 {
-    private string? _template;
     private readonly string _applicationPrefix;
 
     protected Variable(string name, Type valueType)
@@ -39,25 +38,25 @@ public class Variable : IVariable
 
     public Type ValueType { get; private set; }
 
-    public string Prefix { get; internal set; }
+    public string? Prefix { get; internal set; }
 
     public bool NoPrefix { get; internal set; }
 
-    public string Template
+    public string? Template
     {
-        get => CreateTemplate(_template);
-        internal set => _template = value;
+        get => CreateTemplate(field);
+        internal set;
     }
 
-    public string HelpText { get; internal set; }
+    public string? HelpText { get; internal set; }
 
     public bool IsProtected { get; internal set; }
 
     public bool IsHidden { get; internal set; }
 
-    internal Func<object?> TelemetryResourceValue { get; set; }
+    internal Func<object?>? TelemetryResourceValue { get; set; }
 
-    internal VariableAttribute Attribute { get; set; }
+    internal VariableAttribute? Attribute { get; set; }
 
     protected internal string KeyForSystem => CreateKey(false, true).Trim().ToUpperInvariant();
 
@@ -120,13 +119,10 @@ public class Variable : IVariable
         }
 
         string? key = variableName;
-        if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(key))
+        if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(key) && key.StartsWith(prefix))
         {
-            if (key.StartsWith(prefix))
-            {
-                key = key.Substring(prefix.Length).Trim();
-                key = RemoveUnwantedCharsOnFirstPosition(key);
-            }
+            key = key.Substring(prefix.Length).Trim();
+            key = RemoveUnwantedCharsOnFirstPosition(key);
         }
 
         result = $"{result}{key}";
@@ -152,7 +148,7 @@ public class Variable : IVariable
         return result;
     }
 
-    private string CreateTemplate(string? value)
+    private string? CreateTemplate(string? value)
     {
         string? templateValue = value;
         if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf('<') > -1)
@@ -165,10 +161,7 @@ public class Variable : IVariable
             templateValue = string.Empty;
         }
 
-        if (!string.IsNullOrEmpty(templateValue))
-        {
-            templateValue = $" <{templateValue?.Trim()}>";
-        }
+        templateValue = $" <{templateValue?.Trim()}>";        
 
         return $"{KeyForCommandline}{templateValue}".Trim();
     }
@@ -192,7 +185,7 @@ public sealed partial class Variable<TType> : Variable
     internal Variable(string name)
         : base(name, typeof(TType)) { }
 
-    public TType DefaultValue { get; private set; }
+    public TType? DefaultValue { get; private set; }
 
     internal override Variable SetDefaultValue(object defaultValue)
     {

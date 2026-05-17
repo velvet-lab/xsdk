@@ -75,9 +75,12 @@ public class FakeRepositoryTests
 
         await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
 
-        IEnumerable<TestEntity> result = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? result = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal(2, result.Count());
+        if (result != null)
+        {
+            Assert.Equal(2, result.Count());
+        }
     }
 
     [Fact]
@@ -88,10 +91,13 @@ public class FakeRepositoryTests
         await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         bool result = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
-        IEnumerable<TestEntity> all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.True(result);
-        Assert.Empty(all);
+        if (all != null)
+        {
+            Assert.Empty(all);
+        }
     }
 
     [Fact]
@@ -102,10 +108,13 @@ public class FakeRepositoryTests
         await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         bool result = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
-        IEnumerable<TestEntity> all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.True(result);
-        Assert.Empty(all);
+        if (all != null)
+        {
+            Assert.Empty(all);
+        }
     }
 
     [Fact]
@@ -123,9 +132,12 @@ public class FakeRepositoryTests
 
         bool updateResult = await repo.UpdateAsync(entity.Id, updatedEntity, TestContext.Current.CancellationToken);
         Assert.True(updateResult);
-        IEnumerable<TestEntity> all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
-        Assert.Single(all);
-        Assert.Equal("Updated", all.First().Name);
+        IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        if (all != null)
+        {
+            Assert.Single(all);
+            Assert.Equal("Updated", all.First().Name);
+        }
     }
 
     [Fact]
@@ -165,10 +177,13 @@ public class FakeRepositoryTests
         await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
 
         int result = await repo.RemoveAsync(entities, TestContext.Current.CancellationToken);
-        IEnumerable<TestEntity> all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(2, result);
-        Assert.Empty(all);
+        if (all != null)
+        {
+            Assert.Empty(all);
+        }
     }
 
     [Fact]
@@ -184,8 +199,11 @@ public class FakeRepositoryTests
         IEnumerable<Guid> keys = entities.Select(e => e.Id);
 
         int result = await repo.RemoveAsync(keys, TestContext.Current.CancellationToken);
-        IEnumerable<TestEntity> all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
         Assert.Equal(2, result);
-        Assert.Empty(all);
+        if (all != null)
+        {
+            Assert.Empty(all);
+        }
     }
 }

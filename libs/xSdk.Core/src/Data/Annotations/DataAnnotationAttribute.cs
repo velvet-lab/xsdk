@@ -23,8 +23,6 @@ namespace xSdk.Data.Annotations;
 public abstract class DataAnnotationAttribute(object value) : ValidationAttribute
 {
     private object _configuredValue = value;
-    private object? _currentValue;
-    private Type _currentType;
 
     internal int GetIntValue() => (int)_configuredValue;
 
@@ -38,21 +36,21 @@ public abstract class DataAnnotationAttribute(object value) : ValidationAttribut
 
     internal TimeSpan GetTimeSpanValue() => TimeSpanParser.Parse(_configuredValue);
 
-    internal object? Value => _currentValue;
+    internal object? Value { get; private set; }
 
-    internal Type Type => _currentType;
+    internal Type? Type { get; private set; }
 
-    internal bool IsIntValue() => _currentType == typeof(int);
+    internal bool IsIntValue() => Type == typeof(int);
 
-    internal bool IsDoubleValue() => _currentType == typeof(double);
+    internal bool IsDoubleValue() => Type == typeof(double);
 
-    internal bool IsBoolValue() => _currentType == typeof(bool);
+    internal bool IsBoolValue() => Type == typeof(bool);
 
-    internal bool IsTimeSpanValue() => _currentType == typeof(TimeSpan);
+    internal bool IsTimeSpanValue() => Type == typeof(TimeSpan);
 
-    internal bool IsStringValue() => _currentType == typeof(string);
+    internal bool IsStringValue() => Type == typeof(string);
 
-    protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         // TRICKY: This will only used to convert the correct Value to Destination Type
         string? memberName = validationContext.MemberName;
@@ -64,17 +62,17 @@ public abstract class DataAnnotationAttribute(object value) : ValidationAttribut
         PropertyInfo? property = validationContext.ObjectType.GetProperty(memberName);
         if (property != null)
         {
-            _currentValue = property.GetValue(validationContext.ObjectInstance);
-            _currentType = property.PropertyType;
+            Value = property.GetValue(validationContext.ObjectInstance);
+            Type = property.PropertyType;
 
-            if (_currentValue != null)
+            if (Value != null)
             {
-                _currentValue = Convert.ChangeType(_currentValue, _currentType);
+                Value = Convert.ChangeType(Value, Type);
             }
 
-            if (_configuredValue != null && _currentType != typeof(TimeSpan))
+            if (_configuredValue != null && Type != typeof(TimeSpan))
             {
-                _configuredValue = Convert.ChangeType(_configuredValue, _currentType);
+                _configuredValue = Convert.ChangeType(_configuredValue, Type);
             }
         }
 

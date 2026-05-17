@@ -25,8 +25,7 @@ public class EFEntityTests
     {
         var entity = new TestEntity();
 
-        Assert.NotNull(entity);
-        Assert.NotNull(entity.Id);
+        Assert.NotNull(entity);        
         Assert.IsType<Guid>(entity.Id);
     }
 
@@ -34,11 +33,12 @@ public class EFEntityTests
     public void CreateNewEntityFromExistingPrimaryKey()
     {
         var pk = Guid.NewGuid();
-        var entity = new TestEntity();
-        entity.Id = pk;
+        var entity = new TestEntity
+        {
+            Id = pk
+        };
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.Id);
         Assert.Equal(entity.Id, entity.Id);
         Assert.IsType<Guid>(entity.Id);
     }

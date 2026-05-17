@@ -67,8 +67,12 @@ public static class CloudEventExtensions
 
     public static string GetScope(this CloudEvent cloudEvent)
     {
-        string scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SourceBaseUrl, "");
+        if(cloudEvent.Source == null)
+        {
+            throw new SdkException("CloudEvent has no Source defined, so Scope cannot be determined");
+        }
 
+        string scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SourceBaseUrl, "");
         if (scope.StartsWith('/'))
         {
             scope = scope.Substring(1);
@@ -101,12 +105,9 @@ public static class CloudEventExtensions
         IEnumerable<CloudEventAttribute> extensions = CloudEventFactory.MergeAttributes(attributes);
         foreach (CloudEventAttribute extension in extensions)
         {
-            if (CloudEventFactory.TryGetValueForAttribute(extension, out object? value))
+            if (CloudEventFactory.TryGetValueForAttribute(extension, out object? value) && value != null)
             {
-                if (value != null)
-                {
-                    cloudEvent[extension] = value;
-                }
+                cloudEvent[extension] = value;
             }
         }
 

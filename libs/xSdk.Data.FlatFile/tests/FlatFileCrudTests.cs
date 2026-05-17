@@ -30,9 +30,16 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
         await repo.RemoveAll();
 
         Assert.NotNull(repo);
-        IEnumerable<TestEntity> result = await repo.GetDataAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? result = await repo.GetDataAsync(TestContext.Current.CancellationToken);
 
-        Assert.Empty(result);
+        if (result is not null)
+        {
+            Assert.Empty(result);
+        }
+        else
+        {
+            Assert.NotNull(result);
+        }
     }
 
     [Fact]

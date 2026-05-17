@@ -21,7 +21,7 @@ namespace xSdk.Extensions.Variable.Providers;
 
 internal sealed class MemoryProvider : VariableProviderBase
 {
-    internal ConcurrentDictionary<string, object> _variables = new ConcurrentDictionary<string, object>();
+    internal ConcurrentDictionary<string, object> _variables = new();
 
     protected override bool ExistsVariable(IVariable variable)
     {

@@ -22,12 +22,9 @@ internal static class VariableExtensions
 {
     internal static IVariable SetPrefix(this IVariable variable, string prefix)
     {
-        if (variable.TryCast(out Variable casted))
+        if (variable.TryCast(out Variable casted) && !string.IsNullOrEmpty(prefix))
         {
-            if (!string.IsNullOrEmpty(prefix))
-            {
-                casted.Prefix = prefix.Replace("setup", "", StringComparison.InvariantCultureIgnoreCase).Trim().ToLower();
-            }
+            casted.Prefix = prefix.Replace("setup", "", StringComparison.InvariantCultureIgnoreCase).Trim().ToLower();
         }
 
         return variable;

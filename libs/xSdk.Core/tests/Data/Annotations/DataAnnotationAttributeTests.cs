@@ -51,7 +51,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -63,7 +63,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.False(isValid);
     }
@@ -75,7 +75,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -87,7 +87,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -99,7 +99,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.False(isValid);
     }
@@ -111,7 +111,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -123,7 +123,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.False(isValid);
     }
@@ -135,7 +135,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -147,7 +147,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.False(isValid);
     }
@@ -159,7 +159,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -177,7 +177,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -189,7 +189,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.False(isValid);
     }
@@ -207,7 +207,7 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.True(isValid);
     }
@@ -219,12 +219,13 @@ public class DataAnnotationAttributeTests
         var context = new ValidationContext(model);
         var results = new List<ValidationResult>();
 
-        var isValid = Validator.TryValidateObject(model, context, results, true);
+        bool isValid = Validator.TryValidateObject(model, context, results, true);
 
         Assert.False(isValid);
     }
 
     // Custom attribute to cover the bool/string branches in DataAnnotationAttribute
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     private class AssertBoolAttribute(object value) : DataAnnotationAttribute(value)
     {
         public bool WasIsBoolValue { get; private set; }
@@ -234,7 +235,7 @@ public class DataAnnotationAttributeTests
         public bool WasGetValue { get; private set; }
         public bool WasIsTimeSpanCheck { get; private set; }
 
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             WasIsBoolValue = IsBoolValue();
             WasIsStringValue = IsStringValue();
@@ -245,11 +246,13 @@ public class DataAnnotationAttributeTests
                 _ = GetBoolValue();
                 WasGetBoolValue = true;
             }
+
             if (IsStringValue())
             {
                 _ = GetStringValue();
                 WasGetStringValue = true;
             }
+
             return true;
         }
     }
@@ -276,7 +279,7 @@ public class DataAnnotationAttributeTests
         Validator.TryValidateObject(model, context, results, true);
 
         // Verification happens implicitly (no exception = success)
-        Assert.True(results.Count == 0 || results.Count >= 0);
+        Assert.NotEmpty(results);
     }
 
     [Fact]
@@ -288,6 +291,6 @@ public class DataAnnotationAttributeTests
 
         Validator.TryValidateObject(model, context, results, true);
 
-        Assert.True(results.Count == 0 || results.Count >= 0);
+        Assert.NotEmpty(results);
     }
 }

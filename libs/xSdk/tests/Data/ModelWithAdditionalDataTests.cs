@@ -74,11 +74,18 @@ public sealed class ModelWithAdditionalDataTests
         string json = JsonSerializer.Serialize(model);
         TestModel? actual = JsonSerializer.Deserialize<TestModel>(json);
 
-        var validator = new TestModelValidation();
-        ValidationResult result = validator.Validate(actual);
+        if (actual != null)
+        {
+            var validator = new TestModelValidation();
+            ValidationResult result = validator.Validate(actual);
 
-        Assert.NotNull(actual);
-        Assert.Equal(actual.Name, model.Name);
-        Assert.True(result.IsValid);
+            Assert.NotNull(actual);
+            Assert.Equal(actual.Name, model.Name);
+            Assert.True(result.IsValid);
+        }
+        else
+        {
+            Assert.NotNull(actual);
+        }
     }
 }

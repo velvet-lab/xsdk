@@ -67,8 +67,8 @@ public sealed class SemVer
         Version = versionObject.ToString();
         Range = rangeObject.ToString();
 
-        VersionObject = versionObject ?? throw new ArgumentNullException(nameof(versionObject));
-        RangeObject = rangeObject ?? throw new ArgumentNullException(nameof(rangeObject));
+        VersionObject = versionObject;
+        RangeObject = rangeObject;
     }
 
     [JsonIgnore]
@@ -99,26 +99,18 @@ public sealed class SemVer
         foreach (SemVer version in versions)
         {
             SemanticVersioning.Version baseVersion = version.VersionObject.BaseVersion();
-            if (RangeObject.IsSatisfied(baseVersion))
+            if (RangeObject.IsSatisfied(baseVersion) && (!version.IsPreRelease || (version.IsPreRelease && includePreRelease)))
             {
-                if (!version.IsPreRelease || (version.IsPreRelease && includePreRelease))
+                highestVersion ??= version.VersionObject;
+
+                if (version.VersionObject > highestVersion)
                 {
-                    if (highestVersion == null)
-                    {
-                        highestVersion = version.VersionObject;
-                    }
-                    else
-                    {
-                        if (version.VersionObject > highestVersion)
-                        {
-                            highestVersion = version.VersionObject;
-                        }
-                    }
-                }
+                    highestVersion = version.VersionObject;
+                }                
             }
         }
 
-        if (highestVersion != null)
+        if (highestVersion is not null)
         {
             return new SemVer(highestVersion, RangeObject);
         }
@@ -170,29 +162,31 @@ public sealed class SemVer
         return new Version(Version).ToString(fieldCount);
     }
 
-    public static bool operator ==(SemVer left, SemVer right)
-    {
-        if (left is null)
-        {
-            if (right is null)
-            {
-                return true;
-            }
+    // "operator==" should not be overloaded on reference types
+    // see csharpsquid:S3875
+    //public static bool operator ==(SemVer left, SemVer right)
+    //{
+    //    if (left is null)
+    //    {
+    //        if (right is null)
+    //        {
+    //            return true;
+    //        }
 
-            return false;
-        }
-        else
-        {
-            if (right is null)
-            {
-                return false;
-            }
-        }
+    //        return false;
+    //    }
+    //    else
+    //    {
+    //        if (right is null)
+    //        {
+    //            return false;
+    //        }
+    //    }
 
-        return left.VersionObject == right.VersionObject;
-    }
+    //    return left.VersionObject == right.VersionObject;
+    //}
 
-    public static bool operator !=(SemVer left, SemVer right) => !(left == right);
+    //public static bool operator !=(SemVer left, SemVer right) => !(left == right);
 
     public static bool operator >(SemVer left, SemVer right)
     {
@@ -216,7 +210,7 @@ public sealed class SemVer
         return left.VersionObject > right.VersionObject;
     }
 
-    public static bool operator <(SemVer left, SemVer right) => !(left < right);
+    public static bool operator <(SemVer left, SemVer right) => !(left > right);
 
     public static bool operator >=(SemVer left, SemVer right)
     {
@@ -240,7 +234,7 @@ public sealed class SemVer
         return left.VersionObject >= right.VersionObject;
     }
 
-    public static bool operator <=(SemVer left, SemVer right) => !(left <= right);
+    public static bool operator <=(SemVer left, SemVer right) => !(left > right);
 
     public static bool HasRangeStrings(string? value)
     {
@@ -293,5 +287,13 @@ public sealed class SemVer
 
     public override int GetHashCode() => ObjectTools.CreateAutomaticHashCode(this);
 
-    public override bool Equals(object obj) => this == (SemVer)obj;
+    public override bool Equals(object? obj)
+    {
+        if (obj is not null)
+        {
+            return this == (SemVer)obj;
+        }
+
+        return false;
+    }
 }

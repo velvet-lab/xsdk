@@ -20,11 +20,11 @@ namespace xSdk.Extensions.Commands;
 
 internal class ServiceResolver(IServiceProvider provider) : ITypeResolver
 {
-    public object? Resolve(Type type)
+    public object? Resolve(Type? type)
     {
         if (type == null)
         {
-            return null;
+            return default;
         }
 
         return provider.GetService(type);

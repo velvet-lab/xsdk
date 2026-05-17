@@ -65,7 +65,7 @@ internal partial class VariableService
     public void NewVariable<TValueType>(IVariable variable, TValueType? value, bool throwIfAlreadyExists)
     {
         AddVariableInternal(variable, throwIfAlreadyExists);
-        if (value != null)
+        if (value is not null)
         {
             SetVariable(variable.Name, value);
         }
@@ -75,7 +75,7 @@ internal partial class VariableService
 
     private void ReplaceVariable<TValueType>(Variable variable, TValueType? value, bool ignoreWriteProtection)
     {
-        if (variable == null)
+        if (variable is null)
         {
             throw new SdkException($"Variable could not replaced, because variable is null");
         }
@@ -146,9 +146,12 @@ internal partial class VariableService
         }
     }
 
-    private void SaveValueToMemoryProvider(IVariable variable, object? value)
+    private void SaveValueToMemoryProvider(IVariable? variable, object? value)
     {
-        var memoryProvider = Providers[nameof(MemoryProvider)] as MemoryProvider;
-        memoryProvider?.SaveVariableValue(variable, value);
+        if (variable != null)
+        {
+            var memoryProvider = Providers[nameof(MemoryProvider)] as MemoryProvider;
+            memoryProvider?.SaveVariableValue(variable, value);
+        }
     }
 }

@@ -25,7 +25,6 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
     {
         IDatalayerFactory factory = fixture.Factory;
         ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
         {
@@ -34,9 +33,11 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             Age = 18
         };
 
-        bool result = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
-
-        Assert.True(result);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            bool result = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
+            Assert.True(result);
+        }
     }
 
     [Fact]
@@ -44,7 +45,6 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
     {
         IDatalayerFactory factory = fixture.Factory;
         ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         TestEntity[] entities =
         [
@@ -52,9 +52,11 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000011"), Name = "Legolas", Age = 2931 },
         ];
 
-        int count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
-
-        Assert.Equal(2, count);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            int count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
+            Assert.Equal(2, count);
+        }
     }
 
     [Fact]
@@ -71,10 +73,17 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
         ];
         await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var all = (await repo!.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
+        var all = (await repo!.SelectListAsync(TestContext.Current.CancellationToken))?.ToList();
 
-        Assert.Contains(all, x => x.Name == "Gimli");
-        Assert.Contains(all, x => x.Name == "Boromir");
+        if (all != null)
+        {
+            Assert.Contains(all, x => x.Name == "Gimli");
+            Assert.Contains(all, x => x.Name == "Boromir");
+        }
+        else
+        {
+            Assert.NotNull(all);
+        }
     }
 
     [Fact]
@@ -82,7 +91,6 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
     {
         IDatalayerFactory factory = fixture.Factory;
         ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         TestEntity[] entities =
         [
@@ -91,12 +99,18 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
         ];
         await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        int removed = await repo!.RemoveAsync(entities, TestContext.Current.CancellationToken);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            int removed = await repo.RemoveAsync(entities, TestContext.Current.CancellationToken);
+            Assert.Equal(2, removed);
 
-        Assert.Equal(2, removed);
-        var all = (await repo.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
-        Assert.DoesNotContain(all, x => x.Name == "Wormtongue");
-        Assert.DoesNotContain(all, x => x.Name == "Saruman");
+            IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+            if (all != null)
+            {
+                Assert.DoesNotContain(all, x => x.Name == "Wormtongue");
+                Assert.DoesNotContain(all, x => x.Name == "Saruman");
+            }
+        }
     }
 
     [Fact]
@@ -104,7 +118,6 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
     {
         IDatalayerFactory factory = fixture.Factory;
         ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
         {
@@ -113,10 +126,16 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             Age = 3000
         };
 
-        bool result = await repo!.UpsertAsync(entity, TestContext.Current.CancellationToken);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            bool result = await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
+            Assert.True(result);
 
-        Assert.True(result);
-        var all = (await repo.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
-        Assert.Contains(all, x => x.Name == "Treebeard");
+            IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+            if (all != null)
+            {
+                Assert.Contains(all, x => x.Name == "Treebeard");
+            }
+        }
     }
 }

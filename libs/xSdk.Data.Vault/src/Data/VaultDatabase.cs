@@ -30,10 +30,10 @@ internal class VaultDatabase(ILogger<VaultDatabase> logger) : Database(logger)
     {
         VaultDatabaseOptions? setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer);
 
-        if (setup.AuthMethod != AuthMethods.None)
+        if (setup?.AuthMethod != AuthMethods.None)
         {
             IAuthMethodInfo? authMethod = default;
-            if (setup.AuthMethod == AuthMethods.AppRole)
+            if (setup?.AuthMethod == AuthMethods.AppRole)
             {
                 AppRoleAuthOptions? options = GetOptions<AppRoleAuthOptions>(OptionsScope.Datalayer);
                 if (options != null)
@@ -41,7 +41,7 @@ internal class VaultDatabase(ILogger<VaultDatabase> logger) : Database(logger)
                     authMethod = new AppRoleAuthMethodInfo(options.RoleId, options.Secret);
                 }
             }
-            else if (setup.AuthMethod == AuthMethods.Token)
+            else if (setup?.AuthMethod == AuthMethods.Token)
             {
                 TokenAuthOptions? options = GetOptions<TokenAuthOptions>(OptionsScope.Datalayer);
                 if (options != null)
@@ -49,16 +49,16 @@ internal class VaultDatabase(ILogger<VaultDatabase> logger) : Database(logger)
                     authMethod = new TokenAuthMethodInfo(options.Token);
                 }
             }
-            else if (setup.AuthMethod == AuthMethods.UsernamePassword)
+            else if (setup?.AuthMethod == AuthMethods.UsernamePassword)
             {
                 throw new SdkException("Username/Password authentication method is not implemented yet.");
             }
-            else if (setup.AuthMethod == AuthMethods.Cert)
+            else if (setup?.AuthMethod == AuthMethods.Cert)
             {
                 throw new SdkException("Certificate authentication method is not implemented yet.");
             }
 
-            var host = setup.Endpoint;
+            string? host = setup?.Endpoint;
 
             var settings = new VaultClientSettings($"{host}", authMethod);
 

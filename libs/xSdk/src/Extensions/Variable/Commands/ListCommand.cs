@@ -35,7 +35,7 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
 
     protected override int Execute(CommandContext context, ListCommandSettings settings, CancellationToken cancellationToken)
     {
-        string format = settings.FormatString;
+        string? format = settings.FormatString;
         if (settings.ShowHelp)
         {
             format = "Name, Help";
@@ -46,13 +46,16 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
         return 0;
     }
 
-    private void PrintAsTable(string format)
+    private void PrintAsTable(string? format)
     {
         logger.LogInformation("Print variables as table");
 
-        List<string> fields = format.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+        if (string.IsNullOrEmpty(format))
+        {
+            AnsiConsole.WriteLine("No format specified. Please provide a format string to specify which fields to display.");
+            return;
+        }
 
-        logger.LogTrace("Prepare data");
         var items = variableSvc
             .Variables.Where(x => !x.IsHidden)
             .Select(x =>
@@ -82,6 +85,7 @@ internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> lo
         Table table = new Table().Border(TableBorder.MinimalHeavyHead).Title("Overview of loaded Variable");
 
         logger.LogTrace("Add header columns");
+        List<string> fields = [.. format.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
         foreach (string field in fields)
         {
             table.AddColumn(field);

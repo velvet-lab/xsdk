@@ -72,12 +72,9 @@ public static class VariableServiceExtensions
                     }
 
                     // Set Default Value
-                    if (currentValue == null && defaultValue != null)
+                    if (currentValue == null && defaultValue != null && !TypeConverter.IsEmpty(defaultValue, property.PropertyType))
                     {
-                        if (!TypeConverter.IsEmpty(defaultValue, property.PropertyType))
-                        {
-                            defaultValue = TypeConverter.ConvertTo(defaultValue, property.PropertyType);
-                        }
+                        defaultValue = TypeConverter.ConvertTo(defaultValue, property.PropertyType);
                     }
 
                     // Create Variable
@@ -90,8 +87,7 @@ public static class VariableServiceExtensions
                             name = attr.Name;
                         }
 
-                        var variable = genericCreateMethod.Invoke(null, [name.ToLower()]) as Variable;
-                        if (variable != null)
+                        if (genericCreateMethod.Invoke(null, [name.ToLower()]) is Variable variable)
                         {
                             if (!string.IsNullOrEmpty(mainPrefix))
                             {
@@ -139,24 +135,17 @@ public static class VariableServiceExtensions
                             ((VariableService)variableService).AddVariableFromSetupInitialize(variable);
 
                             // Try to read Environment for the correct Value
-                            MethodInfo? readMethod = typeof(VariableService).GetMethod(
-                                "ReadVariableValueInternal",
-                                BindingFlags.NonPublic | BindingFlags.Instance,
-                                [typeof(string), typeof(bool), typeof(bool)]
-                            );
+                            MethodInfo? readMethod = typeof(VariableService).GetMethod("ReadVariableValueInternal", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(bool), typeof(bool)]);
                             if (readMethod != null)
                             {
                                 MethodInfo genericReadMethod = readMethod.MakeGenericMethod(property.PropertyType);
                                 if (genericReadMethod != null)
                                 {
                                     object? environmentValue = genericReadMethod.Invoke(variableService, [name, false, false]);
-                                    if (environmentValue != null && !TypeConverter.IsEmpty(environmentValue, property.PropertyType))
+                                    if (environmentValue != null && !TypeConverter.IsEmpty(environmentValue, property.PropertyType) && !variable.IsProtected)
                                     {
-                                        if (!variable.IsProtected)
-                                        {
-                                            // Set the readed Value
-                                            property.SetValue(implementation, environmentValue);
-                                        }
+                                        // Set the readed Value
+                                        property.SetValue(implementation, environmentValue);
                                     }
                                 }
                             }
@@ -175,15 +164,12 @@ public static class VariableServiceExtensions
             if (Enum.TryParse(type, currentValue.ToString(), out object? currentEnum))
             {
                 string? currentEnumValue = Enum.GetName(type, currentEnum);
-                if (currentEnumValue == noneEnumValue)
+                if (currentEnumValue == noneEnumValue && Enum.TryParse(type, defaultValue.ToString(), out object? defaultEnum))
                 {
-                    if (Enum.TryParse(type, defaultValue.ToString(), out object? defaultEnum))
+                    string? defaultEnumValue = Enum.GetName(type, defaultEnum);
+                    if (defaultEnumValue != noneEnumValue)
                     {
-                        string? defaultEnumValue = Enum.GetName(type, defaultEnum);
-                        if (defaultEnumValue != noneEnumValue)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
             }

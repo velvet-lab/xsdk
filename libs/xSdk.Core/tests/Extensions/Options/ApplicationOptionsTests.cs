@@ -22,15 +22,7 @@ using Microsoft.Extensions.Options;
 namespace xSdk.Extensions.Options;
 
 public class ApplicationOptionsTests
-{
-    private static ApplicationOptions CreateValid() => new()
-    {
-        Name = "myapp",
-        Company = "mycompany",
-        Prefix = "MYAPP",
-        AppVersion = "1.0.0",
-        Description = "Test application"
-    };
+{   
 
     [Fact]
     public void Constructor_SetsVersionFromAssembly()

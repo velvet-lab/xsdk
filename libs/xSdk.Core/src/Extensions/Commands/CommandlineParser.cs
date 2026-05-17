@@ -61,11 +61,12 @@ public partial class CommandlineParser
         {
             List<string> result = [.. Arguments];
             var parser = CommandlineParser.Parse(args);
+
             foreach (string arg in args)
             {
                 if (!ContainsPattern(arg) && IsPattern(arg))
                 {
-                    string value = parser.ReadPattern(arg);
+                    string? value = parser.ReadPattern(arg);
                     result.Add(arg);
                     if (!string.IsNullOrEmpty(value))
                     {
@@ -151,12 +152,9 @@ public partial class CommandlineParser
             }
 
             string[] splittedCommandline = input.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-            if (splittedCommandline.Length == 1)
+            if (splittedCommandline.Length == 1 && string.Compare(input, Assembly.GetEntryAssembly()?.Location, true) == 0)
             {
-                if (string.Compare(input, Assembly.GetEntryAssembly()?.Location, true) == 0)
-                {
-                    return [.. result];
-                }
+                return [.. result];
             }
 
             bool optionStarted = false;
@@ -318,13 +316,10 @@ public partial class CommandlineParser
     {
         if (args.Length > 1)
         {
-            string firstItem = args.First();
-            if (firstItem != null)
+            string firstItem = args[0];
+            if (firstItem != null && firstItem == Assembly.GetEntryAssembly()?.Location)
             {
-                if (firstItem == Assembly.GetEntryAssembly()?.Location)
-                {
-                    return [.. args.Skip(1)];
-                }
+                return [.. args.Skip(1)];
             }
         }
 
@@ -350,7 +345,7 @@ public partial class CommandlineParser
             string? template = Arguments.SingleOrDefault(x => x.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) > -1);
             if (!string.IsNullOrEmpty(template))
             {
-                string value = ReadPattern(pattern);
+                string? value = ReadPattern(pattern);
                 result.Add(template);
                 if (!string.IsNullOrEmpty(value))
                 {
@@ -365,8 +360,13 @@ public partial class CommandlineParser
 
 internal class PatternComparer : IEqualityComparer<string>
 {
-    public bool Equals(string x, string y)
+    public bool Equals(string? x, string? y)
     {
+        if (x == null || y == null)
+        {
+            return false;
+        }
+
         return 
             string.Compare(x, y, StringComparison.InvariantCultureIgnoreCase) == 0
             || string.Compare(x, $"--{y}", StringComparison.InvariantCultureIgnoreCase) == 0

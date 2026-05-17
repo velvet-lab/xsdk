@@ -39,7 +39,7 @@ public class CloudEventWebExtensionsTests()
     {
         CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        string base64 = cloudEvent.ToBase64();
+        string? base64 = cloudEvent.ToBase64();
 
         Assert.NotNull(base64);
         Assert.NotEmpty(base64);
@@ -99,11 +99,18 @@ public class CloudEventWebExtensionsTests()
     {
         CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        string base64 = cloudEvent.ToBase64();
-        CloudEvent restored = CloudEventStringConverter.FromBase64(base64);
+        string? base64 = cloudEvent.ToBase64();
+        if (!string.IsNullOrEmpty(base64))
+        {
+            CloudEvent restored = CloudEventStringConverter.FromBase64(base64);
 
-        Assert.NotNull(restored);
-        Assert.Equal(cloudEvent.Type, restored.Type);
+            Assert.NotNull(restored);
+            Assert.Equal(cloudEvent.Type, restored.Type);
+        }
+        else
+        {
+            Assert.NotNull(base64);
+        }
     }
 
     [Fact]
@@ -128,7 +135,7 @@ public class CloudEventWebExtensionsTests()
         try
         {
             byte[] decoded = Convert.FromBase64String(value);
-            return decoded.Length >= 0;
+            return decoded.Length > 0;
         }
         catch
         {

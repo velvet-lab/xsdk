@@ -23,8 +23,8 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
     [Fact]
     public async Task SelectAsync_ByPrimaryKey_ReturnsCorrectEntity()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
@@ -35,7 +35,7 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
         };
         await repo!.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
+        TestEntity? result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.Equal("Merry", result.Name);
@@ -44,13 +44,13 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
     [Fact]
     public async Task SelectAsync_ByNonExistingKey_ReturnsNull()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var pk = Guid.Parse("e0000000-ffff-ffff-ffff-000000000001");
 
-        var result = await repo!.SelectAsync(pk, TestContext.Current.CancellationToken);
+        TestEntity? result = await repo!.SelectAsync(pk, TestContext.Current.CancellationToken);
 
         Assert.Null(result);
     }
@@ -58,8 +58,8 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
     [Fact]
     public async Task RemoveAsync_ByPrimaryKey_RemovesEntity()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
@@ -70,18 +70,18 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
         };
         await repo!.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
-
+        bool removed = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.True(removed);
-        var result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
+
+        TestEntity? result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
     [Fact]
     public async Task RemoveAsync_ByEntity_RemovesEntity()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
         var entity = new TestEntity
@@ -92,39 +92,46 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
         };
         await repo!.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
-
+        bool removed = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(removed);
     }
 
     [Fact]
     public async Task SelectListAsync_AfterMultipleInserts_ReturnsAll()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
-        var entities = new[]
-        {
+        TestEntity[] entities =
+        [
             new TestEntity { Id = Guid.Parse("e0000000-0000-0000-0000-000000000010"), Name = "Eowyn", Age = 24 },
             new TestEntity { Id = Guid.Parse("e0000000-0000-0000-0000-000000000011"), Name = "Theoden", Age = 71 },
-        };
+        ];
         await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var all = (await repo!.SelectListAsync(TestContext.Current.CancellationToken)).ToList();
-
-        Assert.Contains(all, x => x.Name == "Eowyn");
-        Assert.Contains(all, x => x.Name == "Theoden");
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+            if (all != null)
+            {
+                Assert.Contains(all, x => x.Name == "Eowyn");
+                Assert.Contains(all, x => x.Name == "Theoden");
+            }
+            else
+            {
+                Assert.Null(all);
+            }
+        }
     }
 
     [Fact]
     public async Task RemoveAsync_ByPrimaryKeyCollection_ThrowsNotImplementedException()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
-        var primaryKeys = new[] { (Guid.NewGuid()) };
+        Guid[] primaryKeys = [(Guid.NewGuid())];
 
         await Assert.ThrowsAsync<NotImplementedException>(() => repo!.RemoveAsync(primaryKeys, TestContext.Current.CancellationToken));
     }

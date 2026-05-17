@@ -25,7 +25,7 @@ internal partial class VariableService
         IEnumerable<Variable> variablesWithAttributes = Variables.Cast<Variable>().Where(x => x.Attribute != null);
 
         Dictionary<string, object> resources = [];
-        foreach (var variable in variablesWithAttributes)
+        foreach (Variable variable in variablesWithAttributes)
         {
             object? value = ReadVariableValueInternal<object>(variable.Name, false, false);
             if ((value == null || TypeConverter.IsEmpty(value, variable.ValueType)) && variable.TelemetryResourceValue != null)
@@ -33,14 +33,11 @@ internal partial class VariableService
                 value = variable.TelemetryResourceValue();
             }
 
-            if (value != null && !TypeConverter.IsEmpty(value, variable.ValueType))
+            if (value != null && !TypeConverter.IsEmpty(value, variable.ValueType) && variable.Attribute?.ResourceNames != null && variable.Attribute.ResourceNames.Length != 0)
             {
-                if (variable.Attribute.ResourceNames != null && variable.Attribute.ResourceNames.Any())
+                foreach (string resourceName in variable.Attribute.ResourceNames)
                 {
-                    foreach (string resourceName in variable.Attribute.ResourceNames)
-                    {
-                        resources.AddOrNew(resourceName, value.ToString());
-                    }
+                    resources.AddOrNew(resourceName, value.ToString());
                 }
             }
         }
@@ -53,7 +50,7 @@ internal partial class VariableService
     private static void ReplaceVariableNames(Dictionary<string, object> resources)
     {
         var sources = new List<string>();
-        foreach (var item in resources)
+        foreach (KeyValuePair<string, object> item in resources)
         {
             if (item.Key.Contains("{{") && item.Key.Contains("}}"))
             {
@@ -61,14 +58,14 @@ internal partial class VariableService
             }
         }
 
-        foreach (var oldKey in sources)
+        foreach (string oldKey in sources)
         {
-            var pattern = oldKey.Substring(oldKey.IndexOf("{{") + 2);
+            string pattern = oldKey.Substring(oldKey.IndexOf("{{") + 2);
             pattern = pattern.Substring(0, pattern.IndexOf("}}"));
 
             if (resources.TryGetValue(pattern, out object? value))
             {
-                var newKey = oldKey.Replace(pattern, value.ToString());
+                string newKey = oldKey.Replace(pattern, value.ToString());
                 newKey = newKey.Replace("{{", "").Replace("}}", "");
                 resources.AddOrNew(newKey, value);
                 resources.Remove(oldKey);

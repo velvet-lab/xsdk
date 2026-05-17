@@ -27,5 +27,5 @@ public interface IRoutedLink
 public interface IRoutedLink<TModel> : IRoutedLink
     where TModel : IModel
 {
-    Func<TModel, object> Values { get; }
+    Func<TModel, object>? Values { get; }
 }

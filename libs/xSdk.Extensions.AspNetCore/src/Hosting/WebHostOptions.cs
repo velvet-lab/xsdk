@@ -23,12 +23,9 @@ public sealed class WebHostOptions : VariableSetup
 {
     protected override void OnInitialize()
     {
-        if (Https > 0)
+        if (Https > 0 && !string.IsNullOrEmpty(TlsCertFile) && !string.IsNullOrEmpty(TlsKeyFile))
         {
-            if (!string.IsNullOrEmpty(TlsCertFile) && !string.IsNullOrEmpty(TlsKeyFile))
-            {
-                IsHttpsEnabled = true;
-            }
+            IsHttpsEnabled = true;
         }
     }
 

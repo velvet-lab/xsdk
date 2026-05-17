@@ -81,7 +81,7 @@ public class ObjectToolsTests
 
     private class FieldObject
     {
-        public string Name;
+        public string? Name;
         public int Value;
     }
 

@@ -52,7 +52,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
         var ok = result.Result as OkObjectResult;
 
         Assert.NotNull(ok);
-        Assert.IsType<IEnumerable<VariableModel>>(ok.Value);
+        Assert.IsType<IEnumerable<VariableModel>>(ok.Value, exactMatch: false);
     }
 
     [Fact]
@@ -106,6 +106,6 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
         var ok = result.Result as OkObjectResult;
 
         Assert.NotNull(ok);
-        Assert.IsType<IDictionary<string, object>>(ok.Value);
+        Assert.IsType<IDictionary<string, object>>(ok.Value, exactMatch: false);
     }
 }

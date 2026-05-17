@@ -24,7 +24,6 @@ namespace xSdk.Data;
 internal sealed class DatabasePoolPolicy<TDatabase>(IServiceProvider provider) : IPooledObjectPolicy<TDatabase>
     where TDatabase : class
 {
-    private readonly ILogger _logger = provider.GetService<ILogger<DatabasePoolPolicy<TDatabase>>>() ?? LogManager.GetCurrentClassLogger();
     private readonly ObjectFactory _factory = ActivatorUtilities.CreateFactory(typeof(TDatabase), Type.EmptyTypes);
     private readonly bool _isResettable = typeof(IResettable).IsAssignableFrom(typeof(TDatabase));
 
@@ -35,16 +34,8 @@ internal sealed class DatabasePoolPolicy<TDatabase>(IServiceProvider provider) :
 
     public TDatabase Create()
     {
-        try
-        {
-            object objectFactory = _factory(provider, []);
-            return (TDatabase)objectFactory;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating instance of type '{TypeName}': {ExceptionMessage}", typeof(TDatabase).FullName, ex.Message);
-            throw;
-        }
+        object objectFactory = _factory(provider, []);
+        return (TDatabase)objectFactory;        
     }
 
     /// <summary>

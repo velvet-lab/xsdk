@@ -292,9 +292,7 @@ public class SemVerTests
         SemVer? a = default;
         var b = new SemVer("1.0.0");
 
-#pragma warning disable CS8604 // Possible null reference argument.
         Assert.False(a == b);
-#pragma warning restore CS8604 // Mögliches Nullverweisargument.
     }
 
     [Fact]
@@ -303,9 +301,7 @@ public class SemVerTests
         SemVer? a = default;
         SemVer? b = default;
 
-#pragma warning disable CS8604 // Possible null reference argument.
         Assert.True(a == b);
-#pragma warning restore CS8604 // Mögliches Nullverweisargument.
     }
 
     [Fact]

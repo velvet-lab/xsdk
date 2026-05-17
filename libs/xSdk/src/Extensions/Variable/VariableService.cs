@@ -35,7 +35,7 @@ internal partial class VariableService : IVariableService
     public VariableService(IOptions<ApplicationOptions>? options, IConfiguration? config)
     {
         _config = config;
-        _applicationOptions = options?.Value;
+        _applicationOptions = options?.Value ?? throw new SdkException("Application options are required");
 
         InitProviders();
     }

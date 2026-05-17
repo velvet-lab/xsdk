@@ -145,7 +145,7 @@ public class TypeConverterTests
     {
         DateTime result = TypeConverter.ConvertTo<DateTime>("2024-01-15");
 
-        Assert.Equal(new DateTime(2024, 1, 15), result.Date);
+        Assert.Equal(new DateTime(2024, 1, 15, 0, 0, 0, DateTimeKind.Local), result.Date);
     }
 
     [Fact]
@@ -170,7 +170,9 @@ public class TypeConverterTests
     {
         var guid = Guid.NewGuid();
 
+#pragma warning disable CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
         object? result = TypeConverter.ConvertTo(guid.ToString(), typeof(Guid));
+#pragma warning restore CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
 
         Assert.Equal(guid, result);
     }
@@ -178,7 +180,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_IntegerString_ReturnsInt()
     {
-        Type result = TypeConverter.GetValueType("42");
+        Type? result = TypeConverter.GetValueType("42");
 
         Assert.Equal(typeof(int), result);
     }
@@ -186,7 +188,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_FloatString_ReturnsFloat()
     {
-        Type result = TypeConverter.GetValueType("3.14");
+        Type? result = TypeConverter.GetValueType("3.14");
 
         Assert.Equal(typeof(float), result);
     }
@@ -194,7 +196,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_BoolString_ReturnsBool()
     {
-        Type result = TypeConverter.GetValueType("true");
+        Type? result = TypeConverter.GetValueType("true");
 
         Assert.Equal(typeof(bool), result);
     }
@@ -202,7 +204,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_PlainString_ReturnsString()
     {
-        Type result = TypeConverter.GetValueType("hello");
+        Type? result = TypeConverter.GetValueType("hello");
 
         Assert.Equal(typeof(string), result);
     }
@@ -210,7 +212,7 @@ public class TypeConverterTests
     [Fact]
     public void GetValueType_NullValue_ReturnsObject()
     {
-        Type result = TypeConverter.GetValueType(null);
+        Type? result = TypeConverter.GetValueType(null);
 
         Assert.Equal(typeof(object), result);
     }
@@ -314,19 +316,25 @@ public class TypeConverterTests
     [Fact]
     public void IsNumeric_Type_IntReturnsTrue()
     {
+#pragma warning disable CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
         Assert.True(TypeConverter.IsNumeric(typeof(int)));
+#pragma warning restore CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
     }
 
     [Fact]
     public void IsNumeric_Type_StringReturnsFalse()
     {
+#pragma warning disable CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
         Assert.False(TypeConverter.IsNumeric(typeof(string)));
+#pragma warning restore CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
     }
 
     [Fact]
     public void IsNumeric_NullableInt_ReturnsTrue()
     {
+#pragma warning disable CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
         Assert.True(TypeConverter.IsNumeric(typeof(int?)));
+#pragma warning restore CA2263 // Generische Überladung bevorzugen, wenn der Typ bekannt ist
     }
 
     [Fact]

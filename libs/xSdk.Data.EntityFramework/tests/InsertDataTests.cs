@@ -30,7 +30,7 @@ public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFi
 
         await repo.AddDataAsync(Globals.Entities, TestContext.Current.CancellationToken);
 
-        IEnumerable<TestEntity> entities = await repo.GetDataAsync(TestContext.Current.CancellationToken);
+        IEnumerable<TestEntity>? entities = await repo.GetDataAsync(TestContext.Current.CancellationToken);
         Assert.NotNull(entities);
         Assert.True(entities.Any());
     }

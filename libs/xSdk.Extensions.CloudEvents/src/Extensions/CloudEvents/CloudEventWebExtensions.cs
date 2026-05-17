@@ -70,7 +70,7 @@ public static class CloudEventWebExtensions
             return (body, contentType);
         }
 
-        return (null, null);
+        return default;
     }
 
     public static void PostToHttp(this CloudEvent cloudEvent, string url) => cloudEvent.PostToHttpAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -174,6 +174,7 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     ) => cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public static async Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -189,34 +190,30 @@ public static class CloudEventWebExtensions
         try
         {
             _logger.LogInformation("Send CloudEvent to '{url}'", url);
-            using (HttpClient client = HttpClientBuilder.CreateHttpClient(new Uri(url)))
+            using HttpClient client = HttpClientBuilder.CreateHttpClient(new Uri(url));
+            foreach (KeyValuePair<string, string> header in additionalHeaders ?? new Dictionary<string, string>())
             {
-                foreach (KeyValuePair<string, string> header in additionalHeaders ?? new Dictionary<string, string>())
-                {
-                    client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
-                }
-
-                using (var stream = new MemoryStream(body.ToArray()))
-                {
-                    var streamContent = new StreamContent(stream);
-                    streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType.MediaType);
-
-                    _logger.LogInformation("Add CloudEvent Attributes as Http Header");
-                    foreach (KeyValuePair<CloudEventAttribute, object> item in cloudEvent.GetPopulatedAttributes())
-                    {
-                        CloudEventAttribute attribute = item.Key;
-                        object value = item.Value;
-                        string headerName = $"{HttpUtilities.HttpHeaderPrefix}{attribute.Name}";
-                        string headerValue = HttpUtilities.EncodeHeaderValue(attribute.Format(value));
-                        streamContent.Headers.Add(headerName, headerValue);
-                    }
-
-                    streamContent.Headers.Add(HttpUtilities.SpecVersionHttpHeader, HttpUtilities.EncodeHeaderValue(cloudEvent.SpecVersion.VersionId));
-
-                    HttpResponseMessage response = await client.PostAsync(url, streamContent, token);
-                    response.EnsureSuccessStatusCode();
-                }
+                client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
             }
+
+            using var stream = new MemoryStream(body.ToArray());
+            var streamContent = new StreamContent(stream);
+            streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType.MediaType);
+
+            _logger.LogInformation("Add CloudEvent Attributes as Http Header");
+            foreach (KeyValuePair<CloudEventAttribute, object> item in cloudEvent.GetPopulatedAttributes())
+            {
+                CloudEventAttribute attribute = item.Key;
+                object value = item.Value;
+                string headerName = $"{HttpUtilities.HttpHeaderPrefix}{attribute.Name}";
+                string headerValue = HttpUtilities.EncodeHeaderValue(attribute.Format(value));
+                streamContent.Headers.Add(headerName, headerValue);
+            }
+
+            streamContent.Headers.Add(HttpUtilities.SpecVersionHttpHeader, HttpUtilities.EncodeHeaderValue(cloudEvent.SpecVersion.VersionId));
+
+            HttpResponseMessage response = await client.PostAsync(url, streamContent, token);
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {

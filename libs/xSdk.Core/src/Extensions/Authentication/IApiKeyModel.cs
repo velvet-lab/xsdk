@@ -23,11 +23,11 @@ public interface IApiKeyModel : IModel
 {
     string Key { get; set; }
 
-    string User { get; set; }
+    string? User { get; set; }
 
     IEnumerable<ClaimModel> Claims { get; set; }
 
-    string Description { get; set; }
+    string? Description { get; set; }
 
     DateTime CreatedAt { get; set; }
 

@@ -24,7 +24,7 @@ public class ModelExtensionsTests()
     // Test model class
     private class TestModel : Model
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Value { get; set; }
     }
 
@@ -112,7 +112,7 @@ public class ModelExtensionsTests()
         var originalModel = new TestModel { Name = "Original", Value = 999 };
         var cloudEvent = originalModel.ToCloudEvent("model.created");
 
-        TestModel retrievedModel = cloudEvent.ToModel<TestModel>();
+        TestModel? retrievedModel = cloudEvent.ToModel<TestModel>();
 
         Assert.NotNull(retrievedModel);
         Assert.Equal(originalModel.Name, retrievedModel.Name);
@@ -125,7 +125,7 @@ public class ModelExtensionsTests()
         var originalModel = new TestModel { Name = "RoundTrip", Value = 456 };
 
         var cloudEvent = originalModel.ToCloudEvent("model.created");
-        TestModel retrievedModel = cloudEvent.ToModel<TestModel>();
+        TestModel? retrievedModel = cloudEvent.ToModel<TestModel>();
 
         Assert.NotNull(retrievedModel);
         Assert.Equal(originalModel.Name, retrievedModel.Name);
@@ -161,7 +161,7 @@ public class ModelExtensionsTests()
         };
 
         var cloudEvent = model.ToCloudEvent("model.created");
-        TestModel retrievedModel = cloudEvent.ToModel<TestModel>();
+        TestModel? retrievedModel = cloudEvent.ToModel<TestModel>();
 
         Assert.NotNull(retrievedModel);
         Assert.Equal(model.Name, retrievedModel.Name);
@@ -189,11 +189,11 @@ public class ModelExtensionsTests()
         var cloudEvent2 = model2.ToCloudEvent("model.created");
 
         Assert.NotSame(cloudEvent1, cloudEvent2);
-        TestModel retrieved1 = cloudEvent1.ToModel<TestModel>();
-        TestModel retrieved2 = cloudEvent2.ToModel<TestModel>();
+        TestModel? retrieved1 = cloudEvent1.ToModel<TestModel>();
+        TestModel? retrieved2 = cloudEvent2.ToModel<TestModel>();
 
-        Assert.Equal("Model1", retrieved1.Name);
-        Assert.Equal("Model2", retrieved2.Name);
+        Assert.Equal("Model1", retrieved1?.Name);
+        Assert.Equal("Model2", retrieved2?.Name);
     }
 
     [Fact]

@@ -200,9 +200,9 @@ public static class TypeConverter
         {
             string? valueAsString = value.ToString();
 
-            if (valueAsString?.IndexOf(@"\") > -1)
+            if (valueAsString?.IndexOf('\\') > -1)
             {
-                valueAsString = valueAsString.Replace(@"\", "/");
+                valueAsString = valueAsString.Replace('\\', '/');
             }
 
             var token = JToken.Parse($"'{valueAsString}'");
@@ -270,7 +270,7 @@ public static class TypeConverter
                 }
                 else if (value is double tmpValue2)
                 {
-                    return tmpValue2 == 0.0;
+                    return tmpValue2.Equals(0.0);
                 }
                 else if (value is decimal tmpValue3)
                 {
@@ -306,17 +306,12 @@ public static class TypeConverter
                 }
                 else if (value is float tmpValue11)
                 {
-                    return tmpValue11 == 0.0;
+                    return tmpValue11.Equals(0.0f);
                 }
             }
             else if (targetType == typeof(string))
             {
-                if (value != null)
-                {
-                    return string.IsNullOrEmpty(value.ToString());
-                }
-
-                return true;
+                return value is not null;
             }
         }
         catch

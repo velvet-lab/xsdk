@@ -22,9 +22,12 @@ namespace xSdk.Extensions.Links;
 
 internal sealed partial class LinksService(LinksOptions linksOptions, IHttpContextAccessor context, ILogger<LinksService> logger) : ILinksService
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
     {
+        logger.LogInformation("Add links to model collection of type {ModelType}", typeof(TModel).FullName);
+
         foreach (TModel item in model)
         {
             AddLinksInternal(item);
@@ -33,9 +36,11 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
         return Task.CompletedTask;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public Task AddLinksAsync<TModel>(TModel model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
     {
+        logger.LogInformation("Add links to model of type {ModelType}", typeof(TModel).FullName);
         AddLinksInternal(model);
         return Task.CompletedTask;
     }
@@ -49,15 +54,12 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
         foreach (MethodDescription description in descriptions)
         {
             RoutedLink? link = SearchPolicyLink(model, description, context.HttpContext);
-            if (link != null && !links.ContainsKey(link.Name))
+            if (link is RoutedLink routedLink && !links.ContainsKey(link.Name))
             {
-                if (link is RoutedLink routedLink)
+                IHateoasItem? linkItem = routedLink.Build();
+                if (linkItem != null)
                 {
-                    IHateoasItem? linkItem = routedLink.Build();
-                    if (linkItem != null)
-                    {
-                        links.Add(link.Name, linkItem);
-                    }
+                    links.Add(routedLink.Name, linkItem);
                 }
             }
         }

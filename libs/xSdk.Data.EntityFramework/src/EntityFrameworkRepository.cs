@@ -16,7 +16,6 @@
 
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace xSdk.Data;
@@ -55,7 +54,10 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                TEntity? trackedItem = dbContext.Set<TEntity>().SingleOrDefault(x => x.Id.Equals(primaryKey));
+#pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
+                TEntity? trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
+#pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
+
                 if (trackedItem != null)
                 {
                     dbContext.Remove(trackedItem);
@@ -85,8 +87,14 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
             token
         );
 
-    public override Task<int> RemoveAsync(IEnumerable<TEntity> entities, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+    public override Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
+    {
+        if(entities == null)
+        {
+            return Task.FromResult(0);
+        }
+
+        return ExecuteInternalAsync(
             (dbContext) =>
             {
                 dbContext.RemoveRange(entities);
@@ -95,13 +103,16 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
             true,
             token
         );
+    }
 
+#pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
     public override Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync(
             (dbContext) => dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token),
             false,
             token
         );
+#pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
 
     protected Task<TEntity?> SelectAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().SingleOrDefaultAsync(filter), false, token);
@@ -130,7 +141,9 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(
             async (dbContext) =>
             {
+#pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
                 TEntity? trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token);
+#pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
 
                 if (trackedItem != null)
                 {
@@ -151,7 +164,11 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(
             async (dbContext) =>
             {
-                TEntity? trackedItem = await dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), token);
+#pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
+                TEntity? trackedItem = await dbContext
+                    .Set<TEntity>()
+                    .SingleOrDefaultAsync(x => x.Id.Equals(entity.Id), token);
+#pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
 
                 if (trackedItem == null)
                 {

@@ -40,6 +40,7 @@
     <PackageVersion Include="Microsoft.OpenApi" Version="[2.7.0, 3.0.0)" />
     <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
     <PackageVersion Include="MongoDB.Bson" Version="3.8.1" />
+    <PackageVersion Include="MongoDB.Driver" Version="3.8.1" />
     <PackageVersion Include="MongoDB.EntityFrameworkCore" Version="10.0.1" />
     <PackageVersion Include="NWebsec.AspNetCore.Middleware" Version="3.0.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
@@ -67,6 +68,7 @@
     <PackageVersion Include="Sewer56.Update" Version="4.0.2" />
     <PackageVersion Include="Sewer56.Update.Resolvers.GitHub" Version="1.5.2" />
     <PackageVersion Include="Sewer56.Update.Resolvers.NuGet" Version="1.4.1" />
+    <PackageVersion Include="SharpCompress" Version="0.48.1" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
     <PackageVersion Include="VaultSharp" Version="1.17.5.1" />
     <PackageVersion Include="Weikio.PluginFramework" Version="1.5.1" />

@@ -19,41 +19,44 @@ namespace xSdk.Data.Annotations;
 /// <summary>
 /// Min primaryKey attribute.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the MinAttribute class.
+/// </remarks>
+/// <param name="value">The minimum primaryKey.</param>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-public class MinAttribute : DataAnnotationAttribute
+public class MinAttribute(object value) : DataAnnotationAttribute(value)
 {
-    /// <summary>
-    /// Initializes a new instance of the MinAttribute class.
-    /// </summary>
-    /// <param name="value">The minimum primaryKey.</param>
-    public MinAttribute(object value)
-        : base(value) { }
-
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
         if (IsIntValue())
         {
-            var configured = GetIntValue();
+            int configured = GetIntValue();
             int? current = (int?)Value;
 
             if (current != null && current < configured)
+            {
                 return false;
+            }
         }
         else if (IsDoubleValue())
         {
-            var configured = GetDoubleValue();
+            double configured = GetDoubleValue();
             double? current = (double?)Value;
 
             if (current != null && current < configured)
+            {
                 return false;
+            }
         }
         else if (IsTimeSpanValue())
         {
-            var configured = GetTimeSpanValue();
-            TimeSpan? current = (TimeSpan?)Value;
+            TimeSpan configured = GetTimeSpanValue();
+            var current = (TimeSpan?)Value;
 
             if (current != null && current < configured)
+            {
                 return false;
+            }
         }
 
         return true;

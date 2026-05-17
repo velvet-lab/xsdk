@@ -25,8 +25,6 @@ namespace xSdk.Extensions.Web;
 [ExcludeFromCodeCoverage]
 public static class HttpClientBuilder
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-
     public static HttpClient CreateHttpClient(Uri? baseUrl)
         => CreateHttpClientInternal(baseUrl, null, null);
 
@@ -72,13 +70,15 @@ public static class HttpClientBuilder
 
     private static void ConfigureHttpClient(HttpClient client, Uri? baseUrl)
     {
-        if (baseUrl != null)
-        {
-            client.BaseAddress = baseUrl;
-        }
-
-        string? userAgent = string.Empty;
         throw new NotImplementedException();
+
+        //if (baseUrl != null)
+        //{
+        //    client.BaseAddress = baseUrl;
+        //}
+
+        //string? userAgent = string.Empty;
+        
         //string? appPrefix = SlimHost.Instance.AppPrefix;
         //string? appVersion = SlimHost.Instance.AppVersion;
 

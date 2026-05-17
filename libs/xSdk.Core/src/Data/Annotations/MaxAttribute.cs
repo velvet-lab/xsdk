@@ -19,41 +19,44 @@ namespace xSdk.Data.Annotations;
 /// <summary>
 /// Max primaryKey attribute.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the MaxAttribute class.
+/// </remarks>
+/// <param name="value">The maximum primaryKey.</param>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-public class MaxAttribute : DataAnnotationAttribute
+public class MaxAttribute(object value) : DataAnnotationAttribute(value)
 {
-    /// <summary>
-    /// Initializes a new instance of the MaxAttribute class.
-    /// </summary>
-    /// <param name="value">The maximum primaryKey.</param>
-    public MaxAttribute(object value)
-        : base(value) { }
-
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
         if (IsIntValue())
         {
-            var configured = GetIntValue();
+            int configured = GetIntValue();
             int? current = (int?)Value;
 
             if (current != null && current > configured)
+            {
                 return false;
+            }
         }
         else if (IsDoubleValue())
         {
-            var configured = GetDoubleValue();
+            double configured = GetDoubleValue();
             double? current = (double?)Value;
 
             if (current != null && current > configured)
+            {
                 return false;
+            }
         }
         else if (IsTimeSpanValue())
         {
-            var configured = GetTimeSpanValue();
-            TimeSpan? current = (TimeSpan?)Value;
+            TimeSpan configured = GetTimeSpanValue();
+            var current = (TimeSpan?)Value;
 
             if (current != null && current > configured)
+            {
                 return false;
+            }
         }
 
         return true;

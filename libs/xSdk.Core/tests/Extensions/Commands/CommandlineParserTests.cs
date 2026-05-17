@@ -93,7 +93,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        string value = parser.ReadPattern("host");
+        string? value = parser.ReadPattern("host");
 
         Assert.Equal("localhost", value);
     }
@@ -103,7 +103,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        string value = parser.ReadPattern("port", "9090");
+        string? value = parser.ReadPattern("port", "9090");
 
         Assert.Equal("9090", value);
     }
@@ -113,7 +113,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        string value = parser.ReadPattern("port");
+        string? value = parser.ReadPattern("port");
 
         Assert.Null(value);
     }
@@ -163,7 +163,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost --verbose");
 
-        string value = parser.ReadPattern("--verbose");
+        string? value = parser.ReadPattern("--verbose");
 
         Assert.Equal("true", value);
     }
@@ -265,7 +265,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("-h localhost");
 
-        string value = parser.ReadPattern("h");
+        string? value = parser.ReadPattern("h");
 
         Assert.Equal("localhost", value);
     }
@@ -287,7 +287,7 @@ public class CommandlineParserTests
         var set = new HashSet<string>(comparer) { "--host", "--port" };
 
         Assert.Equal(2, set.Count);
-        Assert.True(set.Contains("--host"));
+        Assert.Contains("--host", set);
     }
 
     [Fact]
