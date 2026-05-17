@@ -15,7 +15,6 @@
  */
 
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;

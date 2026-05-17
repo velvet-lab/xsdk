@@ -15,7 +15,6 @@
  */
 
 using System.Security.Claims;
-using CommunityToolkit.Diagnostics;
 
 namespace xSdk.Security.Claims;
 

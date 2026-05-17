@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Net.Mime;
 using System.Text.Json;
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;

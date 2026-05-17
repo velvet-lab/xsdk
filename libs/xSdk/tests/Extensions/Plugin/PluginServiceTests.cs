@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Hosting;
 

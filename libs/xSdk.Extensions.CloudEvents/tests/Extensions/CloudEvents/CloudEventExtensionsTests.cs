@@ -15,7 +15,6 @@
  */
 
 using CloudNative.CloudEvents;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents;
 

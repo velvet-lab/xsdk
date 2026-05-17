@@ -15,7 +15,6 @@
  */
 
 using xSdk.Data.Converters.Yaml;
-using YamlDotNet.Core;
 
 namespace xSdk.Data.Tests.Converters.Yaml;
 

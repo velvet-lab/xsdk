@@ -16,8 +16,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Handlers;
-using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;

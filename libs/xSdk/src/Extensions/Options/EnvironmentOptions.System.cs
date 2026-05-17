@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Tools;

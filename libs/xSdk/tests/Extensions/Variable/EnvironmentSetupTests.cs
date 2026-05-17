@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;

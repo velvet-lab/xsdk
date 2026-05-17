@@ -15,9 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
-using xSdk.Hosting;
 
 namespace xSdk.Data;
 

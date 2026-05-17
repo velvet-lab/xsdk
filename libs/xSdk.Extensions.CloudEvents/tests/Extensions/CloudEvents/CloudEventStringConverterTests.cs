@@ -16,7 +16,6 @@
 
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents;
 

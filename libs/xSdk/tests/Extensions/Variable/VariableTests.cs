@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Hosting;
-
 namespace xSdk.Extensions.Variable;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Generische Überladung bevorzugen, wenn der Typ bekannt ist", Justification = "<Ausstehend>")]

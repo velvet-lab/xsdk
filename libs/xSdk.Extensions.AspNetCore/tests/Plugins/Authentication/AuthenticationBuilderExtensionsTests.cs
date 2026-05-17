@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using AspNetCore.Authentication.ApiKey;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Authentication;

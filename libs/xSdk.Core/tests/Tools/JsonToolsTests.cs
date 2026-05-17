@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using System.Text.Json;
-
 namespace xSdk.Tools;
 
 public class JsonToolsTests

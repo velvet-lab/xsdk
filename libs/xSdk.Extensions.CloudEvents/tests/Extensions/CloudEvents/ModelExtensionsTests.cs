@@ -15,7 +15,6 @@
  */
 
 using xSdk.Data;
-using xSdk.Hosting;
 
 namespace xSdk.Extensions.CloudEvents;
 
