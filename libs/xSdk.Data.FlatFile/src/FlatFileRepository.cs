@@ -109,7 +109,7 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
 
     public override Task<bool> UpdateAsync(int primaryKey, TEntity? entity, CancellationToken token = default)
     {
-        if(entity is null)
+        if (entity is null)
         {
             return Task.FromResult(false);
         }
@@ -119,7 +119,7 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
 
     public override Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default)
     {
-        if(entity is null)
+        if (entity is null)
         {
             return Task.FromResult(false);
         }

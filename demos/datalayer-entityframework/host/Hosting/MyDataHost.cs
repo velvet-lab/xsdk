@@ -69,7 +69,7 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
     private async Task AddData(CancellationToken token)
     {
         // Load the the Repository
-        ISampleRepository sampleRepo = dbFactory.CreateRepository<ISampleRepository>();        
+        ISampleRepository sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
 
         // Create some Sample Entities
         var samples = new SampleEntity[]

@@ -26,8 +26,8 @@ internal class SampleDatabase
     public static List<SampleModel> Load()
     {
         _singleton ??= new SampleDatabase
-            {
-                _database = [.. FakeGenerator.GenerateList<SampleModelExamples, SampleModel>(10)]
+        {
+            _database = [.. FakeGenerator.GenerateList<SampleModelExamples, SampleModel>(10)]
         };
 
         return _singleton._database;

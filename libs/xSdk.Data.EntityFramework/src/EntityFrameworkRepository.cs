@@ -44,7 +44,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         if (entities is null)
         {
             return Task.FromResult(0);
-        }        
+        }
 
         return ExecuteInternalAsync(
             async (dbContext) =>
@@ -63,7 +63,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         if (primaryKey is not null)
         {
             return Task.FromResult(false);
-        }        
+        }
 
         return ExecuteInternalAsync(
             async (dbContext) =>
@@ -123,13 +123,13 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     public override Task<TEntity?> SelectAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default)
     {
-        if(primaryKey is null)
+        if (primaryKey is null)
         {
             return Task.FromResult<TEntity?>(null);
         }
 
 #pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
-        return ExecuteInternalAsync((dbContext) => dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token),false,token);
+        return ExecuteInternalAsync((dbContext) => dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token), false, token);
 #pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
     }
 
@@ -137,7 +137,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().SingleOrDefaultAsync(filter), false, token);
 
     public override Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default) =>
-    
+
         ExecuteInternalAsync(async (dbContext) =>
         {
             DbSet<TEntity> dbSet = dbContext.Set<TEntity>();
@@ -146,7 +146,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
             return entities;
         }, false, token);
-    
+
 
     protected Task<IEnumerable<TEntity>?> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext =>
@@ -161,12 +161,12 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     public override Task<bool> UpdateAsync(TPrimaryKeyType? primaryKey, TEntity? entity, CancellationToken token = default)
     {
-        if(primaryKey is null)
+        if (primaryKey is null)
         {
             return Task.FromResult(false);
         }
 
-        if(entity is null)
+        if (entity is null)
         {
             return Task.FromResult(false);
         }
@@ -196,7 +196,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     public override Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default)
     {
-        if(entity is null)
+        if (entity is null)
         {
             return Task.FromResult(false);
         }
