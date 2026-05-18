@@ -1,3 +1,9 @@
+## [2.0.0-next.11](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.10...v2.0.0-next.11) (2026-05-18)
+
+### Features
+
+* **extensions:** add xSdk.Extensions.Agents project with initial setup ([65de330](https://github.com/velvet-lab/xsdk/commit/65de330fab1eaf8be3608899ffaec48fb4a32bfe))
+
 ## [2.0.0-next.10](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.9...v2.0.0-next.10) (2026-04-29)
 
 ### Features
