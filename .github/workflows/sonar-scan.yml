@@ -30,6 +30,9 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_NOLOGO: true
+  GENERIC_LINUX_IMAGE_NAME: testcontainers/helloworld:1.2.0
+  VAULT_IMAGE_NAME: openbao/openbao:2.5.2
+  MONGODB_IMAGE_NAME: mongo:8.0
 
 jobs:
   sonar-analysis:
@@ -88,7 +91,8 @@ jobs:
             "/d:sonar.qualitygate.wait=false"
             "/d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml"
             "/d:sonar.scanner.skipJreProvisioning=true"
-            "/d:sonar.coverage.exclusions=**/IDatalayerBuilder.cs,**/IReadOnlyVaultRepository.cs,**/ITelemetryService.cs,**/Authenticator.cs,**/HttpClientBuilder.cs,**/AuthenticationDefaults.cs,**/AuthenticationBuilderExtensions.cs,**/ClearCommand.cs,**/HostExtensions.cs,**/WebHost.cs,**/WebHost.Application.cs,**/WebHost.Kestrel.cs,**/MongoDbContext.cs,**/MongoDbOptionsExtensions.cs,**/ListCommand.cs,**/DefaultCommandSettings.cs,**/RestClientBuilder.cs,**/WebSecurityPluginHost.cs,**/CompressionPluginHost.cs,**/AuthenticationPluginHost.cs,**/AuthenticationBuilderExtensions.ApiKey.cs,**/PlainTextFormatter.cs,**/MethodAnalyzer.cs,**/ReadOnlyVaultRepository.cs,**/VaultDatabase.cs,**/DocumentationPluginHost.cs,**/WebPluginHost.cs,**/CloudEventJsonInputFormatter.cs,**/WebApiPluginHost.cs,**/DataProtectionPluginHost.cs,**/SecurityContext.cs,**/ListCommandSettings.cs,**/CommandlineProvider.cs"
+            "/d:sonar.exclusions=**/obj/**"
+            "/d:sonar.coverage.exclusions=**/obj/**/*.cs,**/*.generated.cs,**/IDatalayerBuilder.cs,**/IReadOnlyVaultRepository.cs,**/ITelemetryService.cs,**/Authenticator.cs,**/HttpClientBuilder.cs,**/AuthenticationDefaults.cs,**/AuthenticationBuilderExtensions.cs,**/ClearCommand.cs,**/HostExtensions.cs,**/WebHost.cs,**/WebHost.Application.cs,**/WebHost.Kestrel.cs,**/MongoDbContext.cs,**/MongoDbOptionsExtensions.cs,**/ListCommand.cs,**/DefaultCommandSettings.cs,**/RestClientBuilder.cs,**/WebSecurityPluginHost.cs,**/CompressionPluginHost.cs,**/AuthenticationPluginHost.cs,**/AuthenticationBuilderExtensions.ApiKey.cs,**/PlainTextFormatter.cs,**/MethodAnalyzer.cs,**/ReadOnlyVaultRepository.cs,**/VaultDatabase.cs,**/DocumentationPluginHost.cs,**/WebPluginHost.cs,**/CloudEventJsonInputFormatter.cs,**/WebApiPluginHost.cs,**/DataProtectionPluginHost.cs,**/SecurityContext.cs,**/ListCommandSettings.cs,**/CommandlineProvider.cs"
           )
 
           if ($env:GITHUB_EVENT_NAME -eq "pull_request") {
