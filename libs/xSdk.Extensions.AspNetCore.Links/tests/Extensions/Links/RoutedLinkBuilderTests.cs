@@ -27,17 +27,22 @@ public class RoutedLinkBuilderTests
     }
 
     // Dummy controller used to test controller-name stripping in CreateBaseUrl
-    private class TestController { }
+    private class TestController
+    {
+        public TestController()
+        {
+            // No implementation needed for testing purposes
+        }
+    }
 
 #pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
 
     [Fact]
     public void Build_WhenDescriptionIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null!);
-        var builder = new RoutedLinkBuilder();
+        var link = new RoutedLink<TestModel>("self", "GetById", null!);        
 
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.Null(result);
     }
@@ -56,9 +61,7 @@ public class RoutedLinkBuilderTests
             }
         };
         // Context is null → CreateBaseUrl returns null → Build returns null
-        var builder = new RoutedLinkBuilder();
-
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.Null(result);
     }
@@ -82,9 +85,7 @@ public class RoutedLinkBuilderTests
             }
         };
         // ConcreteModel is null (Model not set) → ReplaceValue returns null
-        var builder = new RoutedLinkBuilder();
-
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.Null(result);
     }
@@ -110,9 +111,7 @@ public class RoutedLinkBuilderTests
             },
             Model = model
         };
-        var builder = new RoutedLinkBuilder();
-
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.NotNull(result);
         Assert.Equal("TestController/GetById", result.Rel);
@@ -141,9 +140,7 @@ public class RoutedLinkBuilderTests
             },
             Model = model
         };
-        var builder = new RoutedLinkBuilder();
-
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.NotNull(result);
         Assert.Equal("GET", result.Method);
@@ -171,9 +168,7 @@ public class RoutedLinkBuilderTests
             },
             Model = model
         };
-        var builder = new RoutedLinkBuilder();
-
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.NotNull(result);
         Assert.Contains("test", result.Href, StringComparison.OrdinalIgnoreCase);
@@ -201,9 +196,7 @@ public class RoutedLinkBuilderTests
             },
             Model = model
         };
-        var builder = new RoutedLinkBuilder();
-
-        IHateoasItem? result = builder.Build(link);
+        IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
         Assert.NotNull(result);
         Assert.Equal("PUT", result.Method);
