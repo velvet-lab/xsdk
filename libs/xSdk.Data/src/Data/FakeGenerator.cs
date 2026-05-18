@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Security.Cryptography;
 using Bogus;
 using xSdk.Tools;
 
@@ -23,7 +24,7 @@ public static class FakeGenerator
 {
     private const string DefaultContext = "default";
     private static Dictionary<string, object>? _fakers;
-    private static readonly int _globalCount = Random.Shared.Next(1, 10);
+    private static readonly int _globalCount = RandomNumberGenerator.GetInt32(1, 10);
 
     public static TEntity Generate<TFake, TEntity>()
         where TFake : Fakes<TEntity>, new()
@@ -334,7 +335,6 @@ public static class FakeGenerator
             object? faker = InitFaker<TEntity>(fakeType, context, repeatableData, strictMode);
             if (faker != null)
             {
-
                 _fakers.AddOrNew(completeContext, faker);
             }
         }
@@ -347,7 +347,7 @@ public static class FakeGenerator
         return Task.FromResult<IEnumerable<TEntity>>([]);
     }
 
-    private static object? InitFaker<TEntity>(Type fakeType, string context, bool repeatableData, bool strictMode)
+    private static Faker<TEntity>? InitFaker<TEntity>(Type fakeType, string context, bool repeatableData, bool strictMode)
         where TEntity : class
     {
         if (Activator.CreateInstance(fakeType) is Fakes<TEntity> fake)
@@ -356,7 +356,7 @@ public static class FakeGenerator
 
             if (repeatableData)
             {
-                Randomizer.Seed = new Random(85416985); // DevSkim: ignore DS148264
+                Randomizer.Seed = new Random(RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue));
             }
 
             if (strictMode)
@@ -369,6 +369,6 @@ public static class FakeGenerator
             return bogus;
         }
 
-        return null;
+        return default;
     }
 }

@@ -56,8 +56,10 @@ public class DatabaseFixture : DatabaseHostFixture
 
                      IContainer container = new ContainerBuilder(imageName)
                          .WithPortBinding(8200, true)
-                         .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8200)))
-                         .WithImagePullPolicy(PullPolicy.Always)
+                         .WithWaitStrategy(Wait.ForUnixContainer()
+                             .UntilHttpRequestIsSucceeded(r => r.ForPort(8200))
+                             .UntilMessageIsLogged("Root Token:"))
+                         .WithImagePullPolicy(PullPolicy.Missing)
                          .Build();
 
                      container.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
