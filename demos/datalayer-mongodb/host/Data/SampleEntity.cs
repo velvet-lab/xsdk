@@ -24,7 +24,7 @@ public class SampleEntity : MongoDbEntity, ISampleEntity
 {
     public int Age { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     public string? ExtensionData { get; set; }
 }

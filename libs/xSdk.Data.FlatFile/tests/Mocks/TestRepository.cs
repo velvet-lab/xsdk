@@ -18,7 +18,7 @@ namespace xSdk.Data.Mocks;
 
 internal class TestRepository : FlatFileRepository<TestEntity>, ITestRepository
 {
-    public Task AddDataAsync(IEnumerable<TestEntity> samples, CancellationToken token = default)
+    public Task AddDataAsync(IEnumerable<TestEntity>? samples, CancellationToken token = default)
     {
         return InsertAsync(samples, token);
     }

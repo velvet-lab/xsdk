@@ -23,7 +23,7 @@ const string APP_NAME = "host";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "ho";
 
-var host = xSdk
+IHost host = xSdk
     .Hosting.Host
         .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
 
@@ -34,7 +34,7 @@ var host = xSdk
         // .EnableCommands<CommandsPluginBuilder>()
         .Build();
 
-var logger = LogManager.GetCurrentClassLogger();
+ILogger logger = LogManager.GetCurrentClassLogger();
 logger.LogInformation("Starting {AppName}", APP_NAME);
 
 return await host.RunConsoleAsync(args);

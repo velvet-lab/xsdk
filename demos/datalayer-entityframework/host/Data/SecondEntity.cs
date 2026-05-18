@@ -23,7 +23,7 @@ namespace xSdk.Demos.Data;
 public sealed class SecondEntity : EFEntity, ISampleEntity
 {
     [Column("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Column("age")]
     public int Age { get; set; }

@@ -29,10 +29,13 @@ internal class CommandPluginBuilder(IOptions<ApplicationOptions> options) : Plug
 
     public void Configure(IConfigurator setup)
     {
-        setup
-            .SetApplicationName(options.Value.Name)
-            // Tells the command line application to validate all examples before running the application.
-            .ValidateExamples();
+        if (!string.IsNullOrEmpty(options.Value.Name))
+        {
+            setup
+                .SetApplicationName(options.Value.Name)
+                // Tells the command line application to validate all examples before running the application.
+                .ValidateExamples();
+        }
     }
 
     public ICommandApp CreateApplication(IServiceCollection? services = null) => throw new NotImplementedException();

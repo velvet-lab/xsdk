@@ -99,45 +99,45 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
         return name;
     }
 
-    public virtual bool Insert(TEntity entity) => InsertAsync(entity).GetAwaiter().GetResult();
+    public virtual bool Insert(TEntity? entity) => InsertAsync(entity).GetAwaiter().GetResult();
 
-    public virtual int Insert(IEnumerable<TEntity> entities) => InsertAsync(entities).GetAwaiter().GetResult();
+    public virtual int Insert(IEnumerable<TEntity>? entities) => InsertAsync(entities).GetAwaiter().GetResult();
 
-    public abstract Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
+    public abstract Task<bool> InsertAsync(TEntity? entity, CancellationToken token = default);
 
-    public abstract Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
+    public abstract Task<int> InsertAsync(IEnumerable<TEntity>? entities, CancellationToken token = default);
 
-    public virtual bool Remove(TPrimaryKeyType primaryKey) => RemoveAsync(primaryKey).GetAwaiter().GetResult();
+    public virtual bool Remove(TPrimaryKeyType? primaryKey) => RemoveAsync(primaryKey).GetAwaiter().GetResult();
 
-    public int Remove(IEnumerable<TPrimaryKeyType> primaryKeys) => RemoveAsync(primaryKeys).GetAwaiter().GetResult();
+    public int Remove(IEnumerable<TPrimaryKeyType>? primaryKeys) => RemoveAsync(primaryKeys).GetAwaiter().GetResult();
 
-    public virtual bool Remove(TEntity entity) => RemoveAsync(entity).GetAwaiter().GetResult();
+    public virtual bool Remove(TEntity? entity) => RemoveAsync(entity).GetAwaiter().GetResult();
 
     public virtual int Remove(IEnumerable<TEntity>? entities) => RemoveAsync(entities).GetAwaiter().GetResult();
 
-    public abstract Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
+    public abstract Task<bool> RemoveAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default);
 
-    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
+    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType>? primaryKeys, CancellationToken token = default);
 
-    public abstract Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default);
+    public abstract Task<bool> RemoveAsync(TEntity? entity, CancellationToken token = default);
 
     public abstract Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default);
 
-    public virtual TEntity? Select(TPrimaryKeyType primaryKey) => SelectAsync(primaryKey).GetAwaiter().GetResult();
+    public virtual TEntity? Select(TPrimaryKeyType? primaryKey) => SelectAsync(primaryKey).GetAwaiter().GetResult();
 
-    public abstract Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
+    public abstract Task<TEntity?> SelectAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default);
 
     public virtual IEnumerable<TEntity>? SelectList() => SelectListAsync().GetAwaiter().GetResult();
 
     public abstract Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default);
 
-    public virtual bool Update(TPrimaryKeyType primaryKey, TEntity entity) => UpdateAsync(primaryKey, entity).GetAwaiter().GetResult();
+    public virtual bool Update(TPrimaryKeyType? primaryKey, TEntity? entity) => UpdateAsync(primaryKey, entity).GetAwaiter().GetResult();
 
-    public abstract Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default);
+    public abstract Task<bool> UpdateAsync(TPrimaryKeyType? primaryKey, TEntity? entity, CancellationToken token = default);
 
-    public virtual bool Upsert(TEntity entity) => UpsertAsync(entity).GetAwaiter().GetResult();
+    public virtual bool Upsert(TEntity? entity) => UpsertAsync(entity).GetAwaiter().GetResult();
 
-    public abstract Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default);
+    public abstract Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default);
 
     protected virtual Task<IEnumerable<TEntity>> CreateFakesAsync(CancellationToken token = default) =>
         Task.FromResult<IEnumerable<TEntity>>([]);

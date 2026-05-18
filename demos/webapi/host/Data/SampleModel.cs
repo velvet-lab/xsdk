@@ -23,5 +23,5 @@ namespace xSdk.Demos.Data;
 public sealed class SampleModel : Model
 {
     [Description("The name of the sample model")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }

@@ -27,6 +27,7 @@
         <IsPublishable>false</IsPublishable>
         <IsPackable>false</IsPackable>
         <IsDemoProject>true</IsDemoProject>
+        <NoWarn>$(NoWarn);CA1873;IDE1006;S125;S1481;S3776</NoWarn>
     </PropertyGroup>
 
 </Project>
