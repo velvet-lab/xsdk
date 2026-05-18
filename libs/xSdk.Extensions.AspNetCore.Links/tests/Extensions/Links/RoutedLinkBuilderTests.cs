@@ -40,7 +40,7 @@ public class RoutedLinkBuilderTests
     [Fact]
     public void Build_WhenDescriptionIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null!);        
+        var link = new RoutedLink<TestModel>("self", "GetById", null!);
 
         IHateoasItem? result = RoutedLinkBuilder.Build(link);
 
