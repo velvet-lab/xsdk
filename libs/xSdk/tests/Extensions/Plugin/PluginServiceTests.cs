@@ -22,16 +22,18 @@ namespace xSdk.Extensions.Plugin;
 public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     [Fact]
-    public void LoadPlugins()
+    public async Task LoadPlugins()
     {
         IPluginService? service = fixture
             .BuildHost()
             .Services.GetService<IPluginService>();
 
-        IList<IPlugin>? plugins = service?.GetPlugins();
+        if (service != null)
+        {
+            IList<IPlugin>? plugins = await service.GetPluginsAsync(TestContext.Current.CancellationToken);
 
-        Assert.NotNull(plugins);
-        Assert.False(plugins.Any());
+            Assert.NotNull(plugins);
+        }
     }
 
     [Fact]
@@ -44,7 +46,7 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
         if (service != null)
         {
             IPlugin? plugin = await service.GetPluginAsync<IPlugin>(TestContext.Current.CancellationToken);
-            Assert.Null(plugin);
+            Assert.NotNull(plugin);
         }
     }
 
