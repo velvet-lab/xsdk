@@ -28,14 +28,14 @@ namespace xSdk.Extensions.Variable;
 internal partial class VariableService : IVariableService
 {
     private readonly IConfiguration? _config;
-    private readonly ApplicationOptions _applicationOptions;
+    private readonly ApplicationOptions? _applicationOptions;
 
     private static readonly ILogger _logger = LogManager.CreateLogger<VariableService>();
 
     public VariableService(IOptions<ApplicationOptions>? options, IConfiguration? config)
     {
         _config = config;
-        _applicationOptions = options?.Value ?? throw new SdkException("Application options are required");
+        _applicationOptions = options?.Value;
 
         InitProviders();
     }

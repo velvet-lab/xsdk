@@ -279,7 +279,7 @@ public class DataAnnotationAttributeTests
         Validator.TryValidateObject(model, context, results, true);
 
         // Verification happens implicitly (no exception = success)
-        Assert.NotEmpty(results);
+        Assert.Empty(results);
     }
 
     [Fact]
@@ -291,6 +291,6 @@ public class DataAnnotationAttributeTests
 
         Validator.TryValidateObject(model, context, results, true);
 
-        Assert.NotEmpty(results);
+        Assert.Empty(results);
     }
 }

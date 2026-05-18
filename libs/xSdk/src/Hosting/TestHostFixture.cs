@@ -25,12 +25,12 @@ public class TestHostFixture : IDisposable
 {
     private IHost? _host;
 
-    private readonly List<Action<IServiceCollection>> _servicesDelegates = new();
-    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = new();
+    private readonly List<Action<IServiceCollection>> _servicesDelegates = [];
+    private readonly List<Action<HostBuilderContext, IServiceCollection>> _servicesWithContextDelegates = [];
 
-    internal List<Action<IHostBuilder>> _builderDelegates = new();
+    internal List<Action<IHostBuilder>> _builderDelegates = [];
 
-    internal List<Action<string>> _loggingOutputHandlers = new();
+    internal List<Action<string>> _loggingOutputHandlers = [];
 
     private bool _disposed;
 
@@ -149,10 +149,6 @@ public class TestHostFixture : IDisposable
             return _host;
         }
 
-        // Stop and dispose the previous host if it exists
-        _host?.StopAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        _host?.Dispose();
-
         // Reset LogManager to ensure a clean state before building a new host
         LogManager.Reset();
 
@@ -228,9 +224,6 @@ public class TestHostFixture : IDisposable
             _currentDemoMode = Environment?.IsDemo;
         }
 
-        if (Environment != null)
-        {
-            Environment.IsDemo = enable;
-        }
+        Environment?.IsDemo = enable;
     }
 }

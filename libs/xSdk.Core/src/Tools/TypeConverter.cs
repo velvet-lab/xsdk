@@ -311,7 +311,11 @@ public static class TypeConverter
             }
             else if (targetType == typeof(string))
             {
-                return value is not null;
+                if(value is string stringValue)
+                {
+                    return string.IsNullOrEmpty(stringValue);
+                }
+                return value is null;
             }
         }
         catch

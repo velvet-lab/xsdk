@@ -29,6 +29,11 @@ public static class DictionaryExtensions
 
         if (key is not null)
         {
+            if(key is string keyString && string.IsNullOrEmpty(keyString))
+            {
+                return;
+            }
+
             lock (_lock)
             {
                 if (dictionary.ContainsKey(key))

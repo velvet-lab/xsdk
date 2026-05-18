@@ -19,7 +19,7 @@ using xSdk.Tools;
 
 namespace xSdk;
 
-public sealed class SemVer
+public sealed class SemVer : IComparable<SemVer>
 {
     private readonly string? _origin;
 
@@ -115,10 +115,6 @@ public sealed class SemVer
             return new SemVer(highestVersion, RangeObject);
         }
 
-        //var versionObject = _rangeObject.MaxSatisfying(nativeVersions);
-        //if (versionObject != null)
-        //    return new SemVer(versionObject, _rangeObject);
-
         return null;
     }
 
@@ -162,31 +158,9 @@ public sealed class SemVer
         return new Version(Version).ToString(fieldCount);
     }
 
-    // "operator==" should not be overloaded on reference types
-    // see csharpsquid:S3875
-    //public static bool operator ==(SemVer left, SemVer right)
-    //{
-    //    if (left is null)
-    //    {
-    //        if (right is null)
-    //        {
-    //            return true;
-    //        }
+    public static bool operator ==(SemVer left, SemVer right) => left?.CompareTo(right) == 0;
 
-    //        return false;
-    //    }
-    //    else
-    //    {
-    //        if (right is null)
-    //        {
-    //            return false;
-    //        }
-    //    }
-
-    //    return left.VersionObject == right.VersionObject;
-    //}
-
-    //public static bool operator !=(SemVer left, SemVer right) => !(left == right);
+    public static bool operator !=(SemVer left, SemVer right) => !(left == right);
 
     public static bool operator >(SemVer left, SemVer right)
     {
@@ -295,5 +269,15 @@ public sealed class SemVer
         }
 
         return false;
+    }
+
+    public int CompareTo(SemVer? other)
+    {
+        if (other is null)
+        {
+            return 1;
+        }
+
+        return VersionObject.CompareTo(other.VersionObject);
     }
 }

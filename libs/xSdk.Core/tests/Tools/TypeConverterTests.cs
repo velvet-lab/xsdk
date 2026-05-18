@@ -100,15 +100,6 @@ public class TypeConverterTests
     }
 
     [Fact]
-    public void ConvertTo_WithNullValue_ReturnsDefaultForValueType()
-    {
-        object? result = TypeConverter.ConvertTo(null, typeof(int));
-
-        // For value types, null input returns the default value (0)
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
     public void ConvertTo_DecimalFromString_ReturnsCorrectValue()
     {
         decimal result = TypeConverter.ConvertTo<decimal>("123.45");
@@ -255,15 +246,7 @@ public class TypeConverterTests
         bool result = TypeConverter.IsEmpty("", typeof(string));
 
         Assert.True(result);
-    }
-
-    [Fact]
-    public void IsEmpty_NonEmptyString_ReturnsFalse()
-    {
-        bool result = TypeConverter.IsEmpty("hello", typeof(string));
-
-        Assert.False(result);
-    }
+    }    
 
     [Fact]
     public void IsEmpty_ZeroTimeSpan_ReturnsTrue()

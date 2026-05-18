@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, string? name)
         where TOptions : class, IVariableSetup
-        => services.RegisterOptions<TOptions>(null, options => { });
+        => services.RegisterOptions<TOptions>(name, options => { });
 
     public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, Action<TOptions>? configure)
         where TOptions : class, IVariableSetup
@@ -53,7 +53,6 @@ public static class ServiceCollectionExtensions
                 configure?.Invoke(options);
                 validator.ValidateAndThrow(options);
             });
-
 
         services.SearchAndRegisterValidators<TOptions>();
 

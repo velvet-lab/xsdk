@@ -41,7 +41,10 @@ public static class Base64Tools
                 }
             }
         }
-        catch { }
+        catch
+        {
+            // nothing to do, just return the original value
+        }
 
         return result;
     }
@@ -55,7 +58,7 @@ public static class Base64Tools
             return Convert.ToBase64String(encoding.GetBytes(value));
         }
 
-        return default;
+        return string.Empty;
     }
 
     public static bool IsBase64(string? encoded)
@@ -66,7 +69,7 @@ public static class Base64Tools
         {
             var buffer = new Span<byte>(new byte[encoded.Length]);
 
-            if (Convert.TryFromBase64String(encoded, buffer, out int bytesParsed))
+            if (Convert.TryFromBase64String(encoded, buffer, out _))
             {
                 try
                 {
@@ -109,7 +112,10 @@ public static class Base64Tools
                     return value;
                 }
             }
-            catch { }
+            catch
+            {
+                // nothing to do, just return the original value
+            }
         }
 
         return default;

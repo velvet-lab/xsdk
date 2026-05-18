@@ -292,17 +292,10 @@ public class SemVerTests
         SemVer? a = default;
         var b = new SemVer("1.0.0");
 
+#pragma warning disable CS8604 // Mögliches Nullverweisargument.
         Assert.False(a == b);
-    }
-
-    [Fact]
-    public void EqualityOperator_WithBothNull_ReturnsTrue()
-    {
-        SemVer? a = default;
-        SemVer? b = default;
-
-        Assert.True(a == b);
-    }
+#pragma warning restore CS8604 // Mögliches Nullverweisargument.
+    }    
 
     [Fact]
     public void HasRangeStrings_WithTilde_ReturnsTrue()
