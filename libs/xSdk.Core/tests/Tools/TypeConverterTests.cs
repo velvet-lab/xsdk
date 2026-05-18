@@ -246,7 +246,7 @@ public class TypeConverterTests
         bool result = TypeConverter.IsEmpty("", typeof(string));
 
         Assert.True(result);
-    }    
+    }
 
     [Fact]
     public void IsEmpty_ZeroTimeSpan_ReturnsTrue()

@@ -295,7 +295,7 @@ public class SemVerTests
 #pragma warning disable CS8604 // Mögliches Nullverweisargument.
         Assert.False(a == b);
 #pragma warning restore CS8604 // Mögliches Nullverweisargument.
-    }    
+    }
 
     [Fact]
     public void HasRangeStrings_WithTilde_ReturnsTrue()
