@@ -16,11 +16,10 @@
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
-using xSdk.Extensions.Options;
 
 namespace xSdk.Data;
 
-internal abstract class DatabaseHandler(EnvironmentOptions? environment) : IDatabaseHandler
+internal abstract class DatabaseHandler() : IDatabaseHandler
 {
     public string? DatalayerName { get; internal set; }
 
@@ -31,19 +30,20 @@ internal abstract class DatabaseHandler(EnvironmentOptions? environment) : IData
     public abstract void Return(IDatabase? database);
 }
 
-internal class DatabaseHandler<TDatabase>(ObjectPool<TDatabase> pool, EnvironmentOptions? environment, ILogger<DatabaseHandler<TDatabase>> logger) : DatabaseHandler(environment), IDatabaseHandler<TDatabase>
+internal class DatabaseHandler<TDatabase>(ObjectPool<TDatabase> pool, ILogger<DatabaseHandler<TDatabase>> logger) : DatabaseHandler(), IDatabaseHandler<TDatabase>
     where TDatabase : class, IDatabase
 {
     public override IDatabase? Retrieve()
     {
         logger.LogTrace("Try to open Database");
 
-        var database = pool.Get();
+        TDatabase database = pool.Get();
         if (database is Database concreteDatabase)
         {
             concreteDatabase.DatalayerName = DatalayerName;
             concreteDatabase.Services = Services;
         }
+
         return database;
     }
 

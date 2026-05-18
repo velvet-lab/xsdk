@@ -54,14 +54,14 @@ public class CertAuthOptions : VariableSetup
     {
         try
         {
-            var cert = this.Certificate;
+            var cert = Certificate;
             if (Base64Tools.IsBase64(cert))
             {
                 _logger.LogInformation("Converting base64 encoded certificate to PEM format.");
                 cert = Base64Tools.ConvertFromBase64(cert);
             }
 
-            var key = this.Key;
+            var key = Key;
             if (Base64Tools.IsBase64(key))
             {
                 _logger.LogInformation("Converting base64 encoded key to PEM format.");
@@ -69,7 +69,7 @@ public class CertAuthOptions : VariableSetup
             }
 
             var certificate = X509Certificate2.CreateFromPem(cert, key);
-            var pkcsCertificate = new X509Certificate2(certificate.Export(X509ContentType.Pkcs12));
+            var pkcsCertificate = X509CertificateLoader.LoadCertificate(certificate.Export(X509ContentType.Pkcs12));
 
             return pkcsCertificate;
         }

@@ -52,7 +52,7 @@ internal sealed class CommandlineProvider : VariableProviderBase
                 if (nextValue.StartsWith("--"))
                 {
                     // Current Value is a switch value
-                    object switchValue = null;
+                    object? switchValue = null;
                     if (string.Compare(value, Cast(variable).KeyForCommandline, true) == 0)
                     {
                         switchValue = true;

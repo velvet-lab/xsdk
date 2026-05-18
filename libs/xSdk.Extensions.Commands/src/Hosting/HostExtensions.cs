@@ -15,6 +15,7 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -32,19 +33,12 @@ public static class HostExtensions
 
     public static async Task<int> RunConsoleAsync(this IHost host, string[] args)
     {
-        if (host is null)
-        {
-            throw new ArgumentNullException(nameof(host));
-        }
+        Guard.IsNotNull(host);
 
-        var app = host.Services.GetService<ICommandApp>();
-        if (app == null)
-        {
-            throw new InvalidOperationException("Command application has not been configured.");
-        }
+        ICommandApp? app = host.Services.GetService<ICommandApp>() ?? throw new InvalidOperationException("Command application has not been configured.");
 
         // Start any hosted services before running the command application
-        var hostedServices = host.Services.GetServices<IHostedService>();
+        IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
         if (hostedServices.Any())
         {
             hostedServices.ToList().ForEach(hostedService => hostedService.StartAsync(CancellationToken.None).GetAwaiter().GetResult());
@@ -52,18 +46,27 @@ public static class HostExtensions
 
         host.RemoveConsoleLoggers();
 
-        var lastResult = 0;
-        var replArgs = args;
-        var defaultArgs = CommandlineParser.Parse(args).BackupDefaultArgs();
-        var isReplConsole = CommandlineParser.Parse().ContainsPattern(ConsoleCommand.Definitions.Name);
+        int lastResult = 0;
+        string[] replArgs = args;
+        string[] defaultArgs = CommandlineParser.Parse(args).BackupDefaultArgs();
+        bool isReplConsole = CommandlineParser.Parse().ContainsPattern(ConsoleCommand.Definitions.Name);
 
         do
         {
-            var currentResult = await app.RunAsync(replArgs);
+            int currentResult = await app.RunAsync(replArgs);
             if (isReplConsole)
             {
-                System.Console.Write(PromptFactory.Factory());
-                var input = System.Console.ReadLine();
+                string? prompt = PromptFactory.Factory?.Invoke();
+                if (prompt is not null)
+                {
+                    System.Console.Write(prompt);
+                }
+                else
+                {
+                    System.Console.Write("> ");
+                }
+
+                string? input = System.Console.ReadLine();
 
                 if (CommandlineParser.Parse(input).AddDefaultArgs(defaultArgs).ContainsPattern(ExitCommand.Definitions.Name))
                 {
@@ -73,6 +76,7 @@ public static class HostExtensions
                 {
                     lastResult = currentResult;
                 }
+
                 replArgs = CommandlineParser.Parse(input).Arguments;
             }
             else
@@ -91,7 +95,7 @@ public static class HostExtensions
         // Alle konfigurierten Provider (OTel, Console, ...) bleiben erhalten.
         // Nur der globale MinLevel wird auf Warning gesetzt, damit die Console
         // im REPL-Modus nicht mit Info-Meldungen überfüllt wird.
-        var filterOptions = host.Services.GetRequiredService<IOptions<LoggerFilterOptions>>();
+        IOptions<LoggerFilterOptions> filterOptions = host.Services.GetRequiredService<IOptions<LoggerFilterOptions>>();
         filterOptions.Value.MinLevel = LogLevel.Warning;
 
         return host;

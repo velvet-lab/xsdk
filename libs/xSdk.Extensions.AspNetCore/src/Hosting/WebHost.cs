@@ -36,8 +36,8 @@ public static partial class WebHost
 
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
-        var hostBuilder = xSdk.Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix);
-        var slimHost = hostBuilder.GetSlimHost();
+        IHostBuilder hostBuilder = xSdk.Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix);
+        SlimHost slimHost = hostBuilder.GetSlimHost();
 
         hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
@@ -64,17 +64,16 @@ public static partial class WebHost
                     slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(services));
                 })
                 // Configure Services with Context
-                .ConfigureServices((context, services) =>
-                {
-                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
-                })
+                .ConfigureServices((context, services) => slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services)))
                 // Load Middlewares
                 .Configure((context, app) => ConfigureApplicationWithContext(context, app, slimHost))
                 // Configure Kestrel
                 .UseKestrel(ConfigureKestrel);
 
             if (stage == Stage.Development)
+            {
                 webHostBuilder.CaptureStartupErrors(true);
+            }
         });
 
         return hostBuilder;
@@ -85,24 +84,30 @@ public static partial class WebHost
         _logger.LogDebug(environmentOptions.IsDemo ? "Demo Mode" : "Production Mode");
         _logger.LogDebug("Try to get Content Root");
 
-        var root = environmentOptions.ContentRoot;
         if (environmentOptions.IsDemo)
         {
             return FileSystemHelper.GetExecutingFolder();
         }
 
-        if (!Directory.Exists(root))
+        string? root = environmentOptions.ContentRoot;
+        if (!string.IsNullOrEmpty(root))
         {
-            try
+            if (!Directory.Exists(root))
             {
-                _logger.LogTrace("Content root does not exist, creating it");
-                Directory.CreateDirectory(root);
+                try
+                {
+                    _logger.LogTrace("Content root does not exist, creating it");
+                    Directory.CreateDirectory(root);
+                }
+                catch
+                {
+                    // Only catch, nothing to tell
+                }
             }
-            catch
-            {
-                // Only catch, nothing to tell
-            }
+
+            return Path.GetFullPath(root);
         }
-        return Path.GetFullPath(root);
+
+        throw new InvalidOperationException("Content root is not set in production mode.");
     }
 }

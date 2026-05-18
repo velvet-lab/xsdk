@@ -27,7 +27,6 @@ public class MongoDbEntityTests
         var entity = new TestEntity();
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.Id);
         Assert.Equal(entity.Id, entity.Id);
         Assert.IsType<ObjectId>(entity.Id);
     }
@@ -36,11 +35,12 @@ public class MongoDbEntityTests
     public void CreateNewEntityFromExistingPrimaryKey()
     {
         var pk = ObjectId.GenerateNewId();
-        var entity = new TestEntity();
-        entity.Id = pk;
+        var entity = new TestEntity
+        {
+            Id = pk
+        };
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.Id);
         Assert.Equal(entity.Id, entity.Id);
         Assert.IsType<ObjectId>(entity.Id);
     }

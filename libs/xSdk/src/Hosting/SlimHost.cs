@@ -30,7 +30,6 @@ public class SlimHost
     private IServiceCollection _slimServices = null!;
     private IServiceCollection? _appServices;
     private readonly List<Action> _appServicesDelegates = [];
-    private IServiceProvider? _serviceProvider;
     private ApplicationOptions? _applicationOptions;
     private readonly List<Type> _registeredPluginHostTypes = [];
 
@@ -38,26 +37,24 @@ public class SlimHost
     {
         get
         {
-            _serviceProvider ??= _slimServices.BuildServiceProvider();
+            field ??= _slimServices.BuildServiceProvider();
             _isBuilded = true;
 
-            return _serviceProvider;
+            return field;
         }
     }
 
     internal SlimHost() { }
 
-    internal void ConfigurePluginHost<TPluginHost>(Action<IPluginHost> factory)
-        where TPluginHost : IPluginHost
+    internal void ConfigurePluginHost(Action<IPluginHost> factory)
         => ConfigurePluginHostInternal(factory, default);
 
-    internal void ConfigureWebPluginHost<TPluginHost>(Action<IWebPluginHost> factory)
-        where TPluginHost : IWebPluginHost
+    internal void ConfigureWebPluginHost(Action<IWebPluginHost> factory)
         => ConfigurePluginHostInternal(default, factory);
 
     private void ConfigurePluginHostInternal(Action<IPluginHost>? factory, Action<IWebPluginHost>? webFactory)
     {
-        var plugins = Provider.GetServices<IPluginHost>()
+        IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
             .Cast<PluginDescription>()
             .OrderBy(p => p.Order)
             .Cast<IPluginHost>();
@@ -66,14 +63,10 @@ public class SlimHost
         {
             factory?.Invoke(plugin);
 
-            var pluginType = plugin.GetType();
-            if (pluginType.IsAssignableTo(typeof(IWebPluginHost)))
+            Type pluginType = plugin.GetType();
+            if (pluginType.IsAssignableTo(typeof(IWebPluginHost)) && plugin is IWebPluginHost webPlugin)
             {
-                IWebPluginHost? webPlugin = plugin as IWebPluginHost;
-                if (webPlugin != null)
-                {
-                    webFactory?.Invoke(webPlugin);
-                }
+                webFactory?.Invoke(webPlugin);
             }
         }
     }
@@ -81,12 +74,12 @@ public class SlimHost
     internal IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
         where TPluginHost : IPluginHost
     {
-        var plugins = Provider.GetServices<IPluginHost>()
+        IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
             .Cast<PluginDescription>()
             .OrderBy(p => p.Order)
             .Cast<IPluginHost>();
 
-        List<TPluginHost> result = new();
+        List<TPluginHost> result = [];
         foreach (IPluginHost plugin in plugins)
         {
             Type pluginType = plugin.GetType();
@@ -101,9 +94,11 @@ public class SlimHost
 
     internal static SlimHost InitializeSlimHost(string[] args, ApplicationOptions appOptions)
     {
-        var instance = new SlimHost();
-        instance._applicationOptions = appOptions;
-        instance._slimServices = new ServiceCollection();
+        var instance = new SlimHost
+        {
+            _applicationOptions = appOptions,
+            _slimServices = new ServiceCollection()
+        };
         instance.ConfigureDefaults(instance._slimServices);
         instance._slimServices.AddSingleton<IPluginHostCollection>(_ =>
             new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()));
@@ -113,7 +108,7 @@ public class SlimHost
     internal void PostConfigure(IServiceCollection applicationServices)
     {
         _appServices = applicationServices;
-        foreach (var action in _appServicesDelegates)
+        foreach (Action action in _appServicesDelegates)
         {
             action?.Invoke();
         }
@@ -136,7 +131,7 @@ public class SlimHost
         _registeredPluginHostTypes.Add(typeof(TPluginHostImplementation));
         _slimServices.AddSingleton<TPluginHost>(provider =>
         {
-            var pluginHost = ActivatorUtilities.CreateInstance<TPluginHostImplementation>(provider);
+            TPluginHostImplementation pluginHost = ActivatorUtilities.CreateInstance<TPluginHostImplementation>(provider);
             pluginHost.SetServiceProvider(provider);
 
             return pluginHost;
@@ -159,10 +154,7 @@ public class SlimHost
         }
         else
         {
-            _appServicesDelegates.Add(new Action(() =>
-            {
-                _appServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
-            }));
+            _appServicesDelegates.Add(new Action(() => _appServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>()));
         }
     }
 
@@ -181,10 +173,7 @@ public class SlimHost
         }
         else
         {
-            _appServicesDelegates.Add(new Action(() =>
-            {
-                _appServices?.RegisterOptions<TOptions>();
-            }));
+            _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>()));
         }
     }
 
@@ -199,7 +188,7 @@ public class SlimHost
 
         ConfigureDefaults(services);
 
-        var provider = services.BuildServiceProvider();
+        ServiceProvider provider = services.BuildServiceProvider();
 
         return provider.GetService<IOptions<EnvironmentOptions>>()?.Value;
     }

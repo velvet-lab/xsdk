@@ -30,30 +30,31 @@ internal static class MethodAnalyzer
     {
         var descriptions = new List<MethodDescription>();
 
-        var classType = SearchCallingController(context);
+        TypeInfo? classType = SearchCallingController(context);
         if (classType != null)
         {
-            var methods = classType.GetMethods();
-            foreach (var method in methods)
+            MethodInfo[] methods = classType.GetMethods();
+            foreach (MethodInfo method in methods)
             {
-                var httpAttribute = method.GetCustomAttribute<HttpMethodAttribute>();
+                HttpMethodAttribute? httpAttribute = method.GetCustomAttribute<HttpMethodAttribute>();
                 if (httpAttribute != null && httpAttribute.HttpMethods.Any() && !string.IsNullOrEmpty(httpAttribute.Name))
                 {
-                    var description = new MethodDescription();
-                    description.Action = method;
-                    description.ControllerType = classType;
+                    var description = new MethodDescription
+                    {
+                        Action = method,
+                        ControllerType = classType,
+                        HttpMethod = HttpMethod.Parse(httpAttribute.HttpMethods.First()),
+                        MethodName = httpAttribute.Name,
+                        RouteTemplate = httpAttribute.Template
+                    };
 
-                    description.HttpMethod = HttpMethod.Parse(httpAttribute.HttpMethods.First());
-                    description.MethodName = httpAttribute.Name;
-                    description.RouteTemplate = httpAttribute.Template;
-
-                    var linksAttribute = method.GetCustomAttribute<LinksAttribute>();
+                    LinksAttribute? linksAttribute = method.GetCustomAttribute<LinksAttribute>();
                     if (linksAttribute != null)
                     {
                         description.PolicyName = linksAttribute.PolicyName;
                     }
 
-                    var authorizeAttribute = method.GetCustomAttribute<AuthorizeAttribute>();
+                    AuthorizeAttribute? authorizeAttribute = method.GetCustomAttribute<AuthorizeAttribute>();
                     if (authorizeAttribute != null)
                     {
                         if (!string.IsNullOrEmpty(authorizeAttribute.Roles))
@@ -72,33 +73,29 @@ internal static class MethodAnalyzer
         return descriptions;
     }
 
-
     private static TypeInfo? SearchCallingController(HttpContext? context)
     {
         if (context != null)
         {
-            var endpoint = context.GetEndpoint();
+            Endpoint? endpoint = context.GetEndpoint();
             if (endpoint != null)
             {
-                var requestDelegate = endpoint.RequestDelegate;
+                RequestDelegate? requestDelegate = endpoint.RequestDelegate;
                 if (requestDelegate != null)
                 {
-                    var target = requestDelegate.Target;
+                    object? target = requestDelegate.Target;
                     if (target != null)
                     {
-                        var controllerProperty = target.GetType().GetField("controller");
-                        if (controllerProperty != null)
+                        FieldInfo? controllerProperty = target.GetType().GetField("controller");
+                        if (controllerProperty != null && controllerProperty.GetValue(target) is ControllerActionDescriptor controller)
                         {
-                            var controller = controllerProperty.GetValue(target) as ControllerActionDescriptor;
-                            if (controller != null)
-                            {
-                                return controller.ControllerTypeInfo;
-                            }
+                            return controller.ControllerTypeInfo;
                         }
                     }
                 }
             }
         }
+
         return default;
     }
 }

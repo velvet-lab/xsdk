@@ -20,11 +20,11 @@ namespace xSdk.Extensions.Links;
 
 internal sealed class MethodDescription
 {
-    public MethodInfo Action { get; internal set; }
+    public required MethodInfo Action { get; internal set; }
 
-    public Type ControllerType { get; internal set; }
+    public required Type ControllerType { get; internal set; }
 
-    public HttpMethod HttpMethod { get; internal set; }
+    public required HttpMethod HttpMethod { get; internal set; }
 
     public string? MethodName { get; internal set; }
 
@@ -32,7 +32,7 @@ internal sealed class MethodDescription
 
     public string? RouteTemplate { get; internal set; }
 
-    public string[] AuthRoles { get; internal set; } = Array.Empty<string>();
+    public string[] AuthRoles { get; internal set; } = [];
 
     public string? AuthPolicy { get; internal set; }
 
@@ -40,16 +40,14 @@ internal sealed class MethodDescription
     {
         get
         {
-            if (AuthRoles.Any() || !string.IsNullOrEmpty(AuthPolicy))
+            if (AuthRoles.Length != 0 || !string.IsNullOrEmpty(AuthPolicy))
             {
                 return true;
             }
+
             return false;
         }
     }
 
-    public override string ToString()
-    {
-        return MethodName ?? this.GetType().Name;
-    }
+    public override string ToString() => MethodName ?? GetType().Name;
 }

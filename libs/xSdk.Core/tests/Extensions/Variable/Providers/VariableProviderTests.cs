@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Variable;
-
 namespace xSdk.Extensions.Variable.Providers;
 
 public class VariableProviderTests

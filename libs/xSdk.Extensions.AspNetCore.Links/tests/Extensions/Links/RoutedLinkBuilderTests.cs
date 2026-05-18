@@ -32,7 +32,7 @@ public class RoutedLinkBuilderTests
         var link = new RoutedLink<TestModel>("self", "GetById", null!);
         var builder = new RoutedLinkBuilder();
 
-        var result = builder.Build(link);
+        IHateoasItem? result = builder.Build(link);
 
         Assert.Null(result);
     }
@@ -40,17 +40,22 @@ public class RoutedLinkBuilderTests
     [Fact]
     public void Build_WhenContextIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null!);
-        link.Description = new MethodDescription
+        var link = new RoutedLink<TestModel>("self", "GetById", null!)
         {
-            ControllerType = typeof(TestModel),
-            MethodName = "GetById",
-            HttpMethod = HttpMethod.Get
+#pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
+            Description = new MethodDescription
+            {
+                Action = default,
+                ControllerType = typeof(TestModel),
+                MethodName = "GetById",
+                HttpMethod = HttpMethod.Get
+            }
         };
+#pragma warning restore CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
         // Context is null → CreateBaseUrl returns null → Build returns null
         var builder = new RoutedLinkBuilder();
 
-        var result = builder.Build(link);
+        IHateoasItem? result = builder.Build(link);
 
         Assert.Null(result);
     }
@@ -58,21 +63,27 @@ public class RoutedLinkBuilderTests
     [Fact]
     public void Build_WhenModelIsNull_ReturnsNull()
     {
-        var link = new RoutedLink<TestModel>("self", "GetById", null!);
-        link.Description = new MethodDescription
+        var link = new RoutedLink<TestModel>("self", "GetById", null!)
         {
-            ControllerType = typeof(TestModel),
-            MethodName = "GetById",
-            HttpMethod = HttpMethod.Get
-        };
-        link.Context = new DefaultHttpContext
-        {
-            Request = { Scheme = "https", Host = new HostString("localhost") }
+#pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
+            Description = new MethodDescription
+            {
+                Action = default,
+                ControllerType = typeof(TestModel),
+                MethodName = "GetById",
+                HttpMethod = HttpMethod.Get
+            },
+#pragma warning restore CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
+
+            Context = new DefaultHttpContext
+            {
+                Request = { Scheme = "https", Host = new HostString("localhost") }
+            }
         };
         // ConcreteModel is null (Model not set) → ReplaceValue returns null
         var builder = new RoutedLinkBuilder();
 
-        var result = builder.Build(link);
+        IHateoasItem? result = builder.Build(link);
 
         Assert.Null(result);
     }

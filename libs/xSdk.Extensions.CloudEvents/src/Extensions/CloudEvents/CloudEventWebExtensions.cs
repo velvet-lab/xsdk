@@ -22,6 +22,7 @@ using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.Core;
 using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Web;
 using xSdk.Hosting;
@@ -35,18 +36,16 @@ public static class CloudEventWebExtensions
 
     public static string ToJson(this CloudEvent cloudEvent)
     {
-        var (body, _) = cloudEvent.ToHttpContent();
+        (ReadOnlyMemory<byte> body, ContentType _) = cloudEvent.ToHttpContent();
         string json = Encoding.UTF8.GetString(body.Span);
 
         return json;
     }
 
-    public static string ToBase64(this CloudEvent cloudEvent)
+    public static string? ToBase64(this CloudEvent cloudEvent)
     {
-        var cloudEventAsJson = cloudEvent.ToJson();
-        var cloudEventAsBase64 = Base64Tools.ConvertToBase64(cloudEventAsJson);
-
-        return cloudEventAsBase64;
+        string cloudEventAsJson = cloudEvent.ToJson();
+        return Base64Tools.ConvertToBase64(cloudEventAsJson);
     }
 
     public static (ReadOnlyMemory<byte>, ContentType contenType) ToHttpContent(this CloudEvent cloudEvent) =>
@@ -67,11 +66,11 @@ public static class CloudEventWebExtensions
 
         if (formatter != null)
         {
-            var body = formatter.EncodeStructuredModeMessage(cloudEvent, out ContentType contentType);
+            ReadOnlyMemory<byte> body = formatter.EncodeStructuredModeMessage(cloudEvent, out ContentType contentType);
             return (body, contentType);
         }
 
-        return (null, null);
+        return default;
     }
 
     public static void PostToHttp(this CloudEvent cloudEvent, string url) => cloudEvent.PostToHttpAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
@@ -113,7 +112,7 @@ public static class CloudEventWebExtensions
 
     public static Task PostToHttpAsync(this CloudEvent cloudEvent, string url, CancellationToken token = default)
     {
-        var (body, contentType) = cloudEvent.ToHttpContent();
+        (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent();
         return cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
     }
 
@@ -124,13 +123,13 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     )
     {
-        var (body, contentType) = cloudEvent.ToHttpContent();
+        (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent();
         return cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders, token);
     }
 
     public static Task PostToHttpAsync(this CloudEvent cloudEvent, string url, JsonSerializerOptions serializer, CancellationToken token = default)
     {
-        var (body, contentType) = cloudEvent.ToHttpContent(serializer);
+        (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent(serializer);
         return cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
     }
 
@@ -142,7 +141,7 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     )
     {
-        var (body, contentType) = cloudEvent.ToHttpContent(serializer);
+        (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent(serializer);
         return cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders, token);
     }
 
@@ -159,11 +158,11 @@ public static class CloudEventWebExtensions
         string url,
         JsonSerializerOptions serializer,
         JsonDocumentOptions document,
-        IDictionary<string, string> additionalHeaders,
+        IDictionary<string, string>? additionalHeaders,
         CancellationToken token = default
     )
     {
-        var (body, contentType) = cloudEvent.ToHttpContent(serializer, document);
+        (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent(serializer, document);
         return cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders, token);
     }
 
@@ -175,6 +174,7 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     ) => cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public static async Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -184,50 +184,40 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     )
     {
-        if (string.IsNullOrEmpty(url))
-        {
-            throw new ArgumentException($"'{nameof(url)}' cannot be null or empty.", nameof(url));
-        }
-
-        if (contentType is null)
-        {
-            throw new ArgumentNullException(nameof(contentType));
-        }
+        Guard.IsNullOrEmpty(url);
+        Guard.IsNotNull(contentType);
 
         try
         {
-            _logger.LogInformation("Send CloudEvent to '{0}'", url);
-            using (var client = HttpClientBuilder.CreateHttpClient(new Uri(url)))
+            _logger.LogInformation("Send CloudEvent to '{url}'", url);
+            using HttpClient client = HttpClientBuilder.CreateHttpClient(new Uri(url));
+            foreach (KeyValuePair<string, string> header in additionalHeaders ?? new Dictionary<string, string>())
             {
-                foreach (var header in additionalHeaders ?? new Dictionary<string, string>())
-                {
-                    client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
-                }
-
-                using (var stream = new MemoryStream(body.ToArray()))
-                {
-                    var streamContent = new StreamContent(stream);
-                    streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType.MediaType);
-
-                    _logger.LogInformation("Add CloudEvent Attributes as Http Header");
-                    foreach (var item in cloudEvent.GetPopulatedAttributes())
-                    {
-                        var attribute = item.Key;
-                        var value = item.Value;
-                        var headerName = $"{HttpUtilities.HttpHeaderPrefix}{attribute.Name}";
-                        var headerValue = HttpUtilities.EncodeHeaderValue(attribute.Format(value));
-                        streamContent.Headers.Add(headerName, headerValue);
-                    }
-                    streamContent.Headers.Add(HttpUtilities.SpecVersionHttpHeader, HttpUtilities.EncodeHeaderValue(cloudEvent.SpecVersion.VersionId));
-
-                    var response = await client.PostAsync(url, streamContent, token);
-                    response.EnsureSuccessStatusCode();
-                }
+                client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
             }
+
+            using var stream = new MemoryStream(body.ToArray());
+            var streamContent = new StreamContent(stream);
+            streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType.MediaType);
+
+            _logger.LogInformation("Add CloudEvent Attributes as Http Header");
+            foreach (KeyValuePair<CloudEventAttribute, object> item in cloudEvent.GetPopulatedAttributes())
+            {
+                CloudEventAttribute attribute = item.Key;
+                object value = item.Value;
+                string headerName = $"{HttpUtilities.HttpHeaderPrefix}{attribute.Name}";
+                string headerValue = HttpUtilities.EncodeHeaderValue(attribute.Format(value));
+                streamContent.Headers.Add(headerName, headerValue);
+            }
+
+            streamContent.Headers.Add(HttpUtilities.SpecVersionHttpHeader, HttpUtilities.EncodeHeaderValue(cloudEvent.SpecVersion.VersionId));
+
+            HttpResponseMessage response = await client.PostAsync(url, streamContent, token);
+            response.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "CloudEvent could not posted to '{0}' (Reason: {1})", url, ex.Message);
+            _logger.LogError(ex, "CloudEvent could not posted to '{url}' (Reason: {reason})", url, ex.Message);
             throw new InvalidOperationException($"CloudEvent could not be posted to '{url}'.", ex);
         }
     }

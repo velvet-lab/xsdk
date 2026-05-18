@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using System.Reflection;
+
 namespace xSdk.Hosting;
 
 public static class TestRunnerDetection
@@ -25,8 +27,15 @@ public static class TestRunnerDetection
     private static bool IsTestRunnerFound()
     {
         const string testRunnerPrefix = "xunit.runner";
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        var runnerFound = assemblies.Any(x => x.FullName.StartsWith(testRunnerPrefix, StringComparison.Ordinal));
+        Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+#pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
+        bool runnerFound = assemblies
+            .Select(x => x.FullName)
+            .Where(x => x != null)
+            .Any(x => x.StartsWith(testRunnerPrefix, StringComparison.Ordinal));
+#pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
+
         return runnerFound;
     }
 }

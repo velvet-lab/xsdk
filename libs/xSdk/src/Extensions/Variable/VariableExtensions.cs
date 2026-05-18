@@ -22,12 +22,9 @@ internal static class VariableExtensions
 {
     internal static IVariable SetPrefix(this IVariable variable, string prefix)
     {
-        if (variable.TryCast(out Variable casted))
+        if (variable.TryCast(out Variable casted) && !string.IsNullOrEmpty(prefix))
         {
-            if (!string.IsNullOrEmpty(prefix))
-            {
-                casted.Prefix = prefix.Replace("setup", "", StringComparison.InvariantCultureIgnoreCase).Trim().ToLower();
-            }
+            casted.Prefix = prefix.Replace("setup", "", StringComparison.InvariantCultureIgnoreCase).Trim().ToLower();
         }
 
         return variable;
@@ -43,7 +40,7 @@ internal static class VariableExtensions
         return variable;
     }
 
-    internal static IVariable SetTelemetryResourceValueDelegate(this IVariable variable, Func<object> resourceDelegate)
+    internal static IVariable SetTelemetryResourceValueDelegate(this IVariable variable, Func<object?> resourceDelegate)
     {
         if (variable.TryCast(out Variable casted))
         {
@@ -99,6 +96,7 @@ internal static class VariableExtensions
         {
             casted.NoPrefix = true;
         }
+
         return variable;
     }
 
@@ -108,12 +106,12 @@ internal static class VariableExtensions
         result = default;
 #nullable restore
 
-        var casted = variable as Variable;
-        if (casted != null)
+        if (variable is Variable casted)
         {
             result = casted;
             return true;
         }
+
         return false;
     }
 }

@@ -21,9 +21,9 @@ namespace xSdk.Data.Converters.Json;
 
 public sealed class ObjectConverter : JsonConverter<object>
 {
-    public override object Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        object result = default;
+        object? result = default;
         if (reader.TokenType == JsonTokenType.String)
         {
             var value = reader.GetString();
@@ -35,8 +35,11 @@ public sealed class ObjectConverter : JsonConverter<object>
         return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, object? value, JsonSerializerOptions options)
     {
-        writer.WriteStringValue(value.ToString());
+        if (value != null)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
     }
 }

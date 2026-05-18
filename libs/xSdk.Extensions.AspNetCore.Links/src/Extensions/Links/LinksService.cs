@@ -20,12 +20,15 @@ using xSdk.Data;
 
 namespace xSdk.Extensions.Links;
 
-internal sealed partial class LinksService(LinksOptions linksOptions, IHttpContextAccessor context, IServiceProvider _, ILogger<LinksService> __) : ILinksService
+internal sealed partial class LinksService(LinksOptions linksOptions, IHttpContextAccessor context, ILogger<LinksService> logger) : ILinksService
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public Task AddLinksAsync<TModel>(IEnumerable<TModel> model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
     {
-        foreach (var item in model)
+        logger.LogInformation("Add links to model collection of type {ModelType}", typeof(TModel).FullName);
+
+        foreach (TModel item in model)
         {
             AddLinksInternal(item);
         }
@@ -33,9 +36,11 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
         return Task.CompletedTask;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public Task AddLinksAsync<TModel>(TModel model, CancellationToken cancellationToken = default)
         where TModel : class, IModel
     {
+        logger.LogInformation("Add links to model of type {ModelType}", typeof(TModel).FullName);
         AddLinksInternal(model);
         return Task.CompletedTask;
     }
@@ -43,21 +48,18 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
     private void AddLinksInternal<TModel>(TModel model)
         where TModel : class, IModel
     {
-        var descriptions = MethodAnalyzer.Analyze(context.HttpContext);
+        List<MethodDescription> descriptions = MethodAnalyzer.Analyze(context.HttpContext);
         var links = new Dictionary<string, IHateoasItem>();
 
-        foreach (var description in descriptions)
+        foreach (MethodDescription description in descriptions)
         {
-            var link = SearchPolicyLink(model, description, context.HttpContext);
-            if (link != null && !links.ContainsKey(link.Name))
+            RoutedLink? link = SearchPolicyLink(model, description, context.HttpContext);
+            if (link is RoutedLink routedLink && !links.ContainsKey(link.Name))
             {
-                if (link is RoutedLink routedLink)
+                IHateoasItem? linkItem = routedLink.Build();
+                if (linkItem != null)
                 {
-                    var linkItem = routedLink.Build();
-                    if (linkItem != null)
-                    {
-                        links.Add(link.Name, linkItem);
-                    }
+                    links.Add(routedLink.Name, linkItem);
                 }
             }
         }
@@ -67,13 +69,11 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
 
     private RoutedLink? SearchPolicyLink(IModel model, MethodDescription description, HttpContext? context)
     {
-        foreach (var policy in linksOptions.Policies)
+        foreach (IPolicy policy in linksOptions.Policies)
         {
-            foreach (var link in policy.Links)
+            foreach (IRoutedLink link in policy.Links)
             {
-                RoutedLink? linkInstance = link as RoutedLink;
-
-                if (linkInstance == null)
+                if (link is not RoutedLink linkInstance)
                 {
                     continue;
                 }
@@ -87,16 +87,19 @@ internal sealed partial class LinksService(LinksOptions linksOptions, IHttpConte
                 }
             }
         }
+
         return default;
     }
 
-    private void SaveLinks(IModel model, IDictionary<string, IHateoasItem> links)
+    private static void SaveLinks(IModel model, IDictionary<string, IHateoasItem> links)
     {
         if (model is Model concreteModel)
         {
             var converted = links.ToDictionary(x => x.Key, x => x.Value);
-            concreteModel.AdditionalData = new Dictionary<string, object>();
-            concreteModel.AdditionalData.Add("_links", converted);
+            concreteModel.AdditionalData = new Dictionary<string, object>
+            {
+                { "_links", converted }
+            };
         }
     }
 }

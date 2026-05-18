@@ -23,63 +23,50 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Extensions.Telemetry;
 
-internal partial class TelemetryService : ITelemetryService
+internal partial class TelemetryService(IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryService> logger) : ITelemetryService
 {
     private ActivitySource? _mainActivitySource;
     private Meter? _mainMeter;
-    private readonly EnvironmentOptions _envSetup;
-    private readonly ILogger<TelemetryService> _logger;
+    private readonly EnvironmentOptions _envSetup = environmentOptions.Value;
 
     public ActivitySource MainActivitySource => CreateMainActivitySource();
 
     public Meter MainMeter => CreateMainMeter();
 
-    public TelemetryService(IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryService> logger)
-    {
-        this._envSetup = environmentOptions.Value;
-        this._logger = logger;
-    }
-
-
     public Activity? StartActivity(ActivityKind kind = ActivityKind.Internal, [CallerMemberName] string name = "")
     {
-        var source = CreateMainActivitySource();
+        ActivitySource source = CreateMainActivitySource();
 
-        var activity = source.StartActivity(name, kind);
-        if (activity == null)
-        {
-            throw new SdkException("Activity could not started");
-        }
-
-        return activity;
+        Activity? activity = source.StartActivity(name, kind);
+        return activity ?? throw new SdkException("Activity could not started");
     }
 
-    public Counter<T> CreateCounter<T>(string name, string unit = null, string description = null)
+    public Counter<T> CreateCounter<T>(string name, string? unit = null, string? description = null)
         where T : struct => CreateInstrument<Counter<T>, T>(meter => meter.CreateCounter<T>(name, unit, description));
 
-    public Histogram<T> CreateHistogram<T>(string name, string unit = null, string description = null)
+    public Histogram<T> CreateHistogram<T>(string name, string? unit = null, string? description = null)
         where T : struct => CreateInstrument<Histogram<T>, T>(meter => meter.CreateHistogram<T>(name, unit, description));
 
-    public UpDownCounter<T> CreateUpDownCounter<T>(string name, string unit = null, string description = null)
+    public UpDownCounter<T> CreateUpDownCounter<T>(string name, string? unit = null, string? description = null)
         where T : struct => CreateInstrument<UpDownCounter<T>, T>(meter => meter.CreateUpDownCounter<T>(name, unit, description));
 
-    public ObservableUpDownCounter<T> CreateObservableUpDownCounter<T>(string name, Func<T> observeValue, string unit = null, string description = null)
+    public ObservableUpDownCounter<T> CreateObservableUpDownCounter<T>(string name, Func<T> observeValue, string? unit = null, string? description = null)
         where T : struct =>
         CreateObservableInstrument<ObservableUpDownCounter<T>, T>(meter => meter.CreateObservableUpDownCounter(name, observeValue, unit, description));
 
-    public ObservableCounter<T> CreateObservableCounter<T>(string name, Func<T> observeValue, string unit = null, string description = null)
+    public ObservableCounter<T> CreateObservableCounter<T>(string name, Func<T> observeValue, string? unit = null, string? description = null)
         where T : struct =>
         CreateObservableInstrument<ObservableCounter<T>, T>(meter => meter.CreateObservableCounter(name, observeValue, unit, description));
 
-    public ObservableGauge<T> CreateObservableGauge<T>(string name, Func<T> observeValue, string unit = null, string description = null)
+    public ObservableGauge<T> CreateObservableGauge<T>(string name, Func<T> observeValue, string? unit = null, string? description = null)
         where T : struct => CreateObservableInstrument<ObservableGauge<T>, T>(meter => meter.CreateObservableGauge(name, observeValue, unit, description));
 
     private ActivitySource CreateMainActivitySource()
     {
         if (_mainActivitySource == null)
         {
-            _logger.LogInformation("Create main activity source for tracing");
-            _mainActivitySource = new ActivitySource(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
+            logger.LogInformation("Create main activity source for tracing");
+            _mainActivitySource = new ActivitySource(_envSetup.ServiceName, _envSetup.ServiceVersion);
         }
 
         return _mainActivitySource;
@@ -89,7 +76,7 @@ internal partial class TelemetryService : ITelemetryService
     {
         if (_mainMeter == null)
         {
-            _logger.LogInformation("Create main meter for metrics");
+            logger.LogInformation("Create main meter for metrics");
             _mainMeter = new Meter(_envSetup.ServiceFullName, _envSetup.ServiceVersion);
         }
 
@@ -100,27 +87,19 @@ internal partial class TelemetryService : ITelemetryService
         where TInstrument : Instrument<T>
         where T : struct
     {
-        var meter = CreateMainMeter();
+        Meter meter = CreateMainMeter();
 
-        var instrument = configure(meter);
-        if (instrument == null)
-        {
-            throw new SdkException("Meter could not created");
-        }
-        return instrument;
+        TInstrument instrument = configure(meter);
+        return instrument ?? throw new SdkException("Meter could not created");
     }
 
     private TInstrument CreateObservableInstrument<TInstrument, T>(Func<Meter, TInstrument> configure)
         where TInstrument : ObservableInstrument<T>
         where T : struct
     {
-        var meter = CreateMainMeter();
+        Meter meter = CreateMainMeter();
 
-        var instrument = configure(meter);
-        if (instrument == null)
-        {
-            throw new SdkException("Meter could not created");
-        }
-        return instrument;
+        TInstrument instrument = configure(meter);
+        return instrument ?? throw new SdkException("Meter could not created");
     }
 }

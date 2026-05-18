@@ -42,7 +42,7 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
 
     public void ConfigureMetrics(MeterProviderBuilder builder)
     {
-        var envSetup = environmentOptions.Value;
+        EnvironmentOptions envSetup = environmentOptions.Value;
 
         builder
             .AddMeter(envSetup.ServiceFullName)
@@ -57,7 +57,7 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
 
     public void ConfigureTracing(TracerProviderBuilder builder)
     {
-        var envSetup = environmentOptions.Value;
+        EnvironmentOptions envSetup = environmentOptions.Value;
 
         builder
             .AddSource(envSetup.ServiceFullName)
@@ -72,9 +72,14 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
 
     private void ConfigureOtlpExporter(OtlpExporterOptions options)
     {
-        var telemetrySetup = telemetryOptions.Value;
+        TelemetryOptions telemetrySetup = telemetryOptions.Value;
         if (!telemetrySetup.IsOtlpExporterDisabled)
         {
+            if (telemetrySetup.Endpoint == null)
+            {
+                throw new InvalidOperationException("Endpoint for OtlpExporter must be setted, when OtlpExporter is enabled");
+            }
+
             // Adding the OtlpExporter creates a GrpcChannel.
             // This switch must be set before creating a GrpcChannel when calling an insecure gRPC service.
             // See: https://docs.microsoft.com/aspnet/core/grpc/troubleshoot#call-insecure-grpc-services-with-net-core-client
@@ -83,8 +88,6 @@ internal class DefaultTelemetryPluginBuilder(IOptions<EnvironmentOptions> enviro
             options.Protocol = OtlpExportProtocol.Grpc;
             options.Endpoint = new Uri(telemetrySetup.Endpoint);
             // options.Headers = $"OTEL_KEY={telemetrySetup.Token}";
-
-
         }
     }
 }

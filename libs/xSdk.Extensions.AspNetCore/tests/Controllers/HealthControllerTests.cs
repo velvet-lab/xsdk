@@ -15,11 +15,9 @@
  */
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using xSdk.Controllers;
 
-namespace xSdk.Extensions.AspNetCore.Tests.Controllers;
+namespace xSdk.Controllers;
 
 public class HealthControllerTests
 {
@@ -27,14 +25,14 @@ public class HealthControllerTests
 
     public HealthControllerTests()
     {
-        var logger = NullLogger<HealthController>.Instance;
+        NullLogger<HealthController> logger = NullLogger<HealthController>.Instance;
         _controller = new HealthController(logger);
     }
 
     [Fact]
     public async Task GetStatus_ReturnsOkResult()
     {
-        var result = await _controller.GetStatus();
+        ActionResult result = await _controller.GetStatus();
 
         Assert.IsType<OkObjectResult>(result);
     }
@@ -51,7 +49,7 @@ public class HealthControllerTests
     [Fact]
     public async Task GetPong_ReturnsOkResult()
     {
-        var result = await _controller.GetPong();
+        ActionResult result = await _controller.GetPong();
 
         Assert.IsType<OkObjectResult>(result);
     }

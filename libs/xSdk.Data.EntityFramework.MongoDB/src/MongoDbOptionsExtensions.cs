@@ -24,18 +24,29 @@ public static class MongoDbOptionsExtensions
 {
     public static MongoClientSettings? CreateMongoDbClientSettings(this MongoDbOptions options)
     {
-        MongoClientSettings? settings = null;
+        MongoClientSettings? settings;
 
-        var connectionString = options.Uri;
+        string? connectionString = options.Uri;
         if (string.IsNullOrEmpty(connectionString))
         {
             connectionString = options.Database;
         }
 
         settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
-
         settings.Credential = MongoCredential.CreatePlainCredential(options.Database, options.Username, options.Password);
-        settings.Server = new MongoServerAddress(options.Hosts[0]);
+
+        if (options.Hosts == null || options.Hosts.Length == 0)
+        {
+            throw new InvalidOperationException("The Hosts property must contain at least one host.");
+        }
+
+        string? host = options.Hosts[0];
+        if (string.IsNullOrEmpty(host))
+        {
+            throw new InvalidOperationException("At least one host must be specified in the Hosts property.");
+        }
+
+        settings.Server = new MongoServerAddress(host);
 
         return settings;
     }

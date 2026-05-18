@@ -15,16 +15,15 @@
  */
 
 using xSdk.Data;
-using xSdk.Hosting;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
-public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class ModelExtensionsTests()
 {
     // Test model class
     private class TestModel : Model
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Value { get; set; }
     }
 
@@ -32,7 +31,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     public void ToCloudEvent_WithType_CreatesCloudEventWithModel()
     {
         var model = new TestModel { Name = "Test", Value = 42 };
-        var type = "model.created";
+        string type = "model.created";
 
         var cloudEvent = model.ToCloudEvent(type);
 
@@ -44,8 +43,8 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     public void ToCloudEvent_WithScopeAndType_CreatesCloudEventWithBothValues()
     {
         var model = new TestModel { Name = "Test", Value = 42 };
-        var scope = "test/models";
-        var type = "model.updated";
+        string scope = "test/models";
+        string type = "model.updated";
 
         var cloudEvent = model.ToCloudEvent(scope, type);
 
@@ -57,9 +56,9 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     public void ToCloudEvent_WithScopeTypeAndSubject_CreatesCompleteCloudEvent()
     {
         var model = new TestModel { Name = "Test", Value = 42 };
-        var scope = "test/models";
-        var type = "model.created";
-        var subject = "tenant/123";
+        string scope = "test/models";
+        string type = "model.created";
+        string subject = "tenant/123";
 
         var cloudEvent = model.ToCloudEvent(scope, type, subject);
 
@@ -72,9 +71,11 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     public void ToCloudEvent_WithNullScope_UsesModelTypeName()
     {
         var model = new TestModel { Name = "Test", Value = 42 };
-        var type = "model.created";
+        string type = "model.created";
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         var cloudEvent = model.ToCloudEvent(null, type);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         Assert.NotNull(cloudEvent);
         Assert.Contains(type, cloudEvent.Type);
@@ -84,7 +85,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     public void ToCloudEvent_WithEmptyScope_UsesModelTypeName()
     {
         var model = new TestModel { Name = "Test", Value = 42 };
-        var type = "model.created";
+        string type = "model.created";
 
         var cloudEvent = model.ToCloudEvent(string.Empty, type);
 
@@ -96,7 +97,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
     public void ToCloudEvent_PreservesModelData()
     {
         var model = new TestModel { Name = "TestName", Value = 123 };
-        var type = "model.created";
+        string type = "model.created";
 
         var cloudEvent = model.ToCloudEvent(type);
 
@@ -110,7 +111,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var originalModel = new TestModel { Name = "Original", Value = 999 };
         var cloudEvent = originalModel.ToCloudEvent("model.created");
 
-        var retrievedModel = cloudEvent.ToModel<TestModel>();
+        TestModel? retrievedModel = cloudEvent.ToModel<TestModel>();
 
         Assert.NotNull(retrievedModel);
         Assert.Equal(originalModel.Name, retrievedModel.Name);
@@ -123,7 +124,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var originalModel = new TestModel { Name = "RoundTrip", Value = 456 };
 
         var cloudEvent = originalModel.ToCloudEvent("model.created");
-        var retrievedModel = cloudEvent.ToModel<TestModel>();
+        TestModel? retrievedModel = cloudEvent.ToModel<TestModel>();
 
         Assert.NotNull(retrievedModel);
         Assert.Equal(originalModel.Name, retrievedModel.Name);
@@ -159,7 +160,7 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         };
 
         var cloudEvent = model.ToCloudEvent("model.created");
-        var retrievedModel = cloudEvent.ToModel<TestModel>();
+        TestModel? retrievedModel = cloudEvent.ToModel<TestModel>();
 
         Assert.NotNull(retrievedModel);
         Assert.Equal(model.Name, retrievedModel.Name);
@@ -187,18 +188,18 @@ public class ModelExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFix
         var cloudEvent2 = model2.ToCloudEvent("model.created");
 
         Assert.NotSame(cloudEvent1, cloudEvent2);
-        var retrieved1 = cloudEvent1.ToModel<TestModel>();
-        var retrieved2 = cloudEvent2.ToModel<TestModel>();
+        TestModel? retrieved1 = cloudEvent1.ToModel<TestModel>();
+        TestModel? retrieved2 = cloudEvent2.ToModel<TestModel>();
 
-        Assert.Equal("Model1", retrieved1.Name);
-        Assert.Equal("Model2", retrieved2.Name);
+        Assert.Equal("Model1", retrieved1?.Name);
+        Assert.Equal("Model2", retrieved2?.Name);
     }
 
     [Fact]
     public void ToCloudEvent_WithCustomScope_UsesProvidedScope()
     {
         var model = new TestModel { Name = "Test", Value = 42 };
-        var customScope = "custom/scope/path";
+        string customScope = "custom/scope/path";
 
         var cloudEvent = model.ToCloudEvent(customScope, "model.created");
 

@@ -22,7 +22,7 @@ namespace xSdk.Hosting;
 
 public interface IPluginHost : IPluginDescription
 {
-    IServiceProvider Services { get; }
+    IServiceProvider? Services { get; }
 
     void ConfigureServices(IServiceCollection services);
 

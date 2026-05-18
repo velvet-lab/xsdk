@@ -30,7 +30,6 @@ public class FlatFileEntityTests
     {
         var entity = new TestEntity();
 
-        Assert.NotNull(entity.Id);
         Assert.IsType<int>(entity.Id);
     }
 
@@ -38,7 +37,7 @@ public class FlatFileEntityTests
     public void FlatFileEntity_IdProperty_GetSet_WorksCorrectly()
     {
         var entity = new TestEntity();
-        var id = PrimaryKeyTools.Generate<int>();
+        int id = PrimaryKeyTools.Generate<int>();
 
         entity.Id = id;
 

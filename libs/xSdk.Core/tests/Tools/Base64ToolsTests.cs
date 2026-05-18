@@ -23,9 +23,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertToBase64_WithValidString_ReturnsBase64()
     {
-        var input = "Hello World";
+        string input = "Hello World";
 
-        var result = Base64Tools.ConvertToBase64(input);
+        string? result = Base64Tools.ConvertToBase64(input);
 
         Assert.NotNull(result);
         Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes(input)), result);
@@ -34,9 +34,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertToBase64_WithEmptyString_ReturnsBase64OfEmptyString()
     {
-        var input = string.Empty;
+        string input = string.Empty;
 
-        var result = Base64Tools.ConvertToBase64(input);
+        string? result = Base64Tools.ConvertToBase64(input);
 
         Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes("")), result);
     }
@@ -44,9 +44,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertToBase64_WithNull_ReturnsBase64OfEmptyString()
     {
-        string input = null;
+        string? input = null;
 
-        var result = Base64Tools.ConvertToBase64(input);
+        string? result = Base64Tools.ConvertToBase64(input);
 
         Assert.Equal(Convert.ToBase64String(Encoding.UTF8.GetBytes("")), result);
     }
@@ -54,22 +54,22 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertToBase64_WithUnicodeCharacters_ReturnsValidBase64()
     {
-        var input = "Café ☕ 日本語";
+        string input = "Café ☕ 日本語";
 
-        var result = Base64Tools.ConvertToBase64(input);
+        string? result = Base64Tools.ConvertToBase64(input);
 
         Assert.NotNull(result);
-        var decoded = Encoding.UTF8.GetString(Convert.FromBase64String(result));
+        string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(result));
         Assert.Equal(input, decoded);
     }
 
     [Fact]
     public void ConvertToBase64_WithSpecificEncoding_ReturnsCorrectBase64()
     {
-        var input = "Test String";
+        string input = "Test String";
 
-        var resultUtf8 = Base64Tools.ConvertToBase64(input, Encoding.UTF8);
-        var resultUnicode = Base64Tools.ConvertToBase64(input, Encoding.Unicode);
+        string? resultUtf8 = Base64Tools.ConvertToBase64(input, Encoding.UTF8);
+        string? resultUnicode = Base64Tools.ConvertToBase64(input, Encoding.Unicode);
 
         Assert.NotEqual(resultUtf8, resultUnicode); // Different encodings produce different base64
     }
@@ -77,10 +77,10 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertFromBase64_WithValidBase64_ReturnsOriginalString()
     {
-        var original = "Hello World";
-        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(original));
+        string original = "Hello World";
+        string encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(original));
 
-        var result = Base64Tools.ConvertFromBase64(encoded);
+        string? result = Base64Tools.ConvertFromBase64(encoded);
 
         Assert.Equal(original, result);
     }
@@ -88,9 +88,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertFromBase64_WithNonBase64String_ReturnsOriginalString()
     {
-        var input = "Not a base64 string!";
+        string input = "Not a base64 string!";
 
-        var result = Base64Tools.ConvertFromBase64(input);
+        string? result = Base64Tools.ConvertFromBase64(input);
 
         Assert.Equal(input, result);
     }
@@ -98,9 +98,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertFromBase64_WithEmptyString_ReturnsEmptyString()
     {
-        var input = string.Empty;
+        string input = string.Empty;
 
-        var result = Base64Tools.ConvertFromBase64(input);
+        string? result = Base64Tools.ConvertFromBase64(input);
 
         Assert.Equal(string.Empty, result);
     }
@@ -108,9 +108,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertFromBase64_WithNull_ReturnsNull()
     {
-        string input = null;
+        string? input = null;
 
-        var result = Base64Tools.ConvertFromBase64(input);
+        string? result = Base64Tools.ConvertFromBase64(input);
 
         Assert.Null(result);
     }
@@ -118,9 +118,9 @@ public class Base64ToolsTests
     [Fact]
     public void IsBase64_WithValidBase64_ReturnsTrue()
     {
-        var input = Convert.ToBase64String(Encoding.UTF8.GetBytes("Hello World"));
+        string input = Convert.ToBase64String(Encoding.UTF8.GetBytes("Hello World"));
 
-        var result = Base64Tools.IsBase64(input);
+        bool result = Base64Tools.IsBase64(input);
 
         Assert.True(result);
     }
@@ -128,9 +128,9 @@ public class Base64ToolsTests
     [Fact]
     public void IsBase64_WithInvalidBase64_ReturnsFalse()
     {
-        var input = "Not base64!!!";
+        string input = "Not base64!!!";
 
-        var result = Base64Tools.IsBase64(input);
+        bool result = Base64Tools.IsBase64(input);
 
         Assert.False(result);
     }
@@ -138,9 +138,9 @@ public class Base64ToolsTests
     [Fact]
     public void IsBase64_WithEmptyString_ReturnsFalse()
     {
-        var input = string.Empty;
+        string input = string.Empty;
 
-        var result = Base64Tools.IsBase64(input);
+        bool result = Base64Tools.IsBase64(input);
 
         Assert.False(result);
     }
@@ -148,9 +148,9 @@ public class Base64ToolsTests
     [Fact]
     public void IsBase64_WithNull_ReturnsFalse()
     {
-        string input = null;
+        string? input = null;
 
-        var result = Base64Tools.IsBase64(input);
+        bool result = Base64Tools.IsBase64(input);
 
         Assert.False(result);
     }
@@ -158,10 +158,10 @@ public class Base64ToolsTests
     [Fact]
     public void RoundTrip_EncodeThenDecode_ReturnsOriginalString()
     {
-        var original = "Test Message 123!";
+        string original = "Test Message 123!";
 
-        var encoded = Base64Tools.ConvertToBase64(original);
-        var decoded = Base64Tools.ConvertFromBase64(encoded);
+        string? encoded = Base64Tools.ConvertToBase64(original);
+        string? decoded = Base64Tools.ConvertFromBase64(encoded);
 
         Assert.Equal(original, decoded);
     }
@@ -169,9 +169,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertToBase64_WithLongString_HandlesCorrectly()
     {
-        var input = new string('A', 1000);
+        string input = new string('A', 1000);
 
-        var result = Base64Tools.ConvertToBase64(input);
+        string? result = Base64Tools.ConvertToBase64(input);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -181,10 +181,10 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertFromBase64_WithUnicodeEncoding_DecodesCorrectly()
     {
-        var original = "Test Unicode";
-        var encoded = Convert.ToBase64String(Encoding.Unicode.GetBytes(original));
+        string original = "Test Unicode";
+        string encoded = Convert.ToBase64String(Encoding.Unicode.GetBytes(original));
 
-        var result = Base64Tools.ConvertFromBase64(encoded);
+        string? result = Base64Tools.ConvertFromBase64(encoded);
 
         Assert.Equal(original, result);
     }
@@ -192,9 +192,9 @@ public class Base64ToolsTests
     [Fact]
     public void ConvertFromBase64_WithNullByteEncoded_ReturnsOriginalEncoded()
     {
-        var encoded = Convert.ToBase64String(new byte[] { 0 });
+        string encoded = Convert.ToBase64String(new byte[] { 0 });
 
-        var result = Base64Tools.ConvertFromBase64(encoded);
+        string? result = Base64Tools.ConvertFromBase64(encoded);
 
         Assert.Equal(encoded, result);
     }
@@ -202,9 +202,9 @@ public class Base64ToolsTests
     [Fact]
     public void IsBase64_WithNullByteDecoded_ReturnsFalse()
     {
-        var encoded = Convert.ToBase64String(new byte[] { 0 });
+        string encoded = Convert.ToBase64String(new byte[] { 0 });
 
-        var result = Base64Tools.IsBase64(encoded);
+        bool result = Base64Tools.IsBase64(encoded);
 
         Assert.False(result);
     }

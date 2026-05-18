@@ -29,37 +29,28 @@ public class DatabaseFixture : DatabaseHostFixture
 
     protected override void Initialize()
     {
-        ConfigureBuilder(hostBuilder =>
-        {
-            hostBuilder
-                .AddDatalayer(builder =>
-                 {
-                     builder
-                         .UseEntityFramework<TestDbContext>()
-                         .MapRepository<ITestRepository, TestRepository>();
-                 });
-        })
-        .ConfigureServices(services =>
-        {
-            services
-                // Add DbContext Factory
-                .AddDbContextFactory<TestDbContext>(options =>
-                {
-                    // Use TestContainers for UnitTests
-                    var imageName = GetEnvironmentVariable("MONGODB_IMAGE_NAME");
-                    _mongoDbContainer = new MongoDbBuilder()
-                        .WithImage(imageName)
-                        .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(27017)))
-                        .WithAutoRemove(true)
-                        .Build();
+        ConfigureBuilder(hostBuilder => hostBuilder
+            .AddDatalayer(builder => builder
+                .UseEntityFramework<TestDbContext>()
+                .MapRepository<ITestRepository, TestRepository>()))
 
-                    _mongoDbContainer.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                    var connectionString = _mongoDbContainer.GetConnectionString();
+            .ConfigureServices(services => services
+                    // Add DbContext Factory
+                    .AddDbContextFactory<TestDbContext>(options =>
+                    {
+                        // Use TestContainers for UnitTests
+                        var imageName = GetEnvironmentVariable("MONGODB_IMAGE_NAME");
+                        _mongoDbContainer = new MongoDbBuilder(imageName)
+                            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(27017)))
+                            .WithAutoRemove(true)
+                            .Build();
 
-                    var client = new MongoClient(connectionString);
-                    options.UseMongoDB(client, Globals.DatabaseName);
-                });
-        });
+                        _mongoDbContainer.StartAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                        var connectionString = _mongoDbContainer.GetConnectionString();
+
+                        var client = new MongoClient(connectionString);
+                        options.UseMongoDB(client, Globals.DatabaseName);
+                    }));
     }
 
     protected override void Dispose(bool disposing)

@@ -42,6 +42,7 @@ public class VariableSetup : IVariableSetup
 
             OnInitialize();
         }
+
         return _variableService;
     }
 
@@ -54,10 +55,10 @@ public class VariableSetup : IVariableSetup
 
     protected TValue? ReadValue<TValue>(string name, bool shouldThrowIfNotFound)
     {
-        var variableService = GetVariableService();
+        IVariableService? variableService = GetVariableService();
         if (variableService != null)
         {
-            var variable = variableService.LoadVariable(name);
+            IVariable? variable = variableService.LoadVariable(name);
             if (variable != null)
             {
                 return variableService.ReadVariableValue<TValue>(name, shouldThrowIfNotFound);
@@ -69,10 +70,10 @@ public class VariableSetup : IVariableSetup
 
     protected void SetValue<TValue>(string name, TValue value)
     {
-        var variableService = GetVariableService();
+        IVariableService? variableService = GetVariableService();
         if (variableService != null)
         {
-            var variable = variableService.LoadVariable(name);
+            IVariable? variable = variableService.LoadVariable(name);
             if (variable != null)
             {
                 variableService.SetVariable(name, value);

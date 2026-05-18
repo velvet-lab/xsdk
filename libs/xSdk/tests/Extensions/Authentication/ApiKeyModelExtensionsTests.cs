@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using AspNetCore.Authentication.ApiKey;
 using xSdk.Data;
 using xSdk.Security.Claims;
 
@@ -23,11 +24,11 @@ public sealed class ApiKeyModelExtensionsTests
 {
     private class ApiKeyForTests : Model, IApiKeyModel
     {
-        public string Key { get; set; }
+        public required string Key { get; set; }
 
-        public IEnumerable<ClaimModel> Claims { get; set; }
-        public string Description { get; set; }
-        public string User { get; set; }
+        public IEnumerable<ClaimModel> Claims { get; set; } = [];
+        public string? Description { get; set; }
+        public string? User { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime ValidUntil { get; set; }
     }
@@ -39,8 +40,8 @@ public sealed class ApiKeyModelExtensionsTests
         {
             Key = "test-key",
             User = "test-owner",
-            Claims = new List<ClaimModel>
-            {
+            Claims =
+            [
                 new ClaimModel{ Type = "type1", Value = "value1" },
                 new ClaimModel{ Type = "type2", Value = "value2" },
                 new ClaimModel
@@ -51,10 +52,10 @@ public sealed class ApiKeyModelExtensionsTests
                     Issuer = "A Issuer",
                     OriginalIssuer = "A Original Issuer"
                 }
-            }
+            ]
         };
 
-        var apiKey = model.ToApiKey();
+        IApiKey apiKey = model.ToApiKey();
 
         Assert.NotNull(apiKey);
         Assert.NotNull(apiKey.Claims);

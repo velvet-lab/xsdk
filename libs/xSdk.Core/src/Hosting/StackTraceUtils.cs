@@ -21,38 +21,39 @@ namespace xSdk.Hosting;
 
 internal static class StackTraceUtils
 {
-    private static readonly Assembly nlogAssembly = typeof(StackTraceUtils).Assembly;
-    private static readonly Assembly mscorlibAssembly = typeof(string).Assembly;
-    private static readonly Assembly systemAssembly = typeof(Debug).Assembly;
+    private static readonly Assembly _nlogAssembly = typeof(StackTraceUtils).Assembly;
+    private static readonly Assembly _mscorlibAssembly = typeof(string).Assembly;
+    private static readonly Assembly _systemAssembly = typeof(Debug).Assembly;
 
-    public static int GetFrameCount(this StackTrace strackTrace)
-    {
-        return strackTrace.FrameCount;
-    }
+    public static int GetFrameCount(this StackTrace strackTrace) => strackTrace.FrameCount;
 
-    public static string GetStackFrameMethodName(MethodBase method, bool includeMethodInfo, bool cleanAsyncMoveNext, bool cleanAnonymousDelegates)
+    public static string GetStackFrameMethodName(MethodBase? method, bool includeMethodInfo, bool cleanAsyncMoveNext, bool cleanAnonymousDelegates)
     {
         if (method is null)
+        {
             return string.Empty;
+        }
 
         string methodName = method.Name;
 
-        var callerClassType = method.DeclaringType;
-        if (cleanAsyncMoveNext && methodName == "MoveNext" && callerClassType?.DeclaringType != null && callerClassType.Name.IndexOf('<') == 0)
+        Type? callerClassType = method.DeclaringType;
+        if (cleanAsyncMoveNext && methodName == "MoveNext" && callerClassType?.DeclaringType != null && callerClassType.Name.StartsWith('<'))
         {
             int endIndex = callerClassType.Name.IndexOf('>', 1);
             if (endIndex > 1)
             {
                 methodName = callerClassType.Name.Substring(1, endIndex - 1);
-                if (methodName.IndexOf('<') == 0)
+                if (methodName.StartsWith('<'))
+                {
                     methodName = methodName.Substring(1);    // Local functions, and anonymous-methods in Task.Run()
+                }
             }
         }
 
         // Clean up the function name if it is an anonymous delegate
         // <.ctor>b__0
         // <Main>b__2
-        if (cleanAnonymousDelegates && (methodName.IndexOf('<') == 0 && methodName.IndexOf("__", StringComparison.Ordinal) >= 0 && methodName.IndexOf('>') >= 0))
+        if (cleanAnonymousDelegates && methodName.StartsWith('<') && methodName.IndexOf("__", StringComparison.Ordinal) >= 0 && methodName.IndexOf('>') >= 0)
         {
             int startIndex = methodName.IndexOf('<') + 1;
             int endIndex = methodName.IndexOf('>');
@@ -67,12 +68,14 @@ internal static class StackTraceUtils
         return methodName;
     }
 
-    public static string GetStackFrameMethodClassName(MethodBase method, bool includeNameSpace, bool cleanAsyncMoveNext, bool cleanAnonymousDelegates)
+    public static string GetStackFrameMethodClassName(MethodBase? method, bool includeNameSpace, bool cleanAsyncMoveNext, bool cleanAnonymousDelegates)
     {
         if (method is null)
+        {
             return string.Empty;
+        }
 
-        var callerClassType = method.DeclaringType;
+        Type? callerClassType = method.DeclaringType;
         if (cleanAsyncMoveNext
           && method.Name == "MoveNext"
           && callerClassType?.DeclaringType != null
@@ -83,9 +86,11 @@ internal static class StackTraceUtils
         }
 
         if (callerClassType is null)
+        {
             return string.Empty;
+        }
 
-        var className = includeNameSpace ? callerClassType.FullName : callerClassType.Name;
+        string? className = includeNameSpace ? callerClassType.FullName : callerClassType.Name;
         if (cleanAnonymousDelegates && className?.IndexOf("<>", StringComparison.Ordinal) >= 0)
         {
             if (!includeNameSpace && callerClassType.DeclaringType != null && callerClassType.IsNested)
@@ -104,7 +109,7 @@ internal static class StackTraceUtils
 
         if (includeNameSpace && className?.IndexOf('.') == -1)
         {
-            var typeNamespace = GetNamespaceFromTypeAssembly(callerClassType);
+            string typeNamespace = GetNamespaceFromTypeAssembly(callerClassType);
             className = string.IsNullOrEmpty(typeNamespace) ? className : string.Concat(typeNamespace, ".", className);
         }
 
@@ -113,10 +118,10 @@ internal static class StackTraceUtils
 
     private static string GetNamespaceFromTypeAssembly(Type? callerClassType)
     {
-        var classAssembly = callerClassType?.Assembly;
-        if (classAssembly != null && classAssembly != mscorlibAssembly && classAssembly != systemAssembly)
+        Assembly? classAssembly = callerClassType?.Assembly;
+        if (classAssembly != null && classAssembly != _mscorlibAssembly && classAssembly != _systemAssembly)
         {
-            var assemblyFullName = classAssembly.FullName;
+            string? assemblyFullName = classAssembly.FullName;
             if (assemblyFullName?.IndexOf(',') >= 0 && !assemblyFullName.StartsWith("System.", StringComparison.Ordinal) && !assemblyFullName.StartsWith("Microsoft.", StringComparison.Ordinal))
             {
                 return assemblyFullName.Substring(0, assemblyFullName.IndexOf(','));
@@ -128,9 +133,7 @@ internal static class StackTraceUtils
 
     [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming - Allow callsite logic", "IL2026")]
     public static MethodBase? GetStackMethod(StackFrame? stackFrame)
-    {
-        return stackFrame?.GetMethod();
-    }
+        => stackFrame?.GetMethod();
 
     /// <summary>
     /// Gets the fully qualified name of the class invoking the calling method, including the
@@ -147,10 +150,11 @@ internal static class StackTraceUtils
             className = GetClassFullName(stackTrace);
             if (string.IsNullOrEmpty(className))
             {
-                var method = StackTraceUtils.GetStackMethod(stackFrame);
+                MethodBase? method = StackTraceUtils.GetStackMethod(stackFrame);
                 className = method?.Name ?? string.Empty;
             }
         }
+
         return className;
     }
 
@@ -164,6 +168,7 @@ internal static class StackTraceUtils
                 return className;
             }
         }
+
         return string.Empty;
     }
 
@@ -173,20 +178,20 @@ internal static class StackTraceUtils
     /// <returns>Valid assembly, or null if assembly was internal</returns>
     public static Assembly? LookupAssemblyFromMethod(MethodBase method)
     {
-        var assembly = method.DeclaringType?.Assembly ?? method.Module?.Assembly;
+        Assembly? assembly = method.DeclaringType?.Assembly ?? method.Module?.Assembly;
 
         // skip stack frame if the method declaring type assembly is from hidden assemblies list
-        if (assembly == nlogAssembly)
+        if (assembly == _nlogAssembly)
         {
             return null;
         }
 
-        if (assembly == mscorlibAssembly)
+        if (assembly == _mscorlibAssembly)
         {
             return null;
         }
 
-        if (assembly == systemAssembly)
+        if (assembly == _systemAssembly)
         {
             return null;
         }
@@ -201,20 +206,24 @@ internal static class StackTraceUtils
     /// <returns>Valid class name, or empty string if assembly was internal</returns>
     public static string LookupClassNameFromStackFrame(StackFrame? stackFrame)
     {
-        var method = GetStackMethod(stackFrame);
+        MethodBase? method = GetStackMethod(stackFrame);
         if (method != null && LookupAssemblyFromMethod(method) != null)
         {
             string className = GetStackFrameMethodClassName(method, true, true, true);
             if (!string.IsNullOrEmpty(className))
             {
                 if (!className.StartsWith("System.", StringComparison.Ordinal))
+                {
                     return className;
+                }
             }
             else
             {
                 className = method.Name ?? string.Empty;
                 if (className != "lambda_method" && className != "MoveNext")
+                {
                     return className;
+                }
             }
         }
 

@@ -42,14 +42,14 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
     [
         HttpGet(),
         MapToApiVersion(3),
-        EndpointName(nameof(GetSamplesAsync)),
+        EndpointName(nameof(GetSamplesAsyncV3)),
         EndpointSummary("Sends all samples model without hateoas links back"),
         EndpointDescription("Demostrates all samples model without hateoas links"),
         ProducesResponseType<IEnumerable<SampleModel>>(StatusCodes.Status200OK, "application/json", Description = "All sample models without hateoas links"),
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult<IEnumerable<SampleModel>>> GetSamplesAsync(CancellationToken token = default)
+    public async Task<ActionResult<IEnumerable<SampleModel>>> GetSamplesAsyncV3(CancellationToken token = default)
     {
         try
         {
@@ -116,8 +116,7 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
             logger.LogDebug("Call get Sample with Hateoas Links");
 
             var database = SampleDatabase.Load();
-            // var item = database.Single(x => x.Id == id);
-            var item = database.First();
+            var item = database.Single(x => x.Id == id);
             await linksService.AddLinksAsync(item);
 
             return Ok(item);

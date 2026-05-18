@@ -22,12 +22,14 @@ public sealed class VaultDatabaseOptionsValidator : AbstractValidator<VaultDatab
 {
     public VaultDatabaseOptionsValidator()
     {
+#pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
         RuleFor(x => x.Endpoint)
             .NotNull()
             .NotEmpty()
             .WithMessage("Endpoint is required.")
             .Must(x => x.StartsWith("http://") || x.StartsWith("https://")) // DevSkim: ignore DS137138
             .WithMessage("Endpoint must start with 'http://' or 'https://'."); // DevSkim: ignore DS137138
+#pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
 
         RuleFor(x => x.AuthMethod).NotEqual(AuthMethods.None).WithMessage("Authentication method is required.");
     }

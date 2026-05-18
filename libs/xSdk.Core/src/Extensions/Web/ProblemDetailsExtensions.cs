@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace xSdk.Extensions.Web;
 
-[CLSCompliant(false)]
 public static class ProblemDetailsExtensions
 {
     public static ProblemDetails AsProblem(this Exception ex) => ex.AsProblem(StatusCodes.Status500InternalServerError, null);
@@ -42,7 +41,9 @@ public static class ProblemDetailsExtensions
         }
 
         if (!string.IsNullOrEmpty(path))
+        {
             result.Instance = path;
+        }
 
         return result;
     }
@@ -66,14 +67,16 @@ public static class ProblemDetailsExtensions
         };
 
         if (!string.IsNullOrEmpty(details))
+        {
             problem.Detail = details;
+        }
 
         return new BadRequestObjectResult(problem);
     }
 
     public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message) => controller.NotFoundAsProblem(message, null);
 
-    public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message, string details)
+    public static NotFoundObjectResult NotFoundAsProblem(this ControllerBase controller, string message, string? details)
     {
         var problem = new ProblemDetails
         {
@@ -83,7 +86,9 @@ public static class ProblemDetailsExtensions
         };
 
         if (!string.IsNullOrEmpty(details))
+        {
             problem.Detail = details;
+        }
 
         return new NotFoundObjectResult(problem);
     }

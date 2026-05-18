@@ -25,7 +25,7 @@ public class DefaultCommandSettings : CommandSettings
 {
     [CommandOption(Definitions.LogLevel.Template)]
     [Description(Definitions.LogLevel.HelpText)]
-    public string LogLevel { get; set; }
+    public string LogLevel { get; set; } = Definitions.LogLevel.DefaultValue;
 
     [CommandOption(Definitions.Stage.Template)]
     [Description(Definitions.Stage.HelpText)]
@@ -38,7 +38,7 @@ public class DefaultCommandSettings : CommandSettings
 
     [CommandOption(Definitions.ContentRoot.Template)]
     [Description(Definitions.ContentRoot.HelpText)]
-    public string ContentRoot { get; set; }
+    public string? ContentRoot { get; set; }
 
     public static class Definitions
     {

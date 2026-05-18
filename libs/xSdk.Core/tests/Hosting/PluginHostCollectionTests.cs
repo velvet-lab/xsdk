@@ -42,7 +42,7 @@ public class PluginHostCollectionTests
         var collection = new PluginHostCollection(_types);
 
         var result = new List<Type>();
-        foreach (var type in collection)
+        foreach (Type type in collection)
         {
             result.Add(type);
         }
@@ -58,9 +58,9 @@ public class PluginHostCollectionTests
     {
         var collection = new PluginHostCollection(_types);
 
-        var count = 0;
+        int count = 0;
         var enumerable = (System.Collections.IEnumerable)collection;
-        foreach (var item in enumerable)
+        foreach (object? item in enumerable)
         {
             count++;
         }
@@ -73,6 +73,6 @@ public class PluginHostCollectionTests
     {
         var collection = new PluginHostCollection([]);
 
-        Assert.Equal(0, collection.Count);
+        Assert.Empty(collection);
     }
 }

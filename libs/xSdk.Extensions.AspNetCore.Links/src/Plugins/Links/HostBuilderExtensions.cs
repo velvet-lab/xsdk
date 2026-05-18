@@ -27,6 +27,6 @@ public static class HostBuilderExtensions
     {
         return hostBuilder
             .RegisterPluginHost<LinksPluginHost>()
-            .RegisterPluginBuilder<TPluginBuilder>();
+            .RegisterPluginBuilder<ILinksPluginBuilder, TPluginBuilder>();
     }
 }

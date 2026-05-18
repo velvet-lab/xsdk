@@ -15,26 +15,15 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 
 namespace xSdk.Data;
 
-internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatabase>
+internal sealed class DatabasePoolPolicy<TDatabase>(IServiceProvider provider) : IPooledObjectPolicy<TDatabase>
     where TDatabase : class
 {
-    private readonly IServiceProvider _provider;
-    private readonly ILogger<DatabasePoolPolicy<TDatabase>>? _logger;
-    private readonly ObjectFactory _factory;
-    private readonly bool _isResettable;
-
-    public DatabasePoolPolicy(IServiceProvider provider)
-    {
-        _provider = provider;
-        _logger = provider.GetService<ILogger<DatabasePoolPolicy<TDatabase>>>();
-        _factory = ActivatorUtilities.CreateFactory(typeof(TDatabase), Type.EmptyTypes);
-        _isResettable = typeof(IResettable).IsAssignableFrom(typeof(TDatabase));
-    }
+    private readonly ObjectFactory _factory = ActivatorUtilities.CreateFactory(typeof(TDatabase), Type.EmptyTypes);
+    private readonly bool _isResettable = typeof(IResettable).IsAssignableFrom(typeof(TDatabase));
 
     /// <summary>
     /// Create a <typeparamref name="T"/>.
@@ -43,19 +32,8 @@ internal sealed class DatabasePoolPolicy<TDatabase> : IPooledObjectPolicy<TDatab
 
     public TDatabase Create()
     {
-        //var database = ActivatorUtilities.CreateInstance<TDatabase>(_provider);
-        //return database;
-
-        try
-        {
-            var objectFactory = _factory(_provider, Array.Empty<object?>());
-            return (TDatabase)objectFactory;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating instance of type '{TypeName}': {ExceptionMessage}", typeof(TDatabase).FullName, ex.Message);
-            throw;
-        }
+        object objectFactory = _factory(provider, []);
+        return (TDatabase)objectFactory;
     }
 
     /// <summary>

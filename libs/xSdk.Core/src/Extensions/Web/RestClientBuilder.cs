@@ -20,7 +20,6 @@ using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.Json;
 using xSdk.Hosting;
-using xSdk.Shared;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;

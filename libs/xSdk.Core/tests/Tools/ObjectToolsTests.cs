@@ -29,7 +29,7 @@ public class ObjectToolsTests
     {
         var obj = new SimpleObject { Name = "Test", Value = 42 };
 
-        var hash = ObjectTools.CreateAutomaticHashCode(obj);
+        int hash = ObjectTools.CreateAutomaticHashCode(obj);
 
         Assert.NotEqual(0, hash);
     }
@@ -40,8 +40,8 @@ public class ObjectToolsTests
         var obj1 = new SimpleObject { Name = "Test", Value = 42 };
         var obj2 = new SimpleObject { Name = "Test", Value = 42 };
 
-        var hash1 = ObjectTools.CreateAutomaticHashCode(obj1);
-        var hash2 = ObjectTools.CreateAutomaticHashCode(obj2);
+        int hash1 = ObjectTools.CreateAutomaticHashCode(obj1);
+        int hash2 = ObjectTools.CreateAutomaticHashCode(obj2);
 
         Assert.Equal(hash1, hash2);
     }
@@ -49,7 +49,7 @@ public class ObjectToolsTests
     [Fact]
     public void CreateHashCode_WithStringValue_ReturnsHash()
     {
-        var hash = ObjectTools.CreateHashCode("Hello");
+        int hash = ObjectTools.CreateHashCode("Hello");
 
         Assert.NotEqual(0, hash);
     }
@@ -57,8 +57,8 @@ public class ObjectToolsTests
     [Fact]
     public void CreateHashCode_WithSameString_ReturnsSameHash()
     {
-        var hash1 = ObjectTools.CreateHashCode("test");
-        var hash2 = ObjectTools.CreateHashCode("test");
+        int hash1 = ObjectTools.CreateHashCode("test");
+        int hash2 = ObjectTools.CreateHashCode("test");
 
         Assert.Equal(hash1, hash2);
     }
@@ -66,7 +66,7 @@ public class ObjectToolsTests
     [Fact]
     public void CreateHashCode_WithNullValue_ReturnsZero()
     {
-        var hash = ObjectTools.CreateHashCode<string>(null);
+        int hash = ObjectTools.CreateHashCode<string>(null);
 
         Assert.Equal(0, hash);
     }
@@ -74,14 +74,14 @@ public class ObjectToolsTests
     [Fact]
     public void CreateHashCode_WithInteger_ReturnsNonZeroHash()
     {
-        var hash = ObjectTools.CreateHashCode(42);
+        int hash = ObjectTools.CreateHashCode(42);
 
         Assert.NotEqual(0, hash);
     }
 
     private class FieldObject
     {
-        public string Name;
+        public string? Name;
         public int Value;
     }
 
@@ -90,7 +90,7 @@ public class ObjectToolsTests
     {
         var obj = new FieldObject { Name = "F", Value = 7 };
 
-        var hash = ObjectTools.CreateAutomaticHashCode(obj);
+        int hash = ObjectTools.CreateAutomaticHashCode(obj);
 
         Assert.NotEqual(0, hash);
     }
@@ -98,7 +98,7 @@ public class ObjectToolsTests
     [Fact]
     public void Equals_WithSameValues_ReturnsTrue()
     {
-        var result = ObjectTools.Equals<int>(42, 42, (a, b) => a == b);
+        bool result = ObjectTools.Equals<int>(42, 42, (a, b) => a == b);
 
         Assert.True(result);
     }
@@ -106,7 +106,7 @@ public class ObjectToolsTests
     [Fact]
     public void Equals_WithDifferentValues_ReturnsFalse()
     {
-        var result = ObjectTools.Equals<int>(42, 43, (a, b) => a == b);
+        bool result = ObjectTools.Equals<int>(42, 43, (a, b) => a == b);
 
         Assert.False(result);
     }
@@ -114,7 +114,7 @@ public class ObjectToolsTests
     [Fact]
     public void Equals_WithIncompatibleTypes_ReturnsFalse()
     {
-        var result = ObjectTools.Equals<int>("not-an-int", 42, (a, b) => a == b);
+        bool result = ObjectTools.Equals<int>("not-an-int", 42, (a, b) => a == b);
 
         Assert.False(result);
     }
@@ -122,7 +122,7 @@ public class ObjectToolsTests
     [Fact]
     public void Equals_WithStringValues_UsesComparer()
     {
-        var result = ObjectTools.Equals<string>("hello", "hello", string.Equals);
+        bool result = ObjectTools.Equals<string>("hello", "hello", string.Equals);
 
         Assert.True(result);
     }
