@@ -75,4 +75,20 @@ public class RoutedLinkTests
 
         Assert.Null(result);
     }
+
+    [Fact]
+    public void RoutedLink_ConcreteModel_WhenModelIsWrongType_ReturnsDefault()
+    {
+        // Assign a model of a different incompatible type to trigger the default path
+        var link = new RoutedLink<TestModel>("self", "GetById", null)
+        {
+            Model = new OtherModel()
+        };
+
+        TestModel? result = link.ConcreteModel;
+
+        Assert.Null(result);
+    }
+
+    private class OtherModel : Model { }
 }

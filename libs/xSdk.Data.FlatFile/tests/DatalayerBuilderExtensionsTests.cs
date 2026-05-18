@@ -15,24 +15,28 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 
-namespace xSdk.Plugins.Telemetry;
+namespace xSdk.Data;
 
-public class TelemetryPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public class DatalayerBuilderExtensionsTests
 {
     [Fact]
-    public void EnableTelemetry_CreatesTelemetryPlugin()
+    public void UseFlatFile_WithoutName_ReturnsDatabaseBuilder()
     {
-        IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableTelemetry())
-            .BuildHost();
+        IDatalayerBuilder builder = new DatalayerBuilder(new ServiceCollection());
 
-        IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        TelemetryPluginHost? plugin = service.GetPlugin<TelemetryPluginHost>();
+        IDatabaseBuilder result = builder.UseFlatFile(config => config.FilePath = "/tmp/test.json");
 
-        Assert.NotNull(plugin);
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public void UseFlatFile_WithName_ReturnsDatabaseBuilder()
+    {
+        IDatalayerBuilder builder = new DatalayerBuilder(new ServiceCollection());
+
+        IDatabaseBuilder result = builder.UseFlatFile("mydb", config => config.FilePath = "/tmp/test.json");
+
+        Assert.NotNull(result);
     }
 }

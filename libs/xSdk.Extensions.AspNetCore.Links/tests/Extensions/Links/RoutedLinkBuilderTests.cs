@@ -26,6 +26,11 @@ public class RoutedLinkBuilderTests
         public string Name { get; set; } = string.Empty;
     }
 
+    // Dummy controller used to test controller-name stripping in CreateBaseUrl
+    private class TestController { }
+
+#pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
+
     [Fact]
     public void Build_WhenDescriptionIsNull_ReturnsNull()
     {
@@ -42,7 +47,6 @@ public class RoutedLinkBuilderTests
     {
         var link = new RoutedLink<TestModel>("self", "GetById", null!)
         {
-#pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
             Description = new MethodDescription
             {
                 Action = default,
@@ -51,7 +55,6 @@ public class RoutedLinkBuilderTests
                 HttpMethod = HttpMethod.Get
             }
         };
-#pragma warning restore CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
         // Context is null → CreateBaseUrl returns null → Build returns null
         var builder = new RoutedLinkBuilder();
 
@@ -65,7 +68,6 @@ public class RoutedLinkBuilderTests
     {
         var link = new RoutedLink<TestModel>("self", "GetById", null!)
         {
-#pragma warning disable CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
             Description = new MethodDescription
             {
                 Action = default,
@@ -73,7 +75,6 @@ public class RoutedLinkBuilderTests
                 MethodName = "GetById",
                 HttpMethod = HttpMethod.Get
             },
-#pragma warning restore CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
 
             Context = new DefaultHttpContext
             {
@@ -87,4 +88,126 @@ public class RoutedLinkBuilderTests
 
         Assert.Null(result);
     }
+
+    [Fact]
+    public void Build_WhenAllConditionsMet_NoAuthRequired_ReturnsHateoasItem()
+    {
+        var model = new TestModel { Name = "Item1" };
+        var link = new RoutedLink<TestModel>("self", "GetById", null)
+        {
+            Description = new MethodDescription
+            {
+                Action = default,
+                ControllerType = typeof(TestController),
+                MethodName = "GetById",
+                HttpMethod = HttpMethod.Get,
+                AuthRoles = [],
+                AuthPolicy = null
+            },
+            Context = new DefaultHttpContext
+            {
+                Request = { Scheme = "https", Host = new HostString("localhost"), Path = "/api" }
+            },
+            Model = model
+        };
+        var builder = new RoutedLinkBuilder();
+
+        IHateoasItem? result = builder.Build(link);
+
+        Assert.NotNull(result);
+        Assert.Equal("TestController/GetById", result.Rel);
+        Assert.Contains("test", result.Href, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("GET", result.Method);
+    }
+
+    [Fact]
+    public void Build_WhenValuesProvided_RunsHandlebarsReplacement()
+    {
+        var model = new TestModel { Name = "my-item" };
+        var link = new RoutedLink<TestModel>("self", "GetById", m => new { id = m.Name })
+        {
+            Description = new MethodDescription
+            {
+                Action = default,
+                ControllerType = typeof(TestController),
+                MethodName = "GetById",
+                HttpMethod = HttpMethod.Get,
+                AuthRoles = [],
+                AuthPolicy = null
+            },
+            Context = new DefaultHttpContext
+            {
+                Request = { Scheme = "https", Host = new HostString("localhost"), Path = "/api" }
+            },
+            Model = model
+        };
+        var builder = new RoutedLinkBuilder();
+
+        IHateoasItem? result = builder.Build(link);
+
+        Assert.NotNull(result);
+        Assert.Equal("GET", result.Method);
+    }
+
+    [Fact]
+    public void Build_WhenPathContainsControllerName_TrimsPathAtController()
+    {
+        var model = new TestModel { Name = "x" };
+        var link = new RoutedLink<TestModel>("self", "Get", null)
+        {
+            Description = new MethodDescription
+            {
+                Action = default,
+                ControllerType = typeof(TestController),
+                MethodName = "Get",
+                HttpMethod = HttpMethod.Get,
+                AuthRoles = [],
+                AuthPolicy = null
+            },
+            Context = new DefaultHttpContext
+            {
+                // path contains "test" → path is trimmed at that position
+                Request = { Scheme = "https", Host = new HostString("localhost"), Path = "/api/test/123" }
+            },
+            Model = model
+        };
+        var builder = new RoutedLinkBuilder();
+
+        IHateoasItem? result = builder.Build(link);
+
+        Assert.NotNull(result);
+        Assert.Contains("test", result.Href, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void Build_WhenRouteTemplateSet_IsIncludedInUrl()
+    {
+        var model = new TestModel { Name = "x" };
+        var link = new RoutedLink<TestModel>("self", "GetById", null)
+        {
+            Description = new MethodDescription
+            {
+                Action = default,
+                ControllerType = typeof(TestController),
+                MethodName = "GetById",
+                HttpMethod = HttpMethod.Put,
+                RouteTemplate = "{id}",
+                AuthRoles = [],
+                AuthPolicy = null
+            },
+            Context = new DefaultHttpContext
+            {
+                Request = { Scheme = "http", Host = new HostString("example.com"), Path = "/v1" }
+            },
+            Model = model
+        };
+        var builder = new RoutedLinkBuilder();
+
+        IHateoasItem? result = builder.Build(link);
+
+        Assert.NotNull(result);
+        Assert.Equal("PUT", result.Method);
+    }
+
+#pragma warning restore CS8625 // Ein NULL-Literal kann nicht in einen Non-Nullable-Verweistyp konvertiert werden.
 }

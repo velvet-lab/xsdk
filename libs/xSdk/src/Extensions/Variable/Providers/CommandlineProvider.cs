@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using xSdk.Extensions.Commands;
 
 namespace xSdk.Extensions.Variable.Providers;
 
+[ExcludeFromCodeCoverage(Justification = "Reads from actual process command-line arguments; cannot be unit-tested without side-effecting Environment")]
 internal sealed class CommandlineProvider : VariableProviderBase
 {
     protected override bool ExistsVariable(IVariable variable)
