@@ -146,4 +146,27 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
         int removed = await repo.RemoveAsync([e1, e2], TestContext.Current.CancellationToken);
         Assert.Equal(2, removed);
     }
+
+    [Fact]
+    public async Task RemoveAsync_NullEntities_ReturnsZero()
+    {
+        ITestRepository repo = CreateRepo();
+
+        int removed = await ((IRepository<TestEntity, int>)repo).RemoveAsync(
+            (IEnumerable<TestEntity>?)null, TestContext.Current.CancellationToken);
+
+        Assert.Equal(0, removed);
+    }
+
+    [Fact]
+    public async Task RemoveAsync_ByPrimaryKeys_ThrowsNotImplementedException()
+    {
+        ITestRepository repo = CreateRepo();
+        var entity = new TestEntity { Name = "Kevin", Age = 50 };
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
+
+        await Assert.ThrowsAsync<NotImplementedException>(
+            () => ((IRepository<TestEntity, int>)repo).RemoveAsync(
+                [entity.Id], TestContext.Current.CancellationToken));
+    }
 }

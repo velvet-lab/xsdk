@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
@@ -73,14 +74,18 @@ public static class CloudEventWebExtensions
         return default;
     }
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(this CloudEvent cloudEvent, string url) => cloudEvent.PostToHttpAsync(url).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(this CloudEvent cloudEvent, string url, IDictionary<string, string> additionalHeaders) =>
         cloudEvent.PostToHttpAsync(url, additionalHeaders).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(this CloudEvent cloudEvent, string url, JsonSerializerOptions serializer) =>
         cloudEvent.PostToHttpAsync(url, serializer).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(
         this CloudEvent cloudEvent,
         string url,
@@ -88,9 +93,11 @@ public static class CloudEventWebExtensions
         IDictionary<string, string> additionalHeaders
     ) => cloudEvent.PostToHttpAsync(url, serializer, additionalHeaders).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(this CloudEvent cloudEvent, string url, JsonSerializerOptions serializer, JsonDocumentOptions document) =>
         cloudEvent.PostToHttpAsync(url, serializer, document).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(
         this CloudEvent cloudEvent,
         string url,
@@ -99,9 +106,11 @@ public static class CloudEventWebExtensions
         IDictionary<string, string> additionalHeaders
     ) => cloudEvent.PostToHttpAsync(url, serializer, document, additionalHeaders).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(this CloudEvent cloudEvent, string url, ReadOnlyMemory<byte> body, ContentType contentType) =>
         cloudEvent.PostToHttpAsync(url, body, contentType).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static void PostToHttp(
         this CloudEvent cloudEvent,
         string url,
@@ -110,12 +119,14 @@ public static class CloudEventWebExtensions
         IDictionary<string, string> additionalHeaders
     ) => cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders).ConfigureAwait(false).GetAwaiter().GetResult();
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(this CloudEvent cloudEvent, string url, CancellationToken token = default)
     {
         (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent();
         return cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
     }
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -127,12 +138,14 @@ public static class CloudEventWebExtensions
         return cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders, token);
     }
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(this CloudEvent cloudEvent, string url, JsonSerializerOptions serializer, CancellationToken token = default)
     {
         (ReadOnlyMemory<byte> body, ContentType? contentType) = cloudEvent.ToHttpContent(serializer);
         return cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
     }
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -145,6 +158,7 @@ public static class CloudEventWebExtensions
         return cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders, token);
     }
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -153,6 +167,7 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     ) => cloudEvent.PostToHttpAsync(url, serializer, document, null, token);
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -166,6 +181,7 @@ public static class CloudEventWebExtensions
         return cloudEvent.PostToHttpAsync(url, body, contentType, additionalHeaders, token);
     }
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     public static Task PostToHttpAsync(
         this CloudEvent cloudEvent,
         string url,
@@ -174,6 +190,7 @@ public static class CloudEventWebExtensions
         CancellationToken token = default
     ) => cloudEvent.PostToHttpAsync(url, body, contentType, null, token);
 
+    [ExcludeFromCodeCoverage(Justification = "HTTP infrastructure; requires live server for integration testing")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public static async Task PostToHttpAsync(
         this CloudEvent cloudEvent,

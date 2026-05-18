@@ -15,10 +15,12 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Variable.Commands;
 
+[ExcludeFromCodeCoverage(Justification = "Spectre.Console CLI settings class; no testable business logic")]
 internal class ListCommandSettings : CommandSettings
 {
     [CommandOption("-f|--format <FORMAT>")]
