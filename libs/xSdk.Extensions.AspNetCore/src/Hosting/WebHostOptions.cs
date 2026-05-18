@@ -23,12 +23,9 @@ public sealed class WebHostOptions : VariableSetup
 {
     protected override void OnInitialize()
     {
-        if (Https > 0)
+        if (Https > 0 && !string.IsNullOrEmpty(TlsCertFile) && !string.IsNullOrEmpty(TlsKeyFile))
         {
-            if (!string.IsNullOrEmpty(TlsCertFile) && !string.IsNullOrEmpty(TlsKeyFile))
-            {
-                IsHttpsEnabled = true;
-            }
+            IsHttpsEnabled = true;
         }
     }
 
@@ -38,7 +35,7 @@ public sealed class WebHostOptions : VariableSetup
         helpText: Definitions.Bind.HelpText,
         defaultValue: Definitions.Bind.DefaultValue
     )]
-    public string Bind
+    public string? Bind
     {
         get => ReadValue<string>(Definitions.Bind.Name);
         set => SetValue(Definitions.Bind.Name, value);
@@ -76,14 +73,14 @@ public sealed class WebHostOptions : VariableSetup
     }
 
     [Variable(name: Definitions.TlsCertFile.Name, template: Definitions.TlsCertFile.Template, helpText: Definitions.TlsCertFile.HelpText)]
-    public string TlsCertFile
+    public string? TlsCertFile
     {
         get => ReadValue<string>(Definitions.TlsCertFile.Name);
         set => SetValue(Definitions.TlsCertFile.Name, value);
     }
 
     [Variable(name: Definitions.TlsKeyFile.Name, template: Definitions.TlsKeyFile.Template, helpText: Definitions.TlsKeyFile.HelpText)]
-    public string TlsKeyFile
+    public string? TlsKeyFile
     {
         get => ReadValue<string>(Definitions.TlsKeyFile.Name);
         set => SetValue(Definitions.TlsKeyFile.Name, value);
@@ -97,8 +94,6 @@ public sealed class WebHostOptions : VariableSetup
     }
 
     public bool IsHttpsEnabled { get; private set; }
-
-
 
     public static class Definitions
     {

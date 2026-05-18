@@ -48,12 +48,12 @@ public sealed class DocumentationPluginHost(IOptions<DocumentationOptions> optio
             .BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
 
-        var docPluginBuilder = GetBuilder<IDocumentationPluginBuilder>();
+        IDocumentationPluginBuilder? docPluginBuilder = GetBuilder<IDocumentationPluginBuilder>();
 
-        var documentationOptions = options.Value;
+        DocumentationOptions documentationOptions = options.Value;
         if (documentationOptions.Enabled)
         {
-            foreach (var description in descriptionProvider.ApiVersionDescriptions)
+            foreach (ApiVersionDescription description in descriptionProvider.ApiVersionDescriptions)
             {
                 services.AddOpenApi(description.GroupName, options =>
                 {
@@ -62,7 +62,13 @@ public sealed class DocumentationPluginHost(IOptions<DocumentationOptions> optio
 
                     options.AddDocumentTransformer((document, context, cancellationToken) =>
                     {
-                        var apiInfo = docPluginBuilder.CreateApiInfo(description);
+                        OpenApiInfo? apiInfo = default;
+
+                        if (docPluginBuilder != null)
+                        {
+                            apiInfo = docPluginBuilder.CreateApiInfo(description);
+                        }
+
                         if (apiInfo == null)
                         {
                             apiInfo = _defaultApiInfo;

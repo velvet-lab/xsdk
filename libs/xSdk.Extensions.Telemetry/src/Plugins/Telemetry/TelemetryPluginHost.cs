@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using OpenTelemetry;
 using OpenTelemetry.Resources;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Telemetry;
@@ -27,14 +28,14 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryOptions> telemetryOpti
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        var telemetrySetup = telemetryOptions.Value;
+        TelemetryOptions telemetrySetup = telemetryOptions.Value;
 
         if (!telemetrySetup.IsDisabled)
         {
             services.AddTelemetryServices();
 
             // Create an builder
-            var telemetryBuilder = services
+            OpenTelemetryBuilder telemetryBuilder = services
                 .AddOpenTelemetry()
                 .ConfigureResource(ConfigureResourceBuilder);
 
@@ -42,42 +43,35 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryOptions> telemetryOpti
             if (!telemetrySetup.IsTracingDisabled)
             {
                 telemetryBuilder.WithTracing(builder =>
-                {
                     // Call tracing configuration from possible other Startups
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
-                });
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder)));
             }
 
             // Configure Metrics
             if (!telemetrySetup.IsMetricsDisabled)
             {
                 telemetryBuilder.WithMetrics(builder =>
-                {
                     // Call metrics configuration from possible other Startups
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
-                });
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder)));
             }
 
             // Configure Logging
             if (!telemetrySetup.IsLoggingDisabled)
             {
-                telemetryBuilder.WithLogging(builder =>
-                {
-                    // Call logging configuration from possible other Startups                    
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder));
-                },
-                options =>
-                {
-                    // Call logging configuration from possible other Startups                    
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options));
-                });
+                telemetryBuilder.WithLogging(
+                    builder =>
+                        // Call logging configuration from possible other Startups                    
+                        InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder)),
+                    options =>
+                        // Call logging configuration from possible other Startups                    
+                        InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options)));
             }
         }
     }
 
     private void ConfigureResourceBuilder(ResourceBuilder resourceBuilder)
     {
-        var setup = environmentOptions.Value;
+        EnvironmentOptions setup = environmentOptions.Value;
 
         resourceBuilder
             .AddEnvironmentVariableDetector()

@@ -10,6 +10,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Shared\**" />
+      <EmbeddedResource Remove="Shared\**" />
+      <None Remove="Shared\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Asp.Versioning.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />

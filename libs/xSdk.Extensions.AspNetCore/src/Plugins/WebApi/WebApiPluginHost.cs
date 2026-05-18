@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Asp.Versioning;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;

@@ -36,13 +36,13 @@ public static class HostConfigurationManager
 
         builder.AddEnvironmentVariables(prefix: "DOTNET_");
         builder.AddEnvironmentVariables(prefix: "ASPNET_");
-        builder.AddEnvironmentVariables(prefix: $"{options.Prefix.ToUpperInvariant()}_");
+        if (!string.IsNullOrEmpty(options.Prefix))
+        {
+            builder.AddEnvironmentVariables(prefix: $"{options.Prefix.ToUpperInvariant()}_");
+        }
     }
 
-    internal static void LoadAppConfiguration(IConfigurationBuilder builder, ApplicationOptions options)
-    {
-        LoadAppConfiguration(null, builder, options);
-    }
+    internal static void LoadAppConfiguration(IConfigurationBuilder builder, ApplicationOptions options) => LoadAppConfiguration(null, builder, options);
 
     internal static void LoadAppConfiguration(HostBuilderContext? context, IConfigurationBuilder builder, ApplicationOptions options)
     {
@@ -82,7 +82,10 @@ public static class HostConfigurationManager
     {
         if (!string.IsNullOrEmpty(file) && File.Exists(file))
         {
-            _logger.LogInformation("Try to load Configuration from File '{0}'", file);
+#pragma warning disable CA1873 // Potenziell kostspielige Protokollierung vermeiden
+            _logger.LogInformation("Try to load Configuration from File '{file}'", file);
+#pragma warning restore CA1873 // Potenziell kostspielige Protokollierung vermeiden
+
             _logger.LogTrace("Configuration File exists. Load it!");
             builder.AddJsonFile(file, true, reloadOnChange);
         }
@@ -92,6 +95,7 @@ public static class HostConfigurationManager
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     private static string? GetConfigFile(string configFolder, string? envName = null)
     {
         string logPostFix = "";
@@ -103,7 +107,7 @@ public static class HostConfigurationManager
             logPostFix = $" for Environment '{envName}'";
         }
 
-        _logger.LogInformation("Try to determine configuration file in folder '{0}'{1}", configFolder, logPostFix);
+        _logger.LogInformation("Try to determine configuration file in folder '{file}'{postfix}", configFolder, logPostFix);
         string configFile = Path.Combine(configFolder, configFileName);
 
         if (!File.Exists(configFile))
@@ -111,7 +115,7 @@ public static class HostConfigurationManager
             _logger.LogTrace("Configuration file could not found!");
             configFolder = FileSystemHelper.GetExecutingFolder();
 
-            _logger.LogInformation("Last try! Try to load configuration file from Visual Studio project folder '{0}'{1}", configFolder, logPostFix);
+            _logger.LogInformation("Last try! Try to load configuration file from Visual Studio project folder '{folder}'{postfix}", configFolder, logPostFix);
             configFile = Path.Combine(configFolder, configFileName);
         }
 
@@ -128,7 +132,5 @@ public static class HostConfigurationManager
     }
 
     internal static void LoadTestConfiguration(IConfigurationBuilder configBuilder)
-    {
-        configBuilder.SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.tests.json", true, true);
-    }
+        => configBuilder.SetBasePath(AppContext.BaseDirectory).AddJsonFile("appsettings.tests.json", true, true);
 }

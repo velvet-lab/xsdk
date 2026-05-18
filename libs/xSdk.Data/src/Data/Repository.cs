@@ -31,20 +31,21 @@ public abstract class Repository : IRepository
     {
         get
         {
-            var options = GetOptions<EnvironmentOptions>(OptionsScope.Default);
+            EnvironmentOptions? options = GetOptions<EnvironmentOptions>(OptionsScope.Default);
             if (options != null)
             {
                 return options.IsDemo;
             }
+
             return false;
         }
     }
 
-    protected IDatabaseHandler? DatabaseHandler => Services?.GetRequiredKeyedService<IDatabaseHandler>(DatalayerName);
+    protected IDatabaseHandler DatabaseHandler => Services?.GetRequiredKeyedService<IDatabaseHandler>(DatalayerName) ?? throw new InvalidOperationException("DatabaseHandler is not available");
 
     protected TOptions? GetOptions<TOptions>(OptionsScope scope = OptionsScope.Default)
     {
-        var options = Services?.GetService<IOptionsMonitor<TOptions>>();
+        IOptionsMonitor<TOptions>? options = Services?.GetService<IOptionsMonitor<TOptions>>();
         if (options != null)
         {
             if (scope == OptionsScope.Datalayer)
@@ -56,6 +57,7 @@ public abstract class Repository : IRepository
                 return options.CurrentValue;
             }
         }
+
         return default;
     }
 }
@@ -67,12 +69,12 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
 
     protected string GetTableName()
     {
-        var entityType = typeof(TEntity);
-        var name = GetTableNameFromType(entityType);
+        Type entityType = typeof(TEntity);
+        string? name = GetTableNameFromType(entityType);
 
         if (string.IsNullOrEmpty(name))
         {
-            var repoType = GetType();
+            Type repoType = GetType();
             name = GetTableNameFromType(repoType);
 
             if (string.IsNullOrEmpty(name))
@@ -86,46 +88,48 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
         return name;
     }
 
-    private string GetTableNameFromType(Type type)
+    private static string? GetTableNameFromType(Type type)
     {
-        string name = default;
+        string? name = default;
         if (Attribute.GetCustomAttribute(type, typeof(TableAttribute)) is TableAttribute attribute)
+        {
             name = attribute.Name;
+        }
 
         return name;
     }
 
     public virtual bool Insert(TEntity entity) => InsertAsync(entity).GetAwaiter().GetResult();
 
-    public abstract Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
-
     public virtual int Insert(IEnumerable<TEntity> entities) => InsertAsync(entities).GetAwaiter().GetResult();
+
+    public abstract Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
 
     public abstract Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
 
     public virtual bool Remove(TPrimaryKeyType primaryKey) => RemoveAsync(primaryKey).GetAwaiter().GetResult();
 
-    public abstract Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
-
     public int Remove(IEnumerable<TPrimaryKeyType> primaryKeys) => RemoveAsync(primaryKeys).GetAwaiter().GetResult();
-
-    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
 
     public virtual bool Remove(TEntity entity) => RemoveAsync(entity).GetAwaiter().GetResult();
 
+    public virtual int Remove(IEnumerable<TEntity>? entities) => RemoveAsync(entities).GetAwaiter().GetResult();
+
+    public abstract Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
+
+    public abstract Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
+
     public abstract Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default);
 
-    public virtual int Remove(IEnumerable<TEntity> entities) => RemoveAsync(entities).GetAwaiter().GetResult();
-
-    public abstract Task<int> RemoveAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
+    public abstract Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default);
 
     public virtual TEntity? Select(TPrimaryKeyType primaryKey) => SelectAsync(primaryKey).GetAwaiter().GetResult();
 
     public abstract Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
 
-    public virtual IEnumerable<TEntity> SelectList() => SelectListAsync().GetAwaiter().GetResult();
+    public virtual IEnumerable<TEntity>? SelectList() => SelectListAsync().GetAwaiter().GetResult();
 
-    public abstract Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default);
+    public abstract Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default);
 
     public virtual bool Update(TPrimaryKeyType primaryKey, TEntity entity) => UpdateAsync(primaryKey, entity).GetAwaiter().GetResult();
 
@@ -136,7 +140,7 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
     public abstract Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default);
 
     protected virtual Task<IEnumerable<TEntity>> CreateFakesAsync(CancellationToken token = default) =>
-        Task.FromResult<IEnumerable<TEntity>>(new List<TEntity>());
+        Task.FromResult<IEnumerable<TEntity>>([]);
 
     protected Task<TResult> ExecuteAsDemoIfEnabledAsync<TResult>(Func<Repository<TEntity, TPrimaryKeyType>, Task<TResult>> concreteCall, CancellationToken token = default)
     {
@@ -144,12 +148,13 @@ public abstract class Repository<TEntity, TPrimaryKeyType> : Repository, IReposi
         {
             if (_fakeRepository == null)
             {
-                var items = CreateFakesAsync(token).GetAwaiter().GetResult();
+                IEnumerable<TEntity> items = CreateFakesAsync(token).GetAwaiter().GetResult();
                 _fakeRepository = new FakeRepository<TEntity, TPrimaryKeyType>(items);
             }
 
             return concreteCall(_fakeRepository);
         }
+
         return concreteCall(this);
     }
 }

@@ -16,6 +16,7 @@
 
 using Bogus;
 using xSdk.Data;
+using xSdk.Tools;
 
 namespace xSdk.Demos.Data;
 
@@ -23,6 +24,8 @@ public sealed class SampleModelExamples : Fakes<SampleModel>
 {
     protected override void Build(Faker<SampleModel> builder)
     {
-        builder.RuleFor(x => x.Name, f => f.Name.FullName());
+        builder
+            .RuleFor(x => x.Id, f => PrimaryKeyTools.Generate<Guid>().ToString("N"))
+            .RuleFor(x => x.Name, f => f.Name.FullName());
     }
 }

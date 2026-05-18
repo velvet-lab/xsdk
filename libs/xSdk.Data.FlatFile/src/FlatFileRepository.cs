@@ -39,18 +39,26 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
     public override Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default) =>
         ExecuteInternalAsync((col) => col.DeleteOneAsync(x => x.Id == entity.Id), token);
 
-    public override Task<int> RemoveAsync(IEnumerable<TEntity> entities, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
     {
+        if (entities == null)
+        {
+            return Task.FromResult(0);
+        }
+
         return ExecuteInternalAsync(
             async (col) =>
             {
-                var removed = 0;
-                foreach (var entity in entities)
+                int removed = 0;
+                foreach (TEntity entity in entities)
                 {
-                    var result = await col.DeleteOneAsync(entity.Id);
+                    bool result = await col.DeleteOneAsync(entity.Id);
                     if (result)
+                    {
                         removed++;
+                    }
                 }
+
                 return removed;
             },
             token
@@ -63,9 +71,9 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
     public override Task<TEntity?> SelectAsync(int primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync((col) => Task.FromResult(col.AsQueryable().SingleOrDefault(x => x.Id == primaryKey)), token);
 
-    public override Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default)
+    public override Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default)
         => ExecuteInternalAsync((col) => Task.FromResult(col.AsQueryable()), token)
-        .ContinueWith(task => task.Result ?? [], token);
+        .ContinueWith(task => task.Result, token);
 
     protected TEntity? Select(Expression<Func<TEntity, bool>> filter) => SelectAsync(filter).GetAwaiter().GetResult();
 
@@ -87,13 +95,17 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
         return ExecuteInternalAsync(
             async (col) =>
             {
-                var item = col.AsQueryable().SingleOrDefault(x => x.Id == entity.Id);
+                TEntity? item = col.AsQueryable().SingleOrDefault(x => x.Id == entity.Id);
 
-                var result = false;
+                bool result = false;
                 if (item == null)
+                {
                     result = await col.InsertOneAsync(entity);
+                }
                 else
+                {
                     result = await col.UpdateOneAsync(entity.Id, entity);
+                }
 
                 return result;
             },
@@ -101,11 +113,11 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
         );
     }
 
-    private async Task<TResult?> ExecuteInternalAsync<TResult>(Func<IDocumentCollection<TEntity>, Task<TResult>> func, CancellationToken token)
+    private async Task<TResult?> ExecuteInternalAsync<TResult>(Func<IDocumentCollection<TEntity>, Task<TResult>> func, CancellationToken token = default)
     {
         TResult? result = default;
-        IDataStore? openedDatabase = null;
-        IDocumentCollection<TEntity>? col = null;
+        DataStore? openedDatabase;
+        IDocumentCollection<TEntity>? col;
         string? collectionName = default;
 
         IDatabase? database = DatabaseHandler?.Retrieve();
@@ -114,7 +126,7 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
         {
             try
             {
-                collectionName = this.GetTableName();
+                collectionName = GetTableName();
                 openedDatabase = database.Open<DataStore>();
 
                 if (openedDatabase != null)
@@ -125,6 +137,11 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
             }
             catch (Exception ex)
             {
+                if (token.CanBeCanceled)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+
                 throw new SdkException("A Error occurred while execute a Operation for the Database", ex);
             }
             finally
@@ -138,8 +155,8 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
 
     private static Predicate<TEntity> ConvertFilter(Expression<Func<TEntity, bool>> filter)
     {
-        var compiled = filter.Compile();
-        Predicate<TEntity> pred = x => compiled(x);
+        Func<TEntity, bool> compiled = filter.Compile();
+        bool pred(TEntity x) => compiled(x);
 
         return pred;
     }

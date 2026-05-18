@@ -1,21 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace>xSdk.Data</RootNamespace>
-        <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <IsPackable>false</IsPackable>
         <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Bogus" />
-        <PackageReference Include="coverlet.collector">
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
+        <PackageReference Include="coverlet.collector" />
         <PackageReference Include="Mapster" />
-    <PackageReference Include="Testcontainers" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+        <PackageReference Include="MongoDB.Driver" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" />
+        <PackageReference Include="SharpCompress" />
+        <PackageReference Include="Testcontainers" />
         <PackageReference Include="Testcontainers.MongoDb" />
         <PackageReference Include="xunit.v3" />
         <PackageReference Include="xunit.runner.visualstudio">

@@ -40,8 +40,10 @@ public static class SlimHostExtensions
     /// </summary>
     public static SlimHost GetSlimHost(this IHostBuilder builder)
     {
-        if (builder.Properties.TryGetValue(SlimHostKey, out var value) && value is SlimHost slimHost)
+        if (builder.Properties.TryGetValue(SlimHostKey, out object? value) && value is SlimHost slimHost)
+        {
             return slimHost;
+        }
 
         throw new SdkException("No SlimHost found on this IHostBuilder. Ensure InitializeSlimHost was called first.");
     }
@@ -50,13 +52,6 @@ public static class SlimHostExtensions
         where TPluginHost : class, IPluginHost
     {
         builder.GetSlimHost().RegisterPluginHost<IPluginHost, TPluginHost>();
-        return builder;
-    }
-
-    public static IHostBuilder RegisterPluginBuilder<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : class, IPluginBuilder
-    {
-        builder.GetSlimHost().RegisterPluginBuilder<IPluginBuilder, TPluginBuilder>();
         return builder;
     }
 
@@ -75,28 +70,21 @@ public static class SlimHostExtensions
         return builder;
     }
 
-    public static void ConfigurePluginHost(this SlimHost slimHost, Action<IPluginHost> factory)
-    {
-        slimHost.ConfigurePluginHost<IPluginHost>(factory);
-    }
+    public static void ConfigurePluginHost(this SlimHost slimHost, Action<IPluginHost> factory) => slimHost.ConfigurePluginHost(factory);
 
-    public static void ConfigureWebPluginHost(this SlimHost slimHost, Action<IWebPluginHost> factory)
-    {
-        slimHost.ConfigureWebPluginHost<IWebPluginHost>(factory);
-    }
+    public static void ConfigureWebPluginHost(this SlimHost slimHost, Action<IWebPluginHost> factory) => slimHost.ConfigureWebPluginHost(factory);
 
     public static EnvironmentOptions GetEnvironment(this SlimHost slimHost)
     {
         EnvironmentOptions? options = slimHost.BuildEnvironmentOptions();
         if (options != null)
+        {
             return options;
+        }
 
         throw new SdkException("Failed to build environment options.");
     }
 
     public static IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>(this SlimHost slimHost)
-        where TPluginHost : IPluginHost
-    {
-        return slimHost.GetPluginHosts<TPluginHost>();
-    }
+        where TPluginHost : IPluginHost => slimHost.GetPluginHosts<TPluginHost>();
 }

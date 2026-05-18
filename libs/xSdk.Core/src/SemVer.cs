@@ -19,14 +19,9 @@ using xSdk.Tools;
 
 namespace xSdk;
 
-public sealed class SemVer
+public sealed class SemVer : IComparable<SemVer>
 {
-    private readonly string _origin;
-
-    private readonly string _version;
-    private readonly string _range;
-    private readonly SemanticVersioning.Version _versionObject;
-    private readonly SemanticVersioning.Range _rangeObject;
+    private readonly string? _origin;
 
     public SemVer(string version)
     {
@@ -34,101 +29,91 @@ public sealed class SemVer
 
         if (HasRangeStrings(version))
         {
-            _range = version;
-            _version = ReplaceRangeStrings(version);
+            Range = version;
+            Version = ReplaceRangeStrings(version);
         }
         else
         {
-            _version = version;
-            _range = $"~{version}";
+            Version = version;
+            Range = $"~{version}";
         }
 
-        _version = ConvertToSemVer(_version);
+        Version = ConvertToSemVer(Version);
 
-        _rangeObject = new SemanticVersioning.Range(_range);
-        _versionObject = new SemanticVersioning.Version(_version);
+        RangeObject = new SemanticVersioning.Range(Range);
+        VersionObject = new SemanticVersioning.Version(Version);
     }
 
     public SemVer(string version, string range)
     {
         _origin = version;
 
-        _version = version ?? throw new ArgumentNullException(nameof(version));
-        _range = range ?? throw new ArgumentNullException(nameof(range));
+        Version = version ?? throw new ArgumentNullException(nameof(version));
+        Range = range ?? throw new ArgumentNullException(nameof(range));
 
         if (HasRangeStrings(version))
-            _version = ReplaceRangeStrings(version);
+        {
+            Version = ReplaceRangeStrings(version);
+        }
 
-        _version = ConvertToSemVer(_version);
+        Version = ConvertToSemVer(Version);
 
-        _rangeObject = new SemanticVersioning.Range(_range);
-        _versionObject = new SemanticVersioning.Version(_version);
+        RangeObject = new SemanticVersioning.Range(Range);
+        VersionObject = new SemanticVersioning.Version(Version);
     }
 
     private SemVer(SemanticVersioning.Version versionObject, SemanticVersioning.Range rangeObject)
     {
-        _version = versionObject.ToString();
-        _range = rangeObject.ToString();
+        Version = versionObject.ToString();
+        Range = rangeObject.ToString();
 
-        _versionObject = versionObject ?? throw new ArgumentNullException(nameof(versionObject));
-        _rangeObject = rangeObject ?? throw new ArgumentNullException(nameof(rangeObject));
+        VersionObject = versionObject;
+        RangeObject = rangeObject;
     }
 
     [JsonIgnore]
-    public SemanticVersioning.Version VersionObject => _versionObject;
+    public SemanticVersioning.Version VersionObject { get; }
 
     [JsonIgnore]
-    public SemanticVersioning.Range RangeObject => _rangeObject;
+    public SemanticVersioning.Range RangeObject { get; }
 
     [JsonIgnore]
-    public bool IsPreRelease => _versionObject.IsPreRelease;
+    public bool IsPreRelease => VersionObject.IsPreRelease;
 
-    public string Version => _version;
+    public string Version { get; }
 
-    public string Range => _range;
+    public string Range { get; }
 
     [JsonIgnore]
-    public bool IsSatisfied => _rangeObject.IsSatisfied(_versionObject);
+    public bool IsSatisfied => RangeObject.IsSatisfied(VersionObject);
 
     [JsonIgnore]
     public bool IsRange => HasRangeStrings(_origin);
 
-    public SemVer MaxSatisfying(IEnumerable<SemVer> versions) => MaxSatisfying(versions, false);
+    public SemVer? MaxSatisfying(IEnumerable<SemVer> versions) => MaxSatisfying(versions, false);
 
-    public SemVer MaxSatisfying(IEnumerable<SemVer> versions, bool includePreRelease)
+    public SemVer? MaxSatisfying(IEnumerable<SemVer> versions, bool includePreRelease)
     {
-        SemanticVersioning.Version highestVersion = null;
+        SemanticVersioning.Version? highestVersion = null;
 
-        foreach (var version in versions)
+        foreach (SemVer version in versions)
         {
-            var baseVersion = version._versionObject.BaseVersion();
-            if (_rangeObject.IsSatisfied(baseVersion))
+            SemanticVersioning.Version baseVersion = version.VersionObject.BaseVersion();
+            if (RangeObject.IsSatisfied(baseVersion) && (!version.IsPreRelease || (version.IsPreRelease && includePreRelease)))
             {
-                if (!version.IsPreRelease || version.IsPreRelease && includePreRelease)
+                highestVersion ??= version.VersionObject;
+
+                if (version.VersionObject > highestVersion)
                 {
-                    if (highestVersion == null)
-                    {
-                        highestVersion = version._versionObject;
-                    }
-                    else
-                    {
-                        if (version._versionObject > highestVersion)
-                        {
-                            highestVersion = version._versionObject;
-                        }
-                    }
+                    highestVersion = version.VersionObject;
                 }
             }
         }
 
-        if (highestVersion != null)
+        if (highestVersion is not null)
         {
-            return new SemVer(highestVersion, _rangeObject);
+            return new SemVer(highestVersion, RangeObject);
         }
-
-        //var versionObject = _rangeObject.MaxSatisfying(nativeVersions);
-        //if (versionObject != null)
-        //    return new SemVer(versionObject, _rangeObject);
 
         return null;
     }
@@ -137,9 +122,11 @@ public sealed class SemVer
 
     public string ToString(bool useRange)
     {
-        var version = Version;
+        string version = Version;
         if (useRange)
+        {
             version = Range;
+        }
 
         return version;
     }
@@ -162,30 +149,16 @@ public sealed class SemVer
     /// </returns>
     public string ToString(int fieldCount)
     {
-        var currentCount = (Version.Count(x => x == '.') + 1);
+        int currentCount = Version.Count(x => x == '.') + 1;
         if (fieldCount > currentCount)
         {
             fieldCount = currentCount;
         }
+
         return new Version(Version).ToString(fieldCount);
     }
 
-    public static bool operator ==(SemVer left, SemVer right)
-    {
-        if (left is null)
-        {
-            if (right is null)
-                return true;
-
-            return false;
-        }
-        else
-        {
-            if (right is null)
-                return false;
-        }
-        return left.VersionObject == right.VersionObject;
-    }
+    public static bool operator ==(SemVer left, SemVer right) => left?.CompareTo(right) == 0;
 
     public static bool operator !=(SemVer left, SemVer right) => !(left == right);
 
@@ -194,60 +167,79 @@ public sealed class SemVer
         if (left is null)
         {
             if (right is null)
+            {
                 return false;
+            }
 
             return false;
         }
         else
         {
             if (right is null)
+            {
                 return true;
+            }
         }
+
         return left.VersionObject > right.VersionObject;
     }
 
-    public static bool operator <(SemVer left, SemVer right) => !(left < right);
+    public static bool operator <(SemVer left, SemVer right) => !(left > right);
 
     public static bool operator >=(SemVer left, SemVer right)
     {
         if (left is null)
         {
             if (right is null)
+            {
                 return false;
+            }
 
             return false;
         }
         else
         {
             if (right is null)
+            {
                 return true;
+            }
         }
+
         return left.VersionObject >= right.VersionObject;
     }
 
-    public static bool operator <=(SemVer left, SemVer right) => !(left <= right);
+    public static bool operator <=(SemVer left, SemVer right) => !(left > right);
 
-    public static bool HasRangeStrings(string value) => (value.IndexOf("~") > -1 || value.IndexOf("^") > -1 || value.IndexOf(".x") > -1);
+    public static bool HasRangeStrings(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            return false;
+        }
+
+        return value.IndexOf('~') > -1 || value.IndexOf('^') > -1 || value.IndexOf(".x") > -1;
+    }
 
     private static string ReplaceRangeStrings(string value)
     {
-        var result = value.Replace("~", "").Replace("^", "").Replace(".x", "");
-        if (result.IndexOf("-") != -1)
+        string result = value.Replace("~", string.Empty).Replace("^", string.Empty).Replace(".x", string.Empty);
+        if (result.Contains('-', StringComparison.CurrentCulture))
         {
-            result = result.Substring(0, result.IndexOf("-"));
+            result = result.Substring(0, result.IndexOf('-'));
         }
+
         return result;
     }
 
     private static string ConvertToSemVer(string value)
     {
-        var preReleaseString = string.Empty;
-        if (value.IndexOf("-") != -1)
+        string preReleaseString = string.Empty;
+        if (value.Contains('-', StringComparison.CurrentCulture))
         {
-            preReleaseString = value.Substring(value.IndexOf("-"));
+            preReleaseString = value.Substring(value.IndexOf('-'));
         }
 
-        var tempValue = ReplaceRangeStrings(value);
+        string tempValue = ReplaceRangeStrings(value);
         if (tempValue.Count(x => x == '.') > 2)
         {
             var tmpVersion = new Version(tempValue);
@@ -255,15 +247,37 @@ public sealed class SemVer
         }
 
         if (tempValue.Count(x => x == '.') < 2)
+        {
             tempValue = $"{tempValue}.0";
+        }
 
-        if (tempValue.IndexOf(".") == -1)
+        if (!tempValue.Contains('.', StringComparison.CurrentCulture))
+        {
             tempValue = $"{tempValue}.0.0";
+        }
 
         return $"{tempValue}{preReleaseString}";
     }
 
     public override int GetHashCode() => ObjectTools.CreateAutomaticHashCode(this);
 
-    public override bool Equals(object obj) => this == (SemVer)obj;
+    public override bool Equals(object? obj)
+    {
+        if (obj is not null)
+        {
+            return this == (SemVer)obj;
+        }
+
+        return false;
+    }
+
+    public int CompareTo(SemVer? other)
+    {
+        if (other is null)
+        {
+            return 1;
+        }
+
+        return VersionObject.CompareTo(other.VersionObject);
+    }
 }

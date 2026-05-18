@@ -15,42 +15,41 @@
  */
 
 using CloudNative.CloudEvents;
-using xSdk.Hosting;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
-public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventExtensionsTests()
 {
     [Fact]
     public void AddAttribute_AddsAttributeToCloudEvent()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
-        var attr = CloudEventFactory.CreateAttribute("customattr", CloudEventAttributeType.String);
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEventFactory.CreateAttribute("customattr", CloudEventAttributeType.String);
 
         cloudEvent.AddAttribute("customattr", CloudEventAttributeType.String, "test-value");
 
-        var value = cloudEvent.GetAttributeValue<string>("customattr");
+        string? value = cloudEvent.GetAttributeValue<string>("customattr");
         Assert.Equal("test-value", value);
     }
 
     [Fact]
     public void RemoveAttribute_RemovesExistingAttribute()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         cloudEvent.AddAttribute("removeattr", CloudEventAttributeType.String, "temp");
 
         cloudEvent.RemoveAttribute("removeattr");
 
-        var value = cloudEvent.GetAttributeValue<string>("removeattr");
+        string? value = cloudEvent.GetAttributeValue<string>("removeattr");
         Assert.Null(value);
     }
 
     [Fact]
     public void RemoveAttribute_NonExistentAttribute_DoesNotThrow()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var ex = Record.Exception(() => cloudEvent.RemoveAttribute("nonexistent"));
+        Exception? ex = Record.Exception(() => cloudEvent.RemoveAttribute("nonexistent"));
 
         Assert.Null(ex);
     }
@@ -58,9 +57,9 @@ public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHo
     [Fact]
     public void GetAttributeValue_ReturnsDefaultWhenMissing()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var value = cloudEvent.GetAttributeValue<string>("missing");
+        string? value = cloudEvent.GetAttributeValue<string>("missing");
 
         Assert.Null(value);
     }
@@ -68,9 +67,9 @@ public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHo
     [Fact]
     public void GetScope_ReturnsExpectedScope()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
-        var scope = cloudEvent.GetScope();
+        string scope = cloudEvent.GetScope();
 
         Assert.Contains("test", scope);
     }
@@ -78,7 +77,7 @@ public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHo
     [Fact]
     public void SetDataObject_WithStringData_SetsDataAndSchema()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
         cloudEvent.SetDataObject("some string data");
 
@@ -89,7 +88,7 @@ public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHo
     [Fact]
     public void SetDataObject_WithNull_DoesNotSetData()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
 
         cloudEvent.SetDataObject(null!);
 
@@ -99,7 +98,7 @@ public class CloudEventExtensionsTests(TestHostFixture _) : IClassFixture<TestHo
     [Fact]
     public void SetDataObject_WithException_SetsExceptionMessage()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "test.event");
         var exception = new InvalidOperationException("Test exception");
 
         cloudEvent.SetDataObject(exception);

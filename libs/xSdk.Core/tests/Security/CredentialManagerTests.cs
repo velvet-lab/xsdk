@@ -28,9 +28,14 @@ public class CredentialManagerTests : IDisposable
     public CredentialManagerTests()
     {
         _originalDir = Directory.GetCurrentDirectory();
-        var tempDir = Path.Combine(Path.GetTempPath(), "cred-tests-" + Guid.NewGuid().ToString("N"));
+        string tempDir = Path.Combine(Path.GetTempPath(), "cred-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempDir);
         Directory.SetCurrentDirectory(tempDir);
+    }
+
+    ~CredentialManagerTests()
+    {
+        Dispose(false);
     }
 
     [Fact]
@@ -40,7 +45,7 @@ public class CredentialManagerTests : IDisposable
         var credentials = new TestCredentials { User = "admin", Token = "secret-token", ApiUrl = "https://api.example.com" };
 
         CredentialManager.SaveCredentials(credentials, context);
-        var loaded = CredentialManager.LoadCredentials<TestCredentials>(context);
+        TestCredentials? loaded = CredentialManager.LoadCredentials<TestCredentials>(context);
 
         Assert.NotNull(loaded);
         Assert.Equal(credentials.User, loaded.User);
@@ -55,7 +60,7 @@ public class CredentialManagerTests : IDisposable
     {
         const string context = "nonexistent-context-xyz";
 
-        var result = CredentialManager.LoadCredentials<TestCredentials>(context);
+        TestCredentials? result = CredentialManager.LoadCredentials<TestCredentials>(context);
 
         Assert.NotNull(result);
         Assert.Equal(string.Empty, result.User);
@@ -71,8 +76,8 @@ public class CredentialManagerTests : IDisposable
 
         CredentialManager.Reset(context);
 
-        var loaded = CredentialManager.LoadCredentials<TestCredentials>(context);
-        Assert.Equal(string.Empty, loaded.User);
+        TestCredentials? loaded = CredentialManager.LoadCredentials<TestCredentials>(context);
+        Assert.Equal(string.Empty, loaded?.User);
     }
 
     [Fact]
@@ -80,13 +85,19 @@ public class CredentialManagerTests : IDisposable
     {
         const string context = "reset-nonexistent-xyz";
 
-        var ex = Record.Exception(() => CredentialManager.Reset(context));
+        Exception? ex = Record.Exception(() => CredentialManager.Reset(context));
 
         Assert.Null(ex);
     }
 
-    public void Dispose()
+    protected virtual void Dispose(bool disposing)
     {
         Directory.SetCurrentDirectory(_originalDir);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

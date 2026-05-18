@@ -22,9 +22,17 @@ public sealed class ApplicationOptions
 {
     public ApplicationOptions()
     {
-        var version = new SemVer(GetType().Assembly.GetName().Version.ToString());
-        Version = version;
-        AppVersion = version.ToString();
+        Version? assemblyVersion = GetType().Assembly.GetName().Version;
+        if (assemblyVersion != null)
+        {
+            var version = new SemVer(assemblyVersion.ToString());
+            Version = version;
+            AppVersion = version.ToString();
+        }
+        else
+        {
+            throw new SdkException("Could not determine the application version from the assembly");
+        }
     }
 
     [Variable(
@@ -34,7 +42,7 @@ public sealed class ApplicationOptions
         resourceNames: ["app.name"],
         hidden: true
     )]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [Variable(
         name: Definitions.AppDescription.Name,
@@ -42,7 +50,7 @@ public sealed class ApplicationOptions
         resourceNames: ["app.description"],
         hidden: true
     )]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [Variable(
         name: Definitions.AppCompany.Name,
@@ -51,10 +59,10 @@ public sealed class ApplicationOptions
         resourceNames: ["app.company"],
         hidden: true
     )]
-    public string Company { get; set; }
+    public string? Company { get; set; }
 
     [Variable(name: Definitions.AppVersion.Name, helpText: Definitions.AppVersion.HelpText, resourceNames: ["app.version"], hidden: true)]
-    public string AppVersion { get; set; }
+    public string? AppVersion { get; set; }
 
     [Variable(
         name: Definitions.AppPrefix.Name,
@@ -63,7 +71,7 @@ public sealed class ApplicationOptions
         resourceNames: ["app.prefix"],
         hidden: true
     )]
-    public string Prefix { get; set; }
+    public string? Prefix { get; set; }
 
     public SemVer Version { get; private set; }
 

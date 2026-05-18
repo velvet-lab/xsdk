@@ -19,15 +19,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace xSdk.Hosting;
 
 [ExcludeFromCodeCoverage(Justification = "Abstract base with empty virtual methods – only instantiated via ASP.NET Core web host pipeline.")]
 public abstract class WebPluginHost : PluginHost, IWebPluginHost
 {
-    protected ILogger Logger => LogManager.GetCurrentClassLogger();
-
     public virtual void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) { }
 
     public virtual void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app) { }

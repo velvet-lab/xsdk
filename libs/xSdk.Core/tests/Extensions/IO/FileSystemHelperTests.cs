@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Zio;
+
 namespace xSdk.Extensions.IO;
 
 public class FileSystemHelperTests
@@ -21,7 +23,7 @@ public class FileSystemHelperTests
     [Fact]
     public void GetExecutingFolder_ReturnsNonEmptyString()
     {
-        var folder = FileSystemHelper.GetExecutingFolder();
+        string folder = FileSystemHelper.GetExecutingFolder();
 
         Assert.NotNull(folder);
         Assert.NotEmpty(folder);
@@ -30,7 +32,7 @@ public class FileSystemHelperTests
     [Fact]
     public void NormalizePath_PathWithoutLeadingSlash_AddsSlash()
     {
-        var result = FileSystemHelper.NormalizePath("some/path");
+        string? result = FileSystemHelper.NormalizePath("some/path");
 
         Assert.StartsWith("/", result);
         Assert.Equal("/some/path", result);
@@ -39,7 +41,7 @@ public class FileSystemHelperTests
     [Fact]
     public void NormalizePath_PathWithLeadingSlash_DoesNotAddSlash()
     {
-        var result = FileSystemHelper.NormalizePath("/some/path");
+        string? result = FileSystemHelper.NormalizePath("/some/path");
 
         Assert.Equal("/some/path", result);
     }
@@ -47,7 +49,7 @@ public class FileSystemHelperTests
     [Fact]
     public void NormalizePath_EmptyString_ReturnsEmpty()
     {
-        var result = FileSystemHelper.NormalizePath(string.Empty);
+        string? result = FileSystemHelper.NormalizePath(string.Empty);
 
         Assert.Equal(string.Empty, result);
     }
@@ -55,17 +57,15 @@ public class FileSystemHelperTests
     [Fact]
     public void NormalizePath_NullString_ReturnsNull()
     {
-        var result = FileSystemHelper.NormalizePath(null);
-
-        Assert.Null(result);
+        Assert.Null(FileSystemHelper.NormalizePath(null));
     }
 
     [Fact]
     public void GetFullPath_ValidPath_ReturnsUPath()
     {
-        var folder = FileSystemHelper.GetExecutingFolder();
+        string? folder = FileSystemHelper.GetExecutingFolder();
 
-        var result = FileSystemHelper.GetFullPath(folder);
+        UPath result = FileSystemHelper.GetFullPath(folder);
 
         Assert.NotNull(result.ToString());
     }
@@ -73,9 +73,9 @@ public class FileSystemHelperTests
     [Fact]
     public void SearchGitRoot_FromCurrentDirectory_FindsGitRoot()
     {
-        var currentDir = Environment.CurrentDirectory;
+        string? currentDir = Environment.CurrentDirectory;
 
-        var result = FileSystemHelper.SearchGitRoot(currentDir);
+        string? result = FileSystemHelper.SearchGitRoot(currentDir);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -84,7 +84,7 @@ public class FileSystemHelperTests
     [Fact]
     public void SearchGitRoot_WithEmptyString_ReturnsFallback()
     {
-        var result = FileSystemHelper.SearchGitRoot(string.Empty);
+        string? result = FileSystemHelper.SearchGitRoot(string.Empty);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -93,7 +93,7 @@ public class FileSystemHelperTests
     [Fact]
     public void SearchGitRoot_WithNullString_ReturnsFallback()
     {
-        var result = FileSystemHelper.SearchGitRoot(null);
+        string? result = FileSystemHelper.SearchGitRoot(null);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -105,7 +105,7 @@ public class FileSystemHelperTests
         using var fs = new Zio.FileSystems.MemoryFileSystem();
         fs.CreateDirectory("/root");
 
-        var result = FileSystemHelper.CreateSpecificDataFolder(fs, "/root/data");
+        string? result = FileSystemHelper.CreateSpecificDataFolder(fs, "/root/data");
 
         Assert.NotNull(result);
         Assert.True(fs.DirectoryExists("/root/data"));
@@ -117,7 +117,7 @@ public class FileSystemHelperTests
         using var fs = new Zio.FileSystems.MemoryFileSystem();
         fs.CreateDirectory("/root/existing");
 
-        var result = FileSystemHelper.CreateSpecificDataFolder(fs, "/root/existing");
+        string? result = FileSystemHelper.CreateSpecificDataFolder(fs, "/root/existing");
 
         Assert.NotNull(result);
     }

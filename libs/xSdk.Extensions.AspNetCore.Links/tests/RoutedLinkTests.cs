@@ -17,7 +17,7 @@
 using xSdk.Data;
 using xSdk.Extensions.Links;
 
-namespace xSdk.Extensions.AspNetCore.Links.Tests;
+namespace xSdk.Extensions.AspNetCore.Links;
 
 public class RoutedLinkTests
 {
@@ -45,7 +45,7 @@ public class RoutedLinkTests
     [Fact]
     public void RoutedLink_Values_ReturnsConstructorValue()
     {
-        Func<TestModel, object> values = m => new { id = m.Id };
+        static object values(TestModel m) => new { id = m.Id };
         var link = new RoutedLink<TestModel>("self", "GetById", values);
 
         Assert.NotNull(link.Values);
@@ -55,10 +55,12 @@ public class RoutedLinkTests
     public void RoutedLink_ConcreteModel_WhenModelIsCompatibleType_ReturnsModel()
     {
         var model = new TestModel { Name = "Test" };
-        var link = new RoutedLink<TestModel>("self", "GetById", null);
-        link.Model = model;
+        var link = new RoutedLink<TestModel>("self", "GetById", null)
+        {
+            Model = model
+        };
 
-        var result = link.ConcreteModel;
+        TestModel? result = link.ConcreteModel;
 
         Assert.NotNull(result);
         Assert.Same(model, result);
@@ -69,7 +71,7 @@ public class RoutedLinkTests
     {
         var link = new RoutedLink<TestModel>("self", "GetById", null);
 
-        var result = link.ConcreteModel;
+        TestModel? result = link.ConcreteModel;
 
         Assert.Null(result);
     }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace>xSdk.Data</RootNamespace>
@@ -12,8 +12,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="MongoDB.Driver" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="MongoDB.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="SharpCompress" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
     <ItemGroup>

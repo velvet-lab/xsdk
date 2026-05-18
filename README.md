@@ -203,13 +203,14 @@ xsdk/
 ├── libs/                               # SDK library projects
 │   ├── xSdk.Core/                      # Foundation: primitives, utilities, validation, mapping
 │   ├── xSdk/                           # Host layer: hosting, plugin extensions, IO, variables
+│   ├── xSdk.Plugin/                    # Plugin host infrastructure (IPluginHost / WebPluginHost)
 │   ├── xSdk.Data/                      # Base data layer: IDataStore<T>, repository, fake mode
-│   ├── xSdk.Data.Consul/               # Consul service-discovery & config provider
 │   ├── xSdk.Data.EntityFramework/      # EF Core data provider
 │   ├── xSdk.Data.EntityFramework.MongoDB/  # MongoDB via EF Core provider
 │   ├── xSdk.Data.FlatFile/             # JSON flat-file data provider
 │   ├── xSdk.Data.NoSql/                # LiteDB embedded NoSQL provider
 │   ├── xSdk.Data.Vault/                # HashiCorp Vault secret provider
+│   ├── xSdk.Extensions.Agents/         # MCP server plugin for AI agent integration
 │   ├── xSdk.Extensions.AspNetCore/     # ASP.NET Core helpers and middleware
 │   ├── xSdk.Extensions.AspNetCore.Links/  # HATEOAS-style link generation
 │   ├── xSdk.Extensions.CloudEvents/    # CloudNative.CloudEvents integration
@@ -217,7 +218,6 @@ xsdk/
 │   └── xSdk.Extensions.Telemetry/      # OpenTelemetry setup and configuration
 ├── demos/                              # Sample applications
 │   ├── console/                        # Basic console host demo
-│   ├── data-consul/                    # Consul service-discovery demo
 │   ├── datalayer-entityframework/      # EF Core demo
 │   ├── datalayer-flatfile/             # Flat-file storage demo
 │   ├── datalayer-mongodb/              # MongoDB demo
@@ -228,8 +228,7 @@ xsdk/
 │   ├── telemetry/                      # OpenTelemetry demo
 │   └── webapi/                         # ASP.NET Core Web API demo
 ├── docs/adr/                           # Architectural Decision Records
-├── think-tank/                         # Experimental features
-├── tools/                              # Build and generator tools
+├── think-tank/                         # Experimental / incubating features (e.g. xSdk.Data.Consul)
 ├── Directory.Build.props               # Shared MSBuild properties
 ├── Directory.Build.targets             # Shared MSBuild targets
 ├── Directory.Packages.props            # Central NuGet package version management
@@ -265,7 +264,7 @@ libs/xSdk.SomeLibrary/
 - `TestHost` / `TestHostFixture` — helpers for integration tests
 - File system abstractions via `Zio`
 - Variable/placeholder resolution engine with YAML support
-- Plugin extension points via `Weikio.PluginFramework`
+- Plugin infrastructure via `IPluginHost` / `WebPluginHost` (see `xSdk.Plugin`)
 - OpenTelemetry integration wired into host startup
 
 ### Data Abstractions (`xSdk.Data`)
@@ -281,7 +280,7 @@ libs/xSdk.SomeLibrary/
 - **LiteDB** — embedded, serverless NoSQL database (async variant included)
 - **FlatFile** — JSON file-based storage for simple scenarios
 - **Vault** — read secrets and configuration from HashiCorp Vault
-- **Consul** — service discovery and key/value configuration from HashiCorp Consul
+- **Consul** *(incubating, `think-tank/`)* — service discovery and key/value configuration from HashiCorp Consul
 - Async-first API with `CancellationToken` propagation throughout
 
 ### ASP.NET Core Extensions (`xSdk.Extensions.AspNetCore`)
@@ -299,10 +298,16 @@ libs/xSdk.SomeLibrary/
 - Runtime, EF Core, ASP.NET Core, HTTP, gRPC, Redis, and process instrumentation
 - Container, host, and OS resource detectors
 
-### Plugin System (`xSdk`)
+### Plugin System (`xSdk.Plugin`)
 
-- Dynamically load and host plugins using `Weikio.PluginFramework`
-- Convention-based plugin discovery
+- `IPluginHost` / `WebPluginHost` model — DI-registered plugin hosts participating in the normal `IServiceCollection` lifecycle (see [ADR-027](docs/adr/ADR-027-plugin-host-model.md))
+- Builder-scoped `SlimHost` — no static singleton, full test isolation (see [ADR-026](docs/adr/ADR-026-slim-host-builder-redesign.md))
+- Convention-based `Enable*` extension methods per extension package
+
+### AI Agent Integration (`xSdk.Extensions.Agents`)
+
+- MCP (Model Context Protocol) server plugin via `AgentsPluginHost`
+- `EnableAgents()` extension method on `IHostBuilder`
 
 ### Cloud Events (`xSdk.Extensions.CloudEvents`)
 

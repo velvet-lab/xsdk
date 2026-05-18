@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Mvc;
 using xSdk.Extensions.Web;
 
 namespace xSdk.Extensions.AspNetCore.Tests.Extensions.Web;

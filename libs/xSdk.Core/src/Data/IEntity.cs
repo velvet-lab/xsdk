@@ -23,5 +23,5 @@ public interface IEntity
 
 public interface IEntity<TPrimaryKeyType> : IEntity
 {
-    new TPrimaryKeyType Id { get; set; }
+    TPrimaryKeyType Id { get; set; }
 }

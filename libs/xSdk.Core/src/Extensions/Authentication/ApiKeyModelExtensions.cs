@@ -29,7 +29,7 @@ public static class ApiKeyModelExtensions
         Guard.IsNotNull(model);
 
         var claims = new List<Claim>();
-        foreach (var claim in model.Claims)
+        foreach (ClaimModel claim in model.Claims)
         {
             claims.Add(ClaimCreator.CreateClaim(claim.Type, claim.Value, claim.ValueType, claim.Issuer, claim.OriginalIssuer));
         }
@@ -56,7 +56,7 @@ public static class ApiKeyModelExtensions
         var result = new ConcreteApiKey
         {
             Key = model.Key,
-            OwnerName = model.User,
+            OwnerName = model.User ?? string.Empty,
             Claims = new ReadOnlyCollection<Claim>(claims)
         };
 

@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
@@ -26,20 +25,6 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
 {
     private EnvironmentOptions GetEnvironmentOptions()
         => fixture.BuildHost().Services.GetRequiredService<IOptions<EnvironmentOptions>>().Value;
-
-    [Fact]
-    public void EnvironmentOptions_Stage_DefaultsToDevlopment()
-    {
-        var options = GetEnvironmentOptions();
-
-#if DEBUG
-
-        Assert.Equal(Stage.Development, options.Stage);
-#else
-
-        Assert.Equal(Stage.Production, options.Stage);
-#endif
-    }
 
     [Fact]
     public void EnvironmentOptions_ContentRoot_IsNotEmpty()

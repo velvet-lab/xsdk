@@ -1,0 +1,189 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+namespace xSdk.Tools;
+
+public class TimeSpanParserTests
+{
+    [Theory]
+    [InlineData("100ms", 100)]
+    [InlineData("50MS", 50)]
+    [InlineData("1ms", 1)]
+    public void Parse_WithMilliseconds_ReturnsCorrectTimeSpan(string input, double expectedMilliseconds)
+    {
+        TimeSpan result = TimeSpanParser.Parse(input);
+
+        Assert.Equal(TimeSpan.FromMilliseconds(expectedMilliseconds), result);
+    }
+
+    [Theory]
+    [InlineData("10s", 10)]
+    [InlineData("1s", 1)]
+    [InlineData("30S", 30)]
+    public void Parse_WithSeconds_ReturnsCorrectTimeSpan(string input, double expectedSeconds)
+    {
+        TimeSpan result = TimeSpanParser.Parse(input);
+
+        Assert.Equal(TimeSpan.FromSeconds(expectedSeconds), result);
+    }
+
+    [Theory]
+    [InlineData("5m", 5)]
+    [InlineData("15m", 15)]
+    [InlineData("1M", 1)]
+    public void Parse_WithMinutes_ReturnsCorrectTimeSpan(string input, double expectedMinutes)
+    {
+        TimeSpan result = TimeSpanParser.Parse(input);
+
+        Assert.Equal(TimeSpan.FromMinutes(expectedMinutes), result);
+    }
+
+    [Theory]
+    [InlineData("2h", 2)]
+    [InlineData("24h", 24)]
+    [InlineData("1H", 1)]
+    public void Parse_WithHours_ReturnsCorrectTimeSpan(string input, double expectedHours)
+    {
+        TimeSpan result = TimeSpanParser.Parse(input);
+
+        Assert.Equal(TimeSpan.FromHours(expectedHours), result);
+    }
+
+    [Theory]
+    [InlineData("1d", 1)]
+    [InlineData("7d", 7)]
+    [InlineData("30D", 30)]
+    public void Parse_WithDays_ReturnsCorrectTimeSpan(string input, double expectedDays)
+    {
+        TimeSpan result = TimeSpanParser.Parse(input);
+
+        Assert.Equal(TimeSpan.FromDays(expectedDays), result);
+    }
+
+    [Fact]
+    public void Parse_WithoutUnit_DefaultsToSeconds()
+    {
+        TimeSpan result = TimeSpanParser.Parse("42");
+
+        Assert.Equal(TimeSpan.FromSeconds(42), result);
+    }
+
+    [Theory]
+    [InlineData("1.5s", 1.5)]
+    [InlineData("2.5m", 2.5)]
+    [InlineData("0.5h", 0.5)]
+    public void Parse_WithDecimalValues_ReturnsCorrectTimeSpan(string input, double expectedValue)
+    {
+        TimeSpan result = TimeSpanParser.Parse(input);
+
+        if (input.EndsWith("s"))
+        {
+            Assert.Equal(TimeSpan.FromSeconds(expectedValue), result);
+        }
+        else if (input.EndsWith("m"))
+        {
+            Assert.Equal(TimeSpan.FromMinutes(expectedValue), result);
+        }
+        else if (input.EndsWith("h"))
+        {
+            Assert.Equal(TimeSpan.FromHours(expectedValue), result);
+        }
+    }
+
+    [Fact]
+    public void TryParse_WithValidValue_ReturnsTrue()
+    {
+        string input = "10s";
+
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
+
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromSeconds(10), result);
+    }
+
+    [Fact]
+    public void TryParse_WithNull_ReturnsFalse()
+    {
+        bool success = TimeSpanParser.TryParse(null, out TimeSpan result);
+
+        Assert.False(success);
+        Assert.Equal(TimeSpan.Zero, result);
+    }
+
+    [Fact]
+    public void TryParse_WithValidMilliseconds_ReturnsTrueAndCorrectValue()
+    {
+        string input = "500ms";
+
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
+
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromMilliseconds(500), result);
+    }
+
+    [Fact]
+    public void TryParse_WithValidMinutes_ReturnsTrueAndCorrectValue()
+    {
+        string input = "5m";
+
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
+
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromMinutes(5), result);
+    }
+
+    [Fact]
+    public void TryParse_WithValidHours_ReturnsTrueAndCorrectValue()
+    {
+        string input = "2h";
+
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
+
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromHours(2), result);
+    }
+
+    [Fact]
+    public void TryParse_WithValidDays_ReturnsTrueAndCorrectValue()
+    {
+        string input = "7d";
+
+        bool success = TimeSpanParser.TryParse(input, out TimeSpan result);
+
+        Assert.True(success);
+        Assert.Equal(TimeSpan.FromDays(7), result);
+    }
+
+    [Fact]
+    public void Parse_WithZeroValue_ReturnsZeroTimeSpan()
+    {
+        TimeSpan result = TimeSpanParser.Parse("0s");
+
+        Assert.Equal(TimeSpan.Zero, result);
+    }
+
+    [Theory]
+    [InlineData("100")]
+    [InlineData("50s")]
+    [InlineData("10m")]
+    public void Parse_CaseInsensitive_ParsesCorrectly(string input)
+    {
+        TimeSpan resultLower = TimeSpanParser.Parse(input.ToLower());
+        TimeSpan resultUpper = TimeSpanParser.Parse(input.ToUpper());
+
+        Assert.Equal(resultLower, resultUpper);
+    }
+}

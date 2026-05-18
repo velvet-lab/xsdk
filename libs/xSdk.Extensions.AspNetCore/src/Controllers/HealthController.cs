@@ -44,7 +44,7 @@ public class HealthController(ILogger<HealthController> logger) : ControllerBase
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Health"),
     ]
-    public async Task<ActionResult> GetStatus(CancellationToken token = default)
+    public async Task<ActionResult> GetStatus()
     {
         try
         {
@@ -72,7 +72,7 @@ public class HealthController(ILogger<HealthController> logger) : ControllerBase
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Health"),
     ]
-    public async Task<ActionResult> GetPong(CancellationToken token = default)
+    public async Task<ActionResult> GetPong()
     {
         try
         {

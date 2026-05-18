@@ -16,18 +16,13 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Handlers;
-using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
 
 [ExcludeFromCodeCoverage]
 public static class HttpClientBuilder
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-
-
     public static HttpClient CreateHttpClient(Uri? baseUrl)
         => CreateHttpClientInternal(baseUrl, null, null);
 
@@ -39,8 +34,6 @@ public static class HttpClientBuilder
 
     public static HttpClient CreateHttpClient(Uri? baseUrl, Action<HttpClientHandler>? configure, IProgress<double>? progress)
         => CreateHttpClientInternal(baseUrl, configure, progress);
-
-
 
     private static HttpClient CreateHttpClientInternal(Uri? baseUrl, Action<HttpClientHandler>? configure, IProgress<double>? progress)
     {
@@ -66,7 +59,7 @@ public static class HttpClientBuilder
         return BuildHttpClient(usedHandler, baseUrl);
     }
 
-    private static HttpClient BuildHttpClient(HttpMessageHandler handler, Uri baseUrl)
+    private static HttpClient BuildHttpClient(HttpMessageHandler handler, Uri? baseUrl)
     {
         var client = new HttpClient(handler, true);
         ConfigureHttpClient(client, baseUrl);
@@ -75,11 +68,15 @@ public static class HttpClientBuilder
 
     private static void ConfigureHttpClient(HttpClient client, Uri? baseUrl)
     {
-        if (baseUrl != null)
-            client.BaseAddress = baseUrl;
-
-        string? userAgent = string.Empty;
         throw new NotImplementedException();
+
+        //if (baseUrl != null)
+        //{
+        //    client.BaseAddress = baseUrl;
+        //}
+
+        //string? userAgent = string.Empty;
+
         //string? appPrefix = SlimHost.Instance.AppPrefix;
         //string? appVersion = SlimHost.Instance.AppVersion;
 

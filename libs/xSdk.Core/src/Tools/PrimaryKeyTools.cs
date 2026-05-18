@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using System.ComponentModel;
+using ComponentModel = System.ComponentModel;
 
 namespace xSdk.Tools;
 
@@ -30,19 +30,19 @@ public static class PrimaryKeyTools
         }
         else if (primaryKeyType == typeof(int))
         {
-            Bogus.Randomizer randomizer = new Bogus.Randomizer();
+            var randomizer = new Bogus.Randomizer();
             return (TTargetType)(object)randomizer.Int();
         }
         else if (primaryKeyType == typeof(long))
         {
-            Bogus.Randomizer randomizer = new Bogus.Randomizer();
+            var randomizer = new Bogus.Randomizer();
             return (TTargetType)(object)randomizer.Long();
         }
 
         throw new NotSupportedException($"Automatic generation of primary key for type {typeof(TTargetType)} is not supported.");
     }
 
-    public static TTargetType Convert<TTargetType>(string? value)
+    public static TTargetType? Convert<TTargetType>(string? value)
     {
         TTargetType? result = default;
 
@@ -63,7 +63,7 @@ public static class PrimaryKeyTools
             }
             else
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(targetType);
+                ComponentModel.TypeConverter converter = ComponentModel.TypeDescriptor.GetConverter(targetType);
                 if (converter != null && converter.CanConvertFrom(typeof(string)))
                 {
                     result = (TTargetType)converter.ConvertFromString(value)!;
@@ -80,6 +80,11 @@ public static class PrimaryKeyTools
 
     public static string? Convert<TSourceType>(TSourceType value)
     {
-        return value.ToString();
+        if (value is not null)
+        {
+            return value.ToString();
+        }
+
+        return default;
     }
 }

@@ -30,7 +30,7 @@ internal class OptionProvider(IConfiguration configuration, ApplicationOptions o
 
     protected override object? ReadVariable(IVariable variable)
     {
-        if (configuration != null && variable != null)
+        if (configuration != null && variable != null && options != null && !string.IsNullOrEmpty(options.Prefix))
         {
             var mainSection = configuration.GetSection(options.Prefix.ToLower());
             if (mainSection != null)
@@ -65,7 +65,7 @@ internal class OptionProvider(IConfiguration configuration, ApplicationOptions o
         return default;
     }
 
-    private string NormalizeName(string? prefix, string name, bool isSection)
+    private static string NormalizeName(string? prefix, string name, bool isSection)
     {
         if (!isSection)
         {

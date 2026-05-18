@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
-using xSdk.Plugins.Authentication;
 
 namespace xSdk.Plugins.Authentication.Mocks;
 

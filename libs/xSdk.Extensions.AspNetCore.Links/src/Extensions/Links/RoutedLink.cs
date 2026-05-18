@@ -34,10 +34,10 @@ public abstract class RoutedLink(string name, string methodName) : IRoutedLink
     internal abstract IHateoasItem? Build();
 }
 
-public class RoutedLink<TModel>(string name, string methodName, Func<TModel, object> values) : RoutedLink(name, methodName), IRoutedLink<TModel>
+public class RoutedLink<TModel>(string name, string methodName, Func<TModel, object>? values) : RoutedLink(name, methodName), IRoutedLink<TModel>
     where TModel : IModel
 {
-    public Func<TModel, object> Values => values;
+    public Func<TModel, object>? Values => values;
 
     internal TModel? ConcreteModel
     {
@@ -47,6 +47,7 @@ public class RoutedLink<TModel>(string name, string methodName, Func<TModel, obj
             {
                 return concreteModel;
             }
+
             return default;
         }
     }

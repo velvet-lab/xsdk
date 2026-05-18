@@ -15,6 +15,7 @@
  */
 
 using CloudNative.CloudEvents;
+using xSdk.Extensions.Web;
 
 namespace xSdk.Extensions.CloudEvents;
 
@@ -26,10 +27,10 @@ public static class ExceptionExtensions
     /// <typeparam name="TException">A Exception to convert</typeparam>
     /// <param name="cloudEvent">The <see cref="CloudEvent"/></param>
     /// <returns>A Exception</returns>
-    public static TException ToException<TException>(this CloudEvent cloudEvent)
+    public static TException? ToException<TException>(this CloudEvent cloudEvent)
         where TException : Exception
     {
-        string errorMessage = default;
+        string? errorMessage = default;
 
         // Return the Data from CloudEvent
         if (cloudEvent != null && cloudEvent.Data != null)
@@ -100,13 +101,13 @@ public static class ExceptionExtensions
     /// <param name="type">Event Type for the Exception, e.g. blueprint.create.error</param>
     /// <param name="subject">A specific Subject to use. It could be tenant orientated Informations</param>
     /// <returns>A <see cref="CloudEvent"/></returns>
-    public static CloudEvent ToCloudEvent(this Exception ex, string scope, string type, string subject)
+    public static CloudEvent ToCloudEvent(this Exception ex, string scope, string? type, string? subject)
     {
         if (string.IsNullOrEmpty(type))
             type = "error";
 
         var (sourceBaseUrl, schemeBaseUrl) = CloudEventFactory.CreateBaseUrls(scope);
-        var cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, false, null);
+        var cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, subject, ContentTypes.ApplicationJson, null);
 
         // The Data Object
         cloudEvent.SetDataObject(ex);

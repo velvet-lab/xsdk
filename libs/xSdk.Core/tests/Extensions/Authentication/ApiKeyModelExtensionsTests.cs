@@ -15,6 +15,7 @@
  */
 
 using System.Security.Claims;
+using AspNetCore.Authentication.ApiKey;
 using xSdk.Security.Claims;
 
 namespace xSdk.Extensions.Authentication;
@@ -24,11 +25,10 @@ public class ApiKeyModelExtensionsTests
     private sealed class TestApiKeyModel : IApiKeyModel
     {
         public string? Id { get; set; }
-        public IDictionary<string, object>? AdditionalData { get; set; }
         public string Key { get; set; } = "test-api-key-123";
-        public string User { get; set; } = "testuser";
-        public IEnumerable<ClaimModel> Claims { get; set; } = new List<ClaimModel>();
-        public string Description { get; set; } = "Test key";
+        public string? User { get; set; } = "testuser";
+        public IEnumerable<ClaimModel> Claims { get; set; } = [];
+        public string? Description { get; set; } = "Test key";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime ValidUntil { get; set; } = DateTime.UtcNow.AddYears(1);
     }
@@ -38,7 +38,7 @@ public class ApiKeyModelExtensionsTests
     {
         var model = new TestApiKeyModel();
 
-        var result = model.ToApiKey();
+        IApiKey result = model.ToApiKey();
 
         Assert.NotNull(result);
     }
@@ -48,7 +48,7 @@ public class ApiKeyModelExtensionsTests
     {
         var model = new TestApiKeyModel { Key = "my-secret-key" };
 
-        var result = model.ToApiKey();
+        IApiKey result = model.ToApiKey();
 
         Assert.Equal("my-secret-key", result.Key);
     }
@@ -58,7 +58,7 @@ public class ApiKeyModelExtensionsTests
     {
         var model = new TestApiKeyModel { User = "john.doe" };
 
-        var result = model.ToApiKey();
+        IApiKey result = model.ToApiKey();
 
         Assert.Equal("john.doe", result.OwnerName);
     }
@@ -68,11 +68,11 @@ public class ApiKeyModelExtensionsTests
     {
         var model = new TestApiKeyModel();
 
-        var result = model.ToApiKey();
+        IApiKey result = model.ToApiKey();
 
         // Should have at least the 2 SDK claims (ApiKey.Name and ApiKey.Identifier)
         Assert.NotEmpty(result.Claims);
-        Assert.True(result.Claims.Count() >= 2);
+        Assert.True(result.Claims.Count >= 2);
     }
 
     [Fact]
@@ -86,9 +86,9 @@ public class ApiKeyModelExtensionsTests
             Issuer = "test",
             OriginalIssuer = "test"
         };
-        var model = new TestApiKeyModel { Claims = new List<ClaimModel> { userClaim } };
+        var model = new TestApiKeyModel { Claims = [userClaim] };
 
-        var result = model.ToApiKey();
+        IApiKey result = model.ToApiKey();
 
         Assert.Contains(result.Claims, c => c.Type == ClaimTypes.Role && c.Value == "admin");
     }
@@ -98,6 +98,6 @@ public class ApiKeyModelExtensionsTests
     {
         IApiKeyModel? model = null;
 
-        Assert.ThrowsAny<Exception>(() => model.ToApiKey());
+        Assert.ThrowsAny<Exception>(model.ToApiKey);
     }
 }

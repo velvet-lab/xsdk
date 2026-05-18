@@ -19,8 +19,8 @@ namespace xSdk.Data.Converters.Mapper;
 public static class SemVerConverter
 {
     public static string Convert(SemVer sourceMember) =>
-        sourceMember?.Version ?? default;
+        sourceMember.Version;
 
-    public static SemVer Convert(string sourceMember) =>
+    public static SemVer? Convert(string sourceMember) =>
         !string.IsNullOrEmpty(sourceMember) ? new SemVer(sourceMember) : default;
 }

@@ -20,17 +20,17 @@ internal class TestRepository : EntityFrameworkRepository<TestDbContext, TestEnt
 {
     public Task AddDataAsync(TestEntity[] samples, CancellationToken token = default)
     {
-        return this.InsertAsync(samples, token);
+        return InsertAsync(samples, token);
     }
 
-    public Task<IEnumerable<TestEntity>> GetDataAsync(CancellationToken token = default)
+    public Task<IEnumerable<TestEntity>?> GetDataAsync(CancellationToken token = default)
     {
-        return this.SelectListAsync(token);
+        return SelectListAsync(token);
     }
 
     public async Task ClearDataAsync(CancellationToken token = default)
     {
-        var entities = await this.SelectListAsync(token);
-        await this.RemoveAsync(entities, token);
+        IEnumerable<TestEntity>? entities = await SelectListAsync(token);
+        await RemoveAsync(entities, token);
     }
 }

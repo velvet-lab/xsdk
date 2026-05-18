@@ -39,7 +39,7 @@ public class FileSystemServiceTests : IClassFixture<TestHostFixture>
     {
         Assert.NotNull(_service);
 
-        var fs = _service.RequestFileSystem(context);
+        IFileSystemResult fs = _service.RequestFileSystem(context);
         Assert.NotNull(fs);
     }
 }

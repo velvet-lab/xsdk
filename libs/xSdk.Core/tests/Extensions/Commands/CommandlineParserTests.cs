@@ -48,7 +48,7 @@ public class CommandlineParserTests
     [Fact]
     public void Parse_ArrayInput_JoinsAndParsesArguments()
     {
-        var args = new[] { "--host", "localhost", "--port", "8080" };
+        string[] args = ["--host", "localhost", "--port", "8080"];
 
         var result = CommandlineParser.Parse(args);
 
@@ -93,7 +93,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        var value = parser.ReadPattern("host");
+        string? value = parser.ReadPattern("host");
 
         Assert.Equal("localhost", value);
     }
@@ -103,7 +103,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        var value = parser.ReadPattern("port", "9090");
+        string? value = parser.ReadPattern("port", "9090");
 
         Assert.Equal("9090", value);
     }
@@ -113,7 +113,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        var value = parser.ReadPattern("port");
+        string? value = parser.ReadPattern("port");
 
         Assert.Null(value);
     }
@@ -142,7 +142,7 @@ public class CommandlineParserTests
     public void AddDefaultArgs_WithNullArgs_ReturnsUnchanged()
     {
         var parser = CommandlineParser.Parse("--host localhost");
-        var before = parser.Arguments.Length;
+        int before = parser.Arguments.Length;
 
         parser.AddDefaultArgs(null);
 
@@ -163,7 +163,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost --verbose");
 
-        var value = parser.ReadPattern("--verbose");
+        string? value = parser.ReadPattern("--verbose");
 
         Assert.Equal("true", value);
     }
@@ -235,7 +235,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--content-root /app --stage dev");
 
-        var backup = parser.BackupDefaultArgs();
+        string[] backup = parser.BackupDefaultArgs();
 
         // Should contain content-root and stage args
         Assert.NotNull(backup);
@@ -246,7 +246,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("--host localhost");
 
-        var backup = parser.BackupDefaultArgs();
+        string[] backup = parser.BackupDefaultArgs();
 
         Assert.Empty(backup);
     }
@@ -265,7 +265,7 @@ public class CommandlineParserTests
     {
         var parser = CommandlineParser.Parse("-h localhost");
 
-        var value = parser.ReadPattern("h");
+        string? value = parser.ReadPattern("h");
 
         Assert.Equal("localhost", value);
     }
@@ -287,16 +287,16 @@ public class CommandlineParserTests
         var set = new HashSet<string>(comparer) { "--host", "--port" };
 
         Assert.Equal(2, set.Count);
-        Assert.True(set.Contains("--host"));
+        Assert.Contains("--host", set);
     }
 
     [Fact]
     public void PatternComparer_GetHashCode_ReturnsHashesForVariants()
     {
         var comparer = new PatternComparer();
-        var h1 = comparer.GetHashCode("host");
-        var h2 = comparer.GetHashCode("--host");
-        var h3 = comparer.GetHashCode("-host");
+        int h1 = comparer.GetHashCode("host");
+        int h2 = comparer.GetHashCode("--host");
+        int h3 = comparer.GetHashCode("-host");
 
         Assert.NotEqual(0, h1);
         Assert.NotEqual(0, h2);

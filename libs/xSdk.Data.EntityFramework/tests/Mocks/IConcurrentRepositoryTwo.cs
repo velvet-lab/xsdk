@@ -20,5 +20,5 @@ internal interface IConcurrentRepositoryTwo : IRepository
 {
     Task AddDataAsync(ConcurrentEntityTwo[] samples, CancellationToken token = default);
 
-    Task<IEnumerable<ConcurrentEntityTwo>> GetDataAsync(CancellationToken token = default);
+    Task<IEnumerable<ConcurrentEntityTwo>?> GetDataAsync(CancellationToken token = default);
 }

@@ -15,19 +15,20 @@
  */
 
 using CloudNative.CloudEvents;
-using xSdk.Hosting;
+using CloudNative.CloudEvents.SystemTextJson;
+using xSdk.Extensions.Web;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
-public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class CloudEventFactoryTests()
 {
     [Fact]
     public void CreateCloudEvent_WithScopeAndType_ReturnsValidCloudEvent()
     {
-        var scope = "test/models";
-        var type = "model.created";
+        string scope = "test/models";
+        string type = "model.created";
 
-        var cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type);
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type);
 
         Assert.NotNull(cloudEvent);
         Assert.NotNull(cloudEvent.Type);
@@ -37,11 +38,11 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateCloudEvent_WithSubject_SetsSubject()
     {
-        var scope = "test/events";
-        var type = "event.created";
-        var subject = "mysubject";
+        string scope = "test/events";
+        string type = "event.created";
+        string subject = "mysubject";
 
-        var cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type, subject);
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type, subject);
 
         Assert.NotNull(cloudEvent);
         Assert.Equal(subject, cloudEvent.Subject);
@@ -50,11 +51,11 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateCloudEvent_WithPayload_SetsData()
     {
-        var scope = "test/models";
-        var type = "model.created";
+        string scope = "test/models";
+        string type = "model.created";
         var payload = new { Name = "Test", Value = 42 };
 
-        var cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type, payload);
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type, payload);
 
         Assert.NotNull(cloudEvent);
         Assert.NotNull(cloudEvent.Data);
@@ -63,11 +64,11 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateCloudEvent_WithPayload_SetsDataContentType()
     {
-        var scope = "test/models";
-        var type = "model.updated";
+        string scope = "test/models";
+        string type = "model.updated";
         var payload = new { Name = "Test" };
 
-        var cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type, payload);
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type, payload);
 
         Assert.NotNull(cloudEvent);
         Assert.Equal("application/json", cloudEvent.DataContentType);
@@ -76,10 +77,10 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateCloudEvent_WithoutPayload_DataContentTypeIsNull()
     {
-        var scope = "test/models";
-        var type = "model.deleted";
+        string scope = "test/models";
+        string type = "model.deleted";
 
-        var cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type);
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent(scope, type);
 
         Assert.Null(cloudEvent.DataContentType);
     }
@@ -87,7 +88,7 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateCloudEvent_HasGeneratedId()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "model.created");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "model.created");
 
         Assert.NotNull(cloudEvent.Id);
         Assert.NotEmpty(cloudEvent.Id);
@@ -96,7 +97,7 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateCloudEvent_HasTimestamp()
     {
-        var cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "model.created");
+        CloudEvent cloudEvent = CloudEventFactory.CreateCloudEvent("test/scope", "model.created");
 
         Assert.NotNull(cloudEvent.Time);
     }
@@ -107,9 +108,9 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [InlineData("test.scope")]
     public void CreateBaseUrls_WithVariousScopes_ReturnsUrls(string scope)
     {
-        var normalizedScope = scope.TrimStart('/').Replace(".", "/");
+        string normalizedScope = scope.TrimStart('/').Replace(".", "/");
 
-        var (sourceUrl, schemeUrl) = CloudEventFactory.CreateBaseUrls(normalizedScope);
+        (string? sourceUrl, string? schemeUrl) = CloudEventFactory.CreateBaseUrls(normalizedScope);
 
         Assert.NotNull(sourceUrl);
         Assert.NotNull(schemeUrl);
@@ -118,15 +119,12 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     }
 
     [Fact]
-    public void CreateBaseUrls_WithEmptyScope_ThrowsSdkException()
-    {
-        Assert.Throws<SdkException>(() => CloudEventFactory.CreateBaseUrls(string.Empty));
-    }
+    public void CreateBaseUrls_WithEmptyScope_ThrowsSdkException() => Assert.Throws<SdkException>(() => CloudEventFactory.CreateBaseUrls(string.Empty));
 
     [Fact]
     public void CreateAttribute_WithValidName_ReturnsAttribute()
     {
-        var attr = CloudEventFactory.CreateAttribute("myattr", CloudEventAttributeType.String);
+        CloudEventAttribute attr = CloudEventFactory.CreateAttribute("myattr", CloudEventAttributeType.String);
 
         Assert.NotNull(attr);
         Assert.Equal("myattr", attr.Name);
@@ -135,7 +133,7 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateAttribute_WithSpecialChars_CleanesName()
     {
-        var attr = CloudEventFactory.CreateAttribute("my-attr!", CloudEventAttributeType.String);
+        CloudEventAttribute attr = CloudEventFactory.CreateAttribute("my-attr!", CloudEventAttributeType.String);
 
         Assert.NotNull(attr);
         Assert.DoesNotContain("-", attr.Name);
@@ -145,7 +143,7 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateAttribute_WithLongName_TruncatesToTwentyChars()
     {
-        var attr = CloudEventFactory.CreateAttribute("averylongnamethatexceedstwentycharacters", CloudEventAttributeType.String);
+        CloudEventAttribute attr = CloudEventFactory.CreateAttribute("averylongnamethatexceedstwentycharacters", CloudEventAttributeType.String);
 
         Assert.NotNull(attr);
         Assert.True(attr.Name.Length <= 20);
@@ -154,11 +152,11 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateRawCloudEvent_WithValidArgs_ReturnsCloudEvent()
     {
-        var sourceBaseUrl = "https://test.de/events/spec/v1/test/scope";
-        var scope = "test/scope";
-        var type = "model.created";
+        string sourceBaseUrl = "https://test.de/events/spec/v1/test/scope";
+        string scope = "test/scope";
+        string type = "model.created";
 
-        var cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, null, true, null);
+        CloudEvent cloudEvent = CloudEventFactory.CreateRawCloudEvent(sourceBaseUrl, scope, type, null, ContentTypes.ApplicationJson, null);
 
         Assert.NotNull(cloudEvent);
         Assert.Contains(type, cloudEvent.Type);
@@ -167,7 +165,7 @@ public class CloudEventFactoryTests(TestHostFixture _) : IClassFixture<TestHostF
     [Fact]
     public void CreateFormatter_ReturnsJsonFormatter()
     {
-        var formatter = CloudEventFactory.CreateFormatter();
+        JsonEventFormatter formatter = CloudEventFactory.CreateFormatter();
 
         Assert.NotNull(formatter);
     }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk;
-
 namespace xSdk.Data;
 
 public class TokenAuthOptionsTests

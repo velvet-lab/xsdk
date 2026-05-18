@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Tools;
@@ -26,40 +25,40 @@ public sealed partial class EnvironmentOptions
     [Variable(
         name: Definitions.MachineName.Name,
         helpText: Definitions.MachineName.HelpText,
-        resourceNames: new[] { "host.name" },
+        resourceNames: ["host.name"],
         protect: true,
         hidden: true
     )]
     public string? MachineName { get; private set; }
 
-    [Variable(name: Definitions.Arch.Name, helpText: Definitions.Arch.HelpText, resourceNames: new[] { "host.arch" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.Arch.Name, helpText: Definitions.Arch.HelpText, resourceNames: ["host.arch"], protect: true, hidden: true)]
     public string? Arch { get; private set; }
 
-    [Variable(name: Definitions.IPv4.Name, helpText: Definitions.IPv4.HelpText, resourceNames: new[] { "host.ip" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.IPv4.Name, helpText: Definitions.IPv4.HelpText, resourceNames: ["host.ip"], protect: true, hidden: true)]
     public string? IPv4 { get; private set; }
 
-    [Variable(name: Definitions.Mac.Name, helpText: Definitions.Mac.HelpText, resourceNames: new[] { "host.mac" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.Mac.Name, helpText: Definitions.Mac.HelpText, resourceNames: ["host.mac"], protect: true, hidden: true)]
     public string? Mac { get; private set; }
 
     [Variable(
         name: Definitions.OsDescription.Name,
         helpText: Definitions.OsDescription.HelpText,
-        resourceNames: new[] { "os.description" },
+        resourceNames: ["os.description"],
         protect: true,
         hidden: true
     )]
     public string? OsDescription { get; private set; }
 
-    [Variable(name: Definitions.OsName.Name, helpText: Definitions.OsName.HelpText, resourceNames: new[] { "os.name" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.OsName.Name, helpText: Definitions.OsName.HelpText, resourceNames: ["os.name"], protect: true, hidden: true)]
     public string? OsName { get; private set; }
 
-    [Variable(name: Definitions.OsType.Name, helpText: Definitions.OsType.HelpText, resourceNames: new[] { "os.type" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.OsType.Name, helpText: Definitions.OsType.HelpText, resourceNames: ["os.type"], protect: true, hidden: true)]
     public string? OsType { get; private set; }
 
     [Variable(
         name: Definitions.OsVersion.Name,
         helpText: Definitions.OsVersion.HelpText,
-        resourceNames: new[] { "os.version" },
+        resourceNames: ["os.version"],
         protect: true,
         hidden: true
     )]
@@ -68,7 +67,7 @@ public sealed partial class EnvironmentOptions
     [Variable(
         name: Definitions.FrameworkName.Name,
         helpText: Definitions.FrameworkName.HelpText,
-        resourceNames: new[] { "process.runtime.name" },
+        resourceNames: ["process.runtime.name"],
         protect: true,
         hidden: true
     )]
@@ -77,7 +76,7 @@ public sealed partial class EnvironmentOptions
     [Variable(
         name: Definitions.FrameworkVersion.Name,
         helpText: Definitions.FrameworkVersion.HelpText,
-        resourceNames: new[] { "process.runtime.version" },
+        resourceNames: ["process.runtime.version"],
         protect: true,
         hidden: true
     )]
@@ -86,7 +85,7 @@ public sealed partial class EnvironmentOptions
     [Variable(
         name: Definitions.FrameworkDescription.Name,
         helpText: Definitions.FrameworkDescription.HelpText,
-        resourceNames: new[] { "process.runtime.description" },
+        resourceNames: ["process.runtime.description"],
         protect: true,
         hidden: true
     )]
@@ -95,16 +94,16 @@ public sealed partial class EnvironmentOptions
     [Variable(
         name: Definitions.Commandline.Name,
         helpText: Definitions.Commandline.HelpText,
-        resourceNames: new[] { "process.command_line" },
+        resourceNames: ["process.command_line"],
         protect: true,
         hidden: true
     )]
     public string? Commandline { get; private set; }
 
-    [Variable(name: Definitions.Owner.Name, helpText: Definitions.Owner.HelpText, resourceNames: new[] { "process.owner" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.Owner.Name, helpText: Definitions.Owner.HelpText, resourceNames: ["process.owner"], protect: true, hidden: true)]
     public string? Owner { get; private set; }
 
-    [Variable(name: Definitions.Pid.Name, helpText: Definitions.Pid.HelpText, resourceNames: new[] { "process.pid" }, protect: true, hidden: true)]
+    [Variable(name: Definitions.Pid.Name, helpText: Definitions.Pid.HelpText, resourceNames: ["process.pid"], protect: true, hidden: true)]
     public int? Pid { get; private set; }
 
     public bool? IsDotNetRunningInContainer { get; private set; }
@@ -129,7 +128,7 @@ public sealed partial class EnvironmentOptions
         Mac = NetworkTools.GetMacAddress();
         IPv4 = NetworkTools.GetLocalIPAddress();
 
-        var (osType, osName) = DetectOsType();
+        (string? osType, string? osName) = DetectOsType();
         OsDescription = RuntimeInformation.OSDescription;
         OsName = osName;
         OsType = osType;
@@ -141,7 +140,7 @@ public sealed partial class EnvironmentOptions
 
         Commandline = Environment.CommandLine;
         Owner = Environment.UserName;
-        Pid = Process.GetCurrentProcess().Id;
+        Pid = Environment.ProcessId;
     }
 
     private static string DetectProcessArchitecture()
@@ -156,6 +155,7 @@ public sealed partial class EnvironmentOptions
             {
                 return "arm64";
             }
+
             return "arm32";
         }
         else if (RuntimeInformation.ProcessArchitecture == Architecture.Ppc64le)
@@ -164,6 +164,7 @@ public sealed partial class EnvironmentOptions
             {
                 return "ppc64";
             }
+
             return "ppc32";
         }
         else if (RuntimeInformation.ProcessArchitecture == Architecture.X64)
@@ -204,7 +205,7 @@ public sealed partial class EnvironmentOptions
         throw new SdkException("Could not determine current os platform");
     }
 
-    private static partial class Definitions
+    internal static partial class Definitions
     {
         public static class MachineName
         {

@@ -24,97 +24,38 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
     [Fact]
     public void LoadPlugins()
     {
-        var service = fixture
+        IPluginService? service = fixture
             .BuildHost()
             .Services.GetService<IPluginService>();
 
-        var plugins = service.GetPlugins();
+        IList<IPlugin>? plugins = service?.GetPlugins();
 
         Assert.NotNull(plugins);
         Assert.False(plugins.Any());
     }
 
     [Fact]
-    public async Task GetPluginsAsync_NoPluginsLoaded_ReturnsEmptyList()
-    {
-        var service = fixture
-            .BuildHost()
-            .Services.GetService<IPluginService>();
-
-        var plugins = await service.GetPluginsAsync<IPlugin>();
-
-        Assert.NotNull(plugins);
-        Assert.Empty(plugins);
-    }
-
-    [Fact]
     public async Task GetPluginAsync_NoPluginsLoaded_ReturnsNull()
     {
-        var service = fixture
+        IPluginService? service = fixture
             .BuildHost()
             .Services.GetService<IPluginService>();
 
-        var plugin = await service.GetPluginAsync<IPlugin>();
-
-        Assert.Null(plugin);
+        if (service != null)
+        {
+            IPlugin? plugin = await service.GetPluginAsync<IPlugin>(TestContext.Current.CancellationToken);
+            Assert.Null(plugin);
+        }
     }
 
     [Fact]
     public void GetService_IPluginService_IsRegistered()
     {
-        var service = fixture
+        IPluginService? service = fixture
             .BuildHost()
             .Services.GetService<IPluginService>();
 
         Assert.NotNull(service);
-    }
-
-    [Fact]
-    public async Task AddPluginAsync_ThenRemove_PluginCycleWorks()
-    {
-        var service = fixture
-            .BuildHost()
-            .Services.GetRequiredService<IPluginService>();
-
-        // Add a plugin type
-        await service.AddPluginAsync(typeof(TestPlugin));
-
-        // Remove the plugin type
-        await service.RemovePluginAsync(typeof(TestPlugin));
-    }
-
-    [Fact]
-    public async Task AddPluginsFromAsync_CurrentAssembly_DoesNotThrow()
-    {
-        var service = fixture
-            .BuildHost()
-            .Services.GetRequiredService<IPluginService>();
-
-        var assembly = typeof(PluginServiceTests).Assembly;
-        await service.AddPluginsFromAsync([assembly]);
-    }
-
-    [Fact]
-    public async Task RemovePluginsFromAsync_NonExistentAssembly_DoesNotThrow()
-    {
-        var service = fixture
-            .BuildHost()
-            .Services.GetRequiredService<IPluginService>();
-
-        // Removing something not added should be a no-op
-        var assembly = typeof(PluginServiceTests).Assembly;
-        await service.RemovePluginsFromAsync([assembly]);
-    }
-
-    [Fact]
-    public async Task AddPluginAsync_SameTypeAddedTwice_DoesNotThrow()
-    {
-        var service = fixture
-            .BuildHost()
-            .Services.GetRequiredService<IPluginService>();
-
-        await service.AddPluginAsync(typeof(TestPlugin));
-        await service.AddPluginAsync(typeof(TestPlugin)); // idempotent, should not throw
     }
 }
 

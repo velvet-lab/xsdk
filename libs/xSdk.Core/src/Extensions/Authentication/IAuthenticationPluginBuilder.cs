@@ -21,7 +21,6 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Extensions.Authentication;
 
-[CLSCompliant(false)]
 public interface IAuthenticationPluginBuilder : IPluginBuilder
 {
     void ConfigureAuthentication(AuthenticationBuilder builder);

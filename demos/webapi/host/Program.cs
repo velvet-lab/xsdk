@@ -20,6 +20,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos.Builders;
 using xSdk.Hosting;
+using xSdk.Plugins.Authentication;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.DataProtection;
 using xSdk.Plugins.Documentation;
@@ -39,7 +40,7 @@ var host = xSdk.Hosting.WebHost
     .EnableWebApi()
     .EnableDocumentation<DocumentationPluginBuilder>()
     .EnableWebSecurity()
-    //.EnableAuthentication<AuthenticationPluginBuilder>()
+    .EnableAuthentication<AuthenticationPluginBuilder>()
     .EnableCompression()
     .EnableDataProtection()
     .EnableLinks<LinksPluginBuilder>()

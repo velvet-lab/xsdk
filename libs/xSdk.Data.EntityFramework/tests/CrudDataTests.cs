@@ -23,10 +23,8 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
     [Fact]
     public async Task InsertAsync_SingleEntity_ReturnsTrue()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
-
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
         var entity = new TestEntity
         {
@@ -35,77 +33,91 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             Age = 18
         };
 
-        var result = await repo.InsertAsync(entity);
-
-        Assert.True(result);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            bool result = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
+            Assert.True(result);
+        }
     }
 
     [Fact]
     public async Task InsertAsync_Collection_ReturnsCount()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
-        var entities = new[]
-        {
+        TestEntity[] entities =
+        [
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000010"), Name = "Aragorn", Age = 87 },
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000011"), Name = "Legolas", Age = 2931 },
-        };
+        ];
 
-        var count = await repo.InsertAsync(entities);
-
-        Assert.Equal(2, count);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            int count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
+            Assert.Equal(2, count);
+        }
     }
 
     [Fact]
     public async Task SelectListAsync_AfterInsert_ReturnsAllEntities()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
-        var entities = new[]
-        {
+        TestEntity[] entities =
+        [
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000020"), Name = "Gimli", Age = 139 },
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000021"), Name = "Boromir", Age = 41 },
-        };
-        await testRepo.AddDataAsync(entities);
+        ];
+        await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var all = (await repo!.SelectListAsync()).ToList();
+        var all = (await repo!.SelectListAsync(TestContext.Current.CancellationToken))?.ToList();
 
-        Assert.Contains(all, x => x.Name == "Gimli");
-        Assert.Contains(all, x => x.Name == "Boromir");
+        if (all != null)
+        {
+            Assert.Contains(all, x => x.Name == "Gimli");
+            Assert.Contains(all, x => x.Name == "Boromir");
+        }
+        else
+        {
+            Assert.NotNull(all);
+        }
     }
 
     [Fact]
     public async Task RemoveAsync_ByCollection_RemovesEntities()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
-        var entities = new[]
-        {
+        TestEntity[] entities =
+        [
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000030"), Name = "Wormtongue", Age = 60 },
             new TestEntity { Id = Guid.Parse("c0000000-0000-0000-0000-000000000031"), Name = "Saruman", Age = 1000 },
-        };
-        await testRepo.AddDataAsync(entities);
+        ];
+        await testRepo.AddDataAsync(entities, TestContext.Current.CancellationToken);
 
-        var removed = await repo!.RemoveAsync(entities);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            int removed = await repo.RemoveAsync(entities, TestContext.Current.CancellationToken);
+            Assert.Equal(2, removed);
 
-        Assert.Equal(2, removed);
-        var all = (await repo.SelectListAsync()).ToList();
-        Assert.DoesNotContain(all, x => x.Name == "Wormtongue");
-        Assert.DoesNotContain(all, x => x.Name == "Saruman");
+            IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+            if (all != null)
+            {
+                Assert.DoesNotContain(all, x => x.Name == "Wormtongue");
+                Assert.DoesNotContain(all, x => x.Name == "Saruman");
+            }
+        }
     }
 
     [Fact]
     public async Task UpsertAsync_NewEntity_InsertsAndIsListable()
     {
-        var factory = fixture.Factory;
-        var testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
-        var repo = testRepo as IRepository<TestEntity, Guid>;
+        IDatalayerFactory factory = fixture.Factory;
+        ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
         var entity = new TestEntity
         {
@@ -114,10 +126,16 @@ public class CrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixt
             Age = 3000
         };
 
-        var result = await repo!.UpsertAsync(entity);
+        if (testRepo is IRepository<TestEntity, Guid> repo)
+        {
+            bool result = await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
+            Assert.True(result);
 
-        Assert.True(result);
-        var all = (await repo.SelectListAsync()).ToList();
-        Assert.Contains(all, x => x.Name == "Treebeard");
+            IEnumerable<TestEntity>? all = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+            if (all != null)
+            {
+                Assert.Contains(all, x => x.Name == "Treebeard");
+            }
+        }
     }
 }

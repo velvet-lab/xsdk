@@ -30,7 +30,7 @@ public class MongoDbOptions : VariableSetup
         hidden: true
         )]
     [JsonPropertyName("default_database")]
-    public string Database
+    public string? Database
     {
         get => ReadValue<string>(Definitions.Database.Name);
         set => SetValue(Definitions.Database.Name, value);
@@ -43,7 +43,7 @@ public class MongoDbOptions : VariableSetup
         hidden: true
         )]
     [JsonPropertyName(Definitions.Username.Name)]
-    public string Username
+    public string? Username
     {
         get => ReadValue<string>(Definitions.Username.Name);
         set => SetValue(Definitions.Username.Name, value);
@@ -56,7 +56,7 @@ public class MongoDbOptions : VariableSetup
         hidden: true
         )]
     [JsonPropertyName(Definitions.Password.Name)]
-    public string Password
+    public string? Password
     {
         get => ReadValue<string>(Definitions.Password.Name);
         set => SetValue(Definitions.Password.Name, value);
@@ -69,7 +69,7 @@ public class MongoDbOptions : VariableSetup
         hidden: true
         )]
     [JsonPropertyName(Definitions.Hosts.Name)]
-    public string[] Hosts
+    public string[]? Hosts
     {
         get => ReadValue<string[]>(Definitions.Hosts.Name);
         set => SetValue(Definitions.Hosts.Name, value);

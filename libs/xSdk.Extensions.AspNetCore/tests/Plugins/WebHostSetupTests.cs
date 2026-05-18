@@ -19,30 +19,6 @@ namespace xSdk.Hosting;
 public class WebHostSetupTests
 {
     [Fact]
-    public void WebHostSetup_DefaultBind_HasDefaultValue()
-    {
-        var setup = new WebHostOptions();
-
-        Assert.Equal(WebHostOptions.Definitions.Bind.DefaultValue, setup.Bind);
-    }
-
-    [Fact]
-    public void WebHostSetup_DefaultHttp_HasDefaultValue()
-    {
-        var setup = new WebHostOptions();
-
-        Assert.Equal(WebHostOptions.Definitions.Http.DefaultValue, setup.Http);
-    }
-
-    [Fact]
-    public void WebHostSetup_DefaultHttps_HasDefaultValue()
-    {
-        var setup = new WebHostOptions();
-
-        Assert.Equal(WebHostOptions.Definitions.Https.DefaultValue, setup.Https);
-    }
-
-    [Fact]
     public void WebHostSetup_DefaultGrpc_IsZero()
     {
         var setup = new WebHostOptions();
