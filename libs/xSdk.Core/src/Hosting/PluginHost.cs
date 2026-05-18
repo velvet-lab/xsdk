@@ -37,7 +37,7 @@ public abstract class PluginHost : PluginDescription, IPluginHost
         }
 
         TPluginBuilder? builder = Services.GetService<TPluginBuilder>();
-        if (builder != null)
+        if (builder is not null)
         {
             action?.Invoke(builder);
             return true;

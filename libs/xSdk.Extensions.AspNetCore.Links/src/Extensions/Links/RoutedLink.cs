@@ -53,8 +53,5 @@ public class RoutedLink<TModel>(string name, string methodName, Func<TModel, obj
     }
 
     internal override IHateoasItem? Build()
-    {
-        var builder = new RoutedLinkBuilder();
-        return builder.Build<TModel>(this);
-    }
+        => RoutedLinkBuilder.Build<TModel>(this);
 }

@@ -28,9 +28,9 @@ public static class CloudEventFactory
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    internal static string BaseUrl = $"https://xsdk.io";
-    internal static string SourceBaseUrl = $"{BaseUrl}/events/spec/v1";
-    internal static string SchemeBaseUrl = $"{BaseUrl}/schemes/v1";
+    internal const string BASE_URL = $"https://xsdk.io";
+    internal const string SOURCE_BASE_URL = $"{BASE_URL}/events/spec/v1";
+    internal const string SCHEME_BASE_URL = $"{BASE_URL}/schemes/v1";
 
     public static CloudEvent CreateCloudEvent(string scope, string type)
         => CreateCloudEvent(scope, type, null, null, null);
@@ -55,7 +55,7 @@ public static class CloudEventFactory
 
     public static CloudEvent CreateCloudEvent(string scope, string type, string? subject, object? payload, IEnumerable<CloudEventAttribute>? extensions)
     {
-        (string? sourceBaseUrl, string? schemeBaseUrl) = CreateBaseUrls(scope);
+        (string? sourceBaseUrl, string? _) = CreateBaseUrls(scope);
 
         CloudEvent cloudEvent;
         if (payload == null)
@@ -104,12 +104,12 @@ public static class CloudEventFactory
             scope = scope.Replace(".", "/");
         }
 
-        string sourceBaseUrl = $"{SourceBaseUrl}/{scope}".ToLower();
-        string schemeBaseUrl = $"{SchemeBaseUrl}/{scope}".ToLower();
+        string sourceBaseUrl = $"{SOURCE_BASE_URL}/{scope}".ToLower();
+        string schemeBaseUrl = $"{SCHEME_BASE_URL}/{scope}".ToLower();
 
         if (!scope.StartsWith("http"))
         {
-            sourceBaseUrl = $"{SourceBaseUrl}/{scope}".ToLower();
+            sourceBaseUrl = $"{SOURCE_BASE_URL}/{scope}".ToLower();
         }
 
         return (sourceBaseUrl, schemeBaseUrl);
@@ -188,24 +188,19 @@ public static class CloudEventFactory
     public static JsonEventFormatter CreateFormatter(JsonSerializerOptions serializer) => CreateFormatter(serializer, JsonTools.GetDocumentOptions());
 
     public static JsonEventFormatter CreateFormatter(JsonSerializerOptions serializer, JsonDocumentOptions document) =>
-        new JsonEventFormatter(serializer, document);
+        new(serializer, document);
 
     internal static IEnumerable<CloudEventAttribute> MergeAttributes(IEnumerable<CloudEventAttribute>? attributes)
     {
-        if (attributes == null)
-        {
-            attributes = [];
-        }
+        attributes ??= [];
 
         Dictionary<CloudEventAttribute, object> defaultAttributes = LoadDefaultAttributes();
         var attributesAsList = attributes.ToList();
-        foreach (KeyValuePair<CloudEventAttribute, object> defaultAttribute in defaultAttributes)
-        {
-            if (!attributes.Any(x => string.Compare(x.Name, defaultAttribute.Key.Name, true) == 0))
-            {
-                attributesAsList.Add(defaultAttribute.Key);
-            }
-        }
+
+        defaultAttributes
+            .Where(x => !attributes.Any(a => string.Compare(a.Name, x.Key.Name, true) == 0))
+            .ToList()
+            .ForEach(item => attributesAsList.Add(item.Key));
 
         return attributesAsList;
     }

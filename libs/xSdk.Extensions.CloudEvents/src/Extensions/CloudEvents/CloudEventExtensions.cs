@@ -72,7 +72,7 @@ public static class CloudEventExtensions
             throw new SdkException("CloudEvent has no Source defined, so Scope cannot be determined");
         }
 
-        string scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SourceBaseUrl, "");
+        string scope = cloudEvent.Source.OriginalString.Replace(CloudEventFactory.SOURCE_BASE_URL, "");
         if (scope.StartsWith('/'))
         {
             scope = scope.Substring(1);

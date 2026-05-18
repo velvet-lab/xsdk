@@ -23,9 +23,7 @@ namespace xSdk.Data;
 
 internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultRepository
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<VaultRepository>();
-
-    public async Task<bool> AddSecretAsync(string? mountPoint, string path, Dictionary<string, object> data, CancellationToken token = default)
+    public async Task<bool> AddSecretAsync(string? mountpoint, string path, Dictionary<string, object> data, CancellationToken token = default)
     {
         IDatabase? database = DatabaseHandler?.Retrieve();
 
@@ -36,13 +34,13 @@ internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultReposito
                 VaultDatabaseOptions? setup = GetOptions<VaultDatabaseOptions>(OptionsScope.Datalayer);
                 if (setup != null)
                 {
-                    var pathFormater = setup.PathFormatFactory;
+                    Func<Stage, string, string?> pathFormater = setup.PathFormatFactory;
                     if (pathFormater != null)
                     {
                         EnvironmentOptions? env = GetOptions<EnvironmentOptions>();
                         if (env != null)
                         {
-                            string? cleanedPath = pathFormater?.Invoke(env.Stage, path);
+                            string? cleanedPath = pathFormater.Invoke(env.Stage, path);
                             if (cleanedPath != null)
                             {
                                 path = cleanedPath;
@@ -54,15 +52,10 @@ internal partial class VaultRepository : ReadOnlyVaultRepository, IVaultReposito
                 VaultClient? client = database.Open<VaultClient>();
                 if (client != null)
                 {
-                    mountPoint = ValidateMountPoint(mountPoint);
+                    mountpoint = ValidateMountPoint(mountpoint);
 
-                    await client.V1.Secrets.KeyValue.V2.WriteSecretAsync(path, data, mountPoint: mountPoint);
+                    await client.V1.Secrets.KeyValue.V2.WriteSecretAsync(path, data, mountPoint: mountpoint);
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex, "A Error occured while Vault will readed");
-                throw;
             }
             finally
             {

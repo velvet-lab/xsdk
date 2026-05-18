@@ -37,17 +37,17 @@ internal class PlainTextFormatter : TextInputFormatter
     {
         string data = await ReadInternalAsync(context);
 
-        return InputFormatterResult.Success(data);
+        return await InputFormatterResult.SuccessAsync(data);
     }
 
     public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
     {
         string data = await ReadInternalAsync(context);
 
-        return InputFormatterResult.Success(data);
+        return await InputFormatterResult.SuccessAsync(data);
     }
 
-    private async Task<string> ReadInternalAsync(InputFormatterContext context)
+    private static async Task<string> ReadInternalAsync(InputFormatterContext context)
     {
         string? data = null;
         using (var streamReader = new StreamReader(context.HttpContext.Request.Body))

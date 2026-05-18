@@ -46,7 +46,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
 
         _logger.LogTrace("Adding database '{name}' to object pool and registering database handler", name);
         AddDatabaseToObjectPool<TDatabase>(name);
-        AddDatabaseHandler<TDatabase, TDatabaseOptions>(name);
+        AddDatabaseHandler<TDatabase>(name);
 
         _logger.LogTrace("Registering database options for database '{name}'", name);
         services.RegisterOptions<TDatabaseOptions>(name, options => factory?.Invoke(options));
@@ -83,9 +83,8 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
         });
     }
 
-    private void AddDatabaseHandler<TDatabase, TDatabaseOptions>(string? name)
+    private void AddDatabaseHandler<TDatabase>(string? name)
         where TDatabase : class, IDatabase
-        where TDatabaseOptions : class, IVariableSetup
     {
         services.TryAddKeyedTransient<IDatabaseHandler>(name, (provider, key) =>
         {
