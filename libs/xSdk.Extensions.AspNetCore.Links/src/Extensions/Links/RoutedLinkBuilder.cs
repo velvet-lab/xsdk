@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+using System.Security.Claims;
 using HandlebarsDotNet;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using xSdk.Data;
@@ -23,37 +25,39 @@ using xSdk.Hosting;
 
 namespace xSdk.Extensions.Links;
 
-internal class RoutedLinkBuilder
+internal static class RoutedLinkBuilder
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<RoutedLinkBuilder>();
+    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    internal IHateoasItem? Build<TModel>(RoutedLink<TModel> link)
+    internal static IHateoasItem? Build<TModel>(RoutedLink<TModel> link)
         where TModel : IModel
     {
         _logger.LogInformation("Build links");
 
-        var description = link.Description;
+        MethodDescription? description = link.Description;
         if (description != null)
         {
             _logger.LogDebug("Create base url path");
-            var baseUrl = CreateBaseUrl(link);
+            string? baseUrl = CreateBaseUrl(link);
 
             if (!string.IsNullOrEmpty(baseUrl))
             {
                 _logger.LogDebug("Replace values");
-                var href = ReplaceValue(link, baseUrl);
+                string? href = ReplaceValue(link, baseUrl);
 
                 if (!string.IsNullOrEmpty(href))
                 {
-                    var isAuthorized = IsAuthorized(link);
+                    bool isAuthorized = IsAuthorized(link);
 
                     if (isAuthorized)
                     {
                         _logger.LogDebug("Create HateOas Item");
-                        var item = new HateoasItem();
-                        item.Rel = description.ControllerType.Name + "/" + description.MethodName;
-                        item.Href = href;
-                        item.Method = description.HttpMethod.ToString().ToUpperInvariant();
+                        var item = new HateoasItem
+                        {
+                            Rel = description.ControllerType.Name + "/" + description.MethodName,
+                            Href = href,
+                            Method = description.HttpMethod.ToString().ToUpperInvariant()
+                        };
                         return item;
                     }
                 }
@@ -63,60 +67,60 @@ internal class RoutedLinkBuilder
         return default;
     }
 
-    private string? CleanControllerName(MethodDescription? description)
+    private static string? CleanControllerName(MethodDescription? description)
     {
         if (description != null)
         {
             _logger.LogDebug("Clean controller name");
             return description.ControllerType.Name.Replace("Controller", "", StringComparison.OrdinalIgnoreCase);
         }
+
         return default;
     }
 
-    private string? CreateBaseUrl(RoutedLink link)
+    private static string? CreateBaseUrl(RoutedLink link)
     {
         if (link.Description != null && link.Context != null)
         {
-            var controllerName = CleanControllerName(link.Description);
+            string? controllerName = CleanControllerName(link.Description);
 
             if (!string.IsNullOrEmpty(controllerName))
             {
-                var request = link.Context.Request;
-                var scheme = request.Scheme;
-                var host = request.Host.Value;
+                HttpRequest request = link.Context.Request;
+                string scheme = request.Scheme;
+                string? host = request.Host.Value;
 
-                var path = request.Path.Value ?? string.Empty;
-                if (!string.IsNullOrEmpty(path))
+                string path = request.Path.Value ?? string.Empty;
+                if (!string.IsNullOrEmpty(path) && path.IndexOf(controllerName, StringComparison.OrdinalIgnoreCase) > -1)
                 {
-                    if (path.IndexOf(controllerName, StringComparison.OrdinalIgnoreCase) > -1)
-                    {
-                        path = path.Substring(0, path.IndexOf(controllerName, StringComparison.OrdinalIgnoreCase));
-                    }
+                    path = path.Substring(0, path.IndexOf(controllerName, StringComparison.OrdinalIgnoreCase));
                 }
 
-                var baseUrl = scheme + "://" + host;
+                string baseUrl = scheme + "://" + host;
                 baseUrl = ConcatUrl(baseUrl, path, controllerName, link.Description.RouteTemplate ?? string.Empty);
 
                 return baseUrl.ToLowerInvariant();
             }
         }
+
         return default;
     }
 
-    private string ConcatUrl(params string[] values)
+    private static string ConcatUrl(params string[] values)
     {
         string result = string.Empty;
-        foreach (var value in values)
-        {
-            if (!string.IsNullOrEmpty(value))
+
+        values
+            .Where(x => !string.IsNullOrEmpty(x))
+            .ToList()
+            .ForEach(item =>
             {
-                var item = value;
-                if (item.StartsWith("/"))
+                if (item.StartsWith('/'))
                 {
                     item = item.Substring(1);
                 }
 
-                if (!item.EndsWith("/"))
+                if (!item.EndsWith('/'))
                 {
                     result += item + "/";
                 }
@@ -124,59 +128,58 @@ internal class RoutedLinkBuilder
                 {
                     result += item;
                 }
-            }
-        }
-        if (!string.IsNullOrEmpty(result))
+            });
+
+        if (!string.IsNullOrEmpty(result) && result.EndsWith('/'))
         {
-            if (result.EndsWith("/"))
-            {
-                result = result.Substring(0, result.Length - 1);
-            }
+            result = result.Substring(0, result.Length - 1);
         }
+
         return result;
     }
 
-    private string? ReplaceValue<TModel>(RoutedLink<TModel> link, string baseUrl)
+    private static string? ReplaceValue<TModel>(RoutedLink<TModel> link, string baseUrl)
         where TModel : IModel
     {
-        if (link.ConcreteModel != null)
+        if (link.ConcreteModel is not null)
         {
-            var data = link.Values?.Invoke(link.ConcreteModel);
+            object? data = link.Values?.Invoke(link.ConcreteModel);
 
-            var href = baseUrl.Replace("{", "{{").Replace("}", "}}");
+            string href = baseUrl.Replace("{", "{{").Replace("}", "}}");
             if (data != null)
             {
-                var source = Handlebars.Compile(href);
+                HandlebarsTemplate<object, object> source = Handlebars.Compile(href);
                 href = source(data);
             }
 
             return href;
         }
+
         return default;
     }
 
-    private bool IsAuthorized<TModel>(RoutedLink<TModel> link)
+    private static bool IsAuthorized<TModel>(RoutedLink<TModel> link)
         where TModel : IModel
     {
-        var description = link.Description;
+        MethodDescription? description = link.Description;
         if (description != null && description.ShouldAuthorize)
         {
-            var context = link.Context;
+            HttpContext? context = link.Context;
             if (context != null)
             {
-                var user = context.User;
+                ClaimsPrincipal user = context.User;
 
                 if (!string.IsNullOrEmpty(description.AuthPolicy))
                 {
-                    var authService = context.RequestServices.GetService<IAuthorizationService>();
-                    var policyProvider = context.RequestServices.GetService<IAuthorizationPolicyProvider>();
+                    IAuthorizationService? authService = context.RequestServices.GetService<IAuthorizationService>();
+                    IAuthorizationPolicyProvider? policyProvider = context.RequestServices.GetService<IAuthorizationPolicyProvider>();
 
                     if (authService != null && policyProvider != null)
                     {
-                        var policy = policyProvider.GetPolicyAsync(description.AuthPolicy).GetAwaiter().GetResult();
+                        AuthorizationPolicy? policy = policyProvider.GetPolicyAsync(description.AuthPolicy).GetAwaiter().GetResult();
                         if (policy != null)
                         {
-                            var result = authService.AuthorizeAsync(user, policy).GetAwaiter().GetResult();
+                            AuthorizationResult result = authService.AuthorizeAsync(user, policy).GetAwaiter().GetResult();
                             if (result.Succeeded)
                             {
                                 return true;
@@ -185,15 +188,9 @@ internal class RoutedLinkBuilder
                     }
                 }
 
-                if (description.AuthRoles.Any())
+                if (description.AuthRoles.Length != 0)
                 {
-                    foreach (var role in description.AuthRoles)
-                    {
-                        if (user.IsInRole(role))
-                        {
-                            return true;
-                        }
-                    }
+                    return description.AuthRoles.Any(user.IsInRole);
                 }
             }
 

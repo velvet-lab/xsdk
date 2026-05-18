@@ -26,46 +26,30 @@ public static class CryptoTools
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-    private static readonly object _lockObject = new object();
+    private static readonly Lock _lockObject = new();
 
     public static void Encrypt<TData>(string file, TData data, string context = "xsdk")
     {
-        try
+        _logger.LogDebug("Encrypt data");
+
+        string dataAsJson = JsonSerializer.Serialize(data, JsonTools.GetSerializerOptions());
+        string dataAsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataAsJson));
+
+        lock (_lockObject)
         {
-            _logger.LogDebug("Encrypt data");
+            using FileStream fileStream = new(file, FileMode.OpenOrCreate);
+            using var aes = Aes.Create();
+            aes.Key = CreateKey(context);
 
-            var dataAsJson = JsonSerializer.Serialize(data, JsonTools.GetSerializerOptions());
-            var dataAsBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(dataAsJson));
+            byte[] iv = aes.IV;
+            fileStream.Write(iv, 0, iv.Length);
 
-            lock (_lockObject)
-            {
-                using (FileStream fileStream = new(file, FileMode.OpenOrCreate))
-                {
-                    using (Aes aes = Aes.Create())
-                    {
-                        aes.Key = CreateKey(context);
-
-                        byte[] iv = aes.IV;
-                        fileStream.Write(iv, 0, iv.Length);
-
-                        using (CryptoStream cryptoStream = new(fileStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                        {
-                            // By default, the StreamWriter uses UTF-8 encoding.
-                            // Convert change the text encoding, pass the desired encoding as the second parameter.
-                            // For example, new StreamWriter(cryptoStream, Encoding.Unicode).
-                            using (StreamWriter encryptWriter = new(cryptoStream))
-                            {
-                                encryptWriter.Write(dataAsBase64);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("The encryption failed. {0}", ex);
-            throw;
+            using CryptoStream cryptoStream = new(fileStream, aes.CreateEncryptor(), CryptoStreamMode.Write);
+            // By default, the StreamWriter uses UTF-8 encoding.
+            // Convert change the text encoding, pass the desired encoding as the second parameter.
+            // For example, new StreamWriter(cryptoStream, Encoding.Unicode).
+            using StreamWriter encryptWriter = new(cryptoStream);
+            encryptWriter.Write(dataAsBase64);
         }
     }
 
@@ -73,49 +57,35 @@ public static class CryptoTools
     {
         TData? result = default;
 
-        try
-        {
-            _logger.LogDebug("Decrypt data");
+        _logger.LogDebug("Decrypt data");
 
-            lock (_lockObject)
+        lock (_lockObject)
+        {
+            using FileStream fileStream = new(file, FileMode.Open);
+            using var aes = Aes.Create();
+            byte[] iv = new byte[aes.IV.Length];
+            int numBytesToRead = aes.IV.Length;
+            int numBytesRead = 0;
+            while (numBytesToRead > 0)
             {
-                using (FileStream fileStream = new(file, FileMode.Open))
+                int n = fileStream.Read(iv, numBytesRead, numBytesToRead);
+                if (n == 0)
                 {
-                    using (Aes aes = Aes.Create())
-                    {
-                        byte[] iv = new byte[aes.IV.Length];
-                        int numBytesToRead = aes.IV.Length;
-                        int numBytesRead = 0;
-                        while (numBytesToRead > 0)
-                        {
-                            int n = fileStream.Read(iv, numBytesRead, numBytesToRead);
-                            if (n == 0)
-                                break;
-
-                            numBytesRead += n;
-                            numBytesToRead -= n;
-                        }
-
-                        using (CryptoStream cryptoStream = new(fileStream, aes.CreateDecryptor(CreateKey(context), iv), CryptoStreamMode.Read))
-                        {
-                            // By default, the StreamReader uses UTF-8 encoding.
-                            // Convert change the text encoding, pass the desired encoding as the second parameter.
-                            // For example, new StreamReader(cryptoStream, Encoding.Unicode).
-                            using (StreamReader decryptReader = new(cryptoStream))
-                            {
-                                string decryptedMessage = decryptReader.ReadToEnd();
-                                var dataAsJson = Encoding.UTF8.GetString(Convert.FromBase64String(decryptedMessage));
-                                result = JsonSerializer.Deserialize<TData>(dataAsJson, JsonTools.GetSerializerOptions());
-                            }
-                        }
-                    }
+                    break;
                 }
+
+                numBytesRead += n;
+                numBytesToRead -= n;
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("The decryption failed. {0}", ex);
-            throw;
+
+            using CryptoStream cryptoStream = new(fileStream, aes.CreateDecryptor(CreateKey(context), iv), CryptoStreamMode.Read);
+            // By default, the StreamReader uses UTF-8 encoding.
+            // Convert change the text encoding, pass the desired encoding as the second parameter.
+            // For example, new StreamReader(cryptoStream, Encoding.Unicode).
+            using StreamReader decryptReader = new(cryptoStream);
+            string decryptedMessage = decryptReader.ReadToEnd();
+            string dataAsJson = Encoding.UTF8.GetString(Convert.FromBase64String(decryptedMessage));
+            result = JsonSerializer.Deserialize<TData>(dataAsJson, JsonTools.GetSerializerOptions());
         }
 
         return result;
@@ -123,11 +93,11 @@ public static class CryptoTools
 
     private static byte[] CreateKey(string context)
     {
-        var keyAsString = $"#3,{context};1!{Environment.MachineName}#1,{context};2!{Environment.UserName}#2,{context};3!";
-        var keyAsBytes = Encoding.UTF8.GetBytes(keyAsString);
+        string keyAsString = $"#3,{context};1!{Environment.MachineName}#1,{context};2!{Environment.UserName}#2,{context};3!";
+        byte[] keyAsBytes = Encoding.UTF8.GetBytes(keyAsString);
 
-        var hashedKey = SHA256.HashData(keyAsBytes);
+        byte[] hashedKey = SHA256.HashData(keyAsBytes);
 
-        return hashedKey.Take(16).ToArray();
+        return [.. hashedKey.Take(16)];
     }
 }

@@ -23,7 +23,7 @@ namespace xSdk.Data;
 
 public abstract class Database : IDatabase
 {
-    private readonly Dictionary<string, string> _connectionProperties = new();
+    private readonly Dictionary<string, string> _connectionProperties = [];
     private readonly ILogger<Database> _logger;
 
     public string? DatalayerName { get; internal set; }
@@ -34,10 +34,7 @@ public abstract class Database : IDatabase
     {
         _logger = logger;
 
-        AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
-        {
-            Close();
-        };
+        AppDomain.CurrentDomain.ProcessExit += (sender, args) => Close();
     }
 
     protected void AddConnectionProperty(string name, string value)
@@ -52,7 +49,7 @@ public abstract class Database : IDatabase
 
     protected TOptions? GetOptions<TOptions>(OptionsScope scope = OptionsScope.Default)
     {
-        var options = Services?.GetService<IOptionsMonitor<TOptions>>();
+        IOptionsMonitor<TOptions>? options = Services?.GetService<IOptionsMonitor<TOptions>>();
         if (options != null)
         {
             if (scope == OptionsScope.Datalayer)
@@ -64,6 +61,7 @@ public abstract class Database : IDatabase
                 return options.CurrentValue;
             }
         }
+
         return default;
     }
 
@@ -80,7 +78,9 @@ public abstract class Database : IDatabase
     protected virtual void Dispose(bool disposing)
     {
         if (disposing)
+        {
             Close();
+        }
     }
 
     #endregion
@@ -102,38 +102,44 @@ public abstract class Database : IDatabase
         return false;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     protected string ResolvePlaceholders(string content)
     {
-        // string name, string fileName
-        foreach (var kvp in _connectionProperties)
-        {
-            var placeholder = kvp.Key;
-            var value = kvp.Value;
+        _logger.LogDebug("Resolving placeholders in content: {Content}", content);
 
-            if (!placeholder.StartsWith("{"))
+        // string name, string fileName
+        foreach (KeyValuePair<string, string> kvp in _connectionProperties)
+        {
+            string placeholder = kvp.Key;
+            string value = kvp.Value;
+
+            if (!placeholder.StartsWith('{'))
+            {
                 placeholder = "{" + kvp.Key + "}";
+            }
 
             if (content.IndexOf(placeholder, StringComparison.InvariantCultureIgnoreCase) > -1)
             {
                 content = content.Replace(placeholder, value, StringComparison.InvariantCultureIgnoreCase);
             }
 
-            if (content.IndexOf("{") > -1 && content.IndexOf("}") > -1)
+            if (content.IndexOf('{') > -1 && content.IndexOf('}') > -1)
             {
-                var leftIndex = content.IndexOf("{");
+                int leftIndex = content.IndexOf('{');
                 if (leftIndex > -1)
                 {
-                    var rightIndex = content.IndexOf("}", leftIndex);
+                    int rightIndex = content.IndexOf('}', leftIndex);
                     if (rightIndex > -1)
                     {
-                        var left = content.Substring(0, leftIndex + 1);
-                        var right = content.Substring(rightIndex + 1);
+                        string left = content.Substring(0, leftIndex + 1);
+                        string right = content.Substring(rightIndex + 1);
 
                         content = $"{left}{value}{right}";
                     }
                 }
             }
         }
+
         return content;
     }
 }
