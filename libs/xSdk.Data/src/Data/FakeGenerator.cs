@@ -356,7 +356,10 @@ public static class FakeGenerator
 
             if (repeatableData)
             {
-                Randomizer.Seed = new Random(RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue));
+                int seed = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
+#pragma warning disable S2245
+                Randomizer.Seed = new Random(seed);
+#pragma warning restore S2245
             }
 
             if (strictMode)

@@ -57,9 +57,59 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
 
         Assert.NotNull(service);
     }
+
+    [Fact]
+    public async Task AddPluginAsync_SingleType_IsIncludedInGetPlugins()
+    {
+        IPluginService service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        await service.AddPluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);
+
+        IList<IPlugin> plugins = await service.GetPluginsAsync(TestContext.Current.CancellationToken);
+        Assert.NotEmpty(plugins);
+    }
+
+    [Fact]
+    public async Task AddPluginsFromAsync_CurrentAssembly_LoadsPlugins()
+    {
+        IPluginService service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        await service.AddPluginsFromAsync([typeof(TestPlugin).Assembly], TestContext.Current.CancellationToken);
+
+        IList<IPlugin> plugins = await service.GetPluginsAsync(TestContext.Current.CancellationToken);
+        Assert.NotEmpty(plugins);
+    }
+
+    [Fact]
+    public async Task RemovePluginAsync_NonExistentType_DoesNotThrow()
+    {
+        IPluginService service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        await service.RemovePluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);
+
+        // No exception expected
+    }
+
+    [Fact]
+    public async Task RemovePluginsFromAsync_NonExistentAssembly_DoesNotThrow()
+    {
+        IPluginService service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IPluginService>();
+
+        await service.RemovePluginsFromAsync([typeof(TestPlugin).Assembly], TestContext.Current.CancellationToken);
+
+        // No exception expected
+    }
 }
 
 /// <summary>Simple stub plugin used only in tests.</summary>
-internal class TestPlugin : IPlugin
+public class TestPlugin : IPlugin
 {
 }
