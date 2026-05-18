@@ -22,7 +22,7 @@ using Microsoft.Extensions.Options;
 using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Plugins.DataProtection;
 

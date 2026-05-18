@@ -28,9 +28,9 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;
 
-    public IPluginDescription Description { get; private set; }
+    public IPluginDescription? Description { get; private set; }
 
-    public string Key { get; private set; }
+    public string? Key { get; private set; }
 
     public object? Plugin
     {
@@ -44,10 +44,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
                     tmpPlugin = ActivatorUtilities.CreateInstance(provider, weikioPlugin);
                 }
 
-                if (tmpPlugin == null)
-                {
-                    tmpPlugin = Activator.CreateInstance(weikioPlugin);
-                }
+                tmpPlugin ??= Activator.CreateInstance(weikioPlugin);
 
                 if (tmpPlugin != null)
                 {
@@ -55,6 +52,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
                     Initialize();
                 }
             }
+
             return _concretePlugin;
         }
     }
@@ -62,6 +60,11 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
     public override string ToString()
     {
+        if (Description == null)
+        {
+            return base.ToString() ?? string.Empty;
+        }
+
         return string.Format("{0} v{1}", Description.Name, Description.Version);
     }
 
@@ -69,7 +72,9 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
     {
         if (weikioPlugin != null && _concretePlugin is PluginDescription description)
         {
-            _logger.LogInformation("Initializing plugin {0} v{1}", weikioPlugin.Name, weikioPlugin.Version);
+#pragma warning disable CA1873 // Potenziell kostspielige Protokollierung vermeiden
+            _logger.LogInformation("Initializing plugin {name} v{version}", weikioPlugin.Name, weikioPlugin.Version);
+#pragma warning restore CA1873 // Potenziell kostspielige Protokollierung vermeiden
 
             description.Name = weikioPlugin.Name;
             description.Version = weikioPlugin.Version;
@@ -80,7 +85,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
 
             Order = description.Order;
 
-            var key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
+            string key = string.Format("{0} v{1}", description.Name, description.ProductVersion);
             Key = HashTools.GetHashString(key);
             Description = description;
         }

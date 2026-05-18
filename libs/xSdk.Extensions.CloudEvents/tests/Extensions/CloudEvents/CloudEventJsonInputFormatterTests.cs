@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace xSdk.Extensions.CloudEvents;
 
@@ -25,26 +25,26 @@ public class CloudEventJsonInputFormatterTests
     [Fact]
     public void Constructor_WithValidFormatter_DoesNotThrow()
     {
-        var formatter = CloudEventFactory.CreateFormatter();
+        JsonEventFormatter formatter = CloudEventFactory.CreateFormatter();
 
-        var ex = Record.Exception(() => new CloudEventJsonInputFormatter(formatter));
+        Exception? ex = Record.Exception(() => new CloudEventJsonInputFormatter(formatter));
 
         Assert.Null(ex);
     }
 
     [Fact]
-    public void Constructor_WithNullFormatter_ThrowsArgumentNullException()
-    {
+    public void Constructor_WithNullFormatter_ThrowsArgumentNullException() =>
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         Assert.Throws<ArgumentNullException>(() => new CloudEventJsonInputFormatter(null));
-    }
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
     [Fact]
     public void SupportedMediaTypes_ContainsJson()
     {
-        var formatter = CloudEventFactory.CreateFormatter();
+        JsonEventFormatter formatter = CloudEventFactory.CreateFormatter();
         var inputFormatter = new CloudEventJsonInputFormatter(formatter);
 
-        var types = inputFormatter.SupportedMediaTypes;
+        MediaTypeCollection types = inputFormatter.SupportedMediaTypes;
 
         Assert.Contains(types, t => t.ToString().Contains("application/json"));
     }
@@ -52,10 +52,10 @@ public class CloudEventJsonInputFormatterTests
     [Fact]
     public void SupportedMediaTypes_ContainsCloudEventsJson()
     {
-        var formatter = CloudEventFactory.CreateFormatter();
+        JsonEventFormatter formatter = CloudEventFactory.CreateFormatter();
         var inputFormatter = new CloudEventJsonInputFormatter(formatter);
 
-        var types = inputFormatter.SupportedMediaTypes;
+        MediaTypeCollection types = inputFormatter.SupportedMediaTypes;
 
         Assert.Contains(types, t => t.ToString().Contains("cloudevents"));
     }
@@ -63,7 +63,7 @@ public class CloudEventJsonInputFormatterTests
     [Fact]
     public void ConfigureMvc_AddsFormatterToOptions()
     {
-        var formatter = CloudEventFactory.CreateFormatter();
+        JsonEventFormatter formatter = CloudEventFactory.CreateFormatter();
         var options = new MvcOptions();
 
         options.InputFormatters.Insert(0, new CloudEventJsonInputFormatter(formatter));

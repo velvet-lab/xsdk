@@ -26,10 +26,10 @@ public static class CredentialManager
 
     private static string Context => throw new NotImplementedException(); // SlimHost.Instance.AppPrefix;
 
-    public static TCredentials LoadCredentialsAsync<TCredentials>()
+    public static TCredentials? LoadCredentialsAsync<TCredentials>()
         where TCredentials : Credentials, new() => LoadCredentials<TCredentials>(Context);
 
-    public static TCredentials LoadCredentials<TCredentials>(string context)
+    public static TCredentials? LoadCredentials<TCredentials>(string context)
         where TCredentials : Credentials, new()
     {
         _logger.LogInformation("Try to load encrypted credentials");

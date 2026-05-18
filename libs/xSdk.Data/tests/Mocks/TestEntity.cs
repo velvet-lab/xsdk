@@ -25,7 +25,7 @@ internal class TestEntity : Entity<Guid>
         Id = PrimaryKeyTools.Generate<Guid>();
     }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     public int Age { get; set; }
 }

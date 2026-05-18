@@ -28,9 +28,7 @@ public class DatabaseFixture : DatabaseHostFixture
 
     protected override void Initialize()
     {
-        ConfigureBuilder(hostBuilder =>
-        {
-            hostBuilder
+        ConfigureBuilder(hostBuilder => hostBuilder
                 .AddDatalayer(builder =>
                 {
 
@@ -41,7 +39,7 @@ public class DatabaseFixture : DatabaseHostFixture
                     }
 
                     var imageName = GetEnvironmentVariable("GENERIC_LINUX_IMAGE_NAME");
-                    _container = new ContainerBuilder()
+                    _container = new ContainerBuilder(imageName)
                         .WithImage(imageName)
                         .WithPortBinding(8080, true)
                         .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(8080)))
@@ -56,16 +54,11 @@ public class DatabaseFixture : DatabaseHostFixture
                         // Enable FlatFile
                         .UseFlatFile(
                             Globals.DatalayerName,
-                            config =>
-                            {
-                                config.FilePath = $"{currentFolder}/{Globals.DatabaseName}.json";
-                            }
-                        )
+                            config => config.FilePath = $"{currentFolder}/{Globals.DatabaseName}.json")
                         // Add Repositories to the Layer
                         .MapRepository<ITestRepository, TestRepository>();
 
-                });
-        });
+                }));
     }
 
     protected override void Dispose(bool disposing)

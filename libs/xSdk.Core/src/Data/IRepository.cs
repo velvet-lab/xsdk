@@ -37,8 +37,7 @@ public interface IRepository<TEntity, TPrimaryKeyType> : IRepository
 
     int Remove(IEnumerable<TPrimaryKeyType> primaryKeys);
 
-    int Remove(IEnumerable<TEntity> entities);
-
+    int Remove(IEnumerable<TEntity>? entities);
 
     Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
 
@@ -46,15 +45,15 @@ public interface IRepository<TEntity, TPrimaryKeyType> : IRepository
 
     Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
 
-    Task<int> RemoveAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
+    Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default);
 
     TEntity? Select(TPrimaryKeyType primaryKey);
 
     Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
 
-    IEnumerable<TEntity> SelectList();
+    IEnumerable<TEntity>? SelectList();
 
-    Task<IEnumerable<TEntity>> SelectListAsync(CancellationToken token = default);
+    Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default);
 
     bool Update(TPrimaryKeyType primaryKey, TEntity entity);
 

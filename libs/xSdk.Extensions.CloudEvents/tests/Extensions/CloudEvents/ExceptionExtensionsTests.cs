@@ -16,17 +16,16 @@
 
 using System.Text.Json;
 using CloudNative.CloudEvents;
-using xSdk.Hosting;
 
-namespace xSdk.Extensions.CloudEvents.Tests.Extensions.CloudEvents;
+namespace xSdk.Extensions.CloudEvents;
 
-public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHostFixture>
+public class ExceptionExtensionsTests()
 {
     [Fact]
     public void ToCloudEvent_WithException_CreatesCloudEventWithScope()
     {
         var exception = new InvalidOperationException("Test error message");
-        var scope = "test/scope";
+        string scope = "test/scope";
 
         var cloudEvent = exception.ToCloudEvent(scope);
 
@@ -38,8 +37,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     public void ToCloudEvent_WithScopeAndType_CreatesCloudEventWithBothValues()
     {
         var exception = new ArgumentException("Invalid argument");
-        var scope = "test/scope";
-        var type = "argument.validation.error";
+        string scope = "test/scope";
+        string type = "argument.validation.error";
 
         var cloudEvent = exception.ToCloudEvent(scope, type);
 
@@ -51,9 +50,9 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     public void ToCloudEvent_WithScopeTypeAndSubject_CreatesCompleteCloudEvent()
     {
         var exception = new Exception("General error");
-        var scope = "test/scope";
-        var type = "general.error";
-        var subject = "user/123";
+        string scope = "test/scope";
+        string type = "general.error";
+        string subject = "user/123";
 
         var cloudEvent = exception.ToCloudEvent(scope, type, subject);
 
@@ -66,9 +65,11 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     public void ToCloudEvent_WithNullType_DefaultsToError()
     {
         var exception = new Exception("Test error");
-        var scope = "test/scope";
+        string scope = "test/scope";
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
         var cloudEvent = exception.ToCloudEvent(scope, null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
         Assert.NotNull(cloudEvent);
         Assert.Contains("error", cloudEvent.Type);
@@ -78,7 +79,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     public void ToCloudEvent_WithEmptyType_DefaultsToError()
     {
         var exception = new Exception("Test error");
-        var scope = "test/scope";
+        string scope = "test/scope";
 
         var cloudEvent = exception.ToCloudEvent(scope, string.Empty);
 
@@ -89,7 +90,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     [Fact]
     public void ToCloudEvent_PreservesExceptionMessage()
     {
-        var errorMessage = "This is a test error message";
+        string errorMessage = "This is a test error message";
         var exception = new InvalidOperationException(errorMessage);
 
         var cloudEvent = exception.ToCloudEvent("test/scope");
@@ -104,7 +105,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
         var exception = new InvalidOperationException("Test");
         var cloudEvent = exception.ToCloudEvent("test/scope");
 
-        var result = cloudEvent.IsException();
+        bool result = cloudEvent.IsException();
 
         Assert.True(result);
     }
@@ -119,7 +120,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
             Data = "Error message from CloudEvent"
         };
 
-        var exception = cloudEvent.ToException<InvalidOperationException>();
+        InvalidOperationException? exception = cloudEvent.ToException<InvalidOperationException>();
 
         Assert.NotNull(exception);
         Assert.Equal("Error message from CloudEvent", exception.Message);
@@ -128,8 +129,8 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     [Fact]
     public void ToException_WithJsonElementStringData_ReturnsExceptionWithMessage()
     {
-        var errorMessage = "JSON error message";
-        var jsonElement = JsonSerializer.SerializeToElement(errorMessage);
+        string errorMessage = "JSON error message";
+        JsonElement jsonElement = JsonSerializer.SerializeToElement(errorMessage);
         var cloudEvent = new CloudEvent
         {
             Type = "test.error",
@@ -161,9 +162,9 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     [Fact]
     public void ToException_WithNullCloudEvent_ReturnsNull()
     {
-        CloudEvent cloudEvent = null;
+        CloudEvent? cloudEvent = null;
 
-        var exception = cloudEvent.ToException<Exception>();
+        var exception = cloudEvent?.ToException<Exception>();
 
         Assert.Null(exception);
     }
@@ -178,7 +179,7 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
             Data = "Argument error message"
         };
 
-        var exception = cloudEvent.ToException<ArgumentException>();
+        ArgumentException? exception = cloudEvent.ToException<ArgumentException>();
 
         Assert.NotNull(exception);
         Assert.IsType<ArgumentException>(exception);
@@ -188,11 +189,11 @@ public class ExceptionExtensionsTests(TestHostFixture _) : IClassFixture<TestHos
     [Fact]
     public void RoundTrip_ExceptionToCloudEventToException_PreservesMessage()
     {
-        var originalMessage = "Original error message";
+        string originalMessage = "Original error message";
         var originalException = new InvalidOperationException(originalMessage);
 
         var cloudEvent = originalException.ToCloudEvent("test/scope");
-        var reconstructedException = cloudEvent.ToException<InvalidOperationException>();
+        InvalidOperationException? reconstructedException = cloudEvent.ToException<InvalidOperationException>();
 
         Assert.NotNull(reconstructedException);
         Assert.Equal(originalMessage, reconstructedException.Message);

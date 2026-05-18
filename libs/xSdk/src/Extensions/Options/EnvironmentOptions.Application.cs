@@ -18,7 +18,7 @@ using System.Diagnostics;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Options;
 
@@ -54,7 +54,7 @@ public sealed partial class EnvironmentOptions
         template: DefaultCommandSettings.Definitions.ContentRoot.Template,
         helpText: DefaultCommandSettings.Definitions.ContentRoot.HelpText
     )]
-    public string ContentRoot
+    public string? ContentRoot
     {
         get => ReadValue<string>(DefaultCommandSettings.Definitions.ContentRoot.Name);
         set => SetValue(DefaultCommandSettings.Definitions.ContentRoot.Name, value);
@@ -66,7 +66,7 @@ public sealed partial class EnvironmentOptions
         helpText: DefaultCommandSettings.Definitions.LogLevel.HelpText,
         defaultValue: DefaultCommandSettings.Definitions.LogLevel.DefaultValue
     )]
-    public string LogLevel
+    public string? LogLevel
     {
         get => ReadValue<string>(DefaultCommandSettings.Definitions.LogLevel.Name);
         set => SetValue(DefaultCommandSettings.Definitions.LogLevel.Name, value);
@@ -74,7 +74,7 @@ public sealed partial class EnvironmentOptions
 
     private static string DetermineContentRoot()
     {
-        var contentRoot = ReadCommandlineValue<string>(DefaultCommandSettings.Definitions.ContentRoot.Name);
+        string? contentRoot = ReadCommandlineValue<string>(DefaultCommandSettings.Definitions.ContentRoot.Name);
         if (string.IsNullOrEmpty(contentRoot))
         {
             contentRoot = Environment.CurrentDirectory;
@@ -90,7 +90,7 @@ public sealed partial class EnvironmentOptions
 
     private static TValue? ReadCommandlineValue<TValue>(string pattern)
     {
-        var result = string.Empty;
+        string? result = string.Empty;
 
         var parser = CommandlineParser.Parse();
         if (parser.ContainsPattern(pattern))
@@ -103,8 +103,6 @@ public sealed partial class EnvironmentOptions
             return TypeConverter.ConvertTo<TValue>(result);
         }
 
-        return default(TValue);
+        return default;
     }
-
-
 }

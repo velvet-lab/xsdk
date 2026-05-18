@@ -16,37 +16,34 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace xSdk.Data;
 
-public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbContext> factory, IOptionsMonitor<EntityFrameworkDatabaseOptions> options, ILogger<EntityFrameworkDatabase<TDbContext>> logger) : Database(logger)
+public sealed class EntityFrameworkDatabase<TDbContext>(IDbContextFactory<TDbContext> factory, ILogger<EntityFrameworkDatabase<TDbContext>> logger) : Database(logger)
     where TDbContext : DbContext
 {
     private TDbContext? _dbContext = null;
 
     public override TDatabaseObject? Open<TDatabaseObject>() where TDatabaseObject : class
     {
-        if (_dbContext == null)
-        {
-            _dbContext = factory.CreateDbContext();
-        }
+        _dbContext ??= factory.CreateDbContext();
 
         return _dbContext as TDatabaseObject;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     public override bool Close()
     {
         if (_dbContext != null)
         {
-            logger.LogInformation("Closing Entity Framework database connection for datalayer '{DatalayerName}'.", this.DatalayerName);
+            logger.LogInformation("Closing Entity Framework database connection for datalayer '{DatalayerName}'.", DatalayerName);
             _dbContext.Dispose();
             _dbContext = null;
             return true;
         }
         else
         {
-            logger.LogWarning("Attempted to close Entity Framework database connection for datalayer '{DatalayerName}', but no active connection was found.", this.DatalayerName);
+            logger.LogWarning("Attempted to close Entity Framework database connection for datalayer '{DatalayerName}', but no active connection was found.", DatalayerName);
             return false;
         }
     }

@@ -15,13 +15,13 @@
  */
 
 using System.Collections.Concurrent;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable.Providers;
 
 internal sealed class MemoryProvider : VariableProviderBase
 {
-    internal ConcurrentDictionary<string, object> _variables = new ConcurrentDictionary<string, object>();
+    internal ConcurrentDictionary<string, object> _variables = new();
 
     protected override bool ExistsVariable(IVariable variable)
     {
@@ -38,7 +38,7 @@ internal sealed class MemoryProvider : VariableProviderBase
         return null;
     }
 
-    internal void SaveVariableValue(IVariable variable, object value)
+    internal void SaveVariableValue(IVariable variable, object? value)
     {
         if (value != null)
         {

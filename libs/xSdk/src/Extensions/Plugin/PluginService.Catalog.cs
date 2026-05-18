@@ -23,20 +23,20 @@ namespace xSdk.Extensions.Plugin;
 
 internal partial class PluginService
 {
-    private CompositePluginCatalog _aggregateCatalog;
+    private CompositePluginCatalog _aggregateCatalog = new();
 
-    private readonly Dictionary<Type, TypePluginCatalog> _typePluginCatalogs = new();
+    private readonly Dictionary<Type, TypePluginCatalog> _typePluginCatalogs = [];
     private bool _isTypePluginCatalogsStale = false;
 
-    private readonly Dictionary<Assembly, AssemblyPluginCatalog> _assemblyPluginCatalogs = new();
+    private readonly Dictionary<Assembly, AssemblyPluginCatalog> _assemblyPluginCatalogs = [];
     private bool _isAssemblyPluginCatalogsStale = false;
 
     private async Task LoadPluginsAsync()
     {
-        var catalog = await InitialzeCatalogsAsync();
+        CompositePluginCatalog catalog = await InitialzeCatalogsAsync();
 
-        var abstractPlugins = catalog.GetPlugins().Where(x => x != null);
-        foreach (var abstractPlugin in abstractPlugins)
+        IEnumerable<Weikio.PluginFramework.Abstractions.Plugin> abstractPlugins = catalog.GetPlugins().Where(x => x != null);
+        foreach (Weikio.PluginFramework.Abstractions.Plugin abstractPlugin in abstractPlugins)
         {
             try
             {
@@ -64,9 +64,9 @@ internal partial class PluginService
         {
             _aggregateCatalog = new CompositePluginCatalog();
 
-            var machineCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Machine, "/plugins");
-            var userCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.User, "/plugins");
-            var localCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Local, "/plugins");
+            FolderPluginCatalog? machineCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Machine, "/plugins");
+            FolderPluginCatalog? userCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.User, "/plugins");
+            FolderPluginCatalog? localCatalog = CatalogHelper.CreateFolderPluginCatalog(fsService, FileSystemContext.Local, "/plugins");
 
             if (machineCatalog != null)
             {
@@ -83,12 +83,12 @@ internal partial class PluginService
                 _aggregateCatalog.AddCatalog(localCatalog);
             }
 
-            foreach (var kvp in _typePluginCatalogs)
+            foreach (KeyValuePair<Type, TypePluginCatalog> kvp in _typePluginCatalogs)
             {
                 _aggregateCatalog.AddCatalog(kvp.Value);
             }
 
-            foreach (var kvp in _assemblyPluginCatalogs)
+            foreach (KeyValuePair<Assembly, AssemblyPluginCatalog> kvp in _assemblyPluginCatalogs)
             {
                 _aggregateCatalog.AddCatalog(kvp.Value);
             }

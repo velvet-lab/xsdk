@@ -21,14 +21,14 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
-using xSdk.Shared;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
 
 internal partial class VariableService : IVariableService
 {
     private readonly IConfiguration? _config;
-    private readonly ApplicationOptions _applicationOptions;
+    private readonly ApplicationOptions? _applicationOptions;
 
     private static readonly ILogger _logger = LogManager.CreateLogger<VariableService>();
 
@@ -43,18 +43,17 @@ internal partial class VariableService : IVariableService
     public Dictionary<string, object> ToDictionary()
     {
         var result = new Dictionary<string, object>();
-
-        foreach (var variable in Variables)
+        foreach (IVariable variable in Variables)
         {
             try
             {
-                if (TryReadVariableValue<object>(variable.Name, out object value))
+                if (TryReadVariableValue<object>(variable.Name, out object? value))
                 {
                     result.AddOrNew(variable.Name, value);
                 }
                 else
                 {
-                    _logger.LogWarning("Variable Value '{0}' not found", variable.Name);
+                    _logger.LogWarning("Variable Value '{name}' not found", variable.Name);
                 }
             }
             catch
@@ -68,7 +67,7 @@ internal partial class VariableService : IVariableService
 
     internal void AddEnvironmentVariables()
     {
-        var items = Environment.GetEnvironmentVariables();
+        IDictionary items = Environment.GetEnvironmentVariables();
 
         // GetPrimaryKey Items to Dictionary
         var dic = new ConcurrentDictionary<string, object>();
@@ -82,13 +81,13 @@ internal partial class VariableService : IVariableService
             dic,
             item =>
             {
-                var value = item.Value?.ToString();
-                var valueType = TypeConverter.GetValueType(value);
+                string? value = item.Value?.ToString();
+                Type? valueType = TypeConverter.GetValueType(value);
 
                 if (valueType != null)
                 {
-                    var name = item.Key.ToString();
-                    var variable = LoadVariableInternal(name);
+                    string name = item.Key.ToString();
+                    IVariable? variable = LoadVariableInternal(name);
                     if (variable == null)
                     {
                         variable = Variable.Create(name, valueType).Protect().DisablePrefix().Hide();

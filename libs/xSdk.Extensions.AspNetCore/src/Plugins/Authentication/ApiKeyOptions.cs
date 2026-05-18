@@ -28,7 +28,7 @@ public class ApiKeyOptions : VariableSetup
         helpText: Definitions.Realm.HelpText,
         defaultValue: Definitions.Realm.DefaultValue
     )]
-    public string Realm
+    public string? Realm
     {
         get => ReadValue<string>(Definitions.Realm.Name);
         set => SetValue(Definitions.Realm.Name, value);

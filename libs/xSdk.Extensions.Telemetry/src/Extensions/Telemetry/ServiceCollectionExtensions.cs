@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTelemetryServices(this IServiceCollection services) => services.AddTelemetryServices(null);
 
-    public static IServiceCollection AddTelemetryServices(this IServiceCollection services, Action<TelemetryOptions> configure)
+    public static IServiceCollection AddTelemetryServices(this IServiceCollection services, Action<TelemetryOptions>? configure)
     {
         services.TryAddSingleton<ITelemetryService>(provider =>
         {

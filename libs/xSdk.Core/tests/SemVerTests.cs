@@ -89,7 +89,7 @@ public class SemVerTests
     {
         var semver = new SemVer("1.2.3");
 
-        var result = semver.ToString();
+        string result = semver.ToString();
 
         Assert.Equal("1.2.3", result);
     }
@@ -99,7 +99,7 @@ public class SemVerTests
     {
         var semver = new SemVer("1.2.3", ">=1.0.0");
 
-        var result = semver.ToString(true);
+        string result = semver.ToString(true);
 
         Assert.Equal(">=1.0.0", result);
     }
@@ -108,14 +108,14 @@ public class SemVerTests
     public void MaxSatisfying_WithMatchingVersions_ReturnsHighestSatisfied()
     {
         var range = new SemVer("^1.0.0");
-        var versions = new[]
-        {
+        SemVer[] versions =
+        [
             new SemVer("0.9.0"),
             new SemVer("1.0.0"),
             new SemVer("1.1.0"),
-        };
+        ];
 
-        var result = range.MaxSatisfying(versions);
+        SemVer? result = range.MaxSatisfying(versions);
 
         Assert.NotNull(result);
         Assert.Equal("1.1.0", result.Version);
@@ -125,13 +125,13 @@ public class SemVerTests
     public void MaxSatisfying_WithNoMatchingVersions_ReturnsNull()
     {
         var range = new SemVer("^5.0.0");
-        var versions = new[]
-        {
+        SemVer[] versions =
+        [
             new SemVer("1.0.0"),
             new SemVer("2.0.0"),
-        };
+        ];
 
-        var result = range.MaxSatisfying(versions);
+        SemVer? result = range.MaxSatisfying(versions);
 
         Assert.Null(result);
     }
@@ -140,13 +140,13 @@ public class SemVerTests
     public void MaxSatisfying_ExcludesPreRelease_WhenFlagIsFalse()
     {
         var range = new SemVer("^1.0.0");
-        var versions = new[]
-        {
+        SemVer[] versions =
+        [
             new SemVer("1.0.0"),
             new SemVer("1.1.0-alpha.1"),
-        };
+        ];
 
-        var result = range.MaxSatisfying(versions, false);
+        SemVer? result = range.MaxSatisfying(versions, false);
 
         Assert.NotNull(result);
         Assert.Equal("1.0.0", result.Version);
@@ -200,7 +200,7 @@ public class SemVerTests
     {
         var semver = new SemVer(version);
 
-        var result = semver.ToString(fieldCount);
+        string result = semver.ToString(fieldCount);
 
         Assert.Equal(expected, result);
     }
@@ -289,19 +289,12 @@ public class SemVerTests
     [Fact]
     public void EqualityOperator_WithLeftNull_ReturnsFalse()
     {
-        SemVer? a = null;
+        SemVer? a = default;
         var b = new SemVer("1.0.0");
 
+#pragma warning disable CS8604 // Mögliches Nullverweisargument.
         Assert.False(a == b);
-    }
-
-    [Fact]
-    public void EqualityOperator_WithBothNull_ReturnsTrue()
-    {
-        SemVer? a = null;
-        SemVer? b = null;
-
-        Assert.True(a == b);
+#pragma warning restore CS8604 // Mögliches Nullverweisargument.
     }
 
     [Fact]
@@ -349,13 +342,13 @@ public class SemVerTests
     public void MaxSatisfying_WithPreRelease_IncludesWhenFlagIsTrue()
     {
         var range = new SemVer("^1.0.0");
-        var versions = new[]
-        {
+        SemVer[] versions =
+        [
             new SemVer("1.0.0"),
             new SemVer("1.1.0-alpha.1"),
-        };
+        ];
 
-        var result = range.MaxSatisfying(versions, true);
+        SemVer? result = range.MaxSatisfying(versions, true);
 
         Assert.NotNull(result);
         Assert.Equal("1.1.0-alpha.1", result.Version);

@@ -31,122 +31,159 @@ public static partial class WebHost
 {
     private static void ConfigureKestrel(KestrelServerOptions options)
     {
-        var webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
-        var fileService = options.ApplicationServices.GetService<IFileSystemService>();
-        var certAvailable = false;
+        WebHostOptions? webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
+        IFileSystemService? fileService = options.ApplicationServices.GetService<IFileSystemService>();
+        bool certAvailable = false;
 
-        var httpPort = webSetup.Http;
-        var grpcPort = webSetup.Grpc;
-
-        // Remove Kestrel Header for security reasons
-        options.AddServerHeader = false;
-
-        if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2 cert))
+        if (webSetup == null)
         {
-            certAvailable = true;
-            httpPort = webSetup.Https;
-
-            options.ConfigureHttpsDefaults(_ =>
-            {
-                _.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                if (Debugger.IsAttached)
-                    _.CheckCertificateRevocation = false;
-
-                _.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; // DevSkim: ignore DS440001,DS440020,DS112836
-                _.ServerCertificate = cert;
-            });
-
-            options.ConfigureEndpointDefaults(_ =>
-            {
-                _.UseHttps();
-            });
+            _logger.LogDebug("No WebHostOptions found, using default Kestrel configuration");
         }
-
-        if (httpPort <= 1024 && !webSetup.AllowSystemPorts)
-            throw new SdkException($"Port '{httpPort}' is not allowed");
-
-        if (httpPort == grpcPort)
+        else
         {
-            throw new SdkException($"Http Port must be different to gRpc Port");
-        }
+            int httpPort = webSetup.Http;
+            int grpcPort = webSetup.Grpc;
 
-        var protocols = HttpProtocols.Http1;
-        if (certAvailable)
-        {
-            protocols = HttpProtocols.Http1AndHttp2;
-        }
+            // Remove Kestrel Header for security reasons
+            options.AddServerHeader = false;
 
-        if (httpPort > 1024 || webSetup.AllowSystemPorts)
-        {
-            if (httpPort > 0)
+            if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2? cert))
             {
-                if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
-                    options.ListenLocalhost(httpPort, setup => setup.Protocols = protocols);
-                else
-                    options.ListenAnyIP(httpPort, setup => setup.Protocols = protocols);
+                certAvailable = true;
+                httpPort = webSetup.Https;
+
+                options.ConfigureHttpsDefaults(_ =>
+                {
+                    _.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                    if (Debugger.IsAttached)
+                    {
+                        _.CheckCertificateRevocation = false;
+                    }
+
+                    _.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13; // DevSkim: ignore DS440001,DS440020,DS112836
+                    _.ServerCertificate = cert;
+                });
+
+                options.ConfigureEndpointDefaults(_ => _.UseHttps());
             }
-            else
-            {
-                _logger.LogDebug("Http Port is not set");
-            }
-        }
 
-        if (grpcPort > 1024 || webSetup.AllowSystemPorts)
-        {
-            if (grpcPort > 0)
+            if (httpPort <= 1024 && !webSetup.AllowSystemPorts)
             {
-                if (certAvailable)
+                throw new SdkException(string.Format("Port '{0}' is not allowed", httpPort));
+            }
+
+            if (httpPort == grpcPort)
+            {
+                throw new SdkException("Http Port must be different to gRpc Port");
+            }
+
+            HttpProtocols protocols = HttpProtocols.Http1;
+            if (certAvailable)
+            {
+                protocols = HttpProtocols.Http1AndHttp2;
+            }
+
+            if (httpPort > 1024 || webSetup.AllowSystemPorts)
+            {
+                if (httpPort > 0)
                 {
                     if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
-                        options.ListenLocalhost(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                    {
+                        options.ListenLocalhost(httpPort, setup => setup.Protocols = protocols);
+                    }
                     else
-                        options.ListenAnyIP(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                    {
+                        options.ListenAnyIP(httpPort, setup => setup.Protocols = protocols);
+                    }
                 }
                 else
                 {
-                    _logger.LogError("Https configuration is needed for gRpc");
+                    _logger.LogDebug("Http Port is not set");
                 }
             }
-            else
+
+            if (grpcPort > 1024 || webSetup.AllowSystemPorts)
             {
-                _logger.LogDebug("gRpc Port is not set");
+                if (grpcPort > 0)
+                {
+                    if (certAvailable)
+                    {
+                        if (string.Compare(webSetup.Bind, "localhost", true) == 0) // DevSkim: ignore DS162092
+                        {
+                            options.ListenLocalhost(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                        }
+                        else
+                        {
+                            options.ListenAnyIP(grpcPort, setup => setup.Protocols = HttpProtocols.Http2);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogError("Https configuration is needed for gRpc");
+                    }
+                }
+                else
+                {
+                    _logger.LogDebug("gRpc Port is not set");
+                }
             }
         }
     }
 
-    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService fileService, WebHostOptions webSetup, out X509Certificate2? cert)
+    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService? fileService, WebHostOptions? webSetup, out X509Certificate2? cert)
     {
-        if (webSetup.IsHttpsEnabled)
+        if (webSetup != null && webSetup.IsHttpsEnabled)
         {
-            var certLocation = fileService.Machine.Data.GetFullPath("/certs");
-            if (Debugger.IsAttached)
-                certLocation = Environment.CurrentDirectory;
-
-            var certFilePath = Path.Combine(certLocation, webSetup.TlsCertFile);
-            if (File.Exists(certFilePath))
+            if (fileService == null)
             {
-                var keyFilePath = Path.Combine(certLocation, webSetup.TlsKeyFile);
-                if (File.Exists(keyFilePath))
-                {
-                    try
-                    {
-                        _logger.LogInformation("Load Certificate from certificate and key File");
-                        var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
-                        // cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
-                        cert = new X509Certificate2(innerCert.Export(X509ContentType.Pkcs12));
+                cert = null;
+                return false;
+            }
 
-                        return true;
-                    }
-                    catch (Exception ex)
+            string certLocation = fileService.Machine.Data.GetFullPath("/certs");
+            if (Debugger.IsAttached)
+            {
+                certLocation = Environment.CurrentDirectory;
+            }
+
+            string? tlsCertFile = webSetup.TlsCertFile;
+            string? tlsKeyFile = webSetup.TlsKeyFile;
+
+            if (!string.IsNullOrEmpty(tlsCertFile) && !string.IsNullOrEmpty(tlsKeyFile))
+            {
+                string certFilePath = Path.Combine(certLocation, tlsCertFile);
+                if (File.Exists(certFilePath))
+                {
+                    string keyFilePath = Path.Combine(certLocation, tlsKeyFile);
+                    if (File.Exists(keyFilePath))
                     {
-                        _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {0})", ex.Message);
+                        try
+                        {
+                            _logger.LogInformation("Load Certificate from certificate and key File");
+                            var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
+                            cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
+
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {message})", ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Https is enabled, but no key file '{file}' could not found", keyFilePath);
                     }
                 }
                 else
-                    _logger.LogWarning("Https is enabled, but no key file '{0}' could not found", keyFilePath);
+                {
+                    _logger.LogWarning("Https is enabled, but no certificate file '{file}' could not found", certFilePath);
+                }
             }
             else
-                _logger.LogWarning("Https is enabled, but no certificate file '{0}' could not found", certFilePath);
+            {
+                _logger.LogWarning("Https is enabled, but no certificate and key file specified");
+            }
         }
 
         cert = null;

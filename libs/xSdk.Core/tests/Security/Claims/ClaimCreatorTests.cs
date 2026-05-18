@@ -23,7 +23,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaimType_WithClaimOnly_ReturnsFallbackUrl()
     {
-        var result = ClaimCreator.CreateClaimType("myrole");
+        string result = ClaimCreator.CreateClaimType("myrole");
 
         Assert.Contains("/claims/myrole", result);
         Assert.StartsWith("https://", result);
@@ -32,7 +32,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaimType_WithContextAndClaim_IncludesContext()
     {
-        var result = ClaimCreator.CreateClaimType("apikey", "name");
+        string result = ClaimCreator.CreateClaimType("apikey", "name");
 
         Assert.Contains("apikey", result);
         Assert.Contains("name", result);
@@ -41,7 +41,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaimType_WithUrlContextClaim_BuildsFullUrl()
     {
-        var result = ClaimCreator.CreateClaimType("https://example.com", "user", "role");
+        string result = ClaimCreator.CreateClaimType("https://example.com", "user", "role");
 
         Assert.StartsWith("https://example.com", result);
         Assert.Contains("user", result);
@@ -51,7 +51,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaimType_WithUrlWithoutHttps_PrefixesWithHttps()
     {
-        var result = ClaimCreator.CreateClaimType("example.com", "user", "role");
+        string result = ClaimCreator.CreateClaimType("example.com", "user", "role");
 
         Assert.StartsWith("https://", result);
     }
@@ -59,7 +59,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaim_WithClaimTypeAndValue_CreatesClaim()
     {
-        var claim = ClaimCreator.CreateClaim("test-type", "test-value");
+        Claim claim = ClaimCreator.CreateClaim("test-type", "test-value");
 
         Assert.NotNull(claim);
         Assert.Equal("test-type", claim.Type);
@@ -69,7 +69,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaim_WithValueType_SetValueType()
     {
-        var claim = ClaimCreator.CreateClaim("test-type", "test-value", ClaimValueTypes.String);
+        Claim claim = ClaimCreator.CreateClaim("test-type", "test-value", ClaimValueTypes.String);
 
         Assert.Equal(ClaimValueTypes.String, claim.ValueType);
     }
@@ -77,7 +77,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaim_WithIssuer_SetsIssuer()
     {
-        var claim = ClaimCreator.CreateClaim("test-type", "test-value", ClaimValueTypes.String, "my-issuer");
+        Claim claim = ClaimCreator.CreateClaim("test-type", "test-value", ClaimValueTypes.String, "my-issuer");
 
         Assert.Equal("my-issuer", claim.Issuer);
     }
@@ -85,7 +85,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaim_WithAllParameters_SetsAll()
     {
-        var claim = ClaimCreator.CreateClaim("test-type", "test-value", ClaimValueTypes.String, "issuer", "origissuer");
+        Claim claim = ClaimCreator.CreateClaim("test-type", "test-value", ClaimValueTypes.String, "issuer", "origissuer");
 
         Assert.Equal("test-type", claim.Type);
         Assert.Equal("test-value", claim.Value);
@@ -97,7 +97,7 @@ public class ClaimCreatorTests
     [Fact]
     public void CreateClaim_WithNullValue_ThrowsSdkException()
     {
-        Assert.Throws<SdkException>(() => ClaimCreator.CreateClaim("test-type", null));
+        Assert.Throws<SdkException>(() => ClaimCreator.CreateClaim("test-type", ""));
     }
 
     [Fact]

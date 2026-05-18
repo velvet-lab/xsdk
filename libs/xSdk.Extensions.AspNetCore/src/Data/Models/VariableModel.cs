@@ -41,10 +41,10 @@ public sealed class VariableModel
     public string Name { get; set; } = string.Empty;
 
     [Description("The help text for the variable")]
-    public string HelpText { get; set; } = string.Empty;
+    public string? HelpText { get; set; } = string.Empty;
 
     [Description("Used prefix for the variable")]
-    public string Prefix { get; set; } = string.Empty;
+    public string? Prefix { get; set; } = string.Empty;
 
     [Description("Is the variable hidden?")]
     public bool IsHidden { get; set; }

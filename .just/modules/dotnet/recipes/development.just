@@ -33,5 +33,5 @@ sonar-build solution:
 [group('development')]
 test solution: (build solution)
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
+    dotnet test "{{solution}}" --settings xsdk.runsettings --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."

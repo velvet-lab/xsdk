@@ -69,9 +69,9 @@ public static class CryptoTools
         }
     }
 
-    public static TData Decrypt<TData>(string file, string context = "xsdk")
+    public static TData? Decrypt<TData>(string file, string context = "xsdk")
     {
-        TData result = default;
+        TData? result = default;
 
         try
         {

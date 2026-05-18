@@ -23,16 +23,15 @@ public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFi
     [Fact]
     public async Task InsertData()
     {
-        var repo = fixture.Factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
+        ITestRepository repo = fixture.Factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
 
         // Clear existing data to ensure test isolation
-        await repo.ClearDataAsync();
+        await repo.ClearDataAsync(TestContext.Current.CancellationToken);
 
-        await repo.AddDataAsync(Globals.Entities);
+        await repo.AddDataAsync(Globals.Entities, TestContext.Current.CancellationToken);
 
-        var entities = await repo.GetDataAsync();
-
+        IEnumerable<TestEntity>? entities = await repo.GetDataAsync(TestContext.Current.CancellationToken);
         Assert.NotNull(entities);
-        Assert.True(entities.Count() > 0);
+        Assert.True(entities.Any());
     }
 }

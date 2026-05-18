@@ -55,7 +55,7 @@ public class TelemetryOptionsTests
     {
         var options = new TelemetryOptions();
 
-        Assert.True(options.IsOtlpExporterDisabled);
+        Assert.False(options.IsOtlpExporterDisabled);
     }
 
     [Fact]

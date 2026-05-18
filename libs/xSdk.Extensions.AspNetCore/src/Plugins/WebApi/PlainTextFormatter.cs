@@ -49,7 +49,7 @@ internal class PlainTextFormatter : TextInputFormatter
 
     private async Task<string> ReadInternalAsync(InputFormatterContext context)
     {
-        string data = null;
+        string? data = null;
         using (var streamReader = new StreamReader(context.HttpContext.Request.Body))
         {
             data = await streamReader.ReadToEndAsync();

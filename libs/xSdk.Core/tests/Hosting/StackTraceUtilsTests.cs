@@ -26,7 +26,7 @@ public class StackTraceUtilsTests
     {
         var stackTrace = new StackTrace();
 
-        var count = stackTrace.GetFrameCount();
+        int count = stackTrace.GetFrameCount();
 
         Assert.True(count > 0);
     }
@@ -34,7 +34,7 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodName_NullMethod_ReturnsEmpty()
     {
-        var result = StackTraceUtils.GetStackFrameMethodName(null, false, false, false);
+        string result = StackTraceUtils.GetStackFrameMethodName(null, false, false, false);
 
         Assert.Equal(string.Empty, result);
     }
@@ -42,9 +42,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodName_RegularMethod_ReturnsName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodName_RegularMethod_ReturnsName))!;
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodName_RegularMethod_ReturnsName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodName(method, false, false, false);
+        string result = StackTraceUtils.GetStackFrameMethodName(method, false, false, false);
 
         Assert.Equal(nameof(GetStackFrameMethodName_RegularMethod_ReturnsName), result);
     }
@@ -52,9 +52,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodName_WithIncludeMethodInfo_ReturnsFullSignature()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodName_WithIncludeMethodInfo_ReturnsFullSignature))!;
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodName_WithIncludeMethodInfo_ReturnsFullSignature))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodName(method, includeMethodInfo: true, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
+        string result = StackTraceUtils.GetStackFrameMethodName(method, includeMethodInfo: true, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
 
         Assert.NotEmpty(result);
     }
@@ -62,7 +62,7 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodClassName_NullMethod_ReturnsEmpty()
     {
-        var result = StackTraceUtils.GetStackFrameMethodClassName(null, false, false, false);
+        string result = StackTraceUtils.GetStackFrameMethodClassName(null, false, false, false);
 
         Assert.Equal(string.Empty, result);
     }
@@ -70,9 +70,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodClassName_WithNamespace_ReturnsFullName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodClassName_WithNamespace_ReturnsFullName))!;
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodClassName_WithNamespace_ReturnsFullName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodClassName(method, includeNameSpace: true, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
+        string result = StackTraceUtils.GetStackFrameMethodClassName(method, includeNameSpace: true, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
 
         Assert.Contains("xSdk", result);
     }
@@ -80,9 +80,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodClassName_WithoutNamespace_ReturnsShortName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodClassName_WithoutNamespace_ReturnsShortName))!;
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(nameof(GetStackFrameMethodClassName_WithoutNamespace_ReturnsShortName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodClassName(method, includeNameSpace: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
+        string result = StackTraceUtils.GetStackFrameMethodClassName(method, includeNameSpace: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
 
         Assert.Equal(nameof(StackTraceUtilsTests), result);
     }
@@ -91,9 +91,9 @@ public class StackTraceUtilsTests
     public void GetStackMethod_ValidStackFrame_ReturnsMethod()
     {
         var stackTrace = new StackTrace(false);
-        var frame = stackTrace.GetFrame(0);
+        StackFrame? frame = stackTrace.GetFrame(0);
 
-        var method = StackTraceUtils.GetStackMethod(frame);
+        MethodBase? method = StackTraceUtils.GetStackMethod(frame);
 
         Assert.NotNull(method);
     }
@@ -101,7 +101,7 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackMethod_NullFrame_ReturnsNull()
     {
-        var method = StackTraceUtils.GetStackMethod(null);
+        MethodBase? method = StackTraceUtils.GetStackMethod(null);
 
         Assert.Null(method);
     }
@@ -110,9 +110,9 @@ public class StackTraceUtilsTests
     public void GetClassFullName_ValidStackFrame_ReturnsNonEmpty()
     {
         var stackTrace = new StackTrace(false);
-        var frame = stackTrace.GetFrame(0);
+        StackFrame? frame = stackTrace.GetFrame(0);
 
-        var className = StackTraceUtils.GetClassFullName(frame);
+        string className = StackTraceUtils.GetClassFullName(frame);
 
         Assert.NotEmpty(className);
     }
@@ -120,7 +120,7 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetClassFullName_NullFrame_StillReturnsResult()
     {
-        var className = StackTraceUtils.GetClassFullName(null);
+        string className = StackTraceUtils.GetClassFullName(null);
 
         // Should return non-empty via fallback to StackTrace
         Assert.NotNull(className);
@@ -129,9 +129,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void LookupAssemblyFromMethod_SystemType_ReturnsNull()
     {
-        var method = typeof(string).GetMethod("ToString", Type.EmptyTypes)!;
+        MethodInfo method = typeof(string).GetMethod("ToString", Type.EmptyTypes)!;
 
-        var assembly = StackTraceUtils.LookupAssemblyFromMethod(method);
+        Assembly? assembly = StackTraceUtils.LookupAssemblyFromMethod(method);
 
         Assert.Null(assembly);
     }
@@ -139,9 +139,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void LookupAssemblyFromMethod_UserType_ReturnsAssembly()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(nameof(LookupAssemblyFromMethod_UserType_ReturnsAssembly))!;
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(nameof(LookupAssemblyFromMethod_UserType_ReturnsAssembly))!;
 
-        var assembly = StackTraceUtils.LookupAssemblyFromMethod(method);
+        Assembly? assembly = StackTraceUtils.LookupAssemblyFromMethod(method);
 
         Assert.NotNull(assembly);
     }
@@ -150,9 +150,9 @@ public class StackTraceUtilsTests
     public void LookupClassNameFromStackFrame_ValidFrame_ReturnsNonEmpty()
     {
         var stackTrace = new StackTrace(false);
-        var frame = stackTrace.GetFrame(0);
+        StackFrame? frame = stackTrace.GetFrame(0);
 
-        var className = StackTraceUtils.LookupClassNameFromStackFrame(frame);
+        string className = StackTraceUtils.LookupClassNameFromStackFrame(frame);
 
         Assert.NotEmpty(className);
     }
@@ -160,7 +160,7 @@ public class StackTraceUtilsTests
     [Fact]
     public void LookupClassNameFromStackFrame_NullFrame_ReturnsEmpty()
     {
-        var className = StackTraceUtils.LookupClassNameFromStackFrame(null);
+        string className = StackTraceUtils.LookupClassNameFromStackFrame(null);
 
         Assert.Equal(string.Empty, className);
     }
@@ -168,10 +168,10 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodName_WithCleanAnonymousDelegates_RegularMethod_StillReturnsName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(
             nameof(GetStackFrameMethodName_WithCleanAnonymousDelegates_RegularMethod_StillReturnsName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodName(
+        string result = StackTraceUtils.GetStackFrameMethodName(
             method, includeMethodInfo: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: true);
 
         Assert.Equal(nameof(GetStackFrameMethodName_WithCleanAnonymousDelegates_RegularMethod_StillReturnsName), result);
@@ -180,10 +180,10 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodName_WithCleanAsyncMoveNext_RegularMethod_StillReturnsName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(
             nameof(GetStackFrameMethodName_WithCleanAsyncMoveNext_RegularMethod_StillReturnsName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodName(
+        string result = StackTraceUtils.GetStackFrameMethodName(
             method, includeMethodInfo: false, cleanAsyncMoveNext: true, cleanAnonymousDelegates: false);
 
         Assert.Equal(nameof(GetStackFrameMethodName_WithCleanAsyncMoveNext_RegularMethod_StillReturnsName), result);
@@ -192,10 +192,10 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodClassName_WithCleanAnonymousDelegates_RegularClass_StillReturnsName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(
             nameof(GetStackFrameMethodClassName_WithCleanAnonymousDelegates_RegularClass_StillReturnsName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodClassName(
+        string result = StackTraceUtils.GetStackFrameMethodClassName(
             method, includeNameSpace: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: true);
 
         Assert.Equal(nameof(StackTraceUtilsTests), result);
@@ -204,10 +204,10 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodClassName_WithCleanAsyncMoveNext_RegularClass_StillReturnsName()
     {
-        var method = typeof(StackTraceUtilsTests).GetMethod(
+        MethodInfo method = typeof(StackTraceUtilsTests).GetMethod(
             nameof(GetStackFrameMethodClassName_WithCleanAsyncMoveNext_RegularClass_StillReturnsName))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodClassName(
+        string result = StackTraceUtils.GetStackFrameMethodClassName(
             method, includeNameSpace: true, cleanAsyncMoveNext: true, cleanAnonymousDelegates: false);
 
         Assert.Contains("xSdk", result);
@@ -216,9 +216,9 @@ public class StackTraceUtilsTests
     [Fact]
     public void GetStackFrameMethodClassName_NestedClass_ReturnsDeclaringTypeName()
     {
-        var method = typeof(NestedHelper).GetMethod(nameof(NestedHelper.DoWork))!;
+        MethodInfo method = typeof(NestedHelper).GetMethod(nameof(NestedHelper.DoWork))!;
 
-        var result = StackTraceUtils.GetStackFrameMethodClassName(
+        string result = StackTraceUtils.GetStackFrameMethodClassName(
             method, includeNameSpace: false, cleanAsyncMoveNext: false, cleanAnonymousDelegates: false);
 
         Assert.Equal(nameof(NestedHelper), result);
@@ -229,7 +229,7 @@ public class StackTraceUtilsTests
     {
         // Get the compiler-generated async state machine's MoveNext method for AsyncHelperMethod.
         // Its declaring type is named something like "<AsyncHelperMethod>d__N".
-        var stateType = typeof(StackTraceUtilsTests)
+        Type? stateType = typeof(StackTraceUtilsTests)
             .GetNestedTypes(BindingFlags.NonPublic)
             .FirstOrDefault(t => t.Name.Contains("AsyncHelper") && t.Name.Contains("MoveNext") == false);
 
@@ -239,11 +239,13 @@ public class StackTraceUtilsTests
             return;
         }
 
-        var moveNext = stateType.GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        MethodInfo? moveNext = stateType.GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (moveNext == null)
+        {
             return;
+        }
 
-        var result = StackTraceUtils.GetStackFrameMethodName(
+        string result = StackTraceUtils.GetStackFrameMethodName(
             moveNext, includeMethodInfo: false, cleanAsyncMoveNext: true, cleanAnonymousDelegates: false);
 
         // Should extract the original method name from the state machine name
@@ -251,7 +253,7 @@ public class StackTraceUtilsTests
     }
 
     // Helper classes/methods to exercise reflection paths
-    private async Task AsyncHelperMethod() => await Task.Yield();
+    private static async Task AsyncHelperMethod() => await Task.Yield();
 
     internal static class NestedHelper
     {

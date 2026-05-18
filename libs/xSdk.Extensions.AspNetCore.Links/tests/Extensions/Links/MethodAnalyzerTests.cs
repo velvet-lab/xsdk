@@ -23,7 +23,7 @@ public class MethodAnalyzerTests
     [Fact]
     public void Analyze_WithNullContext_ReturnsEmptyList()
     {
-        var result = MethodAnalyzer.Analyze(null);
+        List<MethodDescription> result = MethodAnalyzer.Analyze(null);
 
         Assert.NotNull(result);
         Assert.Empty(result);
@@ -34,7 +34,7 @@ public class MethodAnalyzerTests
     {
         var context = new DefaultHttpContext();
 
-        var result = MethodAnalyzer.Analyze(context);
+        List<MethodDescription> result = MethodAnalyzer.Analyze(context);
 
         Assert.NotNull(result);
         Assert.Empty(result);

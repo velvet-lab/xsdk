@@ -20,6 +20,11 @@ internal static class TestEntityExtensions
 {
     internal static KeyValuePair<string, object> ConverToDictionary(this TestEntity entity)
     {
-        return new KeyValuePair<string, object>(entity.Key, entity.Value);
+        if (entity.Key != null && entity.Value != null)
+        {
+            return new KeyValuePair<string, object>(entity.Key, entity.Value);
+        }
+
+        throw new InvalidOperationException("Entity key or value is null.");
     }
 }

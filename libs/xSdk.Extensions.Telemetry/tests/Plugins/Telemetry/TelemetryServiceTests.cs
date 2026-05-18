@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 

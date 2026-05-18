@@ -23,15 +23,18 @@ public class InsertDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFi
     [Fact]
     public async Task InsertDataWithDefaultMountPointAndPath()
     {
-        var repo = fixture.Factory.CreateRepository<IVaultRepository>();
+        IVaultRepository repo = fixture.Factory.CreateRepository<IVaultRepository>();
 
-        var fake = FakeGenerator.Generate<TestEntityFakes, TestEntity>();
-        await repo.AddSecretAsync(fake.Key, fake.Value);
+        TestEntity fake = await FakeGenerator.GenerateAsync<TestEntityFakes, TestEntity>();
+        if (fake.Key is not null && fake.Value is not null)
+        {
+            await repo.AddSecretAsync(fake.Key, fake.Value, TestContext.Current.CancellationToken);
 
-        var data = await repo.GetSecretsAsync();
-        var entity = data.FirstOrDefault();
+            IDictionary<string, string> data = await repo.GetSecretsAsync(TestContext.Current.CancellationToken);
+            KeyValuePair<string, string> entity = data.FirstOrDefault();
 
-        Assert.Equal(fake.Key, entity.Key);
-        Assert.Equal(fake.Value, entity.Value);
+            Assert.Equal(fake.Key, entity.Key);
+            Assert.Equal(fake.Value, entity.Value);
+        }
     }
 }

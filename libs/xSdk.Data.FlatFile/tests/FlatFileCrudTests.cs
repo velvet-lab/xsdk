@@ -26,25 +26,32 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
     [Fact]
     public async Task SelectListAsync_EmptyStore_ReturnsEmptyCollection()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         await repo.RemoveAll();
 
         Assert.NotNull(repo);
-        var result = await repo.GetDataAsync();
+        IEnumerable<TestEntity>? result = await repo.GetDataAsync(TestContext.Current.CancellationToken);
 
-        Assert.Empty(result);
+        if (result is not null)
+        {
+            Assert.Empty(result);
+        }
+        else
+        {
+            Assert.NotNull(result);
+        }
     }
 
     [Fact]
     public async Task InsertAsync_SingleEntity_CanBeSelected()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entity = new TestEntity { Name = "Alice", Age = 30 };
 
-        var inserted = await repo.InsertAsync(entity);
+        bool inserted = await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(inserted);
 
-        var result = await repo.SelectAsync(entity.Id);
+        TestEntity? result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.NotNull(result);
         Assert.Equal("Alice", result.Name);
     }
@@ -52,91 +59,91 @@ public class FlatFileCrudTests(DatabaseFixture fixture) : IClassFixture<Database
     [Fact]
     public async Task InsertAsync_MultipleEntities_AllInserted()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entities = new List<TestEntity>
         {
-            new TestEntity { Name = "Bob", Age = 25 },
-            new TestEntity { Name = "Carol", Age = 35 },
+            new() { Name = "Bob", Age = 25 },
+            new() { Name = "Carol", Age = 35 },
         };
 
-        var count = await repo.InsertAsync(entities);
+        int count = await repo.InsertAsync(entities, TestContext.Current.CancellationToken);
         Assert.Equal(2, count);
     }
 
     [Fact]
     public async Task UpdateAsync_Entity_ReflectsChange()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entity = new TestEntity { Name = "Dave", Age = 40 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         entity.Name = "Dave Updated";
-        var updated = await repo.UpdateAsync(entity.Id, entity);
+        bool updated = await repo.UpdateAsync(entity.Id, entity, TestContext.Current.CancellationToken);
 
         Assert.True(updated);
-        var result = await repo.SelectAsync(entity.Id);
+        TestEntity? result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Equal("Dave Updated", result?.Name);
     }
 
     [Fact]
     public async Task RemoveAsync_ByEntity_IsRemoved()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entity = new TestEntity { Name = "Eve", Age = 22 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity);
+        bool removed = await repo.RemoveAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(removed);
 
-        var result = await repo.SelectAsync(entity.Id);
+        TestEntity? result = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Null(result);
     }
 
     [Fact]
     public async Task RemoveAsync_ByPrimaryKey_IsRemoved()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entity = new TestEntity { Name = "Frank", Age = 28 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(entity.Id);
+        bool removed = await repo.RemoveAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.True(removed);
     }
 
     [Fact]
     public async Task UpsertAsync_NewEntity_IsInserted()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entity = new TestEntity { Name = "Grace", Age = 33 };
 
-        var result = await repo.UpsertAsync(entity);
+        bool result = await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(result);
     }
 
     [Fact]
     public async Task UpsertAsync_ExistingEntity_IsUpdated()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var entity = new TestEntity { Name = "Hank", Age = 44 };
-        await repo.InsertAsync(entity);
+        await repo.InsertAsync(entity, TestContext.Current.CancellationToken);
 
         entity.Age = 55;
-        var result = await repo.UpsertAsync(entity);
+        bool result = await repo.UpsertAsync(entity, TestContext.Current.CancellationToken);
         Assert.True(result);
 
-        var updated = await repo.SelectAsync(entity.Id);
+        TestEntity? updated = await repo.SelectAsync(entity.Id, TestContext.Current.CancellationToken);
         Assert.Equal(55, updated?.Age);
     }
 
     [Fact]
     public async Task RemoveAsync_MultipleEntities_AllRemoved()
     {
-        var repo = CreateRepo();
+        ITestRepository repo = CreateRepo();
         var e1 = new TestEntity { Name = "Irene", Age = 11 };
         var e2 = new TestEntity { Name = "John", Age = 12 };
-        await repo.InsertAsync(new[] { e1, e2 });
+        await repo.InsertAsync([e1, e2], TestContext.Current.CancellationToken);
 
-        var removed = await repo.RemoveAsync(new[] { e1, e2 });
+        int removed = await repo.RemoveAsync([e1, e2], TestContext.Current.CancellationToken);
         Assert.Equal(2, removed);
     }
 }

@@ -26,10 +26,14 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.TryAddSingleton<ILinksService>(provider =>
         {
-            var options = optionsFactory?.Invoke();
-            var service = ActivatorUtilities.CreateInstance<LinksService>(provider, options);
+            LinksOptions? options = optionsFactory?.Invoke();
+            if (options != null)
+            {
+                LinksService service = ActivatorUtilities.CreateInstance<LinksService>(provider, options);
+                return service;
+            }
 
-            return service;
+            throw new InvalidOperationException("LinksOptions cannot be null. Please provide a valid options factory.");
         });
 
         return services;

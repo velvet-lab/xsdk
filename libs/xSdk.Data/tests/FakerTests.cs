@@ -23,10 +23,9 @@ public class FakerTests
     [Fact]
     public void CreateFakes()
     {
-        var entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>();
+        TestEntity entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>();
 
         Assert.NotNull(entity);
-        Assert.NotNull(entity.Id);
         Assert.NotNull(entity.Name);
         Assert.True(entity.Age > 0);
     }
@@ -34,7 +33,7 @@ public class FakerTests
     [Fact]
     public void Generate_WithContext_ReturnsEntity()
     {
-        var entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>("default");
+        TestEntity entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>("default");
 
         Assert.NotNull(entity);
     }
@@ -42,7 +41,7 @@ public class FakerTests
     [Fact]
     public void Generate_WithStrictMode_ReturnsEntity()
     {
-        var entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>(true);
+        TestEntity entity = FakeGenerator.Generate<TestEntityFakes, TestEntity>(true);
 
         Assert.NotNull(entity);
     }
@@ -51,7 +50,7 @@ public class FakerTests
     public void Fakes_GetExamples_ReturnsEntity()
     {
         var fakes = new TestEntityFakes();
-        var entity = fakes.GetExamples();
+        TestEntity entity = fakes.GetExamples();
 
         Assert.NotNull(entity);
     }

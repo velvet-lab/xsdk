@@ -27,7 +27,7 @@ public class PluginHostExtensionsTests
 
     private sealed class FakePluginHost : PluginDescription, IPluginHost
     {
-        public new IServiceProvider Services => null!;
+        public IServiceProvider Services => null!;
         public void ConfigureServices(IServiceCollection services) { }
         public void ConfigureServices(Microsoft.Extensions.Hosting.HostBuilderContext context, IServiceCollection services) { }
     }
@@ -36,7 +36,7 @@ public class PluginHostExtensionsTests
     public void SetServiceProvider_OnConcretePluginHost_SetsServices()
     {
         var host = new ConcretePluginHost();
-        var services = new ServiceCollection().BuildServiceProvider();
+        ServiceProvider services = new ServiceCollection().BuildServiceProvider();
 
         host.SetServiceProvider(services);
 
@@ -47,7 +47,7 @@ public class PluginHostExtensionsTests
     public void SetServiceProvider_OnNonPluginHost_ThrowsInvalidOperationException()
     {
         IPluginHost fakeHost = new FakePluginHost();
-        var services = new ServiceCollection().BuildServiceProvider();
+        ServiceProvider services = new ServiceCollection().BuildServiceProvider();
 
         Assert.Throws<InvalidOperationException>(() => fakeHost.SetServiceProvider(services));
     }

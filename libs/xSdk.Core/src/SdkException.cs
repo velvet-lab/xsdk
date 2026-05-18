@@ -31,5 +31,7 @@ public class SdkException : Exception
         : base(message, innerException) { }
 
     protected SdkException(SerializationInfo info, StreamingContext context)
+#pragma warning disable SYSLIB0051 // Typ oder Element ist veraltet
         : base(info, context) { }
+#pragma warning restore SYSLIB0051 // Typ oder Element ist veraltet
 }

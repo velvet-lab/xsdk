@@ -21,14 +21,12 @@ namespace xSdk.Extensions.Variable;
 
 public class Variable : IVariable
 {
-    private string _template;
     private readonly string _applicationPrefix;
 
     protected Variable(string name, Type valueType)
     {
         Name = name;
-        if (valueType == null)
-            throw new ArgumentNullException("valueType");
+        ArgumentNullException.ThrowIfNull(valueType);
 
         ValueType = valueType;
 
@@ -39,25 +37,25 @@ public class Variable : IVariable
 
     public Type ValueType { get; private set; }
 
-    public string Prefix { get; internal set; }
+    public string? Prefix { get; internal set; }
 
     public bool NoPrefix { get; internal set; }
 
-    public string Template
+    public string? Template
     {
-        get => CreateTemplate(_template);
-        internal set => _template = value;
+        get => CreateTemplate(field);
+        internal set;
     }
 
-    public string HelpText { get; internal set; }
+    public string? HelpText { get; internal set; }
 
     public bool IsProtected { get; internal set; }
 
     public bool IsHidden { get; internal set; }
 
-    internal Func<object> TelemetryResourceValue { get; set; }
+    internal Func<object?>? TelemetryResourceValue { get; set; }
 
-    internal VariableAttribute Attribute { get; set; }
+    internal VariableAttribute? Attribute { get; set; }
 
     protected internal string KeyForSystem => CreateKey(false, true).Trim().ToUpperInvariant();
 
@@ -93,14 +91,14 @@ public class Variable : IVariable
 
     public override string ToString() => CreateKey(false, false);
 
-    public override bool Equals(object obj) =>
+    public override bool Equals(object? obj) =>
         ObjectTools.Equals<Variable>(this, obj, (source, dest) => string.CompareOrdinal(source.ToString(), dest.ToString()) == 0);
 
     internal string CreateKey(bool forCommandline, bool withApplicationPrefix)
     {
-        var variableName = Name;
-        var appPrefix = _applicationPrefix;
-        var prefix = Prefix;
+        string? variableName = Name;
+        string? appPrefix = _applicationPrefix;
+        string? prefix = Prefix;
 
         if (NoPrefix)
         {
@@ -108,7 +106,7 @@ public class Variable : IVariable
             prefix = string.Empty;
         }
 
-        var result = $"{prefix}{Globals.Constants.PREFIX_SEPERATOR}";
+        string? result = $"{prefix}{Globals.Constants.PREFIX_SEPERATOR}";
         if (!string.IsNullOrEmpty(result) && result.StartsWith(Globals.Constants.PREFIX_SEPERATOR))
         {
             result = result.Substring(Globals.Constants.PREFIX_SEPERATOR.Length);
@@ -119,14 +117,11 @@ public class Variable : IVariable
             result = "";
         }
 
-        var key = variableName;
-        if (!string.IsNullOrEmpty(prefix))
+        string? key = variableName;
+        if (!string.IsNullOrEmpty(prefix) && !string.IsNullOrEmpty(key) && key.StartsWith(prefix))
         {
-            if (key.StartsWith(prefix))
-            {
-                key = key.Substring(prefix.Length)?.Trim();
-                key = RemoveUnwantedCharsOnFirstPosition(key);
-            }
+            key = key.Substring(prefix.Length).Trim();
+            key = RemoveUnwantedCharsOnFirstPosition(key);
         }
 
         result = $"{result}{key}";
@@ -136,6 +131,7 @@ public class Variable : IVariable
             {
                 result = $"{prefix}{Globals.Constants.VARIABLE_SEPERATOR}{result}";
             }
+
             result = $"--{result.Replace(Globals.Constants.VARIABLE_SEPERATOR, "-")}";
         }
         else
@@ -144,29 +140,27 @@ public class Variable : IVariable
             {
                 result = $"{appPrefix}{Globals.Constants.PREFIX_SEPERATOR}{result}";
             }
+
             result = result.Replace("-", Globals.Constants.VARIABLE_SEPERATOR);
         }
 
         return result;
     }
 
-    private string CreateTemplate(string value)
+    private string? CreateTemplate(string? value)
     {
-        var templateValue = value;
-        if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf("<") > -1)
+        string? templateValue = value;
+        if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf('<') > -1)
         {
-            templateValue = templateValue.Substring(templateValue.IndexOf("<") + 1);
-            templateValue = templateValue.Substring(0, templateValue.IndexOf(">"));
+            templateValue = templateValue.Substring(templateValue.IndexOf('<') + 1);
+            templateValue = templateValue.Substring(0, templateValue.IndexOf('>'));
         }
         else
         {
             templateValue = string.Empty;
         }
 
-        if (!string.IsNullOrEmpty(templateValue))
-        {
-            templateValue = $" <{templateValue?.Trim()}>";
-        }
+        templateValue = $" <{templateValue?.Trim()}>";
 
         return $"{KeyForCommandline}{templateValue}".Trim();
     }
@@ -190,7 +184,7 @@ public sealed partial class Variable<TType> : Variable
     internal Variable(string name)
         : base(name, typeof(TType)) { }
 
-    public TType DefaultValue { get; private set; }
+    public TType? DefaultValue { get; private set; }
 
     internal override Variable SetDefaultValue(object defaultValue)
     {

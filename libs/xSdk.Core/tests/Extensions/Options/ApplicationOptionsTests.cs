@@ -15,6 +15,7 @@
  */
 
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -22,14 +23,6 @@ namespace xSdk.Extensions.Options;
 
 public class ApplicationOptionsTests
 {
-    private static ApplicationOptions CreateValid() => new()
-    {
-        Name = "myapp",
-        Company = "mycompany",
-        Prefix = "MYAPP",
-        AppVersion = "1.0.0",
-        Description = "Test application"
-    };
 
     [Fact]
     public void Constructor_SetsVersionFromAssembly()
@@ -44,9 +37,10 @@ public class ApplicationOptionsTests
     [Fact]
     public void Name_CanBeSetAndRead()
     {
-        var options = new ApplicationOptions();
-
-        options.Name = "testapp";
+        var options = new ApplicationOptions
+        {
+            Name = "testapp"
+        };
 
         Assert.Equal("testapp", options.Name);
     }
@@ -54,9 +48,10 @@ public class ApplicationOptionsTests
     [Fact]
     public void Company_CanBeSetAndRead()
     {
-        var options = new ApplicationOptions();
-
-        options.Company = "Acme Corp";
+        var options = new ApplicationOptions
+        {
+            Company = "Acme Corp"
+        };
 
         Assert.Equal("Acme Corp", options.Company);
     }
@@ -64,9 +59,10 @@ public class ApplicationOptionsTests
     [Fact]
     public void Prefix_CanBeSetAndRead()
     {
-        var options = new ApplicationOptions();
-
-        options.Prefix = "ACME";
+        var options = new ApplicationOptions
+        {
+            Prefix = "ACME"
+        };
 
         Assert.Equal("ACME", options.Prefix);
     }
@@ -74,9 +70,10 @@ public class ApplicationOptionsTests
     [Fact]
     public void Description_CanBeSetAndRead()
     {
-        var options = new ApplicationOptions();
-
-        options.Description = "A test app";
+        var options = new ApplicationOptions
+        {
+            Description = "A test app"
+        };
 
         Assert.Equal("A test app", options.Description);
     }
@@ -84,9 +81,10 @@ public class ApplicationOptionsTests
     [Fact]
     public void AppVersion_CanBeSetAndRead()
     {
-        var options = new ApplicationOptions();
-
-        options.AppVersion = "2.0.0";
+        var options = new ApplicationOptions
+        {
+            AppVersion = "2.0.0"
+        };
 
         Assert.Equal("2.0.0", options.AppVersion);
     }
@@ -133,7 +131,7 @@ public class ApplicationOptionsValidatorTests
         var options = new ApplicationOptions { Name = "app", Company = "co", Prefix = "APP", AppVersion = "1.0.0" };
         var validator = new ApplicationOptionsValidator();
 
-        var result = validator.Validate(options);
+        ValidationResult result = validator.Validate(options);
 
         Assert.True(result.IsValid);
     }
@@ -144,7 +142,7 @@ public class ApplicationOptionsValidatorTests
         var options = new ApplicationOptions { Name = "", Company = "co", Prefix = "APP", AppVersion = "1.0.0" };
         var validator = new ApplicationOptionsValidator();
 
-        var result = validator.Validate(options);
+        ValidationResult result = validator.Validate(options);
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(ApplicationOptions.Name));
@@ -156,7 +154,7 @@ public class ApplicationOptionsValidatorTests
         var options = new ApplicationOptions { Name = "app", Company = "", Prefix = "APP", AppVersion = "1.0.0" };
         var validator = new ApplicationOptionsValidator();
 
-        var result = validator.Validate(options);
+        ValidationResult result = validator.Validate(options);
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(ApplicationOptions.Company));
@@ -168,7 +166,7 @@ public class ApplicationOptionsValidatorTests
         var options = new ApplicationOptions { Name = "app", Company = "co", Prefix = "", AppVersion = "1.0.0" };
         var validator = new ApplicationOptionsValidator();
 
-        var result = validator.Validate(options);
+        ValidationResult result = validator.Validate(options);
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(ApplicationOptions.Prefix));
@@ -180,7 +178,7 @@ public class ApplicationOptionsValidatorTests
         var options = new ApplicationOptions { Name = "app", Company = "co", Prefix = "APP", AppVersion = "" };
         var validator = new ApplicationOptionsValidator();
 
-        var result = validator.Validate(options);
+        ValidationResult result = validator.Validate(options);
 
         Assert.False(result.IsValid);
         Assert.Contains(result.Errors, e => e.PropertyName == nameof(ApplicationOptions.AppVersion));
@@ -196,8 +194,8 @@ public class ApplicationOptionsExtensionsTests
         var options = new ApplicationOptions { Name = null, Company = null, Prefix = null, AppVersion = "1.0.0" };
 
         services.RegisterApplicationOptions(options);
-        var provider = services.BuildServiceProvider();
-        var registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
+        ServiceProvider provider = services.BuildServiceProvider();
+        ApplicationOptions registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
 
         Assert.Equal(ApplicationOptions.Definitions.AppName.DefaultValue, registered.Name);
         Assert.Equal(ApplicationOptions.Definitions.AppCompany.DefaultValue, registered.Company);
@@ -211,8 +209,8 @@ public class ApplicationOptionsExtensionsTests
         var options = new ApplicationOptions { Name = "custom", Company = "myco", Prefix = "CUST", AppVersion = "2.0.0" };
 
         services.RegisterApplicationOptions(options);
-        var provider = services.BuildServiceProvider();
-        var registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
+        ServiceProvider provider = services.BuildServiceProvider();
+        ApplicationOptions registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
 
         Assert.Equal("custom", registered.Name);
         Assert.Equal("myco", registered.Company);
@@ -226,7 +224,7 @@ public class ApplicationOptionsExtensionsTests
         // Empty strings are not null, so defaults are NOT applied; they remain empty and fail validation
         var options = new ApplicationOptions { Name = "x", Company = "x", Prefix = "x", AppVersion = "" };
         services.RegisterApplicationOptions(options);
-        var provider = services.BuildServiceProvider();
+        ServiceProvider provider = services.BuildServiceProvider();
 
         // ValidationException is thrown when IOptions<T>.Value is resolved
         Assert.Throws<ValidationException>(() => provider.GetRequiredService<IOptions<ApplicationOptions>>().Value);

@@ -17,28 +17,27 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using xSdk.Controllers;
 using xSdk.Data.Models;
 using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 
-namespace xSdk.Extensions.AspNetCore.Tests.Controllers;
+namespace xSdk.Controllers;
 
 public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
     private VariableController CreateController()
     {
-        var variableSvc = fixture.BuildHost().Services.GetRequiredService<IVariableService>();
-        var logger = NullLogger<HealthController>.Instance;
+        IVariableService variableSvc = fixture.BuildHost().Services.GetRequiredService<IVariableService>();
+        NullLogger<HealthController> logger = NullLogger<HealthController>.Instance;
         return new VariableController(variableSvc, logger);
     }
 
     [Fact]
     public async Task GetVariables_ReturnsOkResult()
     {
-        var controller = CreateController();
+        VariableController controller = CreateController();
 
-        var result = await controller.GetVariables();
+        ActionResult<IEnumerable<VariableModel>> result = await controller.GetVariables(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -46,25 +45,25 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task GetVariables_ReturnsListOfVariableModels()
     {
-        var controller = CreateController();
+        VariableController controller = CreateController();
 
-        var result = await controller.GetVariables();
+        ActionResult<IEnumerable<VariableModel>> result = await controller.GetVariables(TestContext.Current.CancellationToken);
         var ok = result.Result as OkObjectResult;
 
         Assert.NotNull(ok);
-        Assert.IsAssignableFrom<IEnumerable<VariableModel>>(ok.Value);
+        Assert.IsType<IEnumerable<VariableModel>>(ok.Value, exactMatch: false);
     }
 
     [Fact]
     public async Task GetVariable_WithValidName_ReturnsOkResult()
     {
-        var controller = CreateController();
+        VariableController controller = CreateController();
 
         // Get any variable that exists
-        var allResult = await controller.GetVariables();
+        ActionResult<IEnumerable<VariableModel>> allResult = await controller.GetVariables(TestContext.Current.CancellationToken);
         var allOk = allResult.Result as OkObjectResult;
         var variables = allOk?.Value as IEnumerable<VariableModel>;
-        var firstVar = variables?.FirstOrDefault();
+        VariableModel? firstVar = variables?.FirstOrDefault();
 
         if (firstVar is null)
         {
@@ -72,7 +71,7 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
             return;
         }
 
-        var result = await controller.GetVariable(firstVar.Name);
+        ActionResult<IEnumerable<VariableModel>> result = await controller.GetVariable(firstVar.Name, TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -80,9 +79,9 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task GetResourceNames_ReturnsOkResult()
     {
-        var controller = CreateController();
+        VariableController controller = CreateController();
 
-        var result = await controller.GetResourceNames();
+        ActionResult<IDictionary<string, object>> result = await controller.GetResourceNames(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -90,9 +89,9 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task GetValues_ReturnsOkResult()
     {
-        var controller = CreateController();
+        VariableController controller = CreateController();
 
-        var result = await controller.GetValues();
+        ActionResult<IDictionary<string, object>> result = await controller.GetValues(TestContext.Current.CancellationToken);
 
         Assert.IsType<OkObjectResult>(result.Result);
     }
@@ -100,12 +99,12 @@ public class VariableControllerTests(TestHostFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task GetValues_ReturnsDictionary()
     {
-        var controller = CreateController();
+        VariableController controller = CreateController();
 
-        var result = await controller.GetValues();
+        ActionResult<IDictionary<string, object>> result = await controller.GetValues(TestContext.Current.CancellationToken);
         var ok = result.Result as OkObjectResult;
 
         Assert.NotNull(ok);
-        Assert.IsAssignableFrom<IDictionary<string, object>>(ok.Value);
+        Assert.IsType<IDictionary<string, object>>(ok.Value, exactMatch: false);
     }
 }

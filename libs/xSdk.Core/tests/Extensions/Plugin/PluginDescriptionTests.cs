@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
-
 namespace xSdk.Extensions.Plugin;
 
 public class PluginDescriptionTests
