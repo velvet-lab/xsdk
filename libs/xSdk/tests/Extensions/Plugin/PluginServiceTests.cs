@@ -61,6 +61,7 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
     }
 
     [Fact]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Generische Überladung bevorzugen, wenn der Typ bekannt ist", Justification = "<Ausstehend>")]
     public async Task AddPluginAsync_SingleType_IsIncludedInGetPlugins()
     {
         IPluginService service = fixture
@@ -87,15 +88,23 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
     }
 
     [Fact]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Generische Überladung bevorzugen, wenn der Typ bekannt ist", Justification = "<Ausstehend>")]
     public async Task RemovePluginAsync_NonExistentType_DoesNotThrow()
     {
         IPluginService service = fixture
             .BuildHost()
             .Services.GetRequiredService<IPluginService>();
 
-        await service.RemovePluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);
+        try
+        {
+            await service.RemovePluginAsync(typeof(TestPlugin), TestContext.Current.CancellationToken);
 
-        // No exception expected
+            // No exception expected
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail($"Expected no exception, but got: {ex}");
+        }
     }
 
     [Fact]
@@ -105,9 +114,16 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
             .BuildHost()
             .Services.GetRequiredService<IPluginService>();
 
-        await service.RemovePluginsFromAsync([typeof(TestPlugin).Assembly], TestContext.Current.CancellationToken);
+        try
+        {
+            await service.RemovePluginsFromAsync([typeof(TestPlugin).Assembly], TestContext.Current.CancellationToken);
 
-        // No exception expected
+            // No exception expected
+        }
+        catch (Exception ex)
+        {
+            Assert.Fail($"Expected no exception, but got: {ex}");
+        }
     }
 }
 

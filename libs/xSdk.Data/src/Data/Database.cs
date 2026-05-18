@@ -105,7 +105,7 @@ public abstract class Database : IDatabase
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
     protected string ResolvePlaceholders(string content)
     {
-        _logger.LogDebug("Resolving placeholders in content: {content}", content);
+        _logger.LogDebug("Resolving placeholders in content: {Content}", content);
 
         // string name, string fileName
         foreach (KeyValuePair<string, string> kvp in _connectionProperties)
