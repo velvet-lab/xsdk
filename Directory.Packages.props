@@ -73,7 +73,7 @@
     <PackageVersion Include="VaultSharp" Version="1.17.5.1" />
     <PackageVersion Include="Weikio.PluginFramework" Version="1.5.1" />
     <PackageVersion Include="Weikio.PluginFramework.Abstractions" Version="1.5.1" />
-    <PackageVersion Include="YamlDotNet" Version="17.1.0" />
+    <PackageVersion Include="YamlDotNet" Version="18.0.0" />
     <PackageVersion Include="Yarp.ReverseProxy" Version="2.3.0" />
     <PackageVersion Include="Yarp.Telemetry.Consumption" Version="2.3.0" />
     <PackageVersion Include="Zio" Version="0.22.2" />
@@ -83,8 +83,8 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.7.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
-    <PackageVersion Include="Testcontainers" Version="4.11.0" />
-    <PackageVersion Include="Testcontainers.MongoDb" Version="4.11.0" />
+    <PackageVersion Include="Testcontainers" Version="4.12.0" />
+    <PackageVersion Include="Testcontainers.MongoDb" Version="4.12.0" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="3.2.2" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
