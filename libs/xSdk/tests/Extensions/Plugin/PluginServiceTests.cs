@@ -34,7 +34,7 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
 
             Assert.NotNull(plugins);
         }
-    }    
+    }
 
     [Fact]
     public void GetService_IPluginService_IsRegistered()

@@ -20,5 +20,5 @@ namespace xSdk.Extensions.Telemetry;
 
 public interface IAgentsPluginBuilder : IPluginBuilder
 {
-    
+
 }

@@ -19,6 +19,6 @@ internal static class SlimHostExtensions
             {
                 factory?.Invoke(webPlugin);
             }
-        }        
+        }
     }
 }

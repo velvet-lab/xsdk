@@ -22,7 +22,8 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
 {
     private async Task ResetAsync(IRepository<TestEntity, Guid>? repo)
     {
-        if (repo == null) return;
+        if (repo == null)
+            return;
 
         IEnumerable<TestEntity>? items = await repo.SelectListAsync(TestContext.Current.CancellationToken);
         if (items.Any())
@@ -38,7 +39,7 @@ public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<Data
         ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
 
-        await ResetAsync(repo);        
+        await ResetAsync(repo);
 
         var entity = new TestEntity
         {

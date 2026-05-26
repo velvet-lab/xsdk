@@ -25,7 +25,7 @@ internal sealed class HostInitializer(IPluginService pluginService, IPluginHostC
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         // Initialize the LogManager with the provided ILoggerFactory
-        LogManager.Initialize(factory);        
+        LogManager.Initialize(factory);
 
         // Register plugins with the plugin service
         foreach (Type pluginType in pluginHostCollection)

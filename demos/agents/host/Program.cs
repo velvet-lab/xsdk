@@ -74,7 +74,7 @@ var agent = chatClient
             // Tools = [AIFunctionFactory.Create(WeatherTool.GetWeather)]
         },
         AIContextProviders = [skillProvider]
-    });    
+    });
 
 Console.WriteLine(await agent.RunAsync("Was ist heute das Wetter in Frankreich?"));
 
