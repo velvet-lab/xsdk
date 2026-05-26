@@ -27,6 +27,8 @@ public class DatabaseFixture : DatabaseHostFixture
 {
     private MongoDbContainer? _mongoDbContainer = null;
 
+    private const string MONGODB_IMAGE_NAME = "mongo:8.0";
+
     protected override void Initialize()
     {
         ConfigureBuilder(hostBuilder => hostBuilder
@@ -39,8 +41,7 @@ public class DatabaseFixture : DatabaseHostFixture
                     .AddDbContextFactory<TestDbContext>(options =>
                     {
                         // Use TestContainers for UnitTests
-                        var imageName = GetEnvironmentVariable("MONGODB_IMAGE_NAME");
-                        _mongoDbContainer = new MongoDbBuilder(imageName)
+                        _mongoDbContainer = new MongoDbBuilder(MONGODB_IMAGE_NAME)
                             .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(27017)))
                             .WithAutoRemove(true)
                             .Build();

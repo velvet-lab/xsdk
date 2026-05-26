@@ -55,7 +55,7 @@ public sealed class SemVerConverter : JsonConverter<SemVer>
 
     public override void Write(Utf8JsonWriter writer, SemVer value, JsonSerializerOptions options)
     {
-        var tmp = $"{value.Version};{value.Range}";
+        string tmp = $"{value.Version};{value.Range}";
         writer.WriteBase64StringValue(Encoding.UTF8.GetBytes(tmp));
     }
 }

@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Agents;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableLinks<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : class//, ILinksPluginBuilder
+    public static IHostBuilder EnableAgents<TPluginBuilder>(this IHostBuilder hostBuilder)
+        where TPluginBuilder : class, IAgentsPluginBuilder
     {
         return hostBuilder
-            .RegisterPluginHost<AgentsPluginHost>();
-        //.RegisterPluginBuilder<ILinksPluginBuilder, TPluginBuilder>();
+            .RegisterPluginHost<AgentsPluginHost>()
+            .RegisterPluginBuilder<IAgentsPluginBuilder, TPluginBuilder>();
     }
 }

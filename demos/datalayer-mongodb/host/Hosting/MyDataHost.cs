@@ -42,38 +42,37 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
 
     private async Task LoadData(CancellationToken token)
     {
-        try
-        {
-            // Load the the Repository
-            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
+        // Load the the Repository
+        ISampleRepository sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
 
-            // Load the Samples from the Database
-            var entities = await sampleRepo.GetSamplesAsync();
+        // Load the Samples from the Database
+        IEnumerable<SampleEntity>? entities = await sampleRepo.GetSamplesAsync(token);
 
-            // Map the result to Modesl
-            var models = entities.ToModel<SampleMappingProfile, SampleModel>();
+        // Map the result to Modesl
+        IEnumerable<SampleModel>? models = entities?.ToModel<SampleMappingProfile, SampleModel>();
 
-            // Write Results tu Console
-            var table = new Table();
-            table.AddColumn("Name");
-            table.AddColumn("Age");
-            foreach (var model in models)
+        // Write Results tu Console
+        var table = new Table();
+        table.AddColumn("Name");
+        table.AddColumn("Age");
+
+        models?.Where(m => !string.IsNullOrEmpty(m.Name))
+            .ToList()
+            .ForEach(model =>
             {
-                table.AddRow(model.Name, model.Age.ToString());
-            }
-            AnsiConsole.Write(table);
-        }
-        catch
-        {
-            throw;
-        }
+                if (!string.IsNullOrEmpty(model.Name))
+                {
+                    table.AddRow(model.Name, model.Age.ToString());
+                    logger.LogInformation("Loaded Sample: {Name}, {Age}", model.Name, model.Age);
+                }
+            });
+
+        AnsiConsole.Write(table);
     }
 
     private async Task AddData(CancellationToken token)
     {
-        try
-        {
-            var json = @"
+        string json = @"
 [
     {
         ""Name"": ""John Doe"",
@@ -101,19 +100,14 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
     }
 ]
 ";
-            // Load the the Repository
-            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
+        // Load the the Repository
+        ISampleRepository sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
 
-            // Convert the Models to Entities
-            var models = JsonSerializer.Deserialize<IEnumerable<SampleModel>>(json, JsonTools.GetSerializerOptions());
-            var entities = models.ToEntity<SampleMappingProfile, SampleEntity>();
+        // Convert the Models to Entities
+        IEnumerable<SampleModel>? models = JsonSerializer.Deserialize<IEnumerable<SampleModel>>(json, JsonTools.GetSerializerOptions());
+        IEnumerable<SampleEntity>? entities = models?.ToEntity<SampleMappingProfile, SampleEntity>();
 
-            // Add this Samples to Database
-            await sampleRepo.AddSamplesAsync(entities);
-        }
-        catch
-        {
-            throw;
-        }
+        // Add this Samples to Database
+        await sampleRepo.AddSamplesAsync(entities, token);
     }
 }

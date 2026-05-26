@@ -29,7 +29,7 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, IWebSecurityPluginBuilder
     {
         builder
-            .RegisterPluginHostOptions<WebSecurityOptions>()
+            .RegisterPluginHostOptions<WebSecurityPluginOptions>()
             .RegisterPluginHost<WebSecurityPluginHost>()
             .RegisterPluginBuilder<IWebSecurityPluginBuilder, TPluginBuilder>();
 

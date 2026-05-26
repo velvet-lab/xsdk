@@ -9,17 +9,12 @@
         <Description>xSdk.Extensions.Commands - Command line interface extensions for the xSdk project.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Spectre.Console.Cli" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <InternalsVisibleTo Include="xSdk.Extensions.Commands.UnitTests" />
-    </ItemGroup>
-
 </Project>

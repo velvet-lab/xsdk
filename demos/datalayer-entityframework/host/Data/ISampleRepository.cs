@@ -22,5 +22,5 @@ internal interface ISampleRepository : IRepository
 {
     Task AddSamplesAsync(SampleEntity[] samples, CancellationToken token = default);
 
-    Task<IEnumerable<SampleEntity>> GetSamplesAsync(CancellationToken token = default);
+    Task<IEnumerable<SampleEntity>?> GetSamplesAsync(CancellationToken token = default);
 }

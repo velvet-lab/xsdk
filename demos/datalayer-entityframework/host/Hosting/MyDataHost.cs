@@ -40,55 +40,46 @@ public class MyDataHost(IDatalayerFactory dbFactory, ILogger<MyDataHost> logger)
 
     private async Task LoadData(CancellationToken token)
     {
-        try
+        // Load the the Repository
+        ISampleRepository sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
+
+        // Load the Samples from the Database
+        IEnumerable<SampleEntity>? entities = await sampleRepo.GetSamplesAsync(token);
+
+        // Map the result to Modesl
+        IEnumerable<SampleModel>? models = entities?.ToModel<SampleMappingProfile, SampleModel>();
+
+        // Write Results tu Console
+        var table = new Table();
+        table.AddColumn("Name");
+        table.AddColumn("Age");
+
+        models?.ToList().ForEach(model =>
         {
-            // Load the the Repository
-            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
-
-            // Load the Samples from the Database
-            var entities = await sampleRepo.GetSamplesAsync();
-
-            // Map the result to Modesl
-            var models = entities.ToModel<SampleMappingProfile, SampleModel>();
-
-            // Write Results tu Console
-            var table = new Table();
-            table.AddColumn("Name");
-            table.AddColumn("Age");
-            foreach (var model in models)
+            if (!string.IsNullOrEmpty(model.Name))
             {
+                logger.LogInformation("Loaded Sample: {Name} with Age {Age}", model.Name, model.Age);
                 table.AddRow(model.Name, model.Age.ToString());
             }
-            AnsiConsole.Write(table);
-        }
-        catch
-        {
-            throw;
-        }
+        });
+
+        AnsiConsole.Write(table);
     }
 
     private async Task AddData(CancellationToken token)
     {
-        try
-        {
-            // Load the the Repository
-            var sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
-            var secondRepo = dbFactory.CreateRepository<ISecondSampleRepository>(DbProviderNames.Second);
+        // Load the the Repository
+        ISampleRepository sampleRepo = dbFactory.CreateRepository<ISampleRepository>();
 
-            // Create some Sample Entities
-            var samples = new SampleEntity[]
-            {
-                new SampleEntity { Name = "Customer 1", Age = 10 },
-                new SampleEntity { Name = "Customer 2", Age = 20 },
-                new SampleEntity { Name = "Customer 3", Age = 30 },
-            };
-
-            // Add this Samples to Database
-            await sampleRepo.AddSamplesAsync(samples);
-        }
-        catch
+        // Create some Sample Entities
+        var samples = new SampleEntity[]
         {
-            throw;
-        }
+            new() { Name = "Customer 1", Age = 10 },
+            new() { Name = "Customer 2", Age = 20 },
+            new() { Name = "Customer 3", Age = 30 },
+        };
+
+        // Add this Samples to Database
+        await sampleRepo.AddSamplesAsync(samples, token);
     }
 }

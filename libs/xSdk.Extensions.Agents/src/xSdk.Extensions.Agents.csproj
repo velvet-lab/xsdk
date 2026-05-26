@@ -5,13 +5,9 @@
         <ProjectGuid>28bf601f-d362-458b-bffb-efb68e14ccc2</ProjectGuid>
     </PropertyGroup>
     
+    <!--External dependencies-->
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="ModelContextProtocol.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        
     </ItemGroup>
 
     <ItemGroup>

@@ -29,7 +29,7 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, IDataProtectionPluginBuilder
     {
         return hostBuilder
-            .RegisterPluginHostOptions<DataProtectionOptions>()
+            .RegisterPluginHostOptions<DataProtectionPluginOptions>()
             .RegisterPluginHost<DataProtectionPluginHost>()
             .RegisterPluginBuilder<IDataProtectionPluginBuilder, TPluginBuilder>();
     }

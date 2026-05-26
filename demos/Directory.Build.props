@@ -21,12 +21,13 @@
 
     <PropertyGroup>
         <RootNamespace>xSdk.Demos</RootNamespace>
-        <BaseOutputPath>$(SolutionDir)dist\demos\$([System.IO.Directory]::GetParent('$(MSBuildProjectDirectory)').Name)</BaseOutputPath>
+        <!-- <BaseOutputPath>$(SolutionDir)dist\demos\$([System.IO.Directory]::GetParent('$(MSBuildProjectDirectory)').Name)</BaseOutputPath> -->
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <SonarQubeExclude>true</SonarQubeExclude>
         <IsPublishable>false</IsPublishable>
         <IsPackable>false</IsPackable>
         <IsDemoProject>true</IsDemoProject>
+        <NoWarn>$(NoWarn);CA1873;IDE1006;S125;S1481;S3776</NoWarn>
     </PropertyGroup>
 
 </Project>

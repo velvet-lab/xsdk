@@ -29,6 +29,7 @@
 // vault write -f auth/approle4tests/role/my-test-role/secret-id
 
 using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Images;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -42,26 +43,23 @@ const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "dv";
 
 // Prepare Testcontainer
-var container = new ContainerBuilder()
-    .WithImage("openbao/openbao:2.5.2")
+IContainer container = new ContainerBuilder("openbao/openbao:2.5.2")
     .WithPortBinding(8200, true)
     .WithWaitStrategy(Wait.ForUnixContainer().UntilMessageIsLogged("Development mode should NOT be used in production installations!"))
     .WithImagePullPolicy(PullPolicy.Always)
     .Build();
 
 await container.StartAsync();
-var port = container.GetMappedPublicPort(8200);
-var (stdout, stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
+ushort port = container.GetMappedPublicPort(8200);
+(string? stdout, string? _) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
 
-var splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-var rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
-var unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
+string[] splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+string? rootToken = splitted.FirstOrDefault(x => x.IndexOf("Root Token:") > -1)?.Replace("Root Token:", "").Trim();
+string? unsealKey = splitted.FirstOrDefault(x => x.IndexOf("Unseal Key:") > -1)?.Replace("Unseal Key:", "").Trim();
 
-var host = xSdk.Hosting.Host
+IHost host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .AddDatalayer(builder =>
-    {
-        builder
+    .AddDatalayer(builder => builder
             .UseVault(true, _ =>
             {
                 _.AuthMethod = AuthMethods.Token;
@@ -91,15 +89,11 @@ var host = xSdk.Hosting.Host
                     return path;
                 };
             })
-            .ConfigureAuth<TokenAuthOptions>(options =>
-            {
-                options.Token = rootToken;
-            });
-    })
+            .ConfigureAuth<TokenAuthOptions>(options => options.Token = rootToken))
     .AddHost<MyDataHost>()
     .Build();
 
-var logger = LogManager.GetCurrentClassLogger();
+ILogger logger = LogManager.GetCurrentClassLogger();
 logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

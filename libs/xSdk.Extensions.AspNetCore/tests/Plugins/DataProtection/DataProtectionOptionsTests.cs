@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
@@ -26,7 +27,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_DefaultProperties_AreEmpty()
     {
-        var setup = new DataProtectionOptions();
+        var setup = new DataProtectionPluginOptions();
 
         Assert.NotNull(setup);
         Assert.True(string.IsNullOrEmpty(setup.Discriminator));
@@ -36,7 +37,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_SetApplicationDiscriminator_StoresValue()
     {
-        var setup = new DataProtectionOptions();
+        var setup = new DataProtectionPluginOptions();
 
         setup.Discriminator = "my-discriminator";
 
@@ -46,7 +47,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_SetKeyLifetime_StoresValue()
     {
-        var setup = new DataProtectionOptions();
+        var setup = new DataProtectionPluginOptions();
 
         setup.KeyLifetime = "30d";
 
@@ -56,13 +57,13 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_Definitions_ApplicationDiscriminatorName_IsCorrect()
     {
-        Assert.Equal("discriminator", DataProtectionOptions.Definitions.Discriminator.Name);
+        Assert.Equal("discriminator", DataProtectionPluginOptions.Definitions.Discriminator.Name);
     }
 
     [Fact]
     public void DataProtectionSetup_Definitions_KeyLifetimeName_IsCorrect()
     {
-        Assert.Equal("lifetime", DataProtectionOptions.Definitions.KeyLifetime.Name);
+        Assert.Equal("lifetime", DataProtectionPluginOptions.Definitions.KeyLifetime.Name);
     }
 
     [Fact]

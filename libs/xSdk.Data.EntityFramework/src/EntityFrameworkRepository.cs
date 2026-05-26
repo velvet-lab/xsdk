@@ -24,34 +24,48 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
     where TDbContext : DbContext
     where TEntity : class, IEntity<TPrimaryKeyType>
 {
-    public override Task<bool> InsertAsync(TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+    public override Task<bool> InsertAsync(TEntity? entity, CancellationToken token = default)
+    {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync(
             async (dbContext) =>
             {
                 await dbContext.AddAsync(entity, token);
                 return await dbContext.SaveChangesAsync(token) > 0;
-            },
-            true,
-            token
-        );
+            }, true, token);
+    }
 
-    public override Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+    public override Task<int> InsertAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
+    {
+        if (entities is null)
+        {
+            return Task.FromResult(0);
+        }
+
+        return ExecuteInternalAsync(
             async (dbContext) =>
             {
                 await dbContext.AddRangeAsync(entities, token);
 
                 return await dbContext.SaveChangesAsync(token);
-            },
-            true,
-            token
-        );
+            }, true, token);
+    }
 
-    public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType>? primaryKeys, CancellationToken token = default)
         => throw new NotImplementedException();
 
-    public override Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+    public override Task<bool> RemoveAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default)
+    {
+        if (primaryKey is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync(
             async (dbContext) =>
             {
 #pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
@@ -65,13 +79,17 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
                 }
 
                 return false;
-            },
-            true,
-            token
-        );
+            }, true, token);
+    }
 
-    public override Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+    public override Task<bool> RemoveAsync(TEntity? entity, CancellationToken token = default)
+    {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync(
             async (dbContext) =>
             {
                 TEntity? existing = await SelectAsync(entity.Id, token);
@@ -82,10 +100,8 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
                 }
 
                 return true;
-            },
-            true,
-            token
-        );
+            }, true, token);
+    }
 
     public override Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
     {
@@ -105,19 +121,23 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
         );
     }
 
+    public override Task<TEntity?> SelectAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default)
+    {
+        if (primaryKey is null)
+        {
+            return Task.FromResult<TEntity?>(null);
+        }
+
 #pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
-    public override Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default) =>
-        ExecuteInternalAsync(
-            (dbContext) => dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token),
-            false,
-            token
-        );
+        return ExecuteInternalAsync((dbContext) => dbContext.Set<TEntity>().SingleOrDefaultAsync(x => x.Id.Equals(primaryKey), token), false, token);
 #pragma warning restore CS8602 // Dereferenzierung eines möglichen Nullverweises.
+    }
 
     protected Task<TEntity?> SelectAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext => dbContext.Set<TEntity>().SingleOrDefaultAsync(filter), false, token);
 
     public override Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default) =>
+
         ExecuteInternalAsync(async (dbContext) =>
         {
             DbSet<TEntity> dbSet = dbContext.Set<TEntity>();
@@ -126,6 +146,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
             return entities;
         }, false, token);
+
 
     protected Task<IEnumerable<TEntity>?> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default) =>
         ExecuteInternalAsync(dbContext =>
@@ -137,8 +158,20 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
             return result ?? Task.FromResult<IEnumerable<TEntity>>([]);
         }, false, token);
-    public override Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+
+    public override Task<bool> UpdateAsync(TPrimaryKeyType? primaryKey, TEntity? entity, CancellationToken token = default)
+    {
+        if (primaryKey is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync(
             async (dbContext) =>
             {
 #pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
@@ -159,9 +192,16 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
             true,
             token
         );
+    }
 
-    public override Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync(
+    public override Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default)
+    {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync(
             async (dbContext) =>
             {
 #pragma warning disable CS8602 // Dereferenzierung eines möglichen Nullverweises.
@@ -185,6 +225,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
             true,
             token
         );
+    }
 
     private async Task<TResult?> ExecuteInternalAsync<TResult>(Func<TDbContext, Task<TResult>> func, bool withTransaction, CancellationToken token)
     {

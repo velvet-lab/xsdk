@@ -10,10 +10,9 @@
         <Description>xSdk.Data.FlatFile - Flat file provider integration for the xSdk data layer.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="JsonFlatFileDataStore" PrivateAssets="contentfiles;analyzers;build;compile" />
+
     </ItemGroup>
 
     <ItemGroup>

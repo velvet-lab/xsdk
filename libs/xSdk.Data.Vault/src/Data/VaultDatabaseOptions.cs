@@ -20,7 +20,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Data;
 
 [VariablePrefix("Vault")]
-public class VaultDatabaseOptions : VariableSetup
+public class VaultDatabaseOptions : DatabaseOptions
 {
     protected override void OnInitialize()
     {

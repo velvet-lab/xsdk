@@ -28,50 +28,68 @@ public sealed class FakeRepository<TEntity, TPrimaryKeyType> : Repository<TEntit
         _dbValues = new Collection<TEntity>([.. values]);
     }
 
-    public override Task<bool> InsertAsync(TEntity entity, CancellationToken token = default)
+    public override Task<bool> InsertAsync(TEntity? entity, CancellationToken token = default)
     {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
         _dbValues.Add(entity);
         return Task.FromResult(true);
     }
 
-    public override Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default)
+    public override Task<int> InsertAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
     {
-        _dbValues = [.. _dbValues, .. entities];
+        if (entities is null)
+        {
+            return Task.FromResult(0);
+        }
 
+        _dbValues = [.. _dbValues, .. entities];
         return Task.FromResult(entities.Count());
     }
 
-    public override Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default)
+    public override Task<bool> RemoveAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default)
     {
         _dbValues = [.. _dbValues.Where(x => !EqualityComparer<TPrimaryKeyType>.Default.Equals(x.Id, primaryKey))];
 
         return Task.FromResult(true);
     }
 
-    public override Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default)
+    public override Task<bool> RemoveAsync(TEntity? entity, CancellationToken token = default)
     {
-        _dbValues.Remove(entity);
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
 
+        _dbValues.Remove(entity);
         return Task.FromResult(true);
     }
 
     public override Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
     {
-        if (entities != null)
+        if (entities is null)
         {
-            foreach (TEntity entity in entities)
-            {
-                Remove(entity);
-            }
-
-            return Task.FromResult(entities.Count());
+            return Task.FromResult(0);
         }
 
-        return Task.FromResult(0);
+        foreach (TEntity entity in entities)
+        {
+            Remove(entity);
+        }
+
+        return Task.FromResult(entities.Count());
     }
 
-    public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType>? primaryKeys, CancellationToken token = default)
     {
+        if (primaryKeys is null)
+        {
+            return Task.FromResult(0);
+        }
+
         foreach (TPrimaryKeyType? primaryKey in primaryKeys)
         {
             Remove(primaryKey);
@@ -80,7 +98,7 @@ public sealed class FakeRepository<TEntity, TPrimaryKeyType> : Repository<TEntit
         return Task.FromResult(primaryKeys.Count());
     }
 
-    public override Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default)
+    public override Task<TEntity?> SelectAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default)
     {
         return Task.FromResult(_dbValues.SingleOrDefault(x => EqualityComparer<TPrimaryKeyType>.Default.Equals(x.Id, primaryKey)));
     }
@@ -90,7 +108,7 @@ public sealed class FakeRepository<TEntity, TPrimaryKeyType> : Repository<TEntit
         return Task.FromResult<IEnumerable<TEntity>?>(_dbValues);
     }
 
-    public override Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default)
+    public override Task<bool> UpdateAsync(TPrimaryKeyType? primaryKey, TEntity? entity, CancellationToken token = default)
     {
         Remove(primaryKey);
         Insert(entity);
@@ -98,8 +116,13 @@ public sealed class FakeRepository<TEntity, TPrimaryKeyType> : Repository<TEntit
         return Task.FromResult(true);
     }
 
-    public override Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default)
+    public override Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default)
     {
+        if (entity is null)
+        {
+            return Task.FromResult(true);
+        }
+
         return UpdateAsync(entity.Id, entity, token);
     }
 }

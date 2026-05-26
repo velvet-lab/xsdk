@@ -31,10 +31,9 @@ const string APP_NAME = "datalayer-mongodb";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "dn";
 
-ILogger logger = null;
+ILogger? logger = default;
 
-var mongoDbContainer = new MongoDbBuilder()
-    .WithImage("mongo:8.0")
+MongoDbContainer mongoDbContainer = new MongoDbBuilder("mongo:8.0")
     .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPort(27017)))
     .WithPortBinding(27017, 27017)
     .WithUsername("host")
@@ -44,19 +43,14 @@ var mongoDbContainer = new MongoDbBuilder()
 
 await mongoDbContainer.StartAsync();
 
-var host = xSdk.Hosting.Host
+IHost host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     // Sample for NoSql Datalayer
-    .AddDatalayer(builder =>
-    {
-        builder
+    .AddDatalayer(builder => builder
             .UseEntityFramework<SampleDbContext>()
             // Add Repositories to the Layer
-            .MapRepository<ISampleRepository, SampleRepository>();
-    })
-    .ConfigureServices(services =>
-    {
-        services
+            .MapRepository<ISampleRepository, SampleRepository>())
+    .ConfigureServices((_, services) => services
             .RegisterOptions<MongoDbOptions>(options =>
             {
                 options.Database = "MyDataStore";
@@ -71,15 +65,14 @@ var host = xSdk.Hosting.Host
                 //var databaseOptions = provider.GetService<IOptionsMonitor<MongoDbOptions>>()?.CurrentValue;
                 //var client =  databaseOptions.CreateMongoDbClientSettings();
 
-                var connectionString = mongoDbContainer.GetConnectionString();
+                string connectionString = mongoDbContainer.GetConnectionString();
                 logger?.LogInformation("MongoDB ConnectionString: {ConnectionString}", connectionString);
 
                 var client = new MongoClient(connectionString);
 
                 // Use InMemory Database
                 options.UseMongoDB(client, "MyDataStore");
-            });
-    })
+            }))
     .AddHost<MyDataHost>()
     .Build();
 

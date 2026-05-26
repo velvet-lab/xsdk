@@ -26,7 +26,7 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, IDocumentationPluginBuilder
     {
         return hostBuilder
-            .RegisterPluginHostOptions<DocumentationOptions>()
+            .RegisterPluginHostOptions<DocumentationPluginOptions>()
             .RegisterPluginHost<DocumentationPluginHost>()
             .RegisterPluginBuilder<IDocumentationPluginBuilder, TPluginBuilder>();
     }

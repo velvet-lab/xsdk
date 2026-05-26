@@ -21,7 +21,7 @@ namespace xSdk.Data.Converters.Mapper;
 
 public static class ExtensionDataConverter
 {
-    public static IDictionary<string, object> Convert(string sourceMember)
+    public static IDictionary<string, object> Convert(string? sourceMember)
     {
         if (!string.IsNullOrEmpty(sourceMember))
         {
@@ -38,9 +38,9 @@ public static class ExtensionDataConverter
         return new Dictionary<string, object>();
     }
 
-    public static string? Convert(IDictionary<string, object> sourceMember)
+    public static string? Convert(IDictionary<string, object>? sourceMember)
     {
-        if (sourceMember != null)
+        if (sourceMember is not null)
         {
             JsonSerializerOptions options = JsonTools.GetSerializerOptions();
             options.WriteIndented = false;

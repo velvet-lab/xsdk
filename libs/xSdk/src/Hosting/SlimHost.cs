@@ -33,7 +33,7 @@ public class SlimHost
     private ApplicationOptions? _applicationOptions;
     private readonly List<Type> _registeredPluginHostTypes = [];
 
-    private IServiceProvider Provider
+    internal IServiceProvider Provider
     {
         get
         {
@@ -47,12 +47,6 @@ public class SlimHost
     internal SlimHost() { }
 
     internal void ConfigurePluginHost(Action<IPluginHost> factory)
-        => ConfigurePluginHostInternal(factory, default);
-
-    internal void ConfigureWebPluginHost(Action<IWebPluginHost> factory)
-        => ConfigurePluginHostInternal(default, factory);
-
-    private void ConfigurePluginHostInternal(Action<IPluginHost>? factory, Action<IWebPluginHost>? webFactory)
     {
         IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
             .Cast<PluginDescription>()
@@ -62,12 +56,6 @@ public class SlimHost
         foreach (IPluginHost plugin in plugins)
         {
             factory?.Invoke(plugin);
-
-            Type pluginType = plugin.GetType();
-            if (pluginType.IsAssignableTo(typeof(IWebPluginHost)) && plugin is IWebPluginHost webPlugin)
-            {
-                webFactory?.Invoke(webPlugin);
-            }
         }
     }
 

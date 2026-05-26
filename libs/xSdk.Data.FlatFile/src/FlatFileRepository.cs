@@ -22,26 +22,47 @@ namespace xSdk.Data;
 public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
     where TEntity : FlatFileEntity
 {
-    public override Task<bool> InsertAsync(TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync((col) => col.InsertOneAsync(entity), token);
+    public override Task<bool> InsertAsync(TEntity? entity, CancellationToken token = default)
+    {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
 
-    public override Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default)
-        => ExecuteInternalAsync((col) => col.InsertManyAsync(entities).ContinueWith(task => entities.Count()), token);
+        return ExecuteInternalAsync((col) => col.InsertOneAsync(entity), token);
+    }
+
+    public override Task<int> InsertAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
+    {
+        if (entities is null)
+        {
+            return Task.FromResult(0);
+        }
+
+        return ExecuteInternalAsync((col) => col.InsertManyAsync(entities).ContinueWith(task => entities.Count()), token);
+    }
 
     public override Task<bool> RemoveAsync(int primaryKey, CancellationToken token = default) =>
         ExecuteInternalAsync((col) => col.DeleteOneAsync(x => x.Id == primaryKey), token);
 
-    public override Task<int> RemoveAsync(IEnumerable<int> primaryKeys, CancellationToken token = default)
+    public override Task<int> RemoveAsync(IEnumerable<int>? primaryKeys, CancellationToken token = default)
     {
         throw new NotImplementedException();
     }
 
-    public override Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync((col) => col.DeleteOneAsync(x => x.Id == entity.Id), token);
+    public override Task<bool> RemoveAsync(TEntity? entity, CancellationToken token = default)
+    {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync((col) => col.DeleteOneAsync(x => x.Id == entity.Id), token);
+    }
 
     public override Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default)
     {
-        if (entities == null)
+        if (entities is null)
         {
             return Task.FromResult(0);
         }
@@ -81,17 +102,28 @@ public abstract class FlatFileRepository<TEntity> : Repository<TEntity, int>
         => ExecuteInternalAsync(col => Task.FromResult(col.Find(ConvertFilter(filter))), token)
             .ContinueWith(task => task.Result?.SingleOrDefault(), token);
 
-    protected IEnumerable<TEntity> SelectList(Expression<Func<TEntity, bool>> filter) => SelectListAsync(filter).GetAwaiter().GetResult();
+    protected IEnumerable<TEntity>? SelectList(Expression<Func<TEntity, bool>> filter) => SelectListAsync(filter).GetAwaiter().GetResult();
 
-    protected Task<IEnumerable<TEntity>> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default)
-        => ExecuteInternalAsync(col => Task.FromResult(col.Find(ConvertFilter(filter))), token)
-            .ContinueWith(task => task.Result ?? [], token);
+    protected Task<IEnumerable<TEntity>?> SelectListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken token = default)
+        => ExecuteInternalAsync(col => Task.FromResult(col.Find(ConvertFilter(filter))), token);
 
-    public override Task<bool> UpdateAsync(int primaryKey, TEntity entity, CancellationToken token = default) =>
-        ExecuteInternalAsync((col) => col.UpdateOneAsync(entity.Id, entity), token);
-
-    public override Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default)
+    public override Task<bool> UpdateAsync(int primaryKey, TEntity? entity, CancellationToken token = default)
     {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
+        return ExecuteInternalAsync((col) => col.UpdateOneAsync(entity.Id, entity), token);
+    }
+
+    public override Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default)
+    {
+        if (entity is null)
+        {
+            return Task.FromResult(false);
+        }
+
         return ExecuteInternalAsync(
             async (col) =>
             {

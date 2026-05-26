@@ -15,6 +15,7 @@
  */
 
 using Microsoft.AspNetCore.Mvc.Formatters;
+using xSdk.Extensions.WebApi;
 
 namespace xSdk.Plugins.WebApi;
 

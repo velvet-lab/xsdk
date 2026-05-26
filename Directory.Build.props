@@ -13,12 +13,15 @@
         <AssemblyName>$(MSBuildProjectName)</AssemblyName>
         <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>        
+        <Nullable>enable</Nullable>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <!-- Disable CLS compliance warnings - this is a C#-only library -->
         <CLSCompliant>false</CLSCompliant>
         <NoWarn>$(NoWarn);CS3001;CS3002;CS3003;CS3009;CS30024;CS30027;CS1591;IDE0057;IDE0022</NoWarn>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+        <TestingPlatformCaptureOutput>false</TestingPlatformCaptureOutput>
+        <TestingPlatformCommandLineArguments>$(TestingPlatformCommandLineArguments) --config-file $(SolutionDir)testconfig.json</TestingPlatformCommandLineArguments>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -34,28 +37,28 @@
 
     <!-- see https://github.com/dotnet/sourcelink -->
     <PropertyGroup Condition="'$(IsTestProject)' == 'false'">
-        <BaseOutputPath>$(SolutionDir)dist\$(MSBuildProjectName)</BaseOutputPath>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
-    <!-- see https://xunit.net/docs/getting-started/v3/code-coverage-with-mtp -->
-    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
-        <!--<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>-->
-        <!--<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>-->
-        <RunSettingsFilePath>$(SolutionDir)xsdk.runsettings</RunSettingsFilePath>
-    </PropertyGroup>
-
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 
-    <ItemGroup Condition="'$(IsTestProject)' == 'false'">        
+    <ItemGroup Condition="'$(IsTestProject)' == 'false'">
+        <None Include="..\Directory.Build.props" Link="Directory.Build.props" />
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>$(AssemblyName).Tests</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+        <Using Include="Xunit" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Testing" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+        <PackageReference Include="xunit.v3.mtp-v2" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(GenerateEmbeddedFilesManifest)' == 'true'">

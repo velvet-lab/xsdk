@@ -21,13 +21,13 @@ namespace xSdk.Demos.Data;
 
 internal class SampleRepository : EntityFrameworkRepository<SampleDbContext, SampleEntity, ObjectId>, ISampleRepository
 {
-    public Task AddSamplesAsync(IEnumerable<SampleEntity> samples, CancellationToken token = default)
+    public Task AddSamplesAsync(IEnumerable<SampleEntity>? samples, CancellationToken token = default)
     {
-        return this.InsertAsync(samples, token);
+        return InsertAsync(samples, token);
     }
 
-    public Task<IEnumerable<SampleEntity>> GetSamplesAsync(CancellationToken token = default)
+    public Task<IEnumerable<SampleEntity>?> GetSamplesAsync(CancellationToken token = default)
     {
-        return this.SelectListAsync(token);
+        return SelectListAsync(token);
     }
 }

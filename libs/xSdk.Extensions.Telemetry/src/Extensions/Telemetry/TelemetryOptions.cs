@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Extensions.Telemetry;
 
-public sealed class TelemetryOptions : VariableSetup
+public sealed class TelemetryOptions : PluginOptions
 {
     [Variable(name: Definitions.DisableAll.Name, template: Definitions.DisableAll.Template, helpText: Definitions.DisableAll.HelpText)]
     public bool IsDisabled

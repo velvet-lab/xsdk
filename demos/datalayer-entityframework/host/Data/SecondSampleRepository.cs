@@ -22,11 +22,11 @@ internal class SecondSampleRepository : EntityFrameworkRepository<SecondDbContex
 {
     public Task AddSamplesAsync(SecondEntity[] samples, CancellationToken token = default)
     {
-        return this.InsertAsync(samples, token);
+        return InsertAsync(samples, token);
     }
 
-    public Task<IEnumerable<SecondEntity>> GetSamplesAsync(CancellationToken token = default)
+    public Task<IEnumerable<SecondEntity>?> GetSamplesAsync(CancellationToken token = default)
     {
-        return this.SelectListAsync(token);
+        return SelectListAsync(token);
     }
 }

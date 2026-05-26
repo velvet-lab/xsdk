@@ -37,7 +37,7 @@ namespace xSdk.Demos.Controllers.v3;
     Consumes("application/json"),
     ProducesErrorResponseType(typeof(ProblemDetails))
 ]
-public sealed class SampleController(IValidator<SampleModel> validator, ILinksService linksService, ILogger<SampleController> logger) : ControllerBase
+public sealed class SampleController(ILinksService linksService, ILogger<SampleController> logger) : ControllerBase
 {
     [
         HttpGet(),
@@ -49,7 +49,7 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult<IEnumerable<SampleModel>>> GetSamplesAsyncV3(CancellationToken token = default)
+    public async Task<ActionResult<IEnumerable<SampleModel>>> GetSamplesAsyncV3()
     {
         try
         {
@@ -83,10 +83,10 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         {
             logger.LogDebug("Call get all Samples with Hateoas Links");
 
-            var database = SampleDatabase.Load();
-            foreach (var model in database)
+            List<SampleModel> database = SampleDatabase.Load();
+            foreach (SampleModel model in database)
             {
-                await linksService.AddLinksAsync(model);
+                await linksService.AddLinksAsync(model, token);
             }
 
             return Ok(database);
@@ -115,9 +115,9 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         {
             logger.LogDebug("Call get Sample with Hateoas Links");
 
-            var database = SampleDatabase.Load();
-            var item = database.Single(x => x.Id == id);
-            await linksService.AddLinksAsync(item);
+            List<SampleModel> database = SampleDatabase.Load();
+            SampleModel item = database.Single(x => x.Id == id);
+            await linksService.AddLinksAsync(item, token);
 
             return Ok(item);
         }
@@ -139,10 +139,7 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult<bool>> SaveSampleHateOasAsync(
-        [FromBody]
-        SampleModel model,
-        CancellationToken token = default)
+    public async Task<ActionResult<bool>> SaveSampleHateOasAsync([FromBody] SampleModel model)
     {
         try
         {
@@ -150,7 +147,7 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
 
             await Task.Yield();
 
-            var database = SampleDatabase.Load();
+            List<SampleModel> database = SampleDatabase.Load();
             database.Add(model);
 
             return Ok(true);
@@ -176,8 +173,7 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
     public async Task<ActionResult<bool>> UpdateSampleHateOasAsync(
         string id,
         [FromBody]
-        SampleModel model,
-        CancellationToken token = default)
+        SampleModel model)
     {
         try
         {
@@ -185,8 +181,8 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
 
             await Task.Yield();
 
-            var database = SampleDatabase.Load();
-            var item = database.Single(x => x.Id == id);
+            List<SampleModel> database = SampleDatabase.Load();
+            SampleModel item = database.Single(x => x.Id == id);
             database.Remove(item);
             database.Add(model);
 
@@ -210,7 +206,7 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult<bool>> DeleteSampleHateOasAsync(string id, CancellationToken token = default)
+    public async Task<ActionResult<bool>> DeleteSampleHateOasAsync(string id)
     {
         try
         {
@@ -218,8 +214,8 @@ public sealed class SampleController(IValidator<SampleModel> validator, ILinksSe
 
             await Task.Yield();
 
-            var database = SampleDatabase.Load();
-            var item = database.Single(x => x.Id == id);
+            List<SampleModel> database = SampleDatabase.Load();
+            SampleModel item = database.Single(x => x.Id == id);
             database.Remove(item);
 
             return Ok(true);

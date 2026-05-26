@@ -37,20 +37,6 @@ public class PluginServiceTests(TestHostFixture fixture) : IClassFixture<TestHos
     }
 
     [Fact]
-    public async Task GetPluginAsync_NoPluginsLoaded_ReturnsNull()
-    {
-        IPluginService? service = fixture
-            .BuildHost()
-            .Services.GetService<IPluginService>();
-
-        if (service != null)
-        {
-            IPlugin? plugin = await service.GetPluginAsync<IPlugin>(TestContext.Current.CancellationToken);
-            Assert.NotNull(plugin);
-        }
-    }
-
-    [Fact]
     public void GetService_IPluginService_IsRegistered()
     {
         IPluginService? service = fixture

@@ -23,43 +23,43 @@ public interface IRepository : IDatalayerMetadata
 public interface IRepository<TEntity, TPrimaryKeyType> : IRepository
     where TEntity : class, IEntity<TPrimaryKeyType>
 {
-    bool Insert(TEntity entity);
+    bool Insert(TEntity? entity);
 
-    int Insert(IEnumerable<TEntity> entities);
+    int Insert(IEnumerable<TEntity>? entities);
 
-    Task<bool> InsertAsync(TEntity entity, CancellationToken token = default);
+    Task<bool> InsertAsync(TEntity? entity, CancellationToken token = default);
 
-    Task<int> InsertAsync(IEnumerable<TEntity> entities, CancellationToken token = default);
+    Task<int> InsertAsync(IEnumerable<TEntity>? entities, CancellationToken token = default);
 
-    bool Remove(TEntity entity);
+    bool Remove(TEntity? entity);
 
-    bool Remove(TPrimaryKeyType primaryKey);
+    bool Remove(TPrimaryKeyType? primaryKey);
 
-    int Remove(IEnumerable<TPrimaryKeyType> primaryKeys);
+    int Remove(IEnumerable<TPrimaryKeyType>? primaryKeys);
 
     int Remove(IEnumerable<TEntity>? entities);
 
-    Task<bool> RemoveAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
+    Task<bool> RemoveAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default);
 
-    Task<bool> RemoveAsync(TEntity entity, CancellationToken token = default);
+    Task<bool> RemoveAsync(TEntity? entity, CancellationToken token = default);
 
-    Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType> primaryKeys, CancellationToken token = default);
+    Task<int> RemoveAsync(IEnumerable<TPrimaryKeyType>? primaryKeys, CancellationToken token = default);
 
     Task<int> RemoveAsync(IEnumerable<TEntity>? entities, CancellationToken token = default);
 
-    TEntity? Select(TPrimaryKeyType primaryKey);
+    TEntity? Select(TPrimaryKeyType? primaryKey);
 
-    Task<TEntity?> SelectAsync(TPrimaryKeyType primaryKey, CancellationToken token = default);
+    Task<TEntity?> SelectAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default);
 
     IEnumerable<TEntity>? SelectList();
 
     Task<IEnumerable<TEntity>?> SelectListAsync(CancellationToken token = default);
 
-    bool Update(TPrimaryKeyType primaryKey, TEntity entity);
+    bool Update(TPrimaryKeyType? primaryKey, TEntity? entity);
 
-    Task<bool> UpdateAsync(TPrimaryKeyType primaryKey, TEntity entity, CancellationToken token = default);
+    Task<bool> UpdateAsync(TPrimaryKeyType? primaryKey, TEntity? entity, CancellationToken token = default);
 
-    bool Upsert(TEntity entity);
+    bool Upsert(TEntity? entity);
 
-    Task<bool> UpsertAsync(TEntity entity, CancellationToken token = default);
+    Task<bool> UpsertAsync(TEntity? entity, CancellationToken token = default);
 }

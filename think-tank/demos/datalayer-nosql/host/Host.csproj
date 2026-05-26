@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="LiteDB" />
-        <PackageReference Include="Spectre.Console.Cli" />
     </ItemGroup>
 
     <ItemGroup>

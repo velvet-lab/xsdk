@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.WebApi;
@@ -27,15 +28,15 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
     [Fact]
     public void ApiKeySetup_DefaultRealm_HasDefaultValue()
     {
-        var setup = new ApiKeyOptions();
+        var setup = new ApiKeyPluginOptions();
 
-        Assert.Equal(ApiKeyOptions.Definitions.Realm.DefaultValue, setup.Realm);
+        Assert.Equal(ApiKeyPluginOptions.Definitions.Realm.DefaultValue, setup.Realm);
     }
 
     [Fact]
     public void ApiKeySetup_SetRealm_StoresValue()
     {
-        var setup = new ApiKeyOptions();
+        var setup = new ApiKeyPluginOptions();
 
         setup.Realm = "my-test-realm";
 
@@ -45,19 +46,19 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
     [Fact]
     public void ApiKeySetup_Definitions_RealmName_IsCorrect()
     {
-        Assert.Equal("realm", ApiKeyOptions.Definitions.Realm.Name);
+        Assert.Equal("realm", ApiKeyPluginOptions.Definitions.Realm.Name);
     }
 
     [Fact]
     public void ApiKeySetup_Definitions_RealmTemplate_ContainsRealm()
     {
-        Assert.Contains("realm", ApiKeyOptions.Definitions.Realm.Template);
+        Assert.Contains("realm", ApiKeyPluginOptions.Definitions.Realm.Template);
     }
 
     [Fact]
     public void ApiKeySetup_Definitions_RealmDefaultValue_IsNotEmpty()
     {
-        Assert.False(string.IsNullOrEmpty(ApiKeyOptions.Definitions.Realm.DefaultValue));
+        Assert.False(string.IsNullOrEmpty(ApiKeyPluginOptions.Definitions.Realm.DefaultValue));
     }
 
     [Fact]

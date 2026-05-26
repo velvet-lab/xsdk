@@ -26,7 +26,7 @@ public sealed class OptionsWithPrefix : VariableSetup
         name: Definitions.Prop1.Name,
         template: Definitions.Prop1.Template,
         protect: true)]
-    public string WithAppPrefix_WithSetupPrefix
+    public string? WithAppPrefix_WithSetupPrefix
     {
         get => ReadValue<string>(Definitions.Prop1.Name);
         set => SetValue(Definitions.Prop1.Name, value);
@@ -37,7 +37,7 @@ public sealed class OptionsWithPrefix : VariableSetup
         template: Definitions.Prop2.Template,
         protect: true,
         noPrefix: true)]
-    public string NoAppPrefix_NoSetupPrefix
+    public string? NoAppPrefix_NoSetupPrefix
     {
         get => ReadValue<string>(Definitions.Prop2.Name);
         set => SetValue(Definitions.Prop2.Name, value);

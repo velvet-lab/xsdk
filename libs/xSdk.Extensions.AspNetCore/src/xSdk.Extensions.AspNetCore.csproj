@@ -13,18 +13,10 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="AspNetCore.Authentication.ApiKey" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Hellang.Middleware.ProblemDetails" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Microsoft.AspNetCore.Testing" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="NWebsec.AspNetCore.Middleware" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Zio" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />        
     </ItemGroup>
 
     <ItemGroup>

@@ -9,18 +9,13 @@
         <Description>xSdk.Extensions.CloudEvents - CloudEvents extensions for the xSdk project.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="CloudNative.CloudEvents" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="CloudNative.CloudEvents.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+        <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
     </ItemGroup>
 </Project>

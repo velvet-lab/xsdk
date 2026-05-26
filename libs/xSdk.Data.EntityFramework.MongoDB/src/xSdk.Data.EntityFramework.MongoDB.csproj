@@ -10,12 +10,10 @@
         <Description>xSdk.Data.EntityFramework.MongoDB - MongoDB provider integration for the xSdk EntityFramework data layer.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="MongoDB.Driver" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="MongoDB.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="SharpCompress" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="MongoDB.EntityFrameworkCore" />
     </ItemGroup>
 
     <ItemGroup>

@@ -25,7 +25,7 @@ sonar-build solution:
     # Otherwise, if restore is not run, a error is ok
     @just {{module_name}}::info "Building solution '{{solution}}' for SonarQube analysis..."
     dotnet build "{{solution}}" --configuration Debug --no-incremental --nologo --no-restore
-    dotnet dotnet-coverage collect "dotnet test "{{solution}}" --configuration Debug --no-build --verbosity quiet" --output-format xml --output coverage.xml --nologo
+    dotnet dotnet-coverage collect "dotnet test ""{{solution}}"" --configuration Debug --no-build --verbosity quiet -- --coverage --coverage-output-format xml --coverage-output coverage.xml" --output-format xml --output coverage.xml --nologo
     @just {{module_name}}::success "Solution '{{solution}}' built successfully for SonarQube analysis."
 
 # Run tests for solution in Release configuration without building the solution
@@ -33,5 +33,6 @@ sonar-build solution:
 [group('development')]
 test solution: (build solution)
     @just {{module_name}}::info "Running tests for solution '{{solution}}'..."
-    dotnet test "{{solution}}" --settings xsdk.runsettings --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
+    # dotnet test "{{solution}}" --settings xsdk.runsettings --configuration Release --no-build --verbosity quiet --results-directory TestResults --logger "trx"
+    dotnet test "{{solution}}" --configuration Release --no-build --verbosity quiet -- --report-xunit-trx
     @just {{module_name}}::success "Tests for solution '{{solution}}' completed successfully."

@@ -1,32 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <IsTestProject>true</IsTestProject>
         <IsPackable>false</IsPackable>
         <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNetCore.Authentication.ApiKey" />
-        <PackageReference Include="Asp.Versioning.Http" />
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
-        <PackageReference Include="Microsoft.AspNetCore.Testing" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
-        <PackageReference Include="xunit.v3" />
-        <PackageReference Include="xunit.runner.visualstudio">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="Microsoft.AspNetCore.Testing" />        
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\src\xSdk.Extensions.AspNetCore.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Using Include="Xunit" />
     </ItemGroup>
 
 </Project>
