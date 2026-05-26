@@ -72,8 +72,6 @@ public static class SlimHostExtensions
 
     public static void ConfigurePluginHost(this SlimHost slimHost, Action<IPluginHost> factory) => slimHost.ConfigurePluginHost(factory);
 
-    public static void ConfigureWebPluginHost(this SlimHost slimHost, Action<IWebPluginHost> factory) => slimHost.ConfigureWebPluginHost(factory);
-
     public static EnvironmentOptions GetEnvironment(this SlimHost slimHost)
     {
         EnvironmentOptions? options = slimHost.BuildEnvironmentOptions();

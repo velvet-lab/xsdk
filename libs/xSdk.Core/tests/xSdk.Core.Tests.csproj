@@ -1,31 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <IsTestProject>true</IsTestProject>
         <IsPackable>false</IsPackable>
-        <SonarQubeExclude>true</SonarQubeExclude>        
+        <SonarQubeExclude>true</SonarQubeExclude>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="Shared\**" />
-      <EmbeddedResource Remove="Shared\**" />
-      <None Remove="Shared\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="AspNetCore.Authentication.ApiKey" />        
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="FluentValidation" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />        
-        <PackageReference Include="SemanticVersioning" />
-        <PackageReference Include="xunit.v3" />
-        <PackageReference Include="xunit.runner.visualstudio">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Zio" />
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\src\xSdk.Core.csproj" />
@@ -33,13 +13,5 @@
 
     <ItemGroup>
         <EmbeddedResource Include="Resources\test.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Using Include="Xunit" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Data\Converters\Mapper\" />
     </ItemGroup>
 </Project>

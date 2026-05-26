@@ -20,7 +20,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Data;
 
 [VariablePrefix("flat-file")]
-public class FlatFileDatabaseOptions : VariableSetup
+public class FlatFileDatabaseOptions : DatabaseOptions
 {
     protected override void OnInitialize()
     {

@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Spectre.Console.Cli" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\..\libs\xSdk.Extensions.Commands\src\xSdk.Extensions.Commands.csproj" />
         <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
     </ItemGroup>

@@ -25,7 +25,7 @@ public class ServiceResolverTests
     {
         var services = new ServiceCollection();
         services.AddSingleton<ITestService, TestService>();
-        ServiceProvider provider = services.BuildServiceProvider();
+        IServiceProvider provider = services.BuildServiceProvider();
         var resolver = new ServiceResolver(provider);
 
         object? result = resolver.Resolve(typeof(ITestService));
@@ -38,7 +38,7 @@ public class ServiceResolverTests
     public void Resolve_WithNullType_ReturnsNull()
     {
         var services = new ServiceCollection();
-        ServiceProvider provider = services.BuildServiceProvider();
+        IServiceProvider provider = services.BuildServiceProvider();
         var resolver = new ServiceResolver(provider);
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
@@ -52,7 +52,7 @@ public class ServiceResolverTests
     public void Resolve_WithUnregisteredService_ReturnsNull()
     {
         var services = new ServiceCollection();
-        ServiceProvider provider = services.BuildServiceProvider();
+        IServiceProvider provider = services.BuildServiceProvider();
         var resolver = new ServiceResolver(provider);
 
         object? result = resolver.Resolve(typeof(ITestService));

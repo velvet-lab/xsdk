@@ -7,14 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Diagnostics" />
-        <PackageReference Include="Mapster" />
-        <PackageReference Include="Bogus" />
         <PackageReference Include="MongoDB.Bson" />
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
-            <PackageReference Include="Spectre.Console.Cli" />
-        <PackageReference Include="YamlDotNet" />
     </ItemGroup>
 
     <ItemGroup>

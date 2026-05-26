@@ -28,7 +28,7 @@ const string APP_PREFIX = "ho";
 
 var host = xSdk
     .Hosting.Host.CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .ConfigureServices(services =>
+    .ConfigureServices((_, services) =>
     {
         services
             // Service um Informationen abzurufen

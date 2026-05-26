@@ -21,7 +21,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Data;
 
 [VariablePrefix("mongodb")]
-public class MongoDbOptions : VariableSetup
+public class MongoDbOptions : DatabaseOptions
 {
     [Variable(
         name: Definitions.Database.Name,

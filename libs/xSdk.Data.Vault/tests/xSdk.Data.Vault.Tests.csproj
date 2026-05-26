@@ -1,32 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <IsTestProject>true</IsTestProject>
-        <RootNamespace>xSdk.Data</RootNamespace>        
         <IsPackable>false</IsPackable>
         <SonarQubeExclude>true</SonarQubeExclude>
+        <RootNamespace>xSdk.Data</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bogus" />
-        <PackageReference Include="coverlet.collector" />
-        <PackageReference Include="FluentValidation" />
-        <PackageReference Include="Mapster" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
         <PackageReference Include="Testcontainers" />
-        <PackageReference Include="xunit.v3" />
-        <PackageReference Include="xunit.runner.visualstudio">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\src\xSdk.Data.Vault.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Using Include="Xunit" />
     </ItemGroup>
 </Project>

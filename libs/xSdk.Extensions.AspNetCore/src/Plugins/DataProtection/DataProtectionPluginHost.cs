@@ -27,7 +27,7 @@ using xSdk.Tools;
 namespace xSdk.Plugins.DataProtection;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core data-protection pipeline – requires a running host with filesystem/key-ring.")]
-public sealed class DataProtectionPluginHost(IOptions<ApplicationOptions> applicationOptions, IOptions<DataProtectionOptions> pluginOptions) : PluginHost
+public sealed class DataProtectionPluginHost(IOptions<ApplicationOptions> applicationOptions, IOptions<DataProtectionPluginOptions> pluginOptions) : PluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {

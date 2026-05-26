@@ -25,6 +25,8 @@ public class DatabaseFixture : DatabaseHostFixture
 {
     private readonly IContainer? _container = null;
 
+    private const string VAULT_IMAGE_NAME = "openbao/openbao:2.5.2";
+
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -48,13 +50,7 @@ public class DatabaseFixture : DatabaseHostFixture
             hostBuilder
                 .AddDatalayer(builder =>
                  {
-                     string imageName = GetEnvironmentVariable("VAULT_IMAGE_NAME");
-                     if (string.IsNullOrEmpty(imageName))
-                     {
-                         throw new SdkException("The environment variable VAULT_IMAGE_NAME is not defined.");
-                     }
-
-                     IContainer container = new ContainerBuilder(imageName)
+                     IContainer container = new ContainerBuilder(VAULT_IMAGE_NAME)
                          .WithPortBinding(8200, true)
                          .WithWaitStrategy(Wait.ForUnixContainer()
                              .UntilHttpRequestIsSucceeded(r => r.ForPort(8200))
@@ -67,8 +63,8 @@ public class DatabaseFixture : DatabaseHostFixture
                      (string? stdout, string? stderr) = container.GetLogsAsync(timestampsEnabled: false).GetAwaiter().GetResult();
 
                      string[] splitted = stdout.Split("\n", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-                     string? rootToken = splitted.Where(x => x.IndexOf("Root Token:") > -1).FirstOrDefault()?.Replace("Root Token:", "").Trim();
-                     string? unsealKey = splitted.Where(x => x.IndexOf("Unseal Key:") > -1).FirstOrDefault()?.Replace("Unseal Key:", "").Trim();
+                     string? rootToken = splitted.FirstOrDefault(x => x.IndexOf("Root Token:") > -1)?.Replace("Root Token:", "").Trim();
+                     string? unsealKey = splitted.FirstOrDefault(x => x.IndexOf("Unseal Key:") > -1)?.Replace("Unseal Key:", "").Trim();
 
                      builder
                         // Enable Vault

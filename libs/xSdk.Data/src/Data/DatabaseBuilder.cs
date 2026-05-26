@@ -44,7 +44,14 @@ internal class DatabaseBuilder(string name, IServiceCollection services) : IData
             TImplementation instance = ActivatorUtilities.CreateInstance<TImplementation>(provider);
             if (instance is Repository repository)
             {
-                repository.DatalayerName = (string)key;
+                if (key is not null)
+                {
+                    repository.DatalayerName = (string)key;
+                }
+                else
+                {
+                    throw new SdkException("The datalayer name cannot be null or empty.");
+                }
             }
 
             return instance;
@@ -62,7 +69,14 @@ internal class DatabaseBuilder(string name, IServiceCollection services) : IData
             TImplementation instance = ActivatorUtilities.CreateInstance<TImplementation>(provider);
             if (instance is Repository repository)
             {
-                repository.DatalayerName = (string)key;
+                if (key is not null)
+                {
+                    repository.DatalayerName = (string)key;
+                }
+                else
+                {
+                    throw new SdkException("The datalayer name cannot be null or empty.");
+                }
             }
 
             return instance;

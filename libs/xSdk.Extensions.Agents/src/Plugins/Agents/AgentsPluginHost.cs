@@ -7,12 +7,6 @@ internal class AgentsPluginHost : WebPluginHost
 {
     public override void ConfigureServices(IServiceCollection services)
     {
-        IMcpServerBuilder builder = services
-            .AddMcpServer(options =>
-            {
-
-            });
-
-
+        
     }
 }

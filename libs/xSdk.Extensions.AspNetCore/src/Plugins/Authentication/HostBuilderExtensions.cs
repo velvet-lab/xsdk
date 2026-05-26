@@ -25,7 +25,7 @@ public static class HostBuilderExtensions
     public static IHostBuilder EnableAuthentication(this IHostBuilder hostBuilder)
     {
         hostBuilder
-            .RegisterPluginHostOptions<ApiKeyOptions>()
+            .RegisterPluginHostOptions<ApiKeyPluginOptions>()
             .RegisterPluginHost<AuthenticationPluginHost>();
 
         return hostBuilder;

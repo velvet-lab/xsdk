@@ -52,7 +52,7 @@ var host = xSdk.Hosting.Host
             // Add Repositories to the Layer
             .MapRepository<ISecondSampleRepository, SecondSampleRepository>();
     })
-    .ConfigureServices((services) =>
+    .ConfigureServices((_, services) =>
     {
         services
             // Add DbContext Factory

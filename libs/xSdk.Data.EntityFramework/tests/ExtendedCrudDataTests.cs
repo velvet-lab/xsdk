@@ -20,12 +20,25 @@ namespace xSdk.Data;
 
 public class ExtendedCrudDataTests(DatabaseFixture fixture) : IClassFixture<DatabaseFixture>
 {
+    private async Task ResetAsync(IRepository<TestEntity, Guid>? repo)
+    {
+        if (repo == null) return;
+
+        IEnumerable<TestEntity>? items = await repo.SelectListAsync(TestContext.Current.CancellationToken);
+        if (items.Any())
+        {
+            await repo.RemoveAsync(items, TestContext.Current.CancellationToken);
+        }
+    }
+
     [Fact]
     public async Task SelectAsync_ByPrimaryKey_ReturnsCorrectEntity()
     {
         IDatalayerFactory factory = fixture.Factory;
         ITestRepository testRepo = factory.CreateRepository<ITestRepository>(Globals.DatalayerName);
         var repo = testRepo as IRepository<TestEntity, Guid>;
+
+        await ResetAsync(repo);        
 
         var entity = new TestEntity
         {

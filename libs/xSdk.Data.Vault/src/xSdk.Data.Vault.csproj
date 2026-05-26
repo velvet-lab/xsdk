@@ -9,12 +9,11 @@
         <Description>xSdk.Data.Vault - Vault provider integration for the xSdk data layer.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="FluentValidation" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="VaultSharp" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
-        <ItemGroup>
-                <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Data\src\xSdk.Data.csproj" />
     </ItemGroup>
 </Project>

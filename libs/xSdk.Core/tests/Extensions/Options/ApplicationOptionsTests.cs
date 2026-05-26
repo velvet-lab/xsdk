@@ -194,7 +194,7 @@ public class ApplicationOptionsExtensionsTests
         var options = new ApplicationOptions { Name = null, Company = null, Prefix = null, AppVersion = "1.0.0" };
 
         services.RegisterApplicationOptions(options);
-        ServiceProvider provider = services.BuildServiceProvider();
+        IServiceProvider provider = services.BuildServiceProvider();
         ApplicationOptions registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
 
         Assert.Equal(ApplicationOptions.Definitions.AppName.DefaultValue, registered.Name);
@@ -209,7 +209,7 @@ public class ApplicationOptionsExtensionsTests
         var options = new ApplicationOptions { Name = "custom", Company = "myco", Prefix = "CUST", AppVersion = "2.0.0" };
 
         services.RegisterApplicationOptions(options);
-        ServiceProvider provider = services.BuildServiceProvider();
+        IServiceProvider provider = services.BuildServiceProvider();
         ApplicationOptions registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
 
         Assert.Equal("custom", registered.Name);
@@ -224,7 +224,7 @@ public class ApplicationOptionsExtensionsTests
         // Empty strings are not null, so defaults are NOT applied; they remain empty and fail validation
         var options = new ApplicationOptions { Name = "x", Company = "x", Prefix = "x", AppVersion = "" };
         services.RegisterApplicationOptions(options);
-        ServiceProvider provider = services.BuildServiceProvider();
+        IServiceProvider provider = services.BuildServiceProvider();
 
         // ValidationException is thrown when IOptions<T>.Value is resolved
         Assert.Throws<ValidationException>(() => provider.GetRequiredService<IOptions<ApplicationOptions>>().Value);

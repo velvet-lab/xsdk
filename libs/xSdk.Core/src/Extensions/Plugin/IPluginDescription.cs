@@ -20,6 +20,8 @@ public interface IPluginDescription : IPlugin
 {
     string? Name { get; }
 
+    int Order { get; }
+
     Version? Version { get; }
 
     string? Description { get; }

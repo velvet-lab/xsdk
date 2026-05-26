@@ -25,7 +25,7 @@ public class PluginDescription : IPluginDescription
 
     protected ILogger Logger { get; } = LogManager.CreateLogger<PluginDescription>();
 
-    protected internal virtual int Order { get; } = DefaultOrder;
+    public virtual int Order { get; } = DefaultOrder;
 
     public string? Name { get; internal set; }
 

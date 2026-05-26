@@ -69,16 +69,24 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
     {
         services.TryAddKeyedSingleton<ObjectPool<TDatabase>>(name, (provider, key) =>
         {
-            if (!_objectPools.TryGetValue(key, out object? value))
+            if (key is not null)
             {
-                var policy = new DatabasePoolPolicy<TDatabase>(provider);
-                var objectPool = new DefaultObjectPool<TDatabase>(policy);
-                _objectPools[key] = objectPool;
-                return objectPool;
+
+                if (!_objectPools.TryGetValue(key, out object? value))
+                {
+                    var policy = new DatabasePoolPolicy<TDatabase>(provider);
+                    var objectPool = new DefaultObjectPool<TDatabase>(policy);
+                    _objectPools[key] = objectPool;
+                    return objectPool;
+                }
+                else
+                {
+                    return (ObjectPool<TDatabase>)value;
+                }
             }
             else
             {
-                return (ObjectPool<TDatabase>)value;
+                throw new SdkException("Key for database object pool is null. This should never happen, because the database object pool is registered with a key.");
             }
         });
     }
@@ -88,17 +96,24 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
     {
         services.TryAddKeyedTransient<IDatabaseHandler>(name, (provider, key) =>
         {
-            string datalayerName = (string)key;
-
-            ObjectPool<TDatabase> objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
-            ILogger<DatabaseHandler<TDatabase>> logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
-
-            var poolHandler = new DatabaseHandler<TDatabase>(objectPool, logger)
+            if (key is not null)
             {
-                DatalayerName = datalayerName,
-                Services = provider
-            };
-            return poolHandler;
+                string datalayerName = (string)key;
+
+                ObjectPool<TDatabase> objectPool = provider.GetRequiredKeyedService<ObjectPool<TDatabase>>(key);
+                ILogger<DatabaseHandler<TDatabase>> logger = provider.GetRequiredService<ILogger<DatabaseHandler<TDatabase>>>();
+
+                var poolHandler = new DatabaseHandler<TDatabase>(objectPool, logger)
+                {
+                    DatalayerName = datalayerName,
+                    Services = provider
+                };
+                return poolHandler;
+            }
+            else
+            {
+                throw new SdkException("Key for database handler is null. This should never happen, because the database handler is registered with a key.");
+            }
         });
     }
 }

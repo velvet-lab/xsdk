@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
@@ -9,12 +9,10 @@
         <Description>xSdk.Data - Base data layer abstractions and common utilities for the xSdk project.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.Diagnostics" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Mapster" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Bogus" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Microsoft.Extensions.ObjectPool.DependencyInjection" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="YamlDotNet" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Mapster" />
+        <PackageReference Include="Microsoft.Extensions.ObjectPool" />        
     </ItemGroup>
 
     <ItemGroup>

@@ -21,7 +21,7 @@ namespace xSdk.Data;
 
 [VariablePrefix("ef")]
 
-public class EntityFrameworkDatabaseOptions : VariableSetup
+public class EntityFrameworkDatabaseOptions : DatabaseOptions
 {
     protected override void OnInitialize()
     {

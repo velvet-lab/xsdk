@@ -50,7 +50,7 @@ IHost host = xSdk.Hosting.Host
             .UseEntityFramework<SampleDbContext>()
             // Add Repositories to the Layer
             .MapRepository<ISampleRepository, SampleRepository>())
-    .ConfigureServices(services => services
+    .ConfigureServices((_, services) => services
             .RegisterOptions<MongoDbOptions>(options =>
             {
                 options.Database = "MyDataStore";

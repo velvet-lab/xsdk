@@ -9,13 +9,8 @@
         <Description>xSdk.Extensions.AspNetCore.Links - Hateoas Link generation extensions for ASP.NET Core in the xSdk project.</Description>
     </PropertyGroup>
 
+    <!--External dependencies-->
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Handlebars.Net" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />        
     </ItemGroup>
 
     <ItemGroup>

@@ -27,7 +27,7 @@ public static class HostBuilderExtensions
     public static IHostBuilder AddDatalayer(this IHostBuilder hostBuilder, Action<IDatalayerBuilder> factory)
     {
         hostBuilder
-            .ConfigureServices(services =>
+            .ConfigureServices((_, services) =>
             {
                 var datalayerBuilder = new DatalayerBuilder(services);
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 Roland Breitschaft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+    <!--Internal Dependencies-->
+    <ItemGroup>
+        <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Exporter.Console" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Extensions.Enrichment.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Extensions.Enrichment.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.EventCounters" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.StackExchangeRedis" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.Container" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.Host" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.ProcessRuntime" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.Process" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Resources.OperatingSystem" PrivateAssets="contentfiles;analyzers;build;compile" />
+    </ItemGroup>
+
+</Project>

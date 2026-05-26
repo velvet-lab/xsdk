@@ -60,7 +60,7 @@ public abstract class EntityFrameworkRepository<TDbContext, TEntity, TPrimaryKey
 
     public override Task<bool> RemoveAsync(TPrimaryKeyType? primaryKey, CancellationToken token = default)
     {
-        if (primaryKey is not null)
+        if (primaryKey is null)
         {
             return Task.FromResult(false);
         }
