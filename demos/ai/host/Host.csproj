@@ -22,12 +22,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\libs\xSdk.Extensions.Agents\src\xSdk.Extensions.Agents.csproj" />
-        <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />        
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Builders\" />
+      <Folder Include="AI\Agents\" />
+      <Folder Include="Declarative\Agents\" />
+      <Folder Include="Declarative\Workflows\" />
     </ItemGroup>
 
 
