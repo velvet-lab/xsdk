@@ -78,4 +78,6 @@ public static class LogManager
         string? className = StackTraceUtils.GetClassFullName(new System.Diagnostics.StackFrame(1, false));
         return CreateLogger(className);
     }
+
+    public static ILoggerFactory Factory => _factory ?? throw new SdkException("Current Logger Factory could not be found");
 }

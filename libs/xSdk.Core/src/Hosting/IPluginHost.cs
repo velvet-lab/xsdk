@@ -24,6 +24,8 @@ public interface IPluginHost : IPluginDescription
 {
     IServiceProvider? Services { get; }
 
+    bool IsWebPluginHost { get; }
+
     void ConfigureServices(IServiceCollection services);
 
     void ConfigureServices(HostBuilderContext context, IServiceCollection services);

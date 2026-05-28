@@ -24,6 +24,8 @@ public abstract class PluginHost : PluginDescription, IPluginHost
 {
     public IServiceProvider? Services { get; internal set; }
 
+    public virtual bool IsWebPluginHost => false;
+
     public virtual void ConfigureServices(IServiceCollection services) { }
 
     public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
