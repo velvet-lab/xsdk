@@ -24,9 +24,13 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder)
         where TPluginBuilder : class, IDocumentationPluginBuilder
+        => hostBuilder.EnableDocumentation<TPluginBuilder>(_ => { });
+
+    public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder, Action<DocumentationPluginOptions> configure)
+        where TPluginBuilder : class, IDocumentationPluginBuilder
     {
         return hostBuilder
-            .RegisterPluginHostOptions<DocumentationPluginOptions>()
+            .RegisterPluginHostOptions<DocumentationPluginOptions>(configure)
             .RegisterPluginHost<DocumentationPluginHost>()
             .RegisterPluginBuilder<IDocumentationPluginBuilder, TPluginBuilder>();
     }
