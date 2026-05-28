@@ -48,36 +48,26 @@ public class SlimHost
 
     internal void ConfigurePluginHost(Action<IPluginHost> factory)
     {
-        IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
-            .Cast<PluginDescription>()
-            .OrderBy(p => p.Order)
-            .Cast<IPluginHost>();
-
+        IEnumerable<IPluginHost> plugins = GetPluginHosts<IPluginHost>();
         foreach (IPluginHost plugin in plugins)
         {
             factory?.Invoke(plugin);
         }
     }
 
-    internal IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
+    public IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
         where TPluginHost : IPluginHost
     {
-        IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
+        bool searchForWebPluginHost = typeof(TPluginHost) != typeof(IPluginHost);
+
+        IEnumerable<TPluginHost> plugins = Provider.GetServices<IPluginHost>()
             .Cast<PluginDescription>()
             .OrderBy(p => p.Order)
-            .Cast<IPluginHost>();
+            .Cast<IPluginHost>()
+            .Where(x => x.IsWebPluginHost == searchForWebPluginHost)
+            .Cast<TPluginHost>();
 
-        List<TPluginHost> result = [];
-        foreach (IPluginHost plugin in plugins)
-        {
-            Type pluginType = plugin.GetType();
-            if (pluginType.IsAssignableTo(typeof(TPluginHost)))
-            {
-                result.Add((TPluginHost)plugin);
-            }
-        }
-
-        return result;
+        return plugins;
     }
 
     internal static SlimHost InitializeSlimHost(string[] args, ApplicationOptions appOptions)
@@ -146,7 +136,7 @@ public class SlimHost
         }
     }
 
-    internal void RegisterPluginHostOptions<TOptions>()
+    internal void RegisterPluginHostOptions<TOptions>(Action<TOptions>? configureOptions)
         where TOptions : class, IVariableSetup
     {
         if (_isBuilded)
@@ -154,19 +144,35 @@ public class SlimHost
             throw new SdkException("Cannot register plugin host options after the service provider has been built.");
         }
 
-        _slimServices.RegisterOptions<TOptions>();
-        if (_appServices != null)
+        if (configureOptions != null)
         {
-            _appServices.RegisterOptions<TOptions>();
+            _slimServices.RegisterOptions<TOptions>(configureOptions);
+            if (_appServices != null)
+            {
+                _appServices.RegisterOptions<TOptions>(configureOptions);
+            }
+            else
+            {
+                _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>(configureOptions)));
+            }
         }
         else
         {
-            _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>()));
-        }
+            _slimServices.RegisterOptions<TOptions>();
+            if (_appServices != null)
+            {
+                _appServices.RegisterOptions<TOptions>();
+            }
+            else
+            {
+                _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>()));
+            }
+        }        
     }
 
     internal EnvironmentOptions? BuildEnvironmentOptions()
     {
+        // Builds temporary Environment Options
         if (_applicationOptions == null)
         {
             throw new SdkException("Application options must be set before building environment options.");

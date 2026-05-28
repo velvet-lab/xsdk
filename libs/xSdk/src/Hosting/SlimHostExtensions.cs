@@ -66,7 +66,14 @@ public static class SlimHostExtensions
     public static IHostBuilder RegisterPluginHostOptions<TOptions>(this IHostBuilder builder)
         where TOptions : class, IVariableSetup
     {
-        builder.GetSlimHost().RegisterPluginHostOptions<TOptions>();
+        builder.GetSlimHost().RegisterPluginHostOptions<TOptions>(null);
+        return builder;
+    }
+
+    public static IHostBuilder RegisterPluginHostOptions<TOptions>(this IHostBuilder builder, Action<TOptions> configureOptions)
+        where TOptions : class, IVariableSetup
+    {
+        builder.GetSlimHost().RegisterPluginHostOptions<TOptions>(configureOptions);
         return builder;
     }
 
