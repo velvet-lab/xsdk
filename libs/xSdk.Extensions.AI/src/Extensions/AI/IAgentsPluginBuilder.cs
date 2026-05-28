@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.AI;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.Telemetry;
+namespace xSdk.Extensions.AI;
 
 public interface IAgentsPluginBuilder : IPluginBuilder
 {
-
+    IChatClient CreateChatClient();
 }

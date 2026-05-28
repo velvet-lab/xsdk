@@ -21,7 +21,16 @@
 
     <!--Internal Dependencies-->
     <ItemGroup>
+        
+        <PackageReference Include="Microsoft.Agents.AI" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.Agents.AI.Declarative" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.Agents.AI.DevUI" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.Agents.AI.Hosting.OpenAI" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.Agents.AI.OpenAI" PrivateAssets="contentfiles;analyzers;build;compile" />        
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="ModelContextProtocol.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
+
     </ItemGroup>
 
 </Project>
