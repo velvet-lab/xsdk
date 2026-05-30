@@ -25,11 +25,18 @@ public static class HostBuilderExtensions
     public static IHostBuilder EnableWebSecurity(this IHostBuilder builder)
         => builder.EnableWebSecurity<DefaultWebSecurityPluginBuilder>();
 
+    public static IHostBuilder EnableWebSecurity(this IHostBuilder builder, Action<WebSecurityPluginOptions> configureOptions)
+        => builder.EnableWebSecurity<DefaultWebSecurityPluginBuilder>(configureOptions);
+
     public static IHostBuilder EnableWebSecurity<TPluginBuilder>(this IHostBuilder builder)
+        where TPluginBuilder : class, IWebSecurityPluginBuilder
+        => builder.EnableWebSecurity<TPluginBuilder>(options => { });
+
+    public static IHostBuilder EnableWebSecurity<TPluginBuilder>(this IHostBuilder builder, Action<WebSecurityPluginOptions> configureOptions)
         where TPluginBuilder : class, IWebSecurityPluginBuilder
     {
         builder
-            .RegisterPluginHostOptions<WebSecurityPluginOptions>()
+            .RegisterPluginHostOptions<WebSecurityPluginOptions>(configureOptions)
             .RegisterPluginHost<WebSecurityPluginHost>()
             .RegisterPluginBuilder<IWebSecurityPluginBuilder, TPluginBuilder>();
 
