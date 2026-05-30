@@ -21,29 +21,20 @@ using xSdk.Extensions.Telemetry;
 
 namespace xSdk.Demos;
 
-internal class LocalService
+internal class LocalService(ILogger<LocalService> logger)
 {
-    private readonly ITelemetryService _telemetrySvc;
-    private readonly ILogger<LocalService> _logger;
-    private readonly Counter<int> _counter;
-
-    public LocalService(ITelemetryService telemetrySvc, ILogger<LocalService> logger)
-    {
-        this._telemetrySvc = telemetrySvc ?? throw new ArgumentNullException(nameof(telemetrySvc));
-        this._logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
-        // Create a metrics counter
-        this._counter = _telemetrySvc.CreateCounter<int>("MyCounter", description: "Count the calls for methods", unit: "times");
-    }
+    private static readonly ActivitySource LocalSource = new(TelemetryConstants.Source);
+    private static readonly Meter LocalServiceMeter = new(TelemetryConstants.Source);
+    private readonly Counter<int> _counter = LocalServiceMeter.CreateCounter<int>("MyCounter", description: "Count the calls for methods", unit: "times");
 
     public void DoWorkA()
     {
-        _logger.LogInformation("Now start a activity");
-        using var activity = _telemetrySvc.StartActivity(ActivityKind.Client, "Do work A");
+        logger.LogInformation("Now start a activity");
+        using var activity = LocalSource.StartActivity("do.work.a", ActivityKind.Client);
 
         _counter.Add(1);
-        _logger.LogInformation("This is a Sample Log Entry");
-        _logger.LogWarning("This is a Warning");
+        logger.LogInformation("This is a Sample Log Entry");
+        logger.LogWarning("This is a Warning");
         _counter.Add(1);
 
         Task.Delay(500);
@@ -53,8 +44,8 @@ internal class LocalService
 
     public void DoWorkB()
     {
-        _logger.LogInformation("Now start a activity");
-        using var activity = _telemetrySvc.StartActivity(kind: ActivityKind.Producer);
+        logger.LogInformation("Now start a activity");
+        using var activity = LocalSource.StartActivity("do.work.b", ActivityKind.Client);
 
         try
         {
@@ -62,7 +53,7 @@ internal class LocalService
 
             _counter.Add(1);
 
-            _logger.LogInformation("Try to divide with zero");
+            logger.LogInformation("Try to divide with zero");
             var a = 1;
             var b = 0;
             _counter.Add(1);
@@ -72,9 +63,8 @@ internal class LocalService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-
+            logger.LogError(ex.Message);
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);            
         }
     }
 }
