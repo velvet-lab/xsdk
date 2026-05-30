@@ -22,9 +22,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="AI\Agents\" />
       <Folder Include="Declarative\Agents\" />
       <Folder Include="Declarative\Workflows\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AI\src\xSdk.Extensions.AI.csproj" />
     </ItemGroup>
 
 

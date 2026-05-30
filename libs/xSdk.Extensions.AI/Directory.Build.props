@@ -30,7 +30,8 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.OpenApi" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="ModelContextProtocol.AspNetCore" PrivateAssets="contentfiles;analyzers;build;compile" />
-
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 
 </Project>

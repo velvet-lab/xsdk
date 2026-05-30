@@ -2,16 +2,17 @@ using System.ClientModel;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
 using OpenAI;
+using xSdk.Demos.AI.Agents;
 using xSdk.Extensions.AI;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Demos.Builders;
 
-internal class AgentsPluginBuilder(IOptions<AgentsPluginOptions> pluginOptions) : PluginBuilder, IAgentsPluginBuilder
+internal class AgentsPluginBuilder(IOptions<AIPluginOptions> pluginOptions) : PluginBuilder, IAIPluginBuilder
 {
-    public IChatClient CreateChatClient() 
+    public IChatClient CreateDefaultChatClient() 
     {
-        AgentsPluginOptions options = pluginOptions.Value;
+        AIPluginOptions options = pluginOptions.Value;
         if (options is not null)
         {
             var openaiClient = new OpenAIClient(new ApiKeyCredential(options.ApiKey), new OpenAIClientOptions
@@ -19,9 +20,14 @@ internal class AgentsPluginBuilder(IOptions<AgentsPluginOptions> pluginOptions) 
                 Endpoint = new Uri(options.Endpoint),
             });
 
-            return openaiClient.GetChatClient("gemello").AsIChatClient();
+            return openaiClient.GetChatClient(options.Model).AsIChatClient();
         }
 
         throw new InvalidOperationException("Invalid plugin options");
+    }
+
+    public void Initialize()
+    {
+        this.RegisterAgent<HelpfulAssistant>();
     }
 }

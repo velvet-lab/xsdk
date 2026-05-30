@@ -19,7 +19,9 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Extensions.AI;
 
-public interface IAgentsPluginBuilder : IPluginBuilder
-{
-    IChatClient CreateChatClient();
+public interface IAIPluginBuilder : IPluginBuilder
+{    
+    void Initialize();
+
+    IChatClient CreateDefaultChatClient();
 }

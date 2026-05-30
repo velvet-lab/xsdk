@@ -2,17 +2,16 @@
 
     <PropertyGroup>
         <!-- SonarQube needs this, do not change -->
-        <ProjectGuid>28bf601f-d362-458b-bffb-efb68e14ccc2</ProjectGuid>
+        <ProjectGuid>7a6d82f3-f74a-4512-96bf-a39d87b24ad8</ProjectGuid>
     </PropertyGroup>
     
     <!--External dependencies-->
-
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\xSdk.Extensions.Telemetry\src\xSdk.Extensions.Telemetry.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Extensions\AI\Agents\" />
       <Folder Include="Extensions\AI\Workflows\" />
     </ItemGroup>
 

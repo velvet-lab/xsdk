@@ -21,32 +21,42 @@ using Microsoft.Extensions.Options;
 using xSdk.Demos.Builders;
 using xSdk.Hosting;
 using xSdk.Plugins.AI;
+using xSdk.Plugins.Compression;
 using xSdk.Plugins.Documentation;
+using xSdk.Plugins.Telemetry;
 using xSdk.Plugins.WebApi;
+using xSdk.Plugins.WebSecurity;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
-const string APP_NAME = "webapi";
+const string APP_NAME = "agent";
 const string APP_COMPANY = "xdemos";
-const string APP_PREFIX = "webapi";
+const string APP_PREFIX = "ai";
 
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableAgents<AgentsPluginBuilder>(options =>
+    .EnableAI<AgentsPluginBuilder>(options =>
     {
         options.Endpoint = "http://192.168.189.32:11434/v1";
         options.ApiKey = "OpenApiKey";
+        options.Model = "phi4-mini";
+        
+    })
+    .EnableTelemetry<TelemetryPluginBuilder>(options =>
+    {
+        options.TracingEnabled = true;
+        options.MetricsEnabled = true;
     })
     .EnableDocumentation<DocumentationPluginBuilder>(options =>
     {
         options.Enabled = true;
     })
-    // .EnableWebSecurity()
+    .EnableWebSecurity()
     // .EnableAuthentication<AuthenticationPluginBuilder>()
-    // .EnableCompression()
-    // .EnableDataProtection()    
+    .EnableCompression()
+    // .EnableDataProtection()
     .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();
