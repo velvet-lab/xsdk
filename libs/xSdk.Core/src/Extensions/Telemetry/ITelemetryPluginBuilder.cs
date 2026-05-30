@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-using FluentValidation;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Extensions.Telemetry;
 
-public sealed class TelemetryOptionsValidator : AbstractValidator<TelemetryOptions>
+public interface ITelemetryPluginBuilder : IPluginBuilder
 {
-    public TelemetryOptionsValidator()
-    {
-        When(x => !x.IsDisabled && !x.IsOtlpExporterDisabled, () =>
-        {
-            RuleFor(x => x.Endpoint)
-                .NotEmpty()
-                .WithMessage("No MaaS endpoint configured")
-                .WithName(TelemetryOptions.Definitions.Endpoint.Name);
-        });
-    }
+    void ConfigureResources(ResourceBuilder builder);
+
+    void ConfigureLoggingProvider(LoggerProviderBuilder builder);
+
+    void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options);
+
+    void ConfigureMetrics(MeterProviderBuilder builder);
+
+    void ConfigureTracing(TracerProviderBuilder builder);
 }

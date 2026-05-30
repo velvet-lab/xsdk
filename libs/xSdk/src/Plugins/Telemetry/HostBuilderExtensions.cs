@@ -22,13 +22,14 @@ namespace xSdk.Plugins.Telemetry;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableTelemetry(this IHostBuilder builder)
-        => builder.EnableTelemetry<DefaultTelemetryPluginBuilder>();
-
     public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder)
+        where TPluginBuilder : class, ITelemetryPluginBuilder
+        => builder.EnableTelemetry<TPluginBuilder>(options => { });
+
+    public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder, Action<TelemetryPluginOptions> configureOptions)
         where TPluginBuilder : class, ITelemetryPluginBuilder
         => builder
             .RegisterPluginHost<TelemetryPluginHost>()
-            .RegisterPluginHostOptions<TelemetryOptions>()
+            .RegisterPluginHostOptions(configureOptions)
             .RegisterPluginBuilder<ITelemetryPluginBuilder, TPluginBuilder>();
 }

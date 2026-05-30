@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+using System.Runtime.Serialization;
+using OpenTelemetry.Resources;
+using xSdk.Extensions.Telemetry;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
@@ -46,6 +49,9 @@ internal partial class VariableService
 
         return resources;
     }
+
+    public IResourceDetector CreateResourceDetector(IServiceProvider provider)
+        => new VariableResourceDetector(BuildResources());
 
     private static void ReplaceVariableNames(Dictionary<string, object> resources)
     {

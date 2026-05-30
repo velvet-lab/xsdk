@@ -42,7 +42,7 @@ public class HostLoggingManagerTests
     [InlineData(null, LogLevel.Information)]
     public void ConvertLogLevel_ReturnsExpectedLevel(string? input, LogLevel expected)
     {
-        var method = typeof(HostLoggingManager).GetMethod(
+        var method = typeof(LoggingManager).GetMethod(
             "ConvertLogLevel",
             BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -57,7 +57,7 @@ public class HostLoggingManagerTests
         var builder = new TestLoggingBuilder();
         var options = new EnvironmentOptions();
 
-        var ex = Record.Exception(() => HostLoggingManager.ConfigureLogging(builder, options));
+        var ex = Record.Exception(() => LoggingManager.ConfigureLogging(builder, options));
 
         Assert.Null(ex);
     }
@@ -68,7 +68,7 @@ public class HostLoggingManagerTests
         var builder = new TestLoggingBuilder();
         var options = new EnvironmentOptions();
 
-        HostLoggingManager.ConfigureLogging(builder, options);
+        LoggingManager.ConfigureLogging(builder, options);
 
         Assert.NotEmpty(builder.Services);
     }
@@ -76,7 +76,7 @@ public class HostLoggingManagerTests
     [Fact]
     public void ResetLogger_WithNullBuilder_DoesNotThrow()
     {
-        var ex = Record.Exception(() => HostLoggingManager.ResetLogger(null));
+        var ex = Record.Exception(() => LoggingManager.ResetLogger(null));
 
         Assert.Null(ex);
     }
@@ -86,7 +86,7 @@ public class HostLoggingManagerTests
     {
         var builder = new TestLoggingBuilder();
 
-        var ex = Record.Exception(() => HostLoggingManager.ResetLogger(builder));
+        var ex = Record.Exception(() => LoggingManager.ResetLogger(builder));
 
         Assert.Null(ex);
     }

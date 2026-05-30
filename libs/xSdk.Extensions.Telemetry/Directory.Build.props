@@ -20,8 +20,7 @@
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
     <!--Internal Dependencies-->
-    <ItemGroup>
-        <PackageReference Include="OpenTelemetry" PrivateAssets="contentfiles;analyzers;build;compile" />
+    <ItemGroup>        
         <PackageReference Include="OpenTelemetry.Exporter.Console" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="OpenTelemetry.Extensions.Enrichment.Http" PrivateAssets="contentfiles;analyzers;build;compile" />
