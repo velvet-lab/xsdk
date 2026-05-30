@@ -19,7 +19,7 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting.Managers;
 
-internal static class HostLoggingManager
+internal static class LoggingManager
 {
     internal static void ConfigureLogging(ILoggingBuilder builder, EnvironmentOptions options)
     {

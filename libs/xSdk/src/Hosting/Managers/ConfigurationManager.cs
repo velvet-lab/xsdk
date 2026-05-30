@@ -23,7 +23,7 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting.Managers;
 
-public static class HostConfigurationManager
+public static class ConfigurationManager
 {
     private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
