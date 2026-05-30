@@ -45,16 +45,19 @@ public static partial class Host
 
         IHostBuilder builder = new HostBuilder()
             .SetSlimHost(slimHost)
-            .ConfigureHostConfiguration(configBuilder => HostConfigurationManager.LoadHostConfiguration(configBuilder, appOptions))
-            .ConfigureAppConfiguration((context, configBuilder) => HostConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions))
+            .ConfigureHostConfiguration(configBuilder => ConfigurationManager.LoadHostConfiguration(configBuilder, appOptions))
+            .ConfigureAppConfiguration((context, configBuilder) => ConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions))
             .ConfigureServices(services =>
             {
                 slimHost.PostConfigure(services);
 
                 services
-                    .RegisterApplicationOptions(appOptions)
-                    .RegisterOptions<EnvironmentOptions>(options => services
-                            .AddLogging(logBuilder => HostLoggingManager.ConfigureLogging(logBuilder, options)))
+                    .RegisterApplicationOptions(appOptions)                    
+                    .RegisterOptions<EnvironmentOptions>(options =>
+                    {
+                        options.PostConfigure(appOptions);                        
+                        services.AddLogging(logBuilder => LoggingManager.ConfigureLogging(logBuilder, options));
+                    })
                     .AddVariableServices()
                     .AddFileServices()
                     .AddPluginServices();

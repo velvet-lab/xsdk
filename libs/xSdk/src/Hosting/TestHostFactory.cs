@@ -48,7 +48,7 @@ public static class TestHostFactory
 
         builder
             .SetSlimHost(slimHost)
-            .ConfigureHostConfiguration(HostConfigurationManager.LoadTestConfiguration)
+            .ConfigureHostConfiguration(ConfigurationManager.LoadTestConfiguration)
             .ConfigureServices(services =>
             {
                 slimHost.PostConfigure(services);

@@ -198,7 +198,7 @@ public class SlimHost
             .AddSingleton<IServiceProvider>(provider => provider)
             .AddSingleton(provider => provider)
             .RegisterApplicationOptions(_applicationOptions)
-            .RegisterOptions<EnvironmentOptions>()
+            .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(_applicationOptions))
             .AddSingleton<IConfiguration>(provider => default!)
             .AddLogging()
             .AddVariableServices()
