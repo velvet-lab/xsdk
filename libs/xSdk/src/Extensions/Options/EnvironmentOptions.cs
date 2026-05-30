@@ -25,7 +25,6 @@ public sealed partial class EnvironmentOptions : VariableSetup
     protected override void OnInitialize()
     {
         InitializeSystem();
-        InitializeService();
 
         ContentRoot = DetermineContentRoot();
     }
