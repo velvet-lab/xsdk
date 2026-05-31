@@ -44,4 +44,16 @@ public class VariableServiceResourcesTests(TestHostFixture fixture) : IClassFixt
 
         Assert.IsAssignableFrom<IDictionary<string, object>>(resources);
     }
+
+    [Fact]
+    public void BuildResources_ContainsNoUnresolvedTemplateKeys()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        var resources = service.BuildResources();
+
+        Assert.DoesNotContain(resources.Keys, key => key.Contains("{{") || key.Contains("}}"));
+    }
 }

@@ -38,6 +38,11 @@ internal partial class VariableService : IVariableService
         _applicationOptions = options?.Value;
 
         InitProviders();
+
+        if (_applicationOptions != null)
+        {
+            this.ParseForVariables(_applicationOptions);
+        }
     }
 
     public Dictionary<string, object> ToDictionary()

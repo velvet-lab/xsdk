@@ -73,7 +73,7 @@ internal partial class VariableService
             {
                 string newKey = oldKey.Replace(pattern, value.ToString());
                 newKey = newKey.Replace("{{", "").Replace("}}", "");
-                resources.AddOrNew(newKey, value);
+                resources.AddOrNew(newKey, resources[oldKey]);
                 resources.Remove(oldKey);
             }
         }
