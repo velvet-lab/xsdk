@@ -23,13 +23,13 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
     public override void ConfigureServices(IServiceCollection services)
     {
         IAIPluginBuilder? pluginBuilder = this.GetBuilder<IAIPluginBuilder>();
-        
+
         if (pluginBuilder is not null)
         {
             logger.LogInformation("Configuring services for AgentsPluginHost with plugin pluginBuilder {PluginBuilderType}.", pluginBuilder.GetType().FullName);
 
             logger.LogDebug("Initializing plugin builder.");
-            pluginBuilder.Initialize();            
+            pluginBuilder.Initialize();
 
             logger.LogDebug("Adding OpenAI responses, conversations, and DevUI services.");
             services
@@ -42,7 +42,7 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
                 logger.LogDebug("Development environment detected. Adding DevUI services.");
                 services.AddDevUI(options =>
                 {
-                    options.AllowRemoteAccess = true;                    
+                    options.AllowRemoteAccess = true;
                 });
             }
 
@@ -56,7 +56,7 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
 
     public override void Configure(WebHostBuilderContext context, IApplicationBuilder app)
     {
-        
+
     }
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder builder)
@@ -84,37 +84,40 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
         logger.LogInformation("Loading agents into AIPluginHost.");
 
         logger.LogDebug("Creating default chat client for agents.");
-        IChatClient defaultChatClient = pluginBuilder
-            .CreateDefaultChatClient();
-            //.AsBuilder()
-            //.UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: (cfg) => cfg.EnableSensitiveData = true)
-            //.Build();
+        IChatClient defaultChatClient = pluginBuilder.CreateDefaultChatClient();
 
         if (defaultChatClient is null)
         {
             logger.LogError("Failed to create default chat client. Ensure that the plugin builder is configured correctly.");
             return;
         }
-        services.AddChatClient(defaultChatClient);
+
+        // Register the default client with OTel for direct IChatClient injection.
+        services.AddChatClient(
+            defaultChatClient
+                .AsBuilder()
+                .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: cfg => cfg.EnableSensitiveData = true)
+                .Build());
 
         foreach ((string name, AIAgentDefinition agent) in Agents)
         {
             logger.LogInformation("Loaded agent: {AgentName}", name);
             agent.ChatClient ??= defaultChatClient;
 
-            if(agent.ChatClient is null)
+            if (agent.ChatClient is null)
             {
                 logger.LogError("Failed to create chat client for agent {AgentName}.", name);
                 continue;
             }
 
+            // Register the raw (non-wrapped) client as keyed service; OTel is applied once in the factory.
             services.AddKeyedChatClient(name, agent.ChatClient);
+
             IHostedAgentBuilder agentBuilder = services.AddAIAgent(name, (sp, key) =>
             {
-                IChatClient chatClient = sp.GetRequiredKeyedService<IChatClient>(key);
-                chatClient = chatClient
+                IChatClient chatClient = sp.GetRequiredKeyedService<IChatClient>(key)
                     .AsBuilder()
-                    .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: (cfg) => cfg.EnableSensitiveData = true)
+                    .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: cfg => cfg.EnableSensitiveData = true)
                     .Build();
 
                 return new ChatClientAgent(chatClient, new ChatClientAgentOptions
@@ -125,9 +128,10 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
                     {
                         Instructions = agent.Instructions
                     }
-                }).AsBuilder()
-                  .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: (cfg) => cfg.EnableSensitiveData = true)
-                  .Build(sp);
+                })
+                .AsBuilder()
+                .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: cfg => cfg.EnableSensitiveData = true)
+                .Build(sp);
             });
 
             services.AddKeyedSingleton(name, agentBuilder);

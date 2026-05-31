@@ -49,10 +49,10 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
     {
         builder
             .AddAIInstrumentation()
-            //.AddAspNetCoreInstrumentation()
+            .AddAspNetCoreInstrumentation()
             //.AddEventCountersInstrumentation()            
             .AddHttpClientInstrumentation()
-            //.AddRuntimeInstrumentation()
+            .AddRuntimeInstrumentation()
             //.AddProcessInstrumentation()
             // Add Exporters
             //.AddConsoleExporter()
@@ -63,7 +63,7 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
     {
         builder
             .AddAIInstrumentation()
-            //.AddAspNetCoreInstrumentation()
+            .AddAspNetCoreInstrumentation()
             //.AddEntityFrameworkCoreInstrumentation()
             .AddGrpcClientInstrumentation()
             .AddHttpClientInstrumentation()            

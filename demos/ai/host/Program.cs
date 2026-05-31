@@ -39,13 +39,19 @@ IHost host = xSdk.Hosting.WebHost
     .EnableWebApi()
     .EnableAI<AgentsPluginBuilder>(options =>
     {
+        // Ollama
         options.Endpoint = "http://192.168.189.32:11434/v1";
-        options.ApiKey = "OpenApiKey";
+        options.ApiKey = "sk-none";
         options.Model = "phi4-mini";
-        
+
+        //// Openrouter
+        //options.Endpoint = "https://openrouter.ai/api/v1/";
+        //options.ApiKey = "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";
+        //options.Model = "mistralai/mistral-medium-3-5";
     })
     .EnableTelemetry<TelemetryPluginBuilder>(options =>
     {
+        options.LoggingEnabled = true;
         options.TracingEnabled = true;
         options.MetricsEnabled = true;
     })
