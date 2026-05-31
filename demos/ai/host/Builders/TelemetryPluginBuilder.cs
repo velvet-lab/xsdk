@@ -50,8 +50,8 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
         builder
             .AddAIInstrumentation()
             //.AddAspNetCoreInstrumentation()
-            //.AddEventCountersInstrumentation()
-            //.AddHttpClientInstrumentation()
+            //.AddEventCountersInstrumentation()            
+            .AddHttpClientInstrumentation()
             //.AddRuntimeInstrumentation()
             //.AddProcessInstrumentation()
             // Add Exporters
@@ -65,15 +65,14 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
             .AddAIInstrumentation()
             //.AddAspNetCoreInstrumentation()
             //.AddEntityFrameworkCoreInstrumentation()
-            //.AddGrpcClientInstrumentation()
-            //.AddHttpClientInstrumentation()
-            //.AddRedisInstrumentation()
+            .AddGrpcClientInstrumentation()
+            .AddHttpClientInstrumentation()            
             // Add Exporters
             //.AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }  
 
-    private void ConfigureOtlp(OtlpExporterOptions options)
+    private static void ConfigureOtlp(OtlpExporterOptions options)
     {
         // Adding the OtlpExporter creates a GrpcChannel.
         // This switch must be set before creating a GrpcChannel when calling an insecure gRPC service.

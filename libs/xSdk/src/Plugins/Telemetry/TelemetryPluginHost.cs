@@ -17,6 +17,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 
@@ -29,16 +33,22 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemet
     {
         TelemetryPluginOptions telemetrySetup = telemetryOptions.Value;
 
+        // ConfigureResource on OpenTelemetryBuilder invokes the callback once per active signal
+        // (Tracing, Metrics, Logging). Pre-building the ResourceBuilder here ensures
+        // InvokeBuilders<ConfigureResources> is called exactly once.
+        var resourceBuilder = ResourceBuilder.CreateDefault();
+        InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureResources(resourceBuilder));
+
         // Create an builder
         OpenTelemetryBuilder telemetryBuilder = services
-            .AddOpenTelemetry()
-            .ConfigureResource(builder => InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureResources(builder)));
+            .AddOpenTelemetry();
 
         // Configure Tracing
         if (telemetrySetup.TracingEnabled)
         {
             telemetryBuilder.WithTracing(builder =>
             {
+                builder.SetResourceBuilder(resourceBuilder);
                 // Call tracing configuration from possible other Startups
                 InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
             });
@@ -49,6 +59,7 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemet
         {
             telemetryBuilder.WithMetrics(builder =>
             {
+                builder.SetResourceBuilder(resourceBuilder);
                 // Call metrics configuration from possible other Startups
                 InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
             });
@@ -59,8 +70,11 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemet
         {
             telemetryBuilder.WithLogging(
                 builder =>
+                {
+                    builder.SetResourceBuilder(resourceBuilder);
                     // Call logging configuration from possible other Startups
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder)),
+                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder));
+                },
                 options =>
                     // Call logging configuration from possible other Startups
                     InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options)));
