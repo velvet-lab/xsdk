@@ -19,6 +19,12 @@
         <PackageReference Include="Microsoft.Agents.AI.OpenAI" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
         <PackageReference Include="Microsoft.OpenApi" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+        <PackageReference Include="OpenTelemetry.Resources.Container"  />
+        <PackageReference Include="OpenTelemetry.Resources.Host"  />
+        <PackageReference Include="OpenTelemetry.Resources.ProcessRuntime"  />
+        <PackageReference Include="OpenTelemetry.Resources.Process"  />
+        <PackageReference Include="OpenTelemetry.Resources.OperatingSystem"  />
     </ItemGroup>
 
     <ItemGroup>
