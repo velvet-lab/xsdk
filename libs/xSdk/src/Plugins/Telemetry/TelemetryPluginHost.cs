@@ -17,14 +17,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenTelemetry;
-using xSdk.Extensions.Options;
 using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Telemetry;
 
-public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemetryOptions, IOptions<EnvironmentOptions> environmentOptions) : PluginHost
+public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemetryOptions) : PluginHost
 {
+
     public override void ConfigureServices(IServiceCollection services)
     {
         TelemetryPluginOptions telemetrySetup = telemetryOptions.Value;
@@ -38,16 +38,20 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemet
         if (telemetrySetup.TracingEnabled)
         {
             telemetryBuilder.WithTracing(builder =>
+            {
                 // Call tracing configuration from possible other Startups
-                InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder)));
+                InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
+            });
         }
 
         // Configure Metrics
         if (telemetrySetup.MetricsEnabled)
         {
             telemetryBuilder.WithMetrics(builder =>
+            {
                 // Call metrics configuration from possible other Startups
-                InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder)));
+                InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
+            });
         }
 
         // Configure Logging
@@ -55,11 +59,11 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemet
         {
             telemetryBuilder.WithLogging(
                 builder =>
-                    // Call logging configuration from possible other Startups                    
+                    // Call logging configuration from possible other Startups
                     InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder)),
                 options =>
-                    // Call logging configuration from possible other Startups                    
+                    // Call logging configuration from possible other Startups
                     InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options)));
-        }        
+        }
     }
 }

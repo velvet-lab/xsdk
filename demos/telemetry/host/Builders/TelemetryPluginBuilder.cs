@@ -28,7 +28,7 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
             .AddOperatingSystemDetector()
             .AddProcessDetector()
             .AddProcessRuntimeDetector()
-            // .AddAttributes(resources)            
+            // .AddAttributes(resources)
             .AddDetector(variableService.CreateResourceDetector)
             .AddService(serviceName: setup.ServiceName, serviceNamespace: setup.ServiceNamespace, serviceVersion: setup.ServiceVersion);
     }
@@ -49,10 +49,8 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
 
     public void ConfigureMetrics(MeterProviderBuilder builder)
     {
-        EnvironmentOptions envSetup = environmentOptions.Value;
-
         builder
-            .AddMeter(TelemetryConstants.Source)
+            .AddMeter(Diagnostics.SourceName)
             .AddAspNetCoreInstrumentation()
             .AddEventCountersInstrumentation()
             .AddHttpClientInstrumentation()
@@ -65,10 +63,8 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
 
     public void ConfigureTracing(TracerProviderBuilder builder)
     {
-        EnvironmentOptions envSetup = environmentOptions.Value;
-
         builder
-            .AddSource(TelemetryConstants.Source)
+            .AddSource(Diagnostics.SourceName)
             .AddAspNetCoreInstrumentation()
             .AddEntityFrameworkCoreInstrumentation()
             .AddGrpcClientInstrumentation()
@@ -80,7 +76,7 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
     }
 
     private void ConfigureOtlp(OtlpExporterOptions options)
-    {        
+    {
         // Adding the OtlpExporter creates a GrpcChannel.
         // This switch must be set before creating a GrpcChannel when calling an insecure gRPC service.
         // See: https://docs.microsoft.com/aspnet/core/grpc/troubleshoot#call-insecure-grpc-services-with-net-core-client
@@ -88,6 +84,6 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
 
         options.Protocol = OtlpExportProtocol.Grpc;
         options.Endpoint = new Uri(OtlpEndpoint);
-        // options.Headers = $"OTEL_KEY={telemetrySetup.Token}";        
+        // options.Headers = $"OTEL_KEY={telemetrySetup.Token}";
     }
 }

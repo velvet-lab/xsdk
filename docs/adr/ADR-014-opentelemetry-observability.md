@@ -71,13 +71,37 @@ public interface ITelemetryPluginBuilder : IPlugin
 
 Example — EF Core tracing is contributed by a plugin that implements `ITelemetryPluginBuilder.ConfigureTracing(builder => builder.AddEntityFrameworkCoreInstrumentation(...))`.
 
+### Namenskonventionen (Naming Schema)
+
+Um Konsistenz in allen Monitoring-Backends (Grafana, Jaeger, Datadog etc.) zu gewährleisten, gilt folgendes dreigeteiltes Schema:
+
+| Telemetrie-Komponente | OTel-Attribut / Typ | Namensschema | Beispiel |
+| :--- | :--- | :--- | :--- |
+| **Service-Name** | `service.name` (Resource) | `kebab-case` — beschreibt die logische Anwendung nach außen | `order-api`, `billing-service` |
+| **Source- / Meter-Name** | `ActivitySource` / `Meter` | Assembly-Name des Pakets (`PascalCase`) — eine `Diagnostics`-Klasse pro Paket | `xSdk.Core`<br>`xSdk.Data.Vault` |
+| **Metrik-Namen** | `Instrument` (Counter, Histogram …) | `lowercase.with.dots` — beginnt mit dem funktionalen Objekt | `redis.cache.hits`<br>`rabbitmq.message.duration` |
+
 ### VariableResourceDetector
 
 `VariableResourceDetector` implements OpenTelemetry's `IResourceDetector` interface. It reads all `Variable` instances that have a non-null `TelemetryResourceValue` delegate and contributes them as OTEL resource attributes. This makes SDK-level configuration (app name, version, stage) automatically visible as resource attributes in all telemetry data without any application code.
 
-### TelemetryService / ITelemetryService
+### Dezentralisierung: Kein `ITelemetryService` (superseded)
 
-An injectable `ITelemetryService` provides application-level access to the configured `ActivitySource` and `Meter` instances, allowing application code to create custom spans and metrics without referencing OpenTelemetry APIs directly.
+> **Update (2026-05-30):** Ein zentraler, via DI injizierter `ITelemetryService` wird **nicht** implementiert. Die Datei `ITelemetryService.cs` in `xSdk.Core` ist vollständig auskommentiert und gilt als aufgegeben.
+>
+> **Begründung:** .NET besitzt mit `System.Diagnostics` (`ActivitySource`) und `System.Diagnostics.Metrics` (`Meter`) ein hochoptimiertes, laufzeitnahes Instrumentierungs-System. Klassen und Plugins erzeugen ihre Telemetriesignale autark über **statische Instanzen** direkt in ihrem eigenen Namespace. Das SDK nimmt ausschließlich die Rolle der **Infrastruktur-Konfiguration** (Listener-Registrierung) ein.
+
+**Korrekte Verwendung (statisches Muster, eine `Diagnostics`-Klasse pro Paket):**
+
+```csharp
+// In jedem SDK-Paket oder Plugin — eine Datei Diagnostics.cs, kein DI
+internal static class Diagnostics
+{
+    internal const string SourceName = "xSdk.Core"; // explizite Konstante, kein Reflection
+    internal static readonly ActivitySource Source = new(SourceName);
+    internal static readonly Meter Meter = new(SourceName);
+}
+```
 
 ### Logging: Replacing NLog with ILogger\<T\> + OTel
 
@@ -139,7 +163,7 @@ Metrics are added at locations where aggregated data has operational value (aler
 | `xsdk.vault.requests.total`           | Counter       | `VaultRepository`                    | Vault call volume             |
 | `xsdk.variable.resolution.failures`   | Counter       | `VariableService`                    | Configuration error detection |
 
-All custom instruments are created via `ITelemetryService.CreateCounter<T>()` / `CreateHistogram<T>()` to avoid direct references to `System.Diagnostics.Metrics` in SDK libraries.
+All custom instruments are created directly via the statischen `Meter`-Instanz der jeweiligen Klasse/des Plugins (z. B. `Telemetry.Meter.CreateCounter<long>("vault.requests.total", ...)`). Direkte Referenzen auf `System.Diagnostics` und `System.Diagnostics.Metrics` sind in SDK-Bibliotheken explizit erlaubt und erwünscht — `ITelemetryService` als Wrapper entfällt.
 
 ### Migration Sequence
 
@@ -148,10 +172,14 @@ All custom instruments are created via `ITelemetryService.CreateCounter<T>()` / 
 2. TelemetryConfigurator   Remove NLog circular dependency (static _logger)
 3. Static SDK classes      Remove log-then-rethrow try/catch blocks
 4. DI-managed classes      ILogger<T> constructor injection
-5. Repository layer        Add Tracing + Metrics via ITelemetryService
+5. Repository layer        Add Tracing + Metrics via static ActivitySource/Meter
+                           (NOT via ITelemetryService — see Dezentralisierung section)
 6. HttpClientBuilder       AddHttpClientInstrumentation() in TelemetryPlugin
 7. Plugin system           Tracing for load/initialize
 8. Host.cs / TestHost      Remove LogManager.Flush/Shutdown hooks
+9. TelemetryPluginHost     Delegiert vollständig an ITelemetryPluginBuilder-Implementierungen;
+                           AddXSdkInstrumentation() steht als opt-in Extension Method bereit
+                           und wird vom App-seitigen PluginBuilder explizit aufgerufen
 ```
 
 ## Consequences

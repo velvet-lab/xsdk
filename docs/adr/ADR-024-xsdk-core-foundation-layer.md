@@ -19,7 +19,7 @@ Over time, the scope of shared abstractions grew substantially beyond plugin pri
 - Variable and setup system (`IVariable`, `ISetup`, `IVariableService`, `VariableAttribute`)
 - Authentication primitives (`IApiKeyHandler`, `IApiKeyModel`, `ClaimsPrincipalExtensions`)
 - ASP.NET abstraction interfaces (`IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`, `IHateoasItem`)
-- Telemetry interfaces (`ITelemetryService`, `ITelemetryPluginBuilder`)
+- Telemetry interfaces (`ITelemetryPluginBuilder`, `VariableResourceDetector`; `ITelemetryService` ist aufgegeben)
 - Cryptography and security utilities (`CryptoTool`, `SecurityContext`, `CredentialManager`)
 - General utilities (`StringHelper`, `HashTools`, `NetworkTools`, `TypeConverter`, `ObjectHelper`)
 
@@ -42,7 +42,7 @@ The name `xSdk.Plugin` no longer accurately described the package's contents and
 | File System        | `IFileSystemService`, `FileSystemContext`, `FileSystemHelper`                                |
 | Authentication     | `IApiKeyHandler`, `IApiKeyModel`, `AuthenticationDefaults`                                   |
 | Web Abstractions   | `IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`                         |
-| Telemetry          | `ITelemetryService`, `ITelemetryPluginBuilder`                                               |
+| Telemetry          | `ITelemetryPluginBuilder`, `VariableResourceDetector` — `ITelemetryService` ist aufgegeben (siehe [ADR-014](ADR-014-opentelemetry-observability.md), Dezentralisierung) |
 | Security Utilities | `CryptoTool`, `SecurityContext`, `CredentialManager`, `CertificateHelper`                    |
 | Shared SDK Types   | `SdkException`, `Stage`, `SemVer`, `Mapster` mapping base, REST client helpers               |
 

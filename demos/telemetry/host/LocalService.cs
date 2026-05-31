@@ -17,20 +17,20 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Logging;
-using xSdk.Extensions.Telemetry;
 
 namespace xSdk.Demos;
 
 internal class LocalService(ILogger<LocalService> logger)
 {
-    private static readonly ActivitySource LocalSource = new(TelemetryConstants.Source);
-    private static readonly Meter LocalServiceMeter = new(TelemetryConstants.Source);
-    private readonly Counter<int> _counter = LocalServiceMeter.CreateCounter<int>("MyCounter", description: "Count the calls for methods", unit: "times");
+    private static readonly ActivitySource LocalSource = Diagnostics.Source;    
+
+    // Metrik-Namen folgen lowercase.with.dots-Konvention (ADR-014)
+    private readonly Counter<int> _counter = Diagnostics.Meter.CreateCounter<int>("demo.local.work.calls", description: "Count the calls for methods", unit: "times");
 
     public void DoWorkA()
     {
         logger.LogInformation("Now start a activity");
-        using var activity = LocalSource.StartActivity("do.work.a", ActivityKind.Client);
+        using var activity = Diagnostics.Source.StartActivity("do.work.a", ActivityKind.Client);
 
         _counter.Add(1);
         logger.LogInformation("This is a Sample Log Entry");
@@ -45,7 +45,7 @@ internal class LocalService(ILogger<LocalService> logger)
     public void DoWorkB()
     {
         logger.LogInformation("Now start a activity");
-        using var activity = LocalSource.StartActivity("do.work.b", ActivityKind.Client);
+        using var activity = Diagnostics.Source.StartActivity("do.work.b", ActivityKind.Client);
 
         try
         {
@@ -64,7 +64,7 @@ internal class LocalService(ILogger<LocalService> logger)
         catch (Exception ex)
         {
             logger.LogError(ex.Message);
-            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);            
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
         }
     }
 }
