@@ -15,11 +15,9 @@
  */
 
 using xSdk.Extensions.Variable;
-using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Demos;
 
-[VariableNoPrefix()]
 public sealed class OptionsWithoutPrefix : VariableSetup
 {
     [Variable(

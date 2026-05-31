@@ -61,7 +61,7 @@ public class VariableSetup : IVariableSetup
             IVariable? variable = variableService.LoadVariable(name);
             if (variable != null)
             {
-                return variableService.ReadVariableValue<TValue>(name, shouldThrowIfNotFound);
+                return variableService.ReadVariableValue<TValue>(variable.Name, shouldThrowIfNotFound);
             }
         }
 
@@ -76,7 +76,7 @@ public class VariableSetup : IVariableSetup
             IVariable? variable = variableService.LoadVariable(name);
             if (variable != null)
             {
-                variableService.SetVariable(name, value);
+                variableService.SetVariable(variable.Name, value);
             }
         }
     }

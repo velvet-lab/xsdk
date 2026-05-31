@@ -23,9 +23,11 @@ public class Variable : IVariable
 {
     private readonly string _applicationPrefix;
 
+    private readonly string _name;
+
     protected Variable(string name, Type valueType)
     {
-        Name = name;
+        _name = name;
         ArgumentNullException.ThrowIfNull(valueType);
 
         ValueType = valueType;
@@ -33,7 +35,17 @@ public class Variable : IVariable
         _applicationPrefix = "none";// SlimHost.Instance.AppPrefix;
     }
 
-    public string Name { get; private set; }
+    /// <summary>
+    /// Returns the qualified variable name. When a prefix is set and the raw name
+    /// does not already start with it, the prefix is prepended: e.g. "flat-file-file-path".
+    /// </summary>
+    public string Name =>
+        !NoPrefix && !string.IsNullOrEmpty(Prefix) && !_name.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase)
+            ? $"{Prefix}-{_name}"
+            : _name;
+
+    /// <summary>The raw (unqualified) variable name as passed to the constructor.</summary>
+    internal string RawName => _name;
 
     public Type ValueType { get; private set; }
 
@@ -149,20 +161,37 @@ public class Variable : IVariable
 
     private string? CreateTemplate(string? value)
     {
-        string? templateValue = value;
-        if (!string.IsNullOrEmpty(templateValue) && templateValue.IndexOf('<') > -1)
+        if (string.IsNullOrEmpty(value))
         {
-            templateValue = templateValue.Substring(templateValue.IndexOf('<') + 1);
-            templateValue = templateValue.Substring(0, templateValue.IndexOf('>'));
+            return string.Empty;
+        }
+
+        string trimmed = value.Trim();
+
+        // Split into command part (e.g. "--path") and optional arg placeholder (e.g. "<path>")
+        string commandPart;
+        string argPart = string.Empty;
+        int spaceIdx = trimmed.IndexOf(' ');
+        if (spaceIdx > -1)
+        {
+            commandPart = trimmed[..spaceIdx];
+            argPart = $" {trimmed[(spaceIdx + 1)..].Trim()}";
         }
         else
         {
-            templateValue = string.Empty;
+            commandPart = trimmed;
         }
 
-        templateValue = $" <{templateValue?.Trim()}>";
+        // Strip "--" to get the bare command name (e.g. "path")
+        string commandName = commandPart.StartsWith("--") ? commandPart[2..] : commandPart;
 
-        return $"{KeyForCommandline}{templateValue}".Trim();
+        // Prepend the class-level prefix when present, so "--path" becomes "--flat-file-path"
+        if (!NoPrefix && !string.IsNullOrEmpty(Prefix))
+        {
+            commandName = $"{Prefix}-{commandName}";
+        }
+
+        return $"--{commandName}{argPart}".Trim();
     }
 
     private static string RemoveUnwantedCharsOnFirstPosition(string name)
