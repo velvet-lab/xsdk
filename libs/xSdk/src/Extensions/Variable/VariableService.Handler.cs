@@ -15,6 +15,7 @@
  */
 
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable.Providers;
 using xSdk.Tools;
 

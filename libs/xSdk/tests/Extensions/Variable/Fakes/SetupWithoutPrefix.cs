@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Variable.Attributes;
+
 namespace xSdk.Extensions.Variable.Fakes;
 
 // No [VariablePrefix] attribute — variables are registered without any prefix.
