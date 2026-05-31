@@ -92,7 +92,7 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
         }
         services.AddChatClient(defaultChatClient);
 
-        defaultChatClient.AsBuilder().UseOpenTelemetry(sourceName: environmentOptions?.Value.ServiceName, configure: (cfg) => cfg.EnableSensitiveData = true);
+        defaultChatClient.AsBuilder().UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: (cfg) => cfg.EnableSensitiveData = true);
 
         foreach ((string name, AIAgentDefinition agent) in Agents)
         {
@@ -109,7 +109,7 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
             IHostedAgentBuilder agentBuilder = services.AddAIAgent(name, (sp, key) =>
             {
                 IChatClient chatClient = sp.GetRequiredKeyedService<IChatClient>(key);
-                chatClient.AsBuilder().UseOpenTelemetry(sourceName: environmentOptions.Value.ServiceName);
+                chatClient.AsBuilder().UseOpenTelemetry(sourceName: Diagnostics.SourceName);
                 var chatClientAgent = new ChatClientAgent(chatClient, new ChatClientAgentOptions
                 {
                     Name = agent.Name,
@@ -122,7 +122,7 @@ internal class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<En
 
                 chatClientAgent
                     .AsBuilder()
-                    .UseOpenTelemetry(sourceName: environmentOptions.Value.ServiceName, configure: (cfg) => cfg.EnableSensitiveData = true);
+                    .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: (cfg) => cfg.EnableSensitiveData = true);
 
                 return chatClientAgent;
             });
