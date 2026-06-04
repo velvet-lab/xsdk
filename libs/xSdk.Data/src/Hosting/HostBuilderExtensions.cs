@@ -24,26 +24,29 @@ namespace xSdk.Hosting;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder AddDatalayer(this IHostBuilder hostBuilder, Action<IDatalayerBuilder> factory)
+    extension(IHostBuilder hostBuilder)
     {
-        hostBuilder
-            .ConfigureServices((_, services) =>
-            {
-                var datalayerBuilder = new DatalayerBuilder(services);
+        public IHostBuilder AddDatalayer(Action<IDatalayerBuilder> factory)
+        {
+            hostBuilder
+                .ConfigureServices((_, services) =>
+                {
+                    var datalayerBuilder = new DatalayerBuilder(services);
 
-                services
+                    services
 
-                    .AddSingleton<IDatalayerFactory>(provider =>
-                    {
-                        var factoryInstance = ActivatorUtilities.CreateInstance<DatalayerFactory>(provider);
-                        return factoryInstance;
-                    })
-                    // Add pool provider for pooled database instances
-                    .TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+                        .AddSingleton<IDatalayerFactory>(provider =>
+                        {
+                            DatalayerFactory factoryInstance = ActivatorUtilities.CreateInstance<DatalayerFactory>(provider);
+                            return factoryInstance;
+                        })
+                        // Add pool provider for pooled database instances
+                        .TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
 
-                factory?.Invoke(datalayerBuilder);
-            });
+                    factory?.Invoke(datalayerBuilder);
+                });
 
-        return hostBuilder;
+            return hostBuilder;
+        }
     }
 }
