@@ -29,7 +29,7 @@ const string APP_NAME = "datalayer-entityframework";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "de";
 
-var host = xSdk.Hosting.Host
+IHost host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     // Sample for Entity Datalayer
     .AddDatalayer(builder =>
@@ -44,30 +44,21 @@ var host = xSdk.Hosting.Host
             // Enable Entityframework for second DbContext
             .UseEntityFramework<SecondDbContext>(
                 DbProviderNames.Second,
-                config =>
-                {
-                    config.TransactionsEnabled = false;
-                }
-            )
+                config => config.TransactionsEnabled = false)
             // Add Repositories to the Layer
             .MapRepository<ISecondSampleRepository, SecondSampleRepository>();
     })
-    .ConfigureServices((_, services) =>
-    {
-        services
+    .ConfigureServices((_, services) => services
             // Add DbContext Factory
             .AddDbContextFactory<SampleDbContext>(options =>
-            {
                 // Use InMemory Database
                 options
                     .UseInMemoryDatabase("MySampleDatabase")
-                    .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-            });
-    })
+                    .ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning))))
     .AddHost<MyDataHost>()
     .Build();
 
-var logger = LogManager.GetCurrentClassLogger();
+ILogger logger = LogManager.GetCurrentClassLogger();
 logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();

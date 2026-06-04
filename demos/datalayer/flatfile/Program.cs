@@ -25,23 +25,20 @@ const string APP_NAME = "datalayer-flatfile";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "df";
 
-var host = xSdk.Hosting.Host
+IHost host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .AddDatalayer(builder =>
     {
-        var datastore = Path.Combine(Path.GetTempPath(), APP_NAME, $"{Guid.NewGuid().ToString("N")}.json");
+        string datastore = Path.Combine(Path.GetTempPath(), APP_NAME, $"{Guid.NewGuid():N}.json");
         builder
             .UseFlatFile(
-                config =>
-                {
-                    config.FilePath = datastore;
-                })
+                config => config.FilePath = datastore)
             .MapRepository<ISampleRepository, SampleRepository>();
     })
     .AddHost<MyDataHost>()
     .Build();
 
-var logger = LogManager.GetCurrentClassLogger();
+ILogger logger = LogManager.GetCurrentClassLogger();
 logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();
