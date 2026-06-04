@@ -44,7 +44,7 @@ public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture)
     [Fact]
     public void ConfigureAuthorization_SetsDefaultPolicy()
     {
-        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder();
+        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder(LogManager.CreateLogger<DefaultAuthenticationPluginBuilder>());
         AuthorizationOptions options = new AuthorizationOptions();
 
         builder.ConfigureAuthorization(options);
@@ -55,7 +55,7 @@ public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture)
     [Fact]
     public void TryRetrieveAuthenticationScheme_NoBearerHeader_ReturnsNullScheme()
     {
-        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder();
+        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder(LogManager.CreateLogger<DefaultAuthenticationPluginBuilder>());
         DefaultHttpContext context = new DefaultHttpContext();
         context.Request.Headers["Authorization"] = "";
 
@@ -67,7 +67,7 @@ public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture)
     [Fact]
     public void TryRetrieveAuthenticationScheme_WithBearerHeader_ReturnsBearerScheme()
     {
-        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder();
+        DefaultAuthenticationPluginBuilder builder = new DefaultAuthenticationPluginBuilder(LogManager.CreateLogger<DefaultAuthenticationPluginBuilder>());
         DefaultHttpContext context = new DefaultHttpContext();
         context.Request.Headers["Authorization"] = "Bearer some-token";
 
