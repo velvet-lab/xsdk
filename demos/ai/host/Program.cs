@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
+using System.ClientModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using xSdk.Demos.AI;
-using xSdk.Demos.Builders;
+using OpenAI;
+using OpenAI.Chat;
+using xSdk.Demos;
+using xSdk.Demos.Builder;
+using xSdk.Extensions.AI;
 using xSdk.Hosting;
 using xSdk.Plugins.AI;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.Telemetry;
 using xSdk.Plugins.WebApi;
 using xSdk.Plugins.WebSecurity;
+using static xSdk.Security.Claims.SdkClaimTypes;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
@@ -34,9 +41,9 @@ const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "ai";
 
 IHost host = xSdk.Hosting.WebHost
-    .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+    .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)    
     .EnableWebApi()
-    .EnableAI<AgentsPluginBuilder>(AIPluginHelper.Ollama)
+    .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
     .EnableTelemetry<TelemetryPluginBuilder>(options =>
     {
         options.LoggingEnabled = true;

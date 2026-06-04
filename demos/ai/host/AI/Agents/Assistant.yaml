@@ -3,6 +3,7 @@ name: Assistant
 description: Helpful assistant
 instructions: You are a helpful assistant. You answer questions in the language specified by the user. You return your answers in a JSON format.
 model:
+    name: qwen3:8b
     options:
         temperature: 0.9
         topP: 0.95

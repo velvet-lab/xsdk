@@ -6,13 +6,18 @@
     </PropertyGroup>
     
     <!--External dependencies-->
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Agents.AI" />
+        <PackageReference Include="Microsoft.Agents.AI.Declarative" />
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\AI\Agents\" />
-      <Folder Include="Extensions\AI\Workflows\" />
+      <Folder Include="Data\Models\" />
     </ItemGroup>
 
 </Project>

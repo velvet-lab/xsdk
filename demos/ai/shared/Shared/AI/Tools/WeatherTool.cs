@@ -5,7 +5,7 @@ using System.Text;
 
 namespace xSdk.Demos.AI.Tools;
 
-internal static class WeatherTool
+public static class WeatherTool
 {
     [Description("Get the weather for a given location.")]
     public static string GetWeather(

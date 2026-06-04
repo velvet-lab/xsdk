@@ -17,8 +17,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using xSdk.Demos.AI;
-using xSdk.Demos.Builders;
+using xSdk.Demos;
+using xSdk.Demos.Builder;
 using xSdk.Hosting;
 using xSdk.Plugins.AI;
 using xSdk.Plugins.Compression;
@@ -36,7 +36,7 @@ const string APP_PREFIX = "ai";
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableAI<AgentsPluginBuilder>(AIPluginHelper.Ollama)
+    .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
     .EnableTelemetry<TelemetryPluginBuilder>(options =>
     {
         options.LoggingEnabled = true;

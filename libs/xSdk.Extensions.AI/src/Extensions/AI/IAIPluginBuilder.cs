@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using xSdk.Extensions.Plugin;
 
@@ -22,6 +23,4 @@ namespace xSdk.Extensions.AI;
 public interface IAIPluginBuilder : IPluginBuilder
 {    
     void Initialize();
-
-    IChatClient CreateDefaultChatClient();
 }

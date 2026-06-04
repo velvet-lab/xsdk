@@ -16,9 +16,9 @@ public static class DiagnosticsExtensions
         => builder
             .AddSource(Diagnostics.SourceName);
             //.AddSource("Experimental.Microsoft.Extensions.AI")
-            //.AddSource("Experimental.Microsoft.Agents.AI")
+            //.AddSource("Experimental.Microsoft._agents.AI")
             //.AddSource("Microsoft.Extensions.AI")
-            //.AddSource("Microsoft.Agents.AI");
+            //.AddSource("Microsoft._agents.AI");
 
     /// <summary>
     /// Aktiviert Metriken für das xSdk.Extensions.AI Paket.
@@ -30,7 +30,7 @@ public static class DiagnosticsExtensions
         => builder
             .AddMeter(Diagnostics.SourceName);
             //.AddMeter("Experimental.Microsoft.Extensions.AI")
-            //.AddMeter("Experimental.Microsoft.Agents.AI")
+            //.AddMeter("Experimental.Microsoft._agents.AI")
             //.AddMeter("Microsoft.Extensions.AI")
-            //.AddMeter("Microsoft.Agents.AI");
+            //.AddMeter("Microsoft._agents.AI");
 }

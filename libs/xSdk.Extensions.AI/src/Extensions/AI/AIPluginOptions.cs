@@ -3,30 +3,10 @@ using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Extensions.AI;
 
+[VariablePrefix("ai")]
 public sealed class AIPluginOptions : PluginOptions
 {
-    [Variable(
-        name: Definitions.Endpoint.Name,
-        template: Definitions.Endpoint.Template,
-        helpText: Definitions.Endpoint.HelpText,
-        defaultValue: Definitions.Endpoint.DefaultValue
-    )]
-    public string? Endpoint
-    {
-        get => ReadValue<string>(Definitions.Endpoint.Name);
-        set => SetValue(Definitions.Endpoint.Name, value);
-    }
-
-    [Variable(
-        name: Definitions.ApiKey.Name,
-        template: Definitions.ApiKey.Template,
-        helpText: Definitions.ApiKey.HelpText
-    )]
-    public string? ApiKey
-    {
-        get => ReadValue<string>(Definitions.ApiKey.Name);
-        set => SetValue(Definitions.ApiKey.Name, value);
-    }
+    internal const string DefaultChatClientKey = nameof(DefaultChatClientKey);
 
     [Variable(
         name: Definitions.Model.Name,
@@ -39,28 +19,49 @@ public sealed class AIPluginOptions : PluginOptions
         set => SetValue(Definitions.Model.Name, value);
     }
 
+    [Variable(
+        name: Definitions.EmbeddingModel.Name,
+        template: Definitions.EmbeddingModel.Template,
+        helpText: Definitions.EmbeddingModel.HelpText
+    )]
+    public string? EmbeddingModel
+    {
+        get => ReadValue<string>(Definitions.EmbeddingModel.Name);
+        set => SetValue(Definitions.EmbeddingModel.Name, value);
+    }
+
+    [Variable(
+        name: Definitions.Path.Name,
+        template: Definitions.Path.Template,
+        helpText: Definitions.Path.HelpText
+    )]
+    public string? Path
+    {
+        get => ReadValue<string>(Definitions.Path.Name);
+        set => SetValue(Definitions.Path.Name, value);
+    }
+
     public static class Definitions
     {
-        public static class Endpoint
-        {
-            public const string Name = "ai-endpoint";
-            public const string Template = "--endpoint <endpoint>";
-            public const string HelpText = "The endpoint for OpenAI API";
-            public const string DefaultValue = "https://api.openai.com/v1";
-        }
-
-        public static class ApiKey
-        {
-            public const string Name = "ai-apikey";
-            public const string Template = "--apikey <apikey>";
-            public const string HelpText = "The API key for OpenAI API";            
-        }
-
         public static class Model
         {
-            public const string Name = "ai-model";
+            public const string Name = "model";
             public const string Template = "--model <model>";
-            public const string HelpText = "The model to use for the chat client";
+            public const string HelpText = "The default model to use for the chat client";
+        }
+
+        public static class EmbeddingModel
+        {
+            public const string Name = "embeddingmodel";
+            public const string Template = "--embeddingmodel <embeddingmodel>";
+            public const string HelpText = "The default model to use for the embedding client";
+        }
+
+        public static class Path
+        {
+            public const string Name = "path";
+            public const string Template = "--path <path>";
+            public const string HelpText = "The YAML definitions path for the AI agents and workflows";
         }
     }
 }

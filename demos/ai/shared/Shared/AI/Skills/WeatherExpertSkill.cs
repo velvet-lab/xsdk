@@ -7,7 +7,7 @@ using Microsoft.Agents.AI;
 namespace xSdk.Demos.AI.Skills;
 
 #pragma warning disable MAAI001 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
-internal sealed class WeatherExpertSkill : AgentClassSkill<WeatherExpertSkill>
+public sealed class WeatherExpertSkill : AgentClassSkill<WeatherExpertSkill>
 {
     public override AgentSkillFrontmatter Frontmatter { get; } = new(
         name: "weather-skill",

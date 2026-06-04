@@ -1,43 +1,24 @@
 using System.ClientModel;
-using CommunityToolkit.Diagnostics;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
+using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
+using xSdk.Hosting;
 
-namespace xSdk.Demos.AI;
+namespace xSdk.Demos;
 
 public static class OpenAIHelper
 {
-    public static IChatClient? CreateChatClient(AIPluginOptions? options)
+    private const string Endpoint = "http://192.168.189.32:11434/v1";
+    private const string ApiKey = "sk-none";
+
+    public static OpenAIClient CreateClient()
     {
-        if (options is not null)
+        return new OpenAIClient(new ApiKeyCredential(ApiKey), new OpenAIClientOptions
         {
-            OpenAIClient openaiClient = CreateAiClient(options);
-            return openaiClient.GetChatClient(options.Model).AsIChatClient();
-        }
-
-        throw new InvalidOperationException("Invalid plugin options");
-    }
-
-    public static IEmbeddingGenerator? CreateEmbeddingGenerator(AIPluginOptions? options)
-    {
-        if (options is not null)
-        {
-            OpenAIClient openaiClient = CreateAiClient(options);
-            return openaiClient.GetEmbeddingClient(options.EmbeddingModel).AsIEmbeddingGenerator();
-        }
-
-        throw new InvalidOperationException("Invalid plugin options");
-    }
-
-    private static OpenAIClient CreateAiClient(AIPluginOptions options)
-    {
-        Guard.IsNotNullOrEmpty(options.ApiKey);
-        Guard.IsNotNullOrEmpty(options.Endpoint);
-
-        return new OpenAIClient(new ApiKeyCredential(options.ApiKey), new OpenAIClientOptions
-        {
-            Endpoint = new Uri(options.Endpoint),
+            Endpoint = new Uri(Endpoint),
             EnableDistributedTracing = true,
             ClientLoggingOptions = new System.ClientModel.Primitives.ClientLoggingOptions
             {
@@ -47,4 +28,38 @@ public static class OpenAIHelper
             }
         });
     }
+
+    public static IEmbeddingGenerator? CreateEmbeddingGenerator(AIPluginOptions? options)
+    {
+        if (options is not null)
+        {
+            OpenAIClient openaiClient = CreateClient();
+            return openaiClient.GetEmbeddingClient(options.EmbeddingModel).AsIEmbeddingGenerator();
+        }
+
+        throw new InvalidOperationException("Invalid plugin options");
+    }
+
+    public static IChatClient CreateChatClient(OpenAIClient client, string model)
+    {
+        return client.GetChatClient(model)
+            .AsIChatClient()
+            .AsBuilder()
+            .EnableTelemetry(true)
+            .Build();
+    }
+
+    public static AIAgent? CreateAgent(IServiceProvider provider, string name, AIDefinition definition)
+    {
+        IChatClient chatClient = provider.GetRequiredKeyedService<IChatClient>(name);
+
+        AIFunction[] tools = [AIFunctionFactory.Create(WeatherTool.GetWeather)];
+
+        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: tools, loggerFactory: LogManager.Factory);
+        return agentFactory
+            .CreateAsync(definition.Metadata).ConfigureAwait(false).GetAwaiter().GetResult()
+            .AsBuilder()
+            .EnableTelemetry(true)
+            .Build();
+    }    
 }
