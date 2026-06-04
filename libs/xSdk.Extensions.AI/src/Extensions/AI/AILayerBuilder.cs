@@ -18,6 +18,7 @@ internal class AILayerBuilder<TClient>(Func<TClient> clientFactory) : IAILayerBu
 
     private readonly Dictionary<string, IChatClient> _chatClients = [];
     private readonly List<AIDefinition> _definitions = [];
+    private readonly Dictionary<string, AIFunction> _tools = [];
 
     private Func<TClient, string, IChatClient>? _chatClientFactory;
     private Func<IServiceProvider, string, AIDefinition, AIAgent?>? _agentFactory;
@@ -33,11 +34,20 @@ internal class AILayerBuilder<TClient>(Func<TClient> clientFactory) : IAILayerBu
     internal void AddDefinition(AIDefinition definition)
         => _definitions.Add(definition);
 
+    internal void AddTool(string name, AIFunction aIFunction)
+        => _tools.Add(name, aIFunction);
+
     public void Build(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
     {
         _logger.LogInformation("Initializing AI Layer for client type: {ClientType}", typeof(TClient).Name);
 
         TClient client = clientFactory.Invoke();
+
+        foreach(var tool in _tools)
+        {
+            services.AddKeyedSingleton(tool.Key, tool.Value);
+            _logger.LogDebug("Registered tool: {ToolName}", tool.Key);
+        }
 
         foreach (AIDefinition definition in _definitions)
         {

@@ -29,6 +29,16 @@ public static class AILayerBuilderExtensions
             return builder;
         }
 
+        public IAILayerBuilder<TClient> RegisterTool(string name, AIFunction aIFunction)
+        {
+            if (builder is AILayerBuilder<TClient> concreteLayer)
+            {
+                concreteLayer.AddTool(name, aIFunction);
+            }
+
+            return builder;
+        }
+
         public IAILayerBuilder<TClient> AddAgentFile(string filePath)
         {
             Guard.IsNotNullOrEmpty(filePath);
