@@ -85,6 +85,11 @@ public sealed partial class EnvironmentOptions
             }
         }
 
+        if (!string.IsNullOrEmpty(contentRoot))
+        {
+            contentRoot = Path.GetFullPath(contentRoot);
+        }
+
         return contentRoot;
     }
 
