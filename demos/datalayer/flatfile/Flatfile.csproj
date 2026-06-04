@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\libs\xSdk.Data.FlatFile\src\xSdk.Data.FlatFile.csproj" />
-        <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+        <ProjectReference Include="..\shared\Shared.csproj" />
     </ItemGroup>
 
 </Project>
