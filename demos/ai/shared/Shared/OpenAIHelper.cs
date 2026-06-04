@@ -53,11 +53,11 @@ public static class OpenAIHelper
     {
         IChatClient chatClient = provider.GetRequiredKeyedService<IChatClient>(name);
 
-        AIFunction[] tools = [AIFunctionFactory.Create(WeatherTool.GetWeather)];
+        
 
-        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: tools, loggerFactory: LogManager.Factory);
+        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: definition.LoadTools(provider).ToList(), loggerFactory: LogManager.Factory);
         return agentFactory
-            .CreateAsync(definition.Metadata).ConfigureAwait(false).GetAwaiter().GetResult()
+            .CreateAsync(definition.Metadata).GetAwaiter().GetResult()
             .AsBuilder()
             .EnableTelemetry(true)
             .Build();

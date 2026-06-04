@@ -3,6 +3,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenAI;
+using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
 using xSdk.Hosting;
 
@@ -20,6 +21,8 @@ internal class AgentsPluginBuilder() : AIPluginBuilder, IAIPluginBuilder
 
             // Register a factory for creating Agents, so that they can be created from definitions
             .RegisterAgentFactory(OpenAIHelper.CreateAgent)
+
+            .RegisterTool("GetWeather", AIFunctionFactory.Create(WeatherTool.GetWeather))
 
             // Simple Agent
             .AddAgentFile("AI\\Agents\\Assistant.yaml")

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Options;
 
@@ -12,5 +13,5 @@ public interface IAILayerBuilder
 
 public interface IAILayerBuilder<TClient> : IAILayerBuilder
     where TClient : class
-{
+{    
 }

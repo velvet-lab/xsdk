@@ -11,7 +11,7 @@ namespace xSdk.Extensions.AI;
 
 public abstract class AIPluginBuilder : PluginBuilder, IAIPluginBuilder
 {
-    private readonly Dictionary<Type, IAILayerBuilder> _aiLayers = [];    
+    private readonly Dictionary<Type, IAILayerBuilder> _aiLayerBuilders = [];    
 
     public abstract void Initialize();
 
@@ -19,28 +19,28 @@ public abstract class AIPluginBuilder : PluginBuilder, IAIPluginBuilder
         where TClient : class
     {
         Type key = typeof(TClient);
-        if (_aiLayers.TryGetValue(key, out IAILayerBuilder? existingLayer) && existingLayer is IAILayerBuilder<TClient> typedLayer)
+        if (_aiLayerBuilders.TryGetValue(key, out IAILayerBuilder? existingBuilder) && existingBuilder is IAILayerBuilder<TClient> typedBuilder)
         {
-            return typedLayer;
+            return typedBuilder;
         }
         else
         {
             var aiLayer = new AILayerBuilder<TClient>(value);
-            _aiLayers.AddOrNew(key, aiLayer);
+            _aiLayerBuilders.AddOrNew(key, aiLayer);
             return aiLayer;
         }        
     }
 
     internal string[] GetRegisteredAgentKeys()
     {
-        return [.. _aiLayers.Values.SelectMany(x => x.Definitions.Select(y => y.Name))];
+        return [.. _aiLayerBuilders.Values.SelectMany(x => x.Definitions.Select(y => y.Name))];
     }
 
     internal void InitializeLayers(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
     {
-        foreach (IAILayerBuilder layer in _aiLayers.Values)
+        foreach (IAILayerBuilder builder in _aiLayerBuilders.Values)
         {
-            layer.Build(services, pluginOptions, environmentOptions);
+            builder.Build(services, pluginOptions, environmentOptions);
         }
     }
 }
