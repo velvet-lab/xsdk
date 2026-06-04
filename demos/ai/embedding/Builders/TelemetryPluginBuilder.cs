@@ -41,7 +41,6 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
     {
         builder
             // Add Exporters
-            // .AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }
 
@@ -50,12 +49,11 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
         builder
             .AddAIInstrumentation()
             .AddAspNetCoreInstrumentation()
-            //.AddEventCountersInstrumentation()            
+            .AddEventCountersInstrumentation()            
             .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
-            //.AddProcessInstrumentation()
+            .AddProcessInstrumentation()
             // Add Exporters
-            //.AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }
 
@@ -64,11 +62,9 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
         builder
             .AddAIInstrumentation()
             .AddAspNetCoreInstrumentation()
-            //.AddEntityFrameworkCoreInstrumentation()
             .AddGrpcClientInstrumentation()
             .AddHttpClientInstrumentation()            
             // Add Exporters
-            //.AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }  
 
@@ -80,7 +76,6 @@ internal class TelemetryPluginBuilder(IVariableService variableService, IOptions
         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
         options.Protocol = OtlpExportProtocol.Grpc;
-        options.Endpoint = new Uri(OtlpEndpoint);
-        // options.Headers = $"OTEL_KEY={telemetrySetup.Token}";
+        options.Endpoint = new Uri(OtlpEndpoint);        
     }
 }

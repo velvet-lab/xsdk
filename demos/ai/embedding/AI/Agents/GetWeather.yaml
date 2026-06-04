@@ -1,6 +1,6 @@
 kind: Prompt
-name: Assistant
-description: Helpful assistant
+name: WeatherAssistant
+description: Helpful weather assistant
 instructions: You are a helpful assistant. You answer questions using the tools provided.
 model:
     options:

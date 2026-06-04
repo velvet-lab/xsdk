@@ -29,7 +29,7 @@ using xSdk.Plugins.WebSecurity;
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
-const string APP_NAME = "agent";
+const string APP_NAME = "embedding";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "ai";
 
@@ -44,49 +44,10 @@ IHost host = xSdk.Hosting.WebHost
         options.MetricsEnabled = true;
     })
     .EnableWebSecurity()
-    .EnableCompression()
+    .EnableCompression()    
     .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();
 logger.LogInformation("Starting {AppName}", APP_NAME);
 
 await host.RunAsync();
-
-//using System.ClientModel;
-//using Microsoft.Agents.AI;
-//using Microsoft.Extensions.AI;
-//using OpenAI;
-//using OpenAI.Chat;
-//using OpenAI.Responses;
-//using xSdk.Demos.Skills;
-//using xSdk.Demos.Tools;
-
-//#pragma warning disable MAAI001 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
-
-//var client = new OpenAIClient(new ApiKeyCredential("OpenApiKey"), new OpenAIClientOptions
-//{
-//    Endpoint = new Uri("http://192.168.189.32:11434/v1"),
-//});
-
-//IList<AITool> tools = [
-//    AIFunctionFactory.Create(WeatherTool.GetWeather)
-//];
-
-//AgentSkillsProvider skillProvider = new(new WeatherExpertSkill());
-
-//ChatClient chatClient = client.GetChatClient("gemello");
-//ChatClientAgent agent = chatClient
-//    .AsAIAgent(new ChatClientAgentOptions
-//    {
-//        Name = "Assitant",
-//        ChatOptions = new()
-//        {
-//            Instructions = "You are a helpful assistant.",
-//            // Tools = [AIFunctionFactory.Create(WeatherTool.GetWeather)]
-//        },
-//        AIContextProviders = [skillProvider]
-//    });
-
-//Console.WriteLine(await agent.RunAsync("Was ist heute das Wetter in Frankreich?"));
-
-//#pragma warning restore MAAI001 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.

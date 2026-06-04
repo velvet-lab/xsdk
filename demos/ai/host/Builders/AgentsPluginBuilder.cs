@@ -1,33 +1,22 @@
-using System.ClientModel;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
-using OpenAI;
-using xSdk.Demos.AI.Agents;
+using xSdk.Demos.AI;
+using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
-using xSdk.Extensions.Plugin;
 
 namespace xSdk.Demos.Builders;
 
-internal class AgentsPluginBuilder(IOptions<AIPluginOptions> pluginOptions) : PluginBuilder, IAIPluginBuilder
+internal class AgentsPluginBuilder(IOptions<AIPluginOptions> pluginOptions) : AIPluginBuilder, IAIPluginBuilder
 {
-    public IChatClient CreateDefaultChatClient() 
+    public override void Initialize()
     {
-        AIPluginOptions options = pluginOptions.Value;
-        if (options is not null)
-        {
-            var openaiClient = new OpenAIClient(new ApiKeyCredential(options.ApiKey), new OpenAIClientOptions
-            {
-                Endpoint = new Uri(options.Endpoint),
-            });
+        // Simple Agent
+        this.RegisterAgentFile("AI\\Agents\\Assistant.yaml");
 
-            return openaiClient.GetChatClient(options.Model).AsIChatClient();
-        }
-
-        throw new InvalidOperationException("Invalid plugin options");
+        // A Weather Agent with Tools
+        this.RegisterAgentFile("AI\\Agents\\GetWeather.yaml", [AIFunctionFactory.Create(WeatherTool.GetWeather)]);
     }
 
-    public void Initialize()
-    {
-        this.RegisterAgent<HelpfulAssistant>();
-    }
+    public override IChatClient? CreateChatClient()
+        => OpenAIHelper.CreateChatClient(pluginOptions.Value);
 }
