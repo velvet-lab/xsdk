@@ -18,6 +18,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Compression;
@@ -25,7 +26,7 @@ namespace xSdk.Plugins.Compression;
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core response compression configuration – requires a running web host.")]
 internal sealed class CompressionPluginHost : PluginHost
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         services.AddResponseCompression(options =>
         {

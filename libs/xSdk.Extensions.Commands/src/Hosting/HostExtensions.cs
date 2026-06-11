@@ -20,8 +20,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Spectre.Console;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Logging;
 using xSdk.Plugins.Commands;
 
 namespace xSdk.Hosting;
@@ -36,24 +38,19 @@ public static class HostExtensions
         Guard.IsNotNull(host);
 
         ICommandApp? app = host.Services.GetService<ICommandApp>() ?? throw new InvalidOperationException("Command application has not been configured.");
+                
+        await host.StartAsync();
 
-        // Start any hosted services before running the command application
-        IEnumerable<IHostedService> hostedServices = host.Services.GetServices<IHostedService>();
-        if (hostedServices.Any())
-        {
-            hostedServices.ToList().ForEach(hostedService => hostedService.StartAsync(CancellationToken.None).GetAwaiter().GetResult());
-        }
+        var parser = CommandlineParser.Parse(args);
+        string[] defaultArgs = parser.BackupDefaultArgs();
+        bool isReplConsole = parser.ContainsPattern(ConsoleCommand.Definitions.Name);
+        string[] replArgs = parser.Arguments;
 
-        host.RemoveConsoleLoggers();
-
-        int lastResult = 0;
-        string[] replArgs = args;
-        string[] defaultArgs = CommandlineParser.Parse(args).BackupDefaultArgs();
-        bool isReplConsole = CommandlineParser.Parse().ContainsPattern(ConsoleCommand.Definitions.Name);
+        ClearConsole();
 
         do
         {
-            int currentResult = await app.RunAsync(replArgs);
+            Environment.ExitCode = await app.RunAsync(replArgs);
             if (isReplConsole)
             {
                 string? prompt = PromptFactory.Factory?.Invoke();
@@ -67,37 +64,25 @@ public static class HostExtensions
                 }
 
                 string? input = System.Console.ReadLine();
-
                 if (CommandlineParser.Parse(input).AddDefaultArgs(defaultArgs).ContainsPattern(ExitCommand.Definitions.Name))
                 {
                     isReplConsole = false;
                 }
-                else
+                else if(string.Compare(input, "help", true) == 0)
                 {
-                    lastResult = currentResult;
+                    input = "--help";
                 }
 
                 replArgs = CommandlineParser.Parse(input).Arguments;
             }
-            else
-            {
-                lastResult = currentResult;
-            }
         } while (isReplConsole);
 
-        return lastResult;
+        return Environment.ExitCode;
     }
 
-    private static IHost RemoveConsoleLoggers(this IHost host)
+    private static void ClearConsole()
     {
         System.Console.Clear();
-
-        // Alle konfigurierten Provider (OTel, Console, ...) bleiben erhalten.
-        // Nur der globale MinLevel wird auf Warning gesetzt, damit die Console
-        // im REPL-Modus nicht mit Info-Meldungen überfüllt wird.
-        IOptions<LoggerFilterOptions> filterOptions = host.Services.GetRequiredService<IOptions<LoggerFilterOptions>>();
-        filterOptions.Value.MinLevel = LogLevel.Warning;
-
-        return host;
+        AnsiConsole.Clear();
     }
 }

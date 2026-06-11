@@ -18,13 +18,14 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using xSdk.Data.Converters.Json;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Tools;
 
 public static class JsonTools
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger? _logger;
+    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(JsonTools));
 
     public static bool IsJson(string data)
     {
@@ -53,11 +54,10 @@ public static class JsonTools
 
     public static string Merge(string income, string outcome)
     {
-        var result = new JObject();
-
+        var result = new JObject();        
         try
         {
-            _logger.LogInformation("Try to merge States");
+            Logger.LogInformation("Try to merge States");
 
             if (string.IsNullOrEmpty(income))
                 income = "{}";
@@ -81,7 +81,7 @@ public static class JsonTools
         }
         catch
         {
-            _logger.LogWarning("States could not merged.");
+            Logger.LogWarning("States could not merged.");
         }
 
         return result.ToString(Newtonsoft.Json.Formatting.None);
@@ -91,8 +91,6 @@ public static class JsonTools
 
     public static System.Text.Json.JsonSerializerOptions GetSerializerOptions(bool compact)
     {
-        _logger.LogTrace("Create new Json Serializer Options");
-
         var options = new System.Text.Json.JsonSerializerOptions();
         return ConfigureSerializerOptions(options, compact);
     }
@@ -102,8 +100,6 @@ public static class JsonTools
 
     public static JsonSerializerOptions ConfigureSerializerOptions(this System.Text.Json.JsonSerializerOptions setup, bool compact)
     {
-        _logger.LogTrace("Create new Json Serializer Options");
-
         setup.AllowTrailingCommas = true;
         setup.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
         setup.IgnoreReadOnlyFields = false;

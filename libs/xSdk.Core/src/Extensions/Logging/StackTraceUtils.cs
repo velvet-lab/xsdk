@@ -17,7 +17,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace xSdk.Hosting;
+namespace xSdk.Extensions.Logging;
 
 internal static class StackTraceUtils
 {

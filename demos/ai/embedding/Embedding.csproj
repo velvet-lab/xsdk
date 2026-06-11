@@ -11,7 +11,7 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
-    <ItemGroup>
+    <ItemGroup>        
         <PackageReference Include="Neo4j.AgentFramework.GraphRAG" />        
     </ItemGroup>
 
@@ -22,6 +22,21 @@
 
     <ItemGroup>
       <None Update="AI\Agents\FileInspector.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File1.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File2.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File3.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File4.img">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File5.uew">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>

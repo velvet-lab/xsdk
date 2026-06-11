@@ -36,6 +36,7 @@ using Microsoft.Extensions.Logging;
 using xSdk;
 using xSdk.Data;
 using xSdk.Demos.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 
 const string APP_NAME = "datalayer-vault";

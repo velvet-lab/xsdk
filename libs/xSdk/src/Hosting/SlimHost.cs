@@ -16,11 +16,14 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
+using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 
@@ -32,6 +35,23 @@ public class SlimHost
     private readonly List<Action> _appServicesDelegates = [];
     private ApplicationOptions? _applicationOptions;
     private readonly List<Type> _registeredPluginHostTypes = [];
+
+    public IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
+        where TPluginHost : IPluginHost
+    {
+        bool onlyWebPlugins = typeof(TPluginHost) != typeof(IPluginHost);
+
+        IEnumerable<TPluginHost> plugins = Provider.GetServices<IPluginHost>()
+            .Cast<PluginDescription>()
+            .OrderBy(p => p.Order)
+            .Cast<PluginHost>()
+            .Where(x => x.IsWebPluginHost == onlyWebPlugins)
+            .Cast<TPluginHost>();
+
+        return plugins;
+    }
+
+    public ILogger Logger => LogManager.CreateLogger<SlimHost>();
 
     internal IServiceProvider Provider
     {
@@ -55,21 +75,6 @@ public class SlimHost
         }
     }
 
-    public IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
-        where TPluginHost : IPluginHost
-    {
-        bool searchForWebPluginHost = typeof(TPluginHost) != typeof(IPluginHost);
-
-        IEnumerable<TPluginHost> plugins = Provider.GetServices<IPluginHost>()
-            .Cast<PluginDescription>()
-            .OrderBy(p => p.Order)
-            .Cast<IPluginHost>()
-            .Where(x => x.IsWebPluginHost == searchForWebPluginHost)
-            .Cast<TPluginHost>();
-
-        return plugins;
-    }
-
     internal static SlimHost InitializeSlimHost(string[] args, ApplicationOptions appOptions)
     {
         var instance = new SlimHost
@@ -77,9 +82,16 @@ public class SlimHost
             _applicationOptions = appOptions,
             _slimServices = new ServiceCollection()
         };
+
+        //ILogger logger = LoggerFactory.Create(builder =>
+        //{
+        //    builder.AddConsole();
+        //    builder.SetMinimumLevel(LogLevel.Debug);
+        //}).CreateLogger<SlimHost>();
+
         instance.ConfigureDefaults(instance._slimServices);
-        instance._slimServices.AddSingleton<IPluginHostCollection>(_ =>
-            new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()));
+        instance._slimServices.AddSingleton<IPluginHostCollection>(_ => new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()));
+
         return instance;
     }
 
@@ -170,6 +182,7 @@ public class SlimHost
         }        
     }
 
+
     internal EnvironmentOptions? BuildEnvironmentOptions()
     {
         // Builds temporary Environment Options
@@ -180,14 +193,14 @@ public class SlimHost
 
         var services = new ServiceCollection();
 
-        ConfigureDefaults(services);
+        ConfigureDefaults(services, true);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
         return provider.GetService<IOptions<EnvironmentOptions>>()?.Value;
     }
 
-    private void ConfigureDefaults(IServiceCollection services)
+    private void ConfigureDefaults(IServiceCollection services, bool onlyEnvironment = false)
     {
         if (_applicationOptions == null)
         {
@@ -199,9 +212,21 @@ public class SlimHost
             .AddSingleton(provider => provider)
             .RegisterApplicationOptions(_applicationOptions)
             .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(_applicationOptions))
-            .AddSingleton<IConfiguration>(provider => default!)
-            .AddLogging()
-            .AddVariableServices()
-            .AddFileServices();
+            .AddSingleton<IConfiguration>(provider => default!);
+
+        if (onlyEnvironment)
+        {
+            services
+                .AddVariableServices();
+        }
+        else
+        {
+            services
+                //.AddLogging()
+                //.AddLoggerFactory(this)
+                .AddSdkLogging(this, false)
+                .AddVariableServices()
+                .AddFileServices();
+        }
     }
 }

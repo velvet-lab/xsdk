@@ -16,7 +16,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace xSdk.Hosting;
+namespace xSdk.Extensions.Logging;
 
 /// <summary>
 /// Provides static access to <see cref="ILogger"/> instances for SDK code that cannot
@@ -30,14 +30,34 @@ namespace xSdk.Hosting;
 /// </remarks>
 public static class LogManager
 {
-    private static ILoggerFactory _factory = LoggerFactory.Create(b => b.AddConsole());
+    private static ILoggerFactory? _factory;
+    private static ILoggerFactory? _slimFactory;
+
     private static readonly Lock _lock = new();
+
+    internal static bool IsInitialized => _factory is not null;
 
     internal static void Initialize(ILoggerFactory? factory)
     {
         lock (_lock)
         {
-            _factory = factory ?? LoggerFactory.Create(b => b.AddConsole());
+            Reset();
+
+            if (factory is null)
+            {
+                throw new InvalidOperationException("Logger Factory could not be found");
+            }
+
+            _factory = factory;
+        }
+    }
+
+    internal static void Initialize(LogLevel level)
+    {
+        lock (_lock)
+        {
+            Reset();
+            CreateFactory(level);
         }
     }
 
@@ -45,7 +65,11 @@ public static class LogManager
     {
         lock (_lock)
         {
-            _factory = LoggerFactory.Create(b => b.AddConsole());
+            _slimFactory?.Dispose();
+            _slimFactory = default;
+
+            _factory?.Dispose();
+            _factory = default;
         }
     }
 
@@ -53,7 +77,7 @@ public static class LogManager
     {
         lock (_lock)
         {
-            return _factory.CreateLogger(categoryName);
+            return Factory.CreateLogger(categoryName);
         }
     }
 
@@ -61,7 +85,7 @@ public static class LogManager
     {
         lock (_lock)
         {
-            return _factory.CreateLogger<T>();
+            return Factory.CreateLogger<T>();
         }
     }
 
@@ -69,7 +93,7 @@ public static class LogManager
     {
         lock (_lock)
         {
-            return _factory.CreateLogger(type);
+            return Factory.CreateLogger(type);
         }
     }
 
@@ -79,5 +103,40 @@ public static class LogManager
         return CreateLogger(className);
     }
 
-    public static ILoggerFactory Factory => _factory ?? throw new SdkException("Current Logger Factory could not be found");
+    public static ILoggerFactory Factory {
+        get
+        {
+            if(_factory is null)
+            {
+                if (_slimFactory is null)
+                {
+                    lock (_lock)
+                    {
+                        _slimFactory = LoggerFactory.Create(builder =>
+                        {
+                            builder.AddSimpleConsole();
+                            builder.SetMinimumLevel(LogLevel.Information);
+                        });
+                    }
+                }
+
+                return _slimFactory;
+            }
+
+            return _slimFactory;
+        }
+    }
+
+    private static void CreateFactory(LogLevel level)
+    {
+        //if (_factory is null)
+        //{
+        //    _factory = LoggerFactory.Create(builder =>
+        //    {
+        //        builder
+        //            //.ClearProviders()
+        //            .SetMinimumLevel(level);
+        //    });
+        //}
+    }
 }

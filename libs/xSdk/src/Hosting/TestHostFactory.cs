@@ -64,8 +64,6 @@ public static class TestHostFactory
                 // Add initializer for Logger Factory
                 services
                     .AddHostedService<HostInitializer>();
-
-                slimHost.ConfigurePluginHost(x => x.ConfigureServices(services));
             })
             .ConfigureServices((context, services) =>
             {

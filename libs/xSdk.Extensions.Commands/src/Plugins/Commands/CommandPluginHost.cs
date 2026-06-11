@@ -16,6 +16,9 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
 using xSdk.Hosting;
 
@@ -23,12 +26,30 @@ namespace xSdk.Plugins.Commands;
 
 public sealed class CommandPluginHost(ICommandsPluginBuilder builder) : PluginHost
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureLogging(ILoggingBuilder builder)
+    {
+        //// CLI-Kontext: Nur Warnings, Errors und Critical anzeigen
+        //builder.SetMinimumLevel(LogLevel.Information);
+
+        //// Microsoft.Agents.* komplett unterdrücken (spezifischer Filter)
+        //builder.AddFilter("Microsoft.Agents", LogLevel.Debug);
+        //builder.AddFilter("Microsoft.Agents.AI", LogLevel.Debug);
+        //builder.AddFilter("Microsoft.Extensions.AI", LogLevel.Debug);
+
+        //builder.AddFilter((provider, category, level) =>
+        //{
+        //    Console.WriteLine(provider);
+        //    Console.WriteLine(category);
+        //    return true;
+        //});
+    }
+
+    public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         services
             .TryAddSingleton(provider =>
             {
-                var app = builder.CreateApplication(services);
+                ICommandApp app = builder.CreateApplication(services);
                 app.Configure(config =>
                 {
                     builder.Configure(config);

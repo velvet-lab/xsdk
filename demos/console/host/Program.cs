@@ -16,10 +16,11 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.Commands;
 
-const string APP_NAME = "host";
+const string APP_NAME = "console";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "ho";
 
@@ -30,8 +31,6 @@ IHost host = xSdk
         // Enable Commands with default configuration
         .EnableCommands()
 
-        // or with custom configuration
-        // .EnableCommands<CommandsPluginBuilder>()
         .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

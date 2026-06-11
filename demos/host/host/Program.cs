@@ -19,8 +19,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
 using xSdk.Demos.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
 
 const string APP_NAME = "host";
 const string APP_COMPANY = "demos";

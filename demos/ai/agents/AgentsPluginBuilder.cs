@@ -17,12 +17,12 @@ internal class AgentsPluginBuilder() : AIPluginBuilder, IAIPluginBuilder
         CreateAILayer(OpenAIHelper.CreateClient)
 
             // Register a factory for creating Chat Clients with different models, so that agents can use it
-            .RegisterChatClientFactory(OpenAIHelper.CreateChatClient)
+            .AddChatClientFactory(OpenAIHelper.CreateChatClient)
 
             // Register a factory for creating Agents, so that they can be created from definitions
-            .RegisterAgentFactory(OpenAIHelper.CreateAgent)
+            .AddAgentFactory(OpenAIHelper.CreateAgent)
 
-            .RegisterTool("GetWeather", AIFunctionFactory.Create(WeatherTool.GetWeather))
+            .AddTool("GetWeather", AIFunctionFactory.Create(WeatherTool.GetWeather))
 
             // Simple Agent
             .AddAgentFile("AI\\Agents\\Assistant.yaml")

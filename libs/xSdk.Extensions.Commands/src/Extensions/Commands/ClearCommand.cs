@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Commands;
@@ -33,6 +34,7 @@ internal class ClearCommand : Command<EmptyCommandSettings>
     protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
     {
         System.Console.Clear();
+        AnsiConsole.Clear();
         return 0;
     }
 }

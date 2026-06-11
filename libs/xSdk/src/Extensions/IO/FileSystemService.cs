@@ -17,7 +17,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Security;
 using Zio;
 using Zio.FileSystems;
@@ -26,7 +26,9 @@ namespace xSdk.Extensions.IO;
 
 internal class FileSystemService : IFileSystemService
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<FileSystemService>();
+    private static ILogger<FileSystemService>? _logger;
+    private static ILogger Logger => _logger ??= LogManager.CreateLogger<FileSystemService>();
+
     private readonly FileSystemOptions _options;
 
     public FileSystemService(IOptions<FileSystemOptions> options) : this(options.Value)
@@ -47,7 +49,7 @@ internal class FileSystemService : IFileSystemService
     {
         var rootFolders = CreateRootFolders();
 
-        _logger.LogInformation("Request filesystem for context '{0}'", context);
+        Logger.LogInformation("Request filesystem for context '{0}'", context);
 
         InternalFileSystemResult result = new() { App = new PhysicalFileSystem(), Data = new PhysicalFileSystem() };
 
@@ -83,7 +85,7 @@ internal class FileSystemService : IFileSystemService
 
     private RootFolders CreateRootFolders()
     {
-        _logger.LogTrace("Determine root folders");
+        Logger.LogTrace("Determine root folders");
 
         RootFolders result;
 
@@ -152,7 +154,7 @@ internal class FileSystemService : IFileSystemService
 
     private UPath CreateFolder(UPath path, bool shouldCreate = true)
     {
-        _logger.LogTrace("Create folder if not exists");
+        Logger.LogTrace("Create folder if not exists");
 
         var fs = new PhysicalFileSystem();
         var realPath = fs.ConvertPathFromInternal(path.FullName);
@@ -163,13 +165,13 @@ internal class FileSystemService : IFileSystemService
             {
                 if (shouldCreate)
                 {
-                    _logger.LogTrace("Creating folder '{0}'", realPath);
+                    Logger.LogTrace("Creating folder '{0}'", realPath);
                     fs.CreateDirectory(realPath);
                 }
             }
             catch
             {
-                _logger.LogTrace("Folder '{0}' could not created", realPath);
+                Logger.LogTrace("Folder '{0}' could not created", realPath);
             }
         }
         return realPath;
@@ -183,12 +185,12 @@ internal class FileSystemService : IFileSystemService
 
         if (Directory.Exists(realPath))
         {
-            _logger.LogDebug("Path '{0}' exists", realPath);
+            Logger.LogDebug("Path '{0}' exists", realPath);
             return path;
         }
         else if (Directory.Exists(realFallbackPath))
         {
-            _logger.LogWarning("Path '{0}' does not exist. Use fallback path '{1}'", realPath, realFallbackPath);
+            Logger.LogWarning("Path '{0}' does not exist. Use fallback path '{1}'", realPath, realFallbackPath);
             return fallback;
         }
         else

@@ -33,7 +33,7 @@ public abstract class AIPluginBuilder : PluginBuilder, IAIPluginBuilder
 
     internal string[] GetRegisteredAgentKeys()
     {
-        return [.. _aiLayerBuilders.Values.SelectMany(x => x.Definitions.Select(y => y.Name))];
+        return [.. _aiLayerBuilders.Values.SelectMany(x => x.Definitions.Select(y => y.Name)) ];
     }
 
     internal void InitializeLayers(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)

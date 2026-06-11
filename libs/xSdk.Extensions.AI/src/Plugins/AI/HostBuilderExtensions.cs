@@ -1,3 +1,4 @@
+using Microsoft.Agents.AI.Hosting;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.AI;
 using xSdk.Extensions.Telemetry;

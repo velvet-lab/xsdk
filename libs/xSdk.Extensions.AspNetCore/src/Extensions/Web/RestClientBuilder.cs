@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.Json;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
@@ -27,7 +27,8 @@ namespace xSdk.Extensions.Web;
 [ExcludeFromCodeCoverage(Justification = "HTTP client factory – requires live network endpoints to exercise.")]
 public static class RestClientBuilder
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger? _logger;
+    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(RestClientBuilder));
 
     public static IRestClient CreateRestClient(Uri baseUrl)
         => CreateRestClientWithHandler(baseUrl, default, default, default, default);
@@ -38,15 +39,11 @@ public static class RestClientBuilder
     public static IRestClient CreateRestClient(Uri baseUrl, Action<HttpClientHandler> handler)
         => CreateRestClientWithHandler(baseUrl, default, default, handler, default);
 
-
-
-
     public static IRestClient CreateRestClient(Uri baseUrl, HttpClient httpClient)
         => CreateRestClientWithHttpClient(baseUrl, default, default, httpClient, default);
 
     public static IRestClient CreateRestClient(Uri baseUrl, HttpClient httpClient, Action<RestClientOptions> options)
         => CreateRestClientWithHttpClient(baseUrl, default, options, httpClient, default);
-
 
     public static IRestClient CreateRestClient(Uri baseUrl, IAuthenticator authenticator)
         => CreateRestClientWithHandler(baseUrl, authenticator, default, default, default);
@@ -119,7 +116,7 @@ public static class RestClientBuilder
         IProgress<double>? progress = default
     )
     {
-        _logger.LogTrace("Create rest api client");
+        Logger.LogTrace("Create rest api client");
 
         var restOptions = new RestClientOptions(baseUrl);
 

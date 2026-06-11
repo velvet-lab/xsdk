@@ -34,7 +34,7 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
     public void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options)
     {
         options.IncludeFormattedMessage = true;
-        options.IncludeScopes = true;    
+        options.IncludeScopes = true;        
     }
 
     public void ConfigureLoggingProvider(LoggerProviderBuilder builder)

@@ -23,6 +23,7 @@ using xSdk.Data;
 using xSdk.Demos;
 using xSdk.Demos.Data;
 using xSdk.Demos.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 
 const string APP_NAME = "datalayer-entityframework";

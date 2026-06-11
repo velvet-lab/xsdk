@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Hosting;
 

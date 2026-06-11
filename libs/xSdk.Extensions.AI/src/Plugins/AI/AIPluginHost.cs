@@ -1,8 +1,10 @@
 using Microsoft.Agents.AI.DevUI;
 using Microsoft.Agents.AI.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.AI;
@@ -13,7 +15,7 @@ namespace xSdk.Plugins.AI;
 
 internal partial class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<AIPluginHost> logger) : WebPluginHost
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
         IAIPluginBuilder? pluginBuilder = GetBuilder<IAIPluginBuilder>();
 
@@ -44,7 +46,7 @@ internal partial class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOp
         else
         {
             logger.LogError("Failed to get IAgentsPluginBuilder from plugin host. Ensure that the plugin is configured correctly.");
-        }
+        }        
     }
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder builder)

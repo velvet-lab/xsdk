@@ -15,66 +15,95 @@
  */
 
 using System.Diagnostics;
-using xSdk.Extensions.Commands;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Tools;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace xSdk.Extensions.Options;
 
 public sealed partial class EnvironmentOptions
 {
     [Variable(
-        name: DefaultCommandSettings.Definitions.Stage.Name,
-        template: DefaultCommandSettings.Definitions.Stage.Template,
-        helpText: DefaultCommandSettings.Definitions.Stage.HelpText,
-        defaultValue: DefaultCommandSettings.Definitions.Stage.DefaultValue,
+        name: Commands.DefaultCommandSettings.Definitions.Stage.Name,
+        template: Commands.DefaultCommandSettings.Definitions.Stage.Template,
+        helpText: Commands.DefaultCommandSettings.Definitions.Stage.HelpText,
+        defaultValue: Commands.DefaultCommandSettings.Definitions.Stage.DefaultValue,
         resourceNames: ["{{app.prefix}}.environment.stage", "deployment.environment"]
     )]
     public Stage Stage
     {
-        get => ReadValue<Stage>(DefaultCommandSettings.Definitions.Stage.Name);
-        set => SetValue(DefaultCommandSettings.Definitions.Stage.Name, value);
+        get => ReadValue<Stage>(Commands.DefaultCommandSettings.Definitions.Stage.Name);
+        set => SetValue(Commands.DefaultCommandSettings.Definitions.Stage.Name, value);
     }
 
+    public string StageAsString => Stage switch
+    {
+        Stage.Development => Environments.Development,
+        Stage.Integration => Environments.Staging,
+        Stage.PreProduction => Environments.Staging,
+        Stage.Production => Environments.Production,
+        Stage.All => Environments.Production,
+        Stage.None => Environments.Production,
+        _ => Environments.Production,
+    };
+
     [Variable(
-        name: DefaultCommandSettings.Definitions.Demo.Name,
-        template: DefaultCommandSettings.Definitions.Demo.Template,
-        helpText: DefaultCommandSettings.Definitions.Demo.HelpText,
+        name: Commands.DefaultCommandSettings.Definitions.Demo.Name,
+        template: Commands.DefaultCommandSettings.Definitions.Demo.Template,
+        helpText: Commands.DefaultCommandSettings.Definitions.Demo.HelpText,
         resourceNames: ["{{app.prefix}}.environment.demo"]
     )]
     public bool IsDemo
     {
-        get => ReadValue<bool>(DefaultCommandSettings.Definitions.Demo.Name);
-        set => SetValue(DefaultCommandSettings.Definitions.Demo.Name, value);
+        get => ReadValue<bool>(Commands.DefaultCommandSettings.Definitions.Demo.Name);
+        set => SetValue(Commands.DefaultCommandSettings.Definitions.Demo.Name, value);
     }
 
     [Variable(
-        name: DefaultCommandSettings.Definitions.ContentRoot.Name,
-        template: DefaultCommandSettings.Definitions.ContentRoot.Template,
-        helpText: DefaultCommandSettings.Definitions.ContentRoot.HelpText
+        name: Commands.DefaultCommandSettings.Definitions.ContentRoot.Name,
+        template: Commands.DefaultCommandSettings.Definitions.ContentRoot.Template,
+        helpText: Commands.DefaultCommandSettings.Definitions.ContentRoot.HelpText
     )]
     public string? ContentRoot
     {
-        get => ReadValue<string>(DefaultCommandSettings.Definitions.ContentRoot.Name);
-        set => SetValue(DefaultCommandSettings.Definitions.ContentRoot.Name, value);
+        get => ReadValue<string>(Commands.DefaultCommandSettings.Definitions.ContentRoot.Name);
+        set => SetValue(Commands.DefaultCommandSettings.Definitions.ContentRoot.Name, value);
     }
 
     [Variable(
-        name: DefaultCommandSettings.Definitions.LogLevel.Name,
-        template: DefaultCommandSettings.Definitions.LogLevel.Template,
-        helpText: DefaultCommandSettings.Definitions.LogLevel.HelpText,
-        defaultValue: DefaultCommandSettings.Definitions.LogLevel.DefaultValue
+        name: Commands.DefaultCommandSettings.Definitions.LogLevel.Name,
+        template: Commands.DefaultCommandSettings.Definitions.LogLevel.Template,
+        helpText: Commands.DefaultCommandSettings.Definitions.LogLevel.HelpText,
+        defaultValue: Commands.DefaultCommandSettings.Definitions.LogLevel.DefaultValue
     )]
-    public string? LogLevel
+    public string? LogLevelAsString
     {
-        get => ReadValue<string>(DefaultCommandSettings.Definitions.LogLevel.Name);
-        set => SetValue(DefaultCommandSettings.Definitions.LogLevel.Name, value);
+        get => ReadValue<string>(Commands.DefaultCommandSettings.Definitions.LogLevel.Name);
+        set => SetValue(Commands.DefaultCommandSettings.Definitions.LogLevel.Name, value);
     }
+
+    public LogLevel LogLevel => LogLevelAsString?.ToLowerInvariant() switch
+    {
+        "off" => LogLevel.None,
+        "none" => LogLevel.None,
+        "fatal" => LogLevel.Critical,
+        "critical" => LogLevel.Critical,
+        "error" => LogLevel.Error,
+        "warn" => LogLevel.Warning,
+        "warning" => LogLevel.Warning,
+        "info" => LogLevel.Information,
+        "information" => LogLevel.Information,
+        "debug" => LogLevel.Debug,
+        "trace" => LogLevel.Trace,
+        _ => LogLevel.Warning,
+    };
 
     private static string DetermineContentRoot()
     {
-        string? contentRoot = ReadCommandlineValue<string>(DefaultCommandSettings.Definitions.ContentRoot.Name);
+        string? contentRoot = ReadCommandlineValue<string>(Commands.DefaultCommandSettings.Definitions.ContentRoot.Name);
         if (string.IsNullOrEmpty(contentRoot))
         {
             contentRoot = Environment.CurrentDirectory;
@@ -97,7 +126,7 @@ public sealed partial class EnvironmentOptions
     {
         string? result = string.Empty;
 
-        var parser = CommandlineParser.Parse();
+        var parser = Commands.CommandlineParser.Parse();
         if (parser.ContainsPattern(pattern))
         {
             result = parser.ReadPattern(pattern);
@@ -109,5 +138,5 @@ public sealed partial class EnvironmentOptions
         }
 
         return default;
-    }
+    }            
 }

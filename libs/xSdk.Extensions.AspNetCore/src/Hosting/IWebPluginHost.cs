@@ -17,12 +17,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace xSdk.Hosting;
 
 public interface IWebPluginHost : IPluginHost
 {
+    void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder);
+
     void ConfigureServices(WebHostBuilderContext context, IServiceCollection services);
 
     void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app);

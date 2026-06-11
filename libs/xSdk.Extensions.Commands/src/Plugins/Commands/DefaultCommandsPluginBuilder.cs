@@ -39,7 +39,7 @@ internal sealed class DefaultCommandsPluginBuilder(IOptions<ApplicationOptions> 
 
         setup.AddVariableCommands();
 
-        setup.AddCommand<ConsoleCommand>(ConsoleCommand.Definitions.Name);
+        setup.AddCommand<ConsoleCommand>(ConsoleCommand.Definitions.Name).IsHidden();
         setup.AddCommand<ClearCommand>(ClearCommand.Definitions.Name);
         setup.AddCommand<ExitCommand>(ExitCommand.Definitions.Name);
     }

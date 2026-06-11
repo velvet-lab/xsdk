@@ -17,6 +17,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Agents.AI;
 using xSdk.Demos;
 using xSdk.Demos.Builder;
 using xSdk.Hosting;
@@ -25,6 +26,9 @@ using xSdk.Plugins.Compression;
 using xSdk.Plugins.Telemetry;
 using xSdk.Plugins.WebApi;
 using xSdk.Plugins.WebSecurity;
+using xSdk.Demos.Hosting;
+using System.Runtime.CompilerServices;
+using xSdk.Extensions.Logging;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
@@ -37,14 +41,10 @@ IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
     .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
-    .EnableTelemetry<TelemetryPluginBuilder>(options =>
-    {
-        options.LoggingEnabled = true;
-        options.TracingEnabled = true;
-        options.MetricsEnabled = true;
-    })
+    .EnableTelemetry<TelemetryPluginBuilder>(TelemetryConfiguration.Default)
     .EnableWebSecurity()
-    .EnableCompression()    
+    .EnableCompression()
+    .AddHost<FileInspectorService>()
     .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

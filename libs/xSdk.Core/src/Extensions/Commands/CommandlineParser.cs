@@ -23,6 +23,17 @@ public partial class CommandlineParser
 {
     private CommandlineParser() { }
 
+    public string[] BackupDefaultArgs()
+    {
+        var result = new List<string>();
+
+        ExtractDefaultArgs(DefaultCommandSettings.Definitions.ContentRoot.Name, ref result);
+        ExtractDefaultArgs(DefaultCommandSettings.Definitions.Stage.Name, ref result);
+        ExtractDefaultArgs(DefaultCommandSettings.Definitions.Demo.Name, ref result);
+
+        return [.. result];
+    }
+
     public string[] Arguments { get; private set; } = [];
 
     public static CommandlineParser Parse()
@@ -325,18 +336,7 @@ public partial class CommandlineParser
 
         return args;
     }
-
-    public string[] BackupDefaultArgs()
-    {
-        var result = new List<string>();
-
-        ExtractDefaultArgs(DefaultCommandSettings.Definitions.ContentRoot.Name, ref result);
-        ExtractDefaultArgs(DefaultCommandSettings.Definitions.Stage.Name, ref result);
-        ExtractDefaultArgs(DefaultCommandSettings.Definitions.Demo.Name, ref result);
-
-        return [.. result];
-    }
-
+    
     private void ExtractDefaultArgs(string pattern, ref List<string> result)
     {
         // Remove not needed Commandline Params

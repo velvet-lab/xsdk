@@ -48,7 +48,7 @@ public class DefaultCommandSettings : CommandSettings
             public const string Template = "--log-level <LEVEL>";
             public const string HelpText =
                 "Set the log level for the application. Default primaryKey is 'Info'. Possible Values: Off, Trace, Debug, Info, Warn, Error or Fatal";
-            public const string DefaultValue = "Info";
+            public const string DefaultValue = "Warning";
         }
 
         public static class Stage

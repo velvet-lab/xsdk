@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Extensions.AI;
 

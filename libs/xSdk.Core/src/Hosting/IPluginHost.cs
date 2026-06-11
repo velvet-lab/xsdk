@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
@@ -24,9 +26,11 @@ public interface IPluginHost : IPluginDescription
 {
     IServiceProvider? Services { get; }
 
-    bool IsWebPluginHost { get; }
+    void ConfigureHostConfiguration(IConfigurationBuilder builder);
 
-    void ConfigureServices(IServiceCollection services);
+    void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder);
+
+    void ConfigureLogging(ILoggingBuilder builder);    
 
     void ConfigureServices(HostBuilderContext context, IServiceCollection services);
 }

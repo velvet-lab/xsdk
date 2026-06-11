@@ -5,7 +5,7 @@ description: Determines if an incoming file is ready for direct text embedding o
 
 # Das Gehirn des Agenten als Single Point of Truth
 model:
-  name: qwen3:3b
+  name: qwen3:8b
   options:
     temperature: 0.0
 

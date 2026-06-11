@@ -97,7 +97,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.Commands", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ai", "ai", "{055EF480-D076-4C53-9CA4-49A7DBE66D37}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agents", "demos\ai\host\Agents.csproj", "{3D0664B0-6587-4316-AE70-A36CA4F74BB3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agents", "demos\ai\agents\Agents.csproj", "{3D0664B0-6587-4316-AE70-A36CA4F74BB3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Extensions.AI", "libs\xSdk.Extensions.AI\src\xSdk.Extensions.AI.csproj", "{28BF601F-D362-458B-BFFB-EFB68E14CCC2}"
 EndProject
@@ -114,6 +114,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDb", "demos\datalayer\mongodb\MongoDb.csproj", "{C699E1A5-52F4-4BCC-BD81-3B02DF2F7B09}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vault", "demos\datalayer\vault\Vault.csproj", "{DA82C13D-1DDD-456E-A48C-8C7AF4A81CF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translator", "demos\ai\translator\Translator.csproj", "{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -273,6 +275,10 @@ Global
 		{DA82C13D-1DDD-456E-A48C-8C7AF4A81CF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA82C13D-1DDD-456E-A48C-8C7AF4A81CF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA82C13D-1DDD-456E-A48C-8C7AF4A81CF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -326,6 +332,7 @@ Global
 		{A368C448-4395-4D74-8DF9-335CF0E8DF42} = {F619CF26-65CB-4E60-8DD2-72E174839FCD}
 		{C699E1A5-52F4-4BCC-BD81-3B02DF2F7B09} = {F619CF26-65CB-4E60-8DD2-72E174839FCD}
 		{DA82C13D-1DDD-456E-A48C-8C7AF4A81CF3} = {F619CF26-65CB-4E60-8DD2-72E174839FCD}
+		{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19} = {055EF480-D076-4C53-9CA4-49A7DBE66D37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {616C08C6-30E9-451B-898B-4DBD57867C0A}

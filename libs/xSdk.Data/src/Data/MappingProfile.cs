@@ -16,13 +16,15 @@
 
 using Mapster;
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Data;
 
 public abstract class MappingProfile
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<MappingProfile>();
+    private static ILogger<MappingProfile>? _logger;
+
+    private static ILogger Logger => _logger ??= LogManager.CreateLogger<MappingProfile>();
 
     protected static TypeAdapterSetter<TSource, TDestination> CreateMap<TSource, TDestination>()
     {
@@ -46,22 +48,22 @@ public abstract class MappingProfile
             config.RequireExplicitMappingPrimitive = false;
         };
 
-        _logger.LogDebug("Creating TypeAdapterConfig for Profile '{0}'", GetType());
+        Logger.LogDebug("Creating TypeAdapterConfig for Profile '{0}'", GetType());
         var globalConfig = TypeAdapterConfig.GlobalSettings;
 
         if (configure == null)
         {
-            _logger.LogDebug("Using default configuration for Profile '{0}'", GetType());
+            Logger.LogDebug("Using default configuration for Profile '{0}'", GetType());
             configure = defaultConfig;
         }
 
-        _logger.LogDebug("Applying global configuration for Profile '{0}'", GetType());
+        Logger.LogDebug("Applying global configuration for Profile '{0}'", GetType());
         configure(globalConfig);
 
-        _logger.LogDebug("Applying profile configuration for Profile '{0}'", GetType());
+        Logger.LogDebug("Applying profile configuration for Profile '{0}'", GetType());
         Configure(globalConfig);
 
-        _logger.LogDebug("Compiling TypeAdapterConfig for Profile '{0}'", GetType());
+        Logger.LogDebug("Compiling TypeAdapterConfig for Profile '{0}'", GetType());
         globalConfig.Compile();
 
         return globalConfig;

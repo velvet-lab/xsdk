@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>{3063B6CD-AA8E-4CB1-BC90-4B8FBCF20B19}</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>        
+        <PackageReference Include="Neo4j.AgentFramework.GraphRAG" />        
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AI\src\xSdk.Extensions.AI.csproj" />
+      <ProjectReference Include="..\..\..\libs\xSdk.Extensions.Commands\src\xSdk.Extensions.Commands.csproj" />
+      <ProjectReference Include="..\shared\Shared\Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="AI\Agents\EnglishTranslator.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="AI\Agents\FileInspector.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="AI\Agents\FrenchTranslator.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="AI\Agents\ItalianTranslator.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File1.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File2.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File3.png">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File4.img">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Embeddings\File5.uew">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+
+</Project>

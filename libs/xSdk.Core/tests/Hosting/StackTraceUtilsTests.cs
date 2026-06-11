@@ -16,6 +16,7 @@
 
 using System.Diagnostics;
 using System.Reflection;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Hosting;
 

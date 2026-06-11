@@ -10,6 +10,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Agents.AI" />
         <PackageReference Include="Microsoft.Agents.AI.Declarative" />
+        <PackageReference Include="Microsoft.Agents.AI.Workflows" />
     </ItemGroup>
     
     <ItemGroup>
@@ -18,6 +19,7 @@
 
     <ItemGroup>
       <Folder Include="Data\Models\" />
+      <Folder Include="Extensions\Commands\" />
     </ItemGroup>
 
 </Project>

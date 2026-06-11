@@ -15,18 +15,16 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
 
-internal sealed class HostInitializer(IPluginService pluginService, IPluginHostCollection pluginHostCollection, ILoggerFactory factory) : IHostedService
+internal sealed class HostInitializer(IPluginService pluginService, IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection) : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        // Initialize the LogManager with the provided ILoggerFactory
-        LogManager.Initialize(factory);
-
         // Register plugins with the plugin service
         foreach (Type pluginType in pluginHostCollection)
         {

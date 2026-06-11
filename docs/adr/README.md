@@ -47,3 +47,4 @@ Each ADR follows this structure:
 | [ADR-029](ADR-029-aspnetcore-security-plugins.md)         | ASP.NET Core Security and Infrastructure Plugins                 | Accepted                       |
 | [ADR-030](ADR-030-ai-agents-extension.md)                 | AI Agents Integration as Host Extension                          | Accepted                       |
 | [ADR-031](ADR-031-microsoft-testing-platform.md)          | Microsoft Testing Platform for .NET Test Execution               | Accepted                       |
+| [ADR-032](ADR-032-plugin-host-lifecycle-extension.md)     | Plugin Host Lifecycle Extension                                  | Accepted                       |

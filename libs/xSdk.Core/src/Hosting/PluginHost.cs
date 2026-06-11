@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
@@ -24,9 +26,13 @@ public abstract class PluginHost : PluginDescription, IPluginHost
 {
     public IServiceProvider? Services { get; internal set; }
 
-    public virtual bool IsWebPluginHost => false;
+    internal protected virtual bool IsWebPluginHost => false;
 
-    public virtual void ConfigureServices(IServiceCollection services) { }
+    public virtual void ConfigureHostConfiguration(IConfigurationBuilder builder) { }
+
+    public virtual void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder) { }
+
+    public virtual void ConfigureLogging(ILoggingBuilder builder) { }
 
     public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
 

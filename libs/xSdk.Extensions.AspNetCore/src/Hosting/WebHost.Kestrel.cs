@@ -29,7 +29,7 @@ namespace xSdk.Hosting;
 
 public static partial class WebHost
 {
-    private static void ConfigureKestrel(KestrelServerOptions options)
+    private static void ConfigureKestrel(KestrelServerOptions options, ILogger logger)
     {
         WebHostOptions? webSetup = options.ApplicationServices.GetService<IOptions<WebHostOptions>>()?.Value;
         IFileSystemService? fileService = options.ApplicationServices.GetService<IFileSystemService>();
@@ -37,7 +37,7 @@ public static partial class WebHost
 
         if (webSetup == null)
         {
-            _logger.LogDebug("No WebHostOptions found, using default Kestrel configuration");
+            logger.LogDebug("No WebHostOptions found, using default Kestrel configuration");
         }
         else
         {
@@ -47,7 +47,7 @@ public static partial class WebHost
             // Remove Kestrel Header for security reasons
             options.AddServerHeader = false;
 
-            if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, out X509Certificate2? cert))
+            if (TryLoadCertificateIfHttpsIsEnabled(fileService, webSetup, logger, out X509Certificate2? cert))
             {
                 certAvailable = true;
                 httpPort = webSetup.Https;
@@ -98,7 +98,7 @@ public static partial class WebHost
                 }
                 else
                 {
-                    _logger.LogDebug("Http Port is not set");
+                    logger.LogDebug("Http Port is not set");
                 }
             }
 
@@ -119,18 +119,18 @@ public static partial class WebHost
                     }
                     else
                     {
-                        _logger.LogError("Https configuration is needed for gRpc");
+                        logger.LogError("Https configuration is needed for gRpc");
                     }
                 }
                 else
                 {
-                    _logger.LogDebug("gRpc Port is not set");
+                    logger.LogDebug("gRpc Port is not set");
                 }
             }
         }
     }
 
-    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService? fileService, WebHostOptions? webSetup, out X509Certificate2? cert)
+    private static bool TryLoadCertificateIfHttpsIsEnabled(IFileSystemService? fileService, WebHostOptions? webSetup, ILogger logger, out X509Certificate2? cert)
     {
         if (webSetup != null && webSetup.IsHttpsEnabled)
         {
@@ -159,7 +159,7 @@ public static partial class WebHost
                     {
                         try
                         {
-                            _logger.LogInformation("Load Certificate from certificate and key File");
+                            logger.LogInformation("Load Certificate from certificate and key File");
                             var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
                             cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
 
@@ -167,22 +167,22 @@ public static partial class WebHost
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {message})", ex.Message);
+                            logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {message})", ex.Message);
                         }
                     }
                     else
                     {
-                        _logger.LogWarning("Https is enabled, but no key file '{file}' could not found", keyFilePath);
+                        logger.LogWarning("Https is enabled, but no key file '{file}' could not found", keyFilePath);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("Https is enabled, but no certificate file '{file}' could not found", certFilePath);
+                    logger.LogWarning("Https is enabled, but no certificate file '{file}' could not found", certFilePath);
                 }
             }
             else
             {
-                _logger.LogWarning("Https is enabled, but no certificate and key file specified");
+                logger.LogWarning("Https is enabled, but no certificate and key file specified");
             }
         }
 

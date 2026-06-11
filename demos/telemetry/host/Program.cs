@@ -19,7 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
 using xSdk.Demos.Builders;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Plugins.Telemetry;
 
 const string APP_NAME = "telemetry";

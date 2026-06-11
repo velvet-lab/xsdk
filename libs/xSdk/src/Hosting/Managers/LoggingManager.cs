@@ -1,49 +1,58 @@
-/*
- * Copyright 2026 Roland Breitschaft
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+using System.Runtime.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting.Managers;
 
 internal static class LoggingManager
 {
-    internal static void ConfigureLogging(ILoggingBuilder builder, EnvironmentOptions options)
+    internal static IServiceCollection AddSdkLogging(this IServiceCollection services, SlimHost slimHost, bool invokePlugins)
     {
-        builder.ClearProviders();
+        
 
-        var logLevel = ConvertLogLevel(options.LogLevel);
-        builder.SetMinimumLevel(logLevel);
-    }
-
-    internal static void ResetLogger(ILoggingBuilder? builder = default)
-    {
-        builder?.ClearProviders();
-    }
-
-    private static LogLevel ConvertLogLevel(string? logLevel) =>
-        logLevel?.ToLowerInvariant() switch
+        if (invokePlugins)
         {
-            "off" => LogLevel.None,
-            "fatal" => LogLevel.Critical,
-            "error" => LogLevel.Error,
-            "warn" => LogLevel.Warning,
-            "info" => LogLevel.Information,
-            "debug" => LogLevel.Debug,
-            "trace" => LogLevel.Trace,
-            _ => LogLevel.Information,
-        };
+            services
+            .AddLogging(builder =>
+            {
+                slimHost.ConfigurePluginHost(plugin => plugin.ConfigureLogging(builder));
+            });
+        }
+        else
+        {
+            services.AddLogging();
+        }
+
+        services
+            .AddSingleton(typeof(ILogger<>), provider =>
+            {
+                var factory = provider.GetRequiredService<ILoggerFactory>();
+                var options = provider.GetService<IOptions<EnvironmentOptions>>()?.Value ?? throw new InvalidOperationException("Environment Options could not loaded");
+
+                LogManager.Initialize(factory);
+                return LogManager.CreateLogger(typeof(ILogger<>));
+
+            });
+
+        return services;
+    }
+
+    internal static IServiceCollection AddLoggerFactory(this IServiceCollection services, SlimHost slimHost)
+    {
+        services.AddSingleton<ILoggerFactory>(provider =>
+        {
+            if (!LogManager.IsInitialized)
+            {
+                var options = provider.GetService<IOptions<EnvironmentOptions>>()?.Value ?? throw new InvalidOperationException("Environment Options could not loaded");
+                LogManager.Initialize(options.LogLevel);
+            }
+
+            return LogManager.Factory;
+        });
+
+        return services;
+    }
 }

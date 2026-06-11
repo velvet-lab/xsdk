@@ -19,6 +19,7 @@ internal static class YamlDeclartionExtensions
                 value = property.Value;
                 return true;
             }
+
             value = default;
             return false;
         }

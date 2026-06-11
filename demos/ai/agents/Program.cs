@@ -25,7 +25,7 @@ using OpenAI.Chat;
 using xSdk.Demos;
 using xSdk.Demos.Builder;
 using xSdk.Extensions.AI;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Plugins.AI;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.Telemetry;

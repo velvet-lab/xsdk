@@ -148,7 +148,7 @@ internal partial class VariableService
             }
             else
             {
-                _logger.LogWarning("Variable '{name}' already exists and will not be registered again. Check for naming collisions across options classes.", variable.Name);
+                Logger.LogWarning("Variable '{name}' already exists and will not be registered again. Check for naming collisions across options classes.", variable.Name);
             }
         }
     }

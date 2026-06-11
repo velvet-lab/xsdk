@@ -5,13 +5,13 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
 using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Demos;
 
 public static class OpenAIHelper
 {
-    private const string Endpoint = "http://192.168.189.32:11434/v1";
+    private const string Endpoint = "http://192.168.189.32:8000/v1";
     private const string ApiKey = "sk-none";
 
     public static OpenAIClient CreateClient()
@@ -55,7 +55,7 @@ public static class OpenAIHelper
 
         
 
-        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: definition.LoadTools(provider).ToList(), loggerFactory: LogManager.Factory);
+        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: [.. definition.LoadTools(provider)], loggerFactory: LogManager.Factory);
         return agentFactory
             .CreateAsync(definition.Metadata).GetAwaiter().GetResult()
             .AsBuilder()

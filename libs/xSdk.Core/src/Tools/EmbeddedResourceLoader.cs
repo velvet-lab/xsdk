@@ -16,13 +16,14 @@
 
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Tools;
 
 public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<EmbeddedResourceLoader>();
+    private static ILogger<EmbeddedResourceLoader>? _logger;
+    private static ILogger Logger => _logger ??= LogManager.CreateLogger<EmbeddedResourceLoader>();
 
     private readonly Assembly _assembly = assembly;
     private readonly string _namespace = @namespace;
@@ -42,7 +43,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             }
             else
             {
-                _logger.LogTrace("Resource '{0}' not found in Assembly", resourceName);
+                Logger.LogTrace("Resource '{0}' not found in Assembly", resourceName);
             }
         }
 
@@ -64,7 +65,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
             }
             else
             {
-                _logger.LogTrace("Resource '{0}' not found in Assembly", resourceName);
+                Logger.LogTrace("Resource '{0}' not found in Assembly", resourceName);
             }
         }
 
@@ -73,7 +74,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 
     private static string FormatResourceName(string resourceNamespace, string resourceName)
     {
-        _logger.LogTrace("Create resource name for '{0}'", resourceName);
+        Logger.LogTrace("Create resource name for '{0}'", resourceName);
 
         string fileName = "";
         if (resourceName.IndexOf("/") > -1)
@@ -103,7 +104,7 @@ public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
         });
 
         var result = $"{resourceNamespace}.{items.Aggregate((a, b) => a + "." + b)}{fileName}";
-        _logger.LogTrace("Resourcename for '{0}' is '{1}'", resourceName, result);
+        Logger.LogTrace("Resourcename for '{0}' is '{1}'", resourceName, result);
 
         return result;
     }

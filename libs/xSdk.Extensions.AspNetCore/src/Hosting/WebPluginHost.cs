@@ -18,14 +18,32 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace xSdk.Hosting;
 
 [ExcludeFromCodeCoverage(Justification = "Abstract base with empty virtual methods – only instantiated via ASP.NET Core web host pipeline.")]
 public abstract class WebPluginHost : PluginHost, IWebPluginHost
 {
-    public override bool IsWebPluginHost => true;
+    protected override bool IsWebPluginHost => true;
+
+    public override void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder)
+    {
+        throw new InvalidOperationException("WebPluginHost does not support HostBuilderContext. Use WebHostBuilderContext instead.");
+    }
+
+    public virtual void ConfigureAppConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
+    {
+
+    }
+
+    public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+    {
+        throw new InvalidOperationException("WebPluginHost does not support HostBuilderContext. Use WebHostBuilderContext instead.");
+    }
 
     public virtual void ConfigureServices(WebHostBuilderContext context, IServiceCollection services) { }
 

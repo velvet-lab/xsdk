@@ -19,19 +19,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting.Managers;
 
 public static class ConfigurationManager
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger? _logger;
+    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(ConfigurationManager));
 
     internal static void LoadHostConfiguration(IConfigurationBuilder builder, ApplicationOptions options)
     {
-        _logger.LogInformation("Try to load Machine Configuration");
+        Logger.LogInformation("Try to load Machine Configuration");
 
-        _logger.LogTrace("Clear all Configuration Providers and load our own Providers");
+        Logger.LogTrace("Clear all Configuration Providers and load our own Providers");
         builder.Sources.Clear();
 
         builder.AddEnvironmentVariables(prefix: "DOTNET_");
@@ -46,7 +48,7 @@ public static class ConfigurationManager
 
     internal static void LoadAppConfiguration(HostBuilderContext? context, IConfigurationBuilder builder, ApplicationOptions options)
     {
-        _logger.LogInformation("Try to load Application Configuration");
+        Logger.LogInformation("Try to load Application Configuration");
 
         FileSystemOptions fileSystemOptions = new()
         {
@@ -59,7 +61,7 @@ public static class ConfigurationManager
 
         string configFolder = FileSystemHelper.CreateSpecificDataFolder(root, "/config");
 
-        string? configFile = GetConfigFile(configFolder);
+        string? configFile = GetConfigFile(configFolder, default);
         LoadConfigurationFile(builder, configFile, false);
 
         if (context != null)
@@ -70,7 +72,7 @@ public static class ConfigurationManager
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
-            _logger.LogTrace("Try load Config from Container");
+            Logger.LogTrace("Try load Config from Container");
             if (Directory.Exists("/var/run/configs"))
             {
                 builder.AddKeyPerFile("/var/run/configs", true);
@@ -78,25 +80,25 @@ public static class ConfigurationManager
         }
     }
 
-    private static void LoadConfigurationFile(IConfigurationBuilder builder, string? file, bool reloadOnChange = false)
+    private static void LoadConfigurationFile(IConfigurationBuilder builder, string? file, bool reloadOnChange)
     {
         if (!string.IsNullOrEmpty(file) && File.Exists(file))
         {
 #pragma warning disable CA1873 // Potenziell kostspielige Protokollierung vermeiden
-            _logger.LogInformation("Try to load Configuration from File '{file}'", file);
+            Logger.LogInformation("Try to load Configuration from File '{file}'", file);
 #pragma warning restore CA1873 // Potenziell kostspielige Protokollierung vermeiden
 
-            _logger.LogTrace("Configuration File exists. Load it!");
+            Logger.LogTrace("Configuration File exists. Load it!");
             builder.AddJsonFile(file, true, reloadOnChange);
         }
         else
         {
-            _logger.LogInformation("Configuration File not exists. Nothing to do.");
+            Logger.LogInformation("Configuration File not exists. Nothing to do.");
         }
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
-    private static string? GetConfigFile(string configFolder, string? envName = null)
+    private static string? GetConfigFile(string configFolder, string? envName)
     {
         string logPostFix = "";
 
@@ -107,26 +109,26 @@ public static class ConfigurationManager
             logPostFix = $" for Environment '{envName}'";
         }
 
-        _logger.LogInformation("Try to determine configuration file in folder '{file}'{postfix}", configFolder, logPostFix);
+        Logger.LogInformation("Try to determine configuration file in folder '{file}'{postfix}", configFolder, logPostFix);
         string configFile = Path.Combine(configFolder, configFileName);
 
         if (!File.Exists(configFile))
         {
-            _logger.LogTrace("Configuration file could not found!");
+            Logger.LogTrace("Configuration file could not found!");
             configFolder = FileSystemHelper.GetExecutingFolder();
 
-            _logger.LogInformation("Last try! Try to load configuration file from Visual Studio project folder '{folder}'{postfix}", configFolder, logPostFix);
+            Logger.LogInformation("Last try! Try to load configuration file from Visual Studio project folder '{folder}'{postfix}", configFolder, logPostFix);
             configFile = Path.Combine(configFolder, configFileName);
         }
 
         if (!File.Exists(configFile))
         {
-            _logger.LogTrace("Give up! Configuration file could not found.");
+            Logger.LogTrace("Give up! Configuration file could not found.");
             return null;
         }
         else
         {
-            _logger.LogTrace("Success! Configuration file found.");
+            Logger.LogTrace("Success! Configuration file found.");
             return configFile;
         }
     }

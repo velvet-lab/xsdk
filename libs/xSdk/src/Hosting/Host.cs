@@ -16,7 +16,10 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
@@ -42,22 +45,38 @@ public static partial class Host
         };
 
         var slimHost = SlimHost.InitializeSlimHost(args, appOptions);
+        var slimEnvironmentOptions = slimHost.GetEnvironment();
 
         IHostBuilder builder = new HostBuilder()
             .SetSlimHost(slimHost)
-            .ConfigureHostConfiguration(configBuilder => ConfigurationManager.LoadHostConfiguration(configBuilder, appOptions))
-            .ConfigureAppConfiguration((context, configBuilder) => ConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions))
+            .ConfigureHostConfiguration(configBuilder =>
+            {
+                ConfigurationManager.LoadHostConfiguration(configBuilder, appOptions);
+                slimHost.ConfigurePluginHost(x => x.ConfigureHostConfiguration(configBuilder));
+            })
+            .ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                context.EnrichEnvironment(slimEnvironmentOptions);
+
+                ConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions);
+                slimHost.ConfigurePluginHost(x => x.ConfigureAppConfiguration(context, configBuilder));
+            })
+            //.ConfigureLogging((context, loggingBuilder) =>
+            //{
+            //    context.EnrichEnvironment(slimEnvironmentOptions);                
+                
+            //    slimHost.ConfigurePluginHost(x => x.ConfigureLogging(loggingBuilder));
+            //})            
             .ConfigureServices(services =>
             {
                 slimHost.PostConfigure(services);
 
                 services
-                    .RegisterApplicationOptions(appOptions)                    
-                    .RegisterOptions<EnvironmentOptions>(options =>
-                    {
-                        options.PostConfigure(appOptions);                        
-                        services.AddLogging(logBuilder => LoggingManager.ConfigureLogging(logBuilder, options));
-                    })
+                    //.AddLogging(builder => slimHost.ConfigurePluginHost(plugin => plugin.ConfigureLogging(builder)))
+                    //.AddLoggerFactory(slimHost)
+                    .AddSdkLogging(slimHost, true)
+                    .RegisterApplicationOptions(appOptions)
+                    .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(appOptions))                    
                     .AddVariableServices()
                     .AddFileServices()
                     .AddPluginServices();
@@ -66,10 +85,12 @@ public static partial class Host
                 services
                     .AddHostedService<HostInitializer>();
 
-                slimHost.ConfigurePluginHost(x => x.ConfigureServices(services));
-
             })
-            .ConfigureServices((context, services) => slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services)));
+            .ConfigureServices((context, services) =>
+            {
+                context.EnrichEnvironment(slimEnvironmentOptions);
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services));
+            });
 
         return builder;
     }

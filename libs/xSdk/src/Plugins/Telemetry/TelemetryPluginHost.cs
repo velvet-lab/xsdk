@@ -15,6 +15,8 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenTelemetry;
 using OpenTelemetry.Logs;
@@ -28,8 +30,12 @@ namespace xSdk.Plugins.Telemetry;
 
 public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemetryOptions) : PluginHost
 {
+    public override void ConfigureLogging(ILoggingBuilder builder)
+    {
+        builder.SetMinimumLevel(LogLevel.Debug);
+    }
 
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         TelemetryPluginOptions telemetrySetup = telemetryOptions.Value;
 
