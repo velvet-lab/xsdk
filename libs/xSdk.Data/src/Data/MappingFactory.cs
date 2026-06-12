@@ -23,8 +23,7 @@ namespace xSdk.Data;
 
 public static class MappingFactory
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(MappingFactory));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(MappingFactory));
 
     public static IMapper CreateMapper<TProfile>()
         where TProfile : MappingProfile, new()

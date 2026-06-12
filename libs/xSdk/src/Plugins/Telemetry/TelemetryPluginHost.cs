@@ -23,6 +23,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 
@@ -30,9 +31,10 @@ namespace xSdk.Plugins.Telemetry;
 
 public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemetryOptions) : PluginHost
 {
-    public override void ConfigureLogging(ILoggingBuilder builder)
+    public override void ConfigureLogging(ILogBuilder builder)
     {
-        builder.SetMinimumLevel(LogLevel.Debug);
+        // Allow all logging for OpenTelemetryLoggerProvider, as filtering is done in OpenTelemetryOptions.
+        builder.IsLoggingAllowed<OpenTelemetryLoggerProvider>(level => true);
     }
 
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)

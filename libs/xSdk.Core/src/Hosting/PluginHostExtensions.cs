@@ -18,15 +18,18 @@ namespace xSdk.Hosting;
 
 public static class PluginHostExtensions
 {
-    public static void SetServiceProvider(this IPluginHost host, IServiceProvider serviceProvider)
+    extension(IPluginHost host)
     {
-        if (host is PluginHost pluginHost)
+        public void SetServiceProvider(IServiceProvider serviceProvider)
         {
-            pluginHost.Services = serviceProvider;
-        }
-        else
-        {
-            throw new InvalidOperationException($"The plugin host '{host.Name}' does not support setting a service provider.");
+            if (host is PluginHost pluginHost)
+            {
+                pluginHost.Services = serviceProvider;
+            }
+            else
+            {
+                throw new InvalidOperationException($"The plugin host '{host.Name}' does not support setting a service provider.");
+            }
         }
     }
 }

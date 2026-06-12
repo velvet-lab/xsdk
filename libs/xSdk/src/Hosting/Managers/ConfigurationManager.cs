@@ -26,8 +26,7 @@ namespace xSdk.Hosting.Managers;
 
 public static class ConfigurationManager
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(ConfigurationManager));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(ConfigurationManager));
 
     internal static void LoadHostConfiguration(IConfigurationBuilder builder, ApplicationOptions options)
     {

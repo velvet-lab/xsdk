@@ -25,8 +25,7 @@ namespace xSdk.Shared;
 
 internal static class AssemblyCollector
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(AssemblyCollector));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(AssemblyCollector));
 
     internal static List<Assembly> Collect(IPluginHostCollection pluginHostCollection)
     {

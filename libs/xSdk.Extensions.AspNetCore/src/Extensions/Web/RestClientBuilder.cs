@@ -27,8 +27,7 @@ namespace xSdk.Extensions.Web;
 [ExcludeFromCodeCoverage(Justification = "HTTP client factory – requires live network endpoints to exercise.")]
 public static class RestClientBuilder
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(RestClientBuilder));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(RestClientBuilder));
 
     public static IRestClient CreateRestClient(Uri baseUrl)
         => CreateRestClientWithHandler(baseUrl, default, default, default, default);

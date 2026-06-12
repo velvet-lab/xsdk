@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
@@ -30,7 +31,7 @@ public interface IPluginHost : IPluginDescription
 
     void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder);
 
-    void ConfigureLogging(ILoggingBuilder builder);    
+    void ConfigureLogging(ILogBuilder builder);    
 
     void ConfigureServices(HostBuilderContext context, IServiceCollection services);
 }

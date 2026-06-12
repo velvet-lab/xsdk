@@ -22,8 +22,7 @@ namespace xSdk.Tools;
 
 public class EmbeddedResourceLoader(Assembly assembly, string @namespace)
 {
-    private static ILogger<EmbeddedResourceLoader>? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger<EmbeddedResourceLoader>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<EmbeddedResourceLoader>();
 
     private readonly Assembly _assembly = assembly;
     private readonly string _namespace = @namespace;

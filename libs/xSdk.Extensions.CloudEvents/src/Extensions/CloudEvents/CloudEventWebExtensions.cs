@@ -34,8 +34,7 @@ namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventWebExtensions
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(CloudEventWebExtensions));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CloudEventWebExtensions));
 
     public static string ToJson(this CloudEvent cloudEvent)
     {

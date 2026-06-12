@@ -51,8 +51,6 @@ public class SlimHost
         return plugins;
     }
 
-    public ILogger Logger => LogManager.CreateLogger<SlimHost>();
-
     internal IServiceProvider Provider
     {
         get
@@ -83,14 +81,10 @@ public class SlimHost
             _slimServices = new ServiceCollection()
         };
 
-        //ILogger logger = LoggerFactory.Create(builder =>
-        //{
-        //    builder.AddConsole();
-        //    builder.SetMinimumLevel(LogLevel.Debug);
-        //}).CreateLogger<SlimHost>();
-
         instance.ConfigureDefaults(instance._slimServices);
-        instance._slimServices.AddSingleton<IPluginHostCollection>(_ => new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()));
+        instance._slimServices
+            .AddSingleton<IPluginHostCollection>(_ => new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()))
+            .AddHostedService<SlimHostInitializer>();
 
         return instance;
     }
@@ -179,9 +173,8 @@ public class SlimHost
             {
                 _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>()));
             }
-        }        
+        }
     }
-
 
     internal EnvironmentOptions? BuildEnvironmentOptions()
     {
@@ -193,14 +186,14 @@ public class SlimHost
 
         var services = new ServiceCollection();
 
-        ConfigureDefaults(services, true);
+        ConfigureDefaults(services);
 
         ServiceProvider provider = services.BuildServiceProvider();
 
         return provider.GetService<IOptions<EnvironmentOptions>>()?.Value;
     }
 
-    private void ConfigureDefaults(IServiceCollection services, bool onlyEnvironment = false)
+    private void ConfigureDefaults(IServiceCollection services)
     {
         if (_applicationOptions == null)
         {
@@ -212,21 +205,9 @@ public class SlimHost
             .AddSingleton(provider => provider)
             .RegisterApplicationOptions(_applicationOptions)
             .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(_applicationOptions))
-            .AddSingleton<IConfiguration>(provider => default!);
-
-        if (onlyEnvironment)
-        {
-            services
-                .AddVariableServices();
-        }
-        else
-        {
-            services
-                //.AddLogging()
-                //.AddLoggerFactory(this)
-                .AddSdkLogging(this, false)
-                .AddVariableServices()
-                .AddFileServices();
-        }
+            .AddSingleton<IConfiguration>(provider => default!)
+            .AddLoggingQueue()
+            .AddVariableServices()
+            .AddFileServices();
     }
 }

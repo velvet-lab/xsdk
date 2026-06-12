@@ -23,8 +23,7 @@ namespace xSdk.Extensions.Plugin;
 
 internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin, IServiceProvider provider)
 {
-    private static ILogger<PluginItem>? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger<PluginItem>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<PluginItem>();
 
     private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;

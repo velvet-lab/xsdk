@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
@@ -36,7 +37,7 @@ public class PluginHostExtensionsTests
 
         public void ConfigureHostConfiguration(IConfigurationBuilder builder) { }
 
-        public void ConfigureLogging(ILoggingBuilder builder) { }
+        public void ConfigureLogging(ILogBuilder builder) { }
 
         public void ConfigureServices(Microsoft.Extensions.Hosting.HostBuilderContext context, IServiceCollection services) { }
     }

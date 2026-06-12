@@ -24,8 +24,7 @@ namespace xSdk.Tools;
 
 public static class JsonTools
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(JsonTools));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(JsonTools));
 
     public static bool IsJson(string data)
     {

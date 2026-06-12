@@ -22,9 +22,7 @@ namespace xSdk.Data;
 
 public abstract class MappingProfile
 {
-    private static ILogger<MappingProfile>? _logger;
-
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger<MappingProfile>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<MappingProfile>();
 
     protected static TypeAdapterSetter<TSource, TDestination> CreateMap<TSource, TDestination>()
     {
@@ -35,7 +33,7 @@ public abstract class MappingProfile
     internal TypeAdapterConfig CreateConfig(Action<TypeAdapterConfig>? configure)
     {
         // default configuration
-        Action<TypeAdapterConfig> defaultConfig = config =>
+        static void defaultConfig(TypeAdapterConfig config)
         {
             config.Default.EnableNonPublicMembers(false);
             config.Default.IgnoreNullValues(true);
@@ -46,24 +44,24 @@ public abstract class MappingProfile
             config.RequireExplicitMapping = false;
             config.RequireDestinationMemberSource = false;
             config.RequireExplicitMappingPrimitive = false;
-        };
+        }
 
-        Logger.LogDebug("Creating TypeAdapterConfig for Profile '{0}'", GetType());
-        var globalConfig = TypeAdapterConfig.GlobalSettings;
+        Logger.LogDebug("Creating TypeAdapterConfig for Profile '{profile}'", GetType());
+        TypeAdapterConfig globalConfig = TypeAdapterConfig.GlobalSettings;
 
         if (configure == null)
         {
-            Logger.LogDebug("Using default configuration for Profile '{0}'", GetType());
+            Logger.LogDebug("Using default configuration for Profile '{profile}'", GetType());
             configure = defaultConfig;
         }
 
-        Logger.LogDebug("Applying global configuration for Profile '{0}'", GetType());
+        Logger.LogDebug("Applying global configuration for Profile '{profile}'", GetType());
         configure(globalConfig);
 
-        Logger.LogDebug("Applying profile configuration for Profile '{0}'", GetType());
+        Logger.LogDebug("Applying profile configuration for Profile '{profile}'", GetType());
         Configure(globalConfig);
 
-        Logger.LogDebug("Compiling TypeAdapterConfig for Profile '{0}'", GetType());
+        Logger.LogDebug("Compiling TypeAdapterConfig for Profile '{profile}'", GetType());
         globalConfig.Compile();
 
         return globalConfig;

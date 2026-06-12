@@ -56,12 +56,13 @@ public static class TestHostFactory
                 services
                     .RegisterApplicationOptions(appOptions)
                     .RegisterOptions<EnvironmentOptions>()
+                    // For tests, keep FakeLogging from FakeHost, don't use AddHostLogging
                     .AddLogging()
                     .AddVariableServices()
                     .AddFileServices()
                     .AddPluginServices();
 
-                // Add initializer for Logger Factory
+                // Add initializer for plugin registration
                 services
                     .AddHostedService<HostInitializer>();
             })

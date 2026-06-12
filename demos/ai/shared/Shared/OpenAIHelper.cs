@@ -53,9 +53,7 @@ public static class OpenAIHelper
     {
         IChatClient chatClient = provider.GetRequiredKeyedService<IChatClient>(name);
 
-        
-
-        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: [.. definition.LoadTools(provider)], loggerFactory: LogManager.Factory);
+        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: [.. definition.LoadTools(provider)]);
         return agentFactory
             .CreateAsync(definition.Metadata).GetAwaiter().GetResult()
             .AsBuilder()

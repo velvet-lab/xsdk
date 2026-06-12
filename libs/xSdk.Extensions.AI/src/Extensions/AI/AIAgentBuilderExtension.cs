@@ -14,8 +14,7 @@ public static class AIAgentBuilderExtension
         public AIAgentBuilder EnableTelemetry(bool enableSensitiveData)
         {
             builder
-                .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: cfg => cfg.EnableSensitiveData = enableSensitiveData)
-                .UseLogging(LogManager.Factory);
+                .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: cfg => cfg.EnableSensitiveData = enableSensitiveData);
 
             return builder;
         }

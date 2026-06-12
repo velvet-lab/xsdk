@@ -17,7 +17,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
@@ -45,7 +44,7 @@ public static partial class Host
         };
 
         var slimHost = SlimHost.InitializeSlimHost(args, appOptions);
-        var slimEnvironmentOptions = slimHost.GetEnvironment();
+        EnvironmentOptions slimEnvironmentOptions = slimHost.GetEnvironment();
 
         IHostBuilder builder = new HostBuilder()
             .SetSlimHost(slimHost)
@@ -61,22 +60,14 @@ public static partial class Host
                 ConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions);
                 slimHost.ConfigurePluginHost(x => x.ConfigureAppConfiguration(context, configBuilder));
             })
-            //.ConfigureLogging((context, loggingBuilder) =>
-            //{
-            //    context.EnrichEnvironment(slimEnvironmentOptions);                
-                
-            //    slimHost.ConfigurePluginHost(x => x.ConfigureLogging(loggingBuilder));
-            //})            
             .ConfigureServices(services =>
             {
                 slimHost.PostConfigure(services);
 
                 services
-                    //.AddLogging(builder => slimHost.ConfigurePluginHost(plugin => plugin.ConfigureLogging(builder)))
-                    //.AddLoggerFactory(slimHost)
-                    .AddSdkLogging(slimHost, true)
+                    .AddHostLogging(slimHost, slimEnvironmentOptions)
                     .RegisterApplicationOptions(appOptions)
-                    .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(appOptions))                    
+                    .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(appOptions))
                     .AddVariableServices()
                     .AddFileServices()
                     .AddPluginServices();

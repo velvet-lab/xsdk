@@ -28,8 +28,7 @@ namespace xSdk.Extensions.Links;
 
 internal static class RoutedLinkBuilder
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(RoutedLinkBuilder));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(RoutedLinkBuilder));
 
     internal static IHateoasItem? Build<TModel>(RoutedLink<TModel> link)
         where TModel : IModel

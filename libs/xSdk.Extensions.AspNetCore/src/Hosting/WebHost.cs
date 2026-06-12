@@ -27,6 +27,8 @@ namespace xSdk.Hosting;
 [ExcludeFromCodeCoverage(Justification = "Web host infrastructure – requires full ASP.NET Core runtime to exercise.")]
 public static partial class WebHost
 {
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(WebHost));
+
     public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
 
     public static IHostBuilder CreateBuilder(string[] args, string appName) => CreateBuilder(args, appName, default, default);
@@ -36,18 +38,14 @@ public static partial class WebHost
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
         IHostBuilder hostBuilder = xSdk.Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix);
-        SlimHost slimHost = hostBuilder.GetSlimHost();
-
-        ILogger logger = slimHost.Logger;
+        SlimHost slimHost = hostBuilder.GetSlimHost();        
 
         hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
-            logger.LogDebug("Configuring WebHostBuilder");
-
             EnvironmentOptions environmentSetup = slimHost.GetEnvironment();
             Stage stage = environmentSetup.Stage;
 
-            string contentRoot = GetContentRoot(environmentSetup, logger);
+            string contentRoot = GetContentRoot(environmentSetup);
             webHostBuilder
                 // Set the Content Root
                 .UseContentRoot(contentRoot)
@@ -75,10 +73,10 @@ public static partial class WebHost
                 .Configure((context, app) =>
                 {
                     context.EnrichEnvironment(environmentSetup);
-                    ConfigureApplicationWithContext(context, app, slimHost, logger);
+                    ConfigureApplicationWithContext(context, app, slimHost);
                 })
                 // Configure Kestrel
-                .UseKestrel(options => ConfigureKestrel(options, logger));
+                .UseKestrel(ConfigureKestrel);
 
             if (stage == Stage.Development)
             {
@@ -89,10 +87,10 @@ public static partial class WebHost
         return hostBuilder;
     }
 
-    private static string GetContentRoot(EnvironmentOptions environmentOptions, ILogger logger)
+    private static string GetContentRoot(EnvironmentOptions environmentOptions)
     {
-        logger.LogDebug(environmentOptions.IsDemo ? "Demo Mode" : "Production Mode");
-        logger.LogDebug("Try to get Content Root");
+        Logger.LogDebug(environmentOptions.IsDemo ? "Demo Mode" : "Production Mode");
+        Logger.LogDebug("Try to get Content Root");
 
         if (environmentOptions.IsDemo)
         {
@@ -106,7 +104,7 @@ public static partial class WebHost
             {
                 try
                 {
-                    logger.LogTrace("Content root does not exist, creating it");
+                    Logger.LogTrace("Content root does not exist, creating it");
                     Directory.CreateDirectory(root);
                 }
                 catch

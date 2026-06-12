@@ -23,6 +23,5 @@ namespace xSdk.Plugins.Authentication;
 
 public static partial class AuthenticationBuilderExtensions
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(AuthenticationBuilderExtensions));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(AuthenticationBuilderExtensions));
 }

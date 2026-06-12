@@ -22,8 +22,7 @@ namespace xSdk.Security;
 
 public static class CredentialManager
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(CredentialManager));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CredentialManager));
 
     private static string Context => throw new NotImplementedException(); // SlimHost.Instance.AppPrefix;
 

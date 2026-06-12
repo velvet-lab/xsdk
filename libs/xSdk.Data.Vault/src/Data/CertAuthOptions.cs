@@ -26,8 +26,7 @@ namespace xSdk.Data;
 [VariablePrefix("vault-cert-auth")]
 public class CertAuthOptions : VariableSetup
 {
-    private static ILogger<CertAuthOptions>? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger<CertAuthOptions>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<CertAuthOptions>();
 
     [Variable(
         name: Definitions.Certificate.Name,
@@ -55,14 +54,14 @@ public class CertAuthOptions : VariableSetup
     {
         try
         {
-            var cert = Certificate;
+            string? cert = Certificate;
             if (Base64Tools.IsBase64(cert))
             {
                 Logger.LogInformation("Converting base64 encoded certificate to PEM format.");
                 cert = Base64Tools.ConvertFromBase64(cert);
             }
 
-            var key = Key;
+            string? key = Key;
             if (Base64Tools.IsBase64(key))
             {
                 Logger.LogInformation("Converting base64 encoded key to PEM format.");
@@ -70,7 +69,7 @@ public class CertAuthOptions : VariableSetup
             }
 
             var certificate = X509Certificate2.CreateFromPem(cert, key);
-            var pkcsCertificate = X509CertificateLoader.LoadCertificate(certificate.Export(X509ContentType.Pkcs12));
+            X509Certificate2 pkcsCertificate = X509CertificateLoader.LoadCertificate(certificate.Export(X509ContentType.Pkcs12));
 
             return pkcsCertificate;
         }

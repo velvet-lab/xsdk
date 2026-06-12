@@ -25,8 +25,8 @@ namespace xSdk.Tools;
 public static class CryptoTools
 {
     private static readonly Lock _lockObject = new();
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(CryptoTools));
+
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CryptoTools));
 
     public static void Encrypt<TData>(string file, TData data, string context = "xsdk")
     {

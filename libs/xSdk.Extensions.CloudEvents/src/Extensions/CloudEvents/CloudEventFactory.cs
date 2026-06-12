@@ -26,8 +26,7 @@ namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventFactory
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(CloudEventFactory));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CloudEventFactory));
 
     internal const string BASE_URL = $"https://xsdk.io";
     internal const string SOURCE_BASE_URL = $"{BASE_URL}/events/spec/v1";

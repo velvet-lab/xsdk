@@ -25,8 +25,7 @@ namespace xSdk.Tools;
 
 public static class CertificateHelper
 {
-    private static ILogger? _logger;
-    private static ILogger Logger => _logger ??= LogManager.CreateLogger(typeof(CertificateHelper));
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CertificateHelper));
 
     public static IEnumerable<X509Certificate> ImportFromString(string certificates)
     {

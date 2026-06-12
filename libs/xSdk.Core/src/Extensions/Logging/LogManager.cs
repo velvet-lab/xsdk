@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 
 namespace xSdk.Extensions.Logging;
@@ -21,80 +22,63 @@ namespace xSdk.Extensions.Logging;
 /// <summary>
 /// Provides static access to <see cref="ILogger"/> instances for SDK code that cannot
 /// use constructor injection (static utility classes, pre-DI bootstrap contexts).
-/// Uses a Console logger by default so bootstrap messages are always visible.
-/// Replaced by the full DI-provided <see cref="ILoggerFactory"/> once the host is running.
 /// </summary>
 /// <remarks>
-/// Replaced automatically via <see cref="LogManagerInitializer"/> which is
-/// registered as an <see cref="IHostedService"/> during <c>HostLoggingManager.ConfigureLogging</c>.
+/// <para>
+/// Uses a single, centrally initialized <see cref="ILoggerFactory"/> as the single source of truth.
+/// The factory is created once via <see cref="Initialize"/> with full configuration (base + plugins),
+/// then shared by both SlimHost and Host ServiceProviders.
+/// </para>
+/// <para>
+/// Lifecycle:
+/// 1. Host calls Initialize() with plugin configurations before building SlimHost
+/// 2. SlimHost registers LogManager.Factory in DI
+/// 3. Host registers LogManager.Factory in DI
+/// 4. Both use the same factory instance
+/// </para>
 /// </remarks>
 public static class LogManager
 {
     private static ILoggerFactory? _factory;
-    private static ILoggerFactory? _slimFactory;
-
+    private static QueueLoggerFactory? _queue = new();
     private static readonly Lock _lock = new();
 
-    internal static bool IsInitialized => _factory is not null;
-
-    internal static void Initialize(ILoggerFactory? factory)
+    /// <summary>
+    /// Initializes the shared factory with the specified configuration.
+    /// Must be called before SlimHost.Build() to ensure both hosts use the same factory.
+    /// </summary>
+    internal static void Initialize(ILoggerFactory factory)
     {
+        Guard.IsNotNull(factory);
+
         lock (_lock)
         {
-            Reset();
-
-            if (factory is null)
+            if (_factory is not null)
             {
-                throw new InvalidOperationException("Logger Factory could not be found");
+                return; // Already initialized
             }
+
+            QueueLogger.FlushQueuedMessages(factory);
+            _queue?.Dispose();
+            _queue = default;
 
             _factory = factory;
         }
     }
 
-    internal static void Initialize(LogLevel level)
-    {
-        lock (_lock)
-        {
-            Reset();
-            CreateFactory(level);
-        }
-    }
-
-    internal static void Reset()
-    {
-        lock (_lock)
-        {
-            _slimFactory?.Dispose();
-            _slimFactory = default;
-
-            _factory?.Dispose();
-            _factory = default;
-        }
-    }
-
     public static ILogger CreateLogger(string categoryName)
     {
-        lock (_lock)
-        {
-            return Factory.CreateLogger(categoryName);
-        }
+        return Factory.CreateLogger(categoryName);
     }
 
     public static ILogger<T> CreateLogger<T>()
     {
-        lock (_lock)
-        {
-            return Factory.CreateLogger<T>();
-        }
+        return Factory.CreateLogger<T>();
     }
 
     public static ILogger CreateLogger(Type type)
     {
-        lock (_lock)
-        {
-            return Factory.CreateLogger(type);
-        }
+        return Factory.CreateLogger(type);
     }
 
     public static ILogger GetCurrentClassLogger()
@@ -103,40 +87,23 @@ public static class LogManager
         return CreateLogger(className);
     }
 
-    public static ILoggerFactory Factory {
+    /// <summary>
+    /// Gets the single, shared _logger factory.
+    /// Lazy-creates with minimal console configuration if not yet initialized via Initialize().
+    /// </summary>
+    private static ILoggerFactory Factory
+    {
         get
         {
-            if(_factory is null)
+            lock (_lock)
             {
-                if (_slimFactory is null)
+                if (_factory is null)
                 {
-                    lock (_lock)
-                    {
-                        _slimFactory = LoggerFactory.Create(builder =>
-                        {
-                            builder.AddSimpleConsole();
-                            builder.SetMinimumLevel(LogLevel.Information);
-                        });
-                    }
+                    return _queue ?? throw new InvalidOperationException("LogQueue is not initialized or already disposed.");
                 }
 
-                return _slimFactory;
+                return _factory;
             }
-
-            return _slimFactory;
         }
-    }
-
-    private static void CreateFactory(LogLevel level)
-    {
-        //if (_factory is null)
-        //{
-        //    _factory = LoggerFactory.Create(builder =>
-        //    {
-        //        builder
-        //            //.ClearProviders()
-        //            .SetMinimumLevel(level);
-        //    });
-        //}
     }
 }

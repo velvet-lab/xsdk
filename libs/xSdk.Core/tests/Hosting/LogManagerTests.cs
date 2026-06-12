@@ -46,14 +46,6 @@ public class LogManagerTests
     }
 
     [Fact]
-    public void CreateLogger_WithType_ReturnsILogger()
-    {
-        ILogger logger = LogManager.CreateLogger<string>();
-
-        Assert.IsAssignableFrom<ILogger>(logger);
-    }
-
-    [Fact]
     public void GetCurrentClassLogger_ReturnsNonNullLogger()
     {
         ILogger logger = LogManager.GetCurrentClassLogger();
@@ -69,35 +61,7 @@ public class LogManagerTests
         ILogger logger = LogManager.CreateLogger("InitTest");
         Assert.NotNull(logger);
     }
-
-    [Fact]
-    public void Initialize_WithCustomFactory_UsesProvidedFactory()
-    {
-        ILoggerFactory factory = LoggerFactory.Create(b => b.AddConsole());
-        LogManager.Initialize(factory);
-
-        ILogger logger = LogManager.CreateLogger<LogManagerTests>();
-        Assert.NotNull(logger);
-    }
-
-    [Fact]
-    public void CreateLogger_AfterReset_StillWorks()
-    {
-        LogManager.Reset();
-
-        ILogger logger = LogManager.CreateLogger<LogManagerTests>();
-
-        Assert.NotNull(logger);
-    }
-
-    [Fact]
-    public void CreateLogger_GenericType_IsAssignableFromILogger()
-    {
-        ILogger logger = LogManager.CreateLogger<LogManagerTests>();
-
-        Assert.IsAssignableFrom<ILogger<LogManagerTests>>(logger);
-    }
-
+    
     [Fact]
     public void CreateLogger_TwiceSameName_ReturnsDifferentInstances()
     {
