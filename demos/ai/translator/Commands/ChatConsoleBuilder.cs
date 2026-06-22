@@ -4,29 +4,30 @@ using Spectre.Console.Cli;
 using Spectre.Console.Cli.Help;
 using xSdk.Extensions.Commands;
 
-namespace xSdk.Demos;
+namespace xSdk.Demos.Commands;
 
-internal class ReplConsoleBuilder(IServiceProvider provider, IOptions<ConsolePluginOptions> options) : ConsolePluginBuilder
+internal class ChatConsoleBuilder : ConsolePluginBuilder
 {
     public override void Configure(IConfigurator builder)
     {
         builder
-            .AddDefaultCommands();
+            .AddDefaultCommands()            
+            .AddCommand<ChatCommand>(ChatCommand.Definitions.Name);
     }
 
     public override void CreateBanner()
     {
         AnsiConsole.Write(
-            new FigletText("xSDK REPL Console")
+            new FigletText("xSDK Chat Console")
                 .Color(Color.Green)
                 .Centered());
     }
 
     public override string CreateUserPrompt()
-        => AnsiConsole.Ask<string>("REPL> ");
+        => AnsiConsole.Ask<string>("Type message to translate: ");
 
     public override void CreateLastWill()
-        => AnsiConsole.WriteLine("REPL console is shutting down. Goodbye!");
+        => AnsiConsole.WriteLine("Chat console is shutting down. Goodbye!");
 
     public override void CreateHelp(ICommandAppSettings settings, ICommandModel model)
     {

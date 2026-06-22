@@ -1,85 +1,61 @@
-using Microsoft.Extensions.Options;
-using Spectre.Console;
 using Spectre.Console.Cli;
-using xSdk.Extensions.Options;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ChatConsole(ICommandApp app, IOptions<ChatConsolePluginOptions> commandOptions, IOptions<ApplicationOptions> appOptions) : IConsole
+internal class ChatConsole(ICommandApp app, IConsolePluginBuilder builder) : IConsole
 {
     public async Task<int> RunAsync(string[] args)
     {
-        //bool shouldRun = true;
-        //bool isCleared = false;
+        bool shouldRun = true;
+        bool isCleared = false;
 
-        //var parser = ChatCommandlineParser.Create(args);
-        //string[] chatArgs = parser.Arguments;
+        var parser = ChatCommandlineParser.Create(args);
+        string[] chatArgs = [];
 
-        //WriteBanner(commandOptions.Value);
+        builder.CreateBanner();
 
-        //do
-        //{
-        //    Environment.ExitCode = await app.RunAsync(chatArgs);
-        //    if (isCleared)
-        //    {
-        //        WriteBanner(commandOptions.Value);
-        //        isCleared = false;
-        //    }
+        do
+        {
+            Environment.ExitCode = await app.RunAsync(chatArgs);
+            if (isCleared)
+            {
+                builder.CreateBanner();
+                isCleared = false;
+            }
 
-        //    string input = await AnsiConsole.AskAsync<string>(commandOptions.Value.UserPrompt ?? "Enter your message or command");        
-        //    if (parser.ContainsChatCommand(input))
-        //    {
-        //        chatArgs = [];
+            string input = builder.CreateUserPrompt();
+            if (parser.ContainsChatCommand(input))
+            {
+                string? command = parser.ExtractChatCommand(input);
+                if (!string.IsNullOrEmpty(command))
+                {
+                    if (string.Equals(command, ExitCommand.Definitions.Name, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        shouldRun = false;
+                    }
+                    else if (string.Equals(command, ClearCommand.Definitions.Name, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        chatArgs = [command];
+                        isCleared = true;
+                    }
+                    else
+                    {
+                        chatArgs = [command];
+                    }
+                }
+            }
+            else
+            {   
+                chatArgs = [input];
+            }
 
-        //        string? command = parser.ExtractChatCommand(input);
-        //        if(!string.IsNullOrEmpty(command))
-        //        {
-        //            if (string.Equals(command, ExitCommand.Definitions.Name, StringComparison.InvariantCultureIgnoreCase))
-        //            {
-        //                shouldRun = false;
-        //            }
-        //            else if (string.Equals(command, ClearCommand.Definitions.Name, StringComparison.InvariantCultureIgnoreCase))
-        //            {                        
-        //                chatArgs = [command];
-        //                isCleared = true;
-        //            }
-        //            else if (string.Equals(command, "help", StringComparison.InvariantCultureIgnoreCase))
-        //            {
-        //                chatArgs = [ "--help" ];
-        //            }
-        //            else
-        //            {
-        //                chatArgs = [command];
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        chatArgs = ["--message", input];
-        //    }
+            chatArgs = CommandlineParser.Parse(input).Arguments;
 
-        //} while (shouldRun);
+        } while (shouldRun);
 
-        //WriteLastWill(commandOptions.Value);
+        builder.CreateLastWill();
 
         return Environment.ExitCode;
     }
-
-    //private static void WriteBanner(ChatConsolePluginOptions? options)
-    //{
-    //    if (options is not null && options.Banner is not null)
-    //    {
-    //        options.Banner.Invoke();
-    //        return;
-    //    }
-    //}
-
-    //private static void WriteLastWill(ChatConsolePluginOptions? options)
-    //{
-    //    if(options is not null && options.LastWill is not null)
-    //    {
-    //        options.LastWill.Invoke();
-    //        return;
-    //    }
-    //}
 }

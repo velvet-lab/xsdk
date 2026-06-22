@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Tools;
 
 public class CommandlineParserTests
 {

@@ -17,9 +17,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Spectre.Console;
 using xSdk.Demos;
+using xSdk.Demos.AI;
 using xSdk.Demos.Builder;
+using xSdk.Demos.Commands;
 using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.AI;
@@ -39,22 +40,7 @@ const string APP_PREFIX = "ai";
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableChatConsole<ChatCommand>(options =>
-    {
-        //options.Banner = () =>
-        //{
-        //    var text = new FigletText("Chat Console")
-        //        .Color(Color.Green)
-        //        .Centered();
-        //    AnsiConsole.Write(text);
-        //};
-
-        //options.UserPrompt = "You:";
-        //options.LastWill = () =>
-        //{
-        //    AnsiConsole.WriteLine("Chat console is shutting down. Goodbye!");
-        //};
-    })
+    .EnableChatConsole<ChatConsoleBuilder, ChatCommand>()
     .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
     .EnableTelemetry<TelemetryPluginBuilder>(TelemetryConfiguration.Default)
     .EnableWebSecurity()

@@ -2,7 +2,7 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Extensions.Commands;
 
-public sealed class ChatConsolePluginOptions : PluginOptions
+public sealed class ChatConsolePluginOptions : ConsolePluginOptions
 {
     protected override void OnInitialize()
     {

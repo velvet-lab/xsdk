@@ -17,7 +17,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Tools;
 
 public class CommandlineParser
 {

@@ -1,10 +1,9 @@
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.DependencyInjection;
-using xSdk.Demos.AI;
 using xSdk.Demos.AI.Executors;
 using xSdk.Extensions.AI;
 
-namespace xSdk.Demos;
+namespace xSdk.Demos.AI;
 
 internal class AgentsPluginBuilder() : AIPluginBuilder, IAIPluginBuilder
 {

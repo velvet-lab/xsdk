@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Options;
+
 namespace xSdk.Extensions.Commands;
 
 public class DefaultCommandSettingsTests
@@ -21,7 +23,7 @@ public class DefaultCommandSettingsTests
     [Fact]
     public void DefaultCommandSettings_LogLevel_CanBeSetAndRead()
     {
-        var settings = new DefaultCommandSettings();
+        var settings = new DefaultConsoleCommandSettings();
 
         settings.LogLevel = "Debug";
 
@@ -31,7 +33,7 @@ public class DefaultCommandSettingsTests
     [Fact]
     public void DefaultCommandSettings_Stage_CanBeSetAndRead()
     {
-        var settings = new DefaultCommandSettings();
+        var settings = new DefaultConsoleCommandSettings();
 
         settings.Stage = Stage.Production;
 
@@ -41,7 +43,7 @@ public class DefaultCommandSettingsTests
     [Fact]
     public void DefaultCommandSettings_IsDemo_DefaultsFalse()
     {
-        var settings = new DefaultCommandSettings();
+        var settings = new DefaultConsoleCommandSettings();
 
         Assert.False(settings.IsDemo);
     }
@@ -49,7 +51,7 @@ public class DefaultCommandSettingsTests
     [Fact]
     public void DefaultCommandSettings_IsDemo_CanBeSetAndRead()
     {
-        var settings = new DefaultCommandSettings();
+        var settings = new DefaultConsoleCommandSettings();
 
         settings.IsDemo = true;
 
@@ -59,7 +61,7 @@ public class DefaultCommandSettingsTests
     [Fact]
     public void DefaultCommandSettings_ContentRoot_CanBeSetAndRead()
     {
-        var settings = new DefaultCommandSettings();
+        var settings = new DefaultConsoleCommandSettings();
 
         settings.ContentRoot = "/app/content";
 
@@ -69,38 +71,38 @@ public class DefaultCommandSettingsTests
     [Fact]
     public void Definitions_LogLevel_HasExpectedValues()
     {
-        Assert.Equal("log-level", DefaultCommandSettings.Definitions.LogLevel.Name);
-        Assert.Equal("Info", DefaultCommandSettings.Definitions.LogLevel.DefaultValue);
+        Assert.Equal("log-level", EnvironmentOptions.Definitions.LogLevel.Name);
+        Assert.Equal("Info", EnvironmentOptions.Definitions.LogLevel.DefaultValue);
     }
 
     [Fact]
     public void Definitions_Stage_HasExpectedValues()
     {
-        Assert.Equal("stage", DefaultCommandSettings.Definitions.Stage.Name);
-        Assert.Equal(Stage.Development, DefaultCommandSettings.Definitions.Stage.DefaultValue);
+        Assert.Equal("stage", EnvironmentOptions.Definitions.Stage.Name);
+        Assert.Equal(Stage.Development, EnvironmentOptions.Definitions.Stage.DefaultValue);
     }
 
     [Fact]
     public void Definitions_Demo_HasExpectedName()
     {
-        Assert.Equal("demo", DefaultCommandSettings.Definitions.Demo.Name);
+        Assert.Equal("demo", EnvironmentOptions.Definitions.Demo.Name);
     }
 
     [Fact]
     public void Definitions_ContentRoot_HasExpectedName()
     {
-        Assert.Equal("content-root", DefaultCommandSettings.Definitions.ContentRoot.Name);
+        Assert.Equal("content-root", EnvironmentOptions.Definitions.ContentRoot.Name);
     }
 
     [Fact]
     public void Definitions_LogLevel_HasTemplate()
     {
-        Assert.False(string.IsNullOrEmpty(DefaultCommandSettings.Definitions.LogLevel.Template));
+        Assert.False(string.IsNullOrEmpty(EnvironmentOptions.Definitions.LogLevel.Template));
     }
 
     [Fact]
     public void Definitions_Stage_HasHelpText()
     {
-        Assert.False(string.IsNullOrEmpty(DefaultCommandSettings.Definitions.Stage.HelpText));
+        Assert.False(string.IsNullOrEmpty(EnvironmentOptions.Definitions.Stage.HelpText));
     }
 }

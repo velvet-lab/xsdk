@@ -1,3 +1,6 @@
+using xSdk.Extensions.Options;
+using xSdk.Tools;
+
 namespace xSdk.Extensions.Commands;
 
 internal class SpecificCommandlineParser : CommandlineParser
@@ -23,9 +26,9 @@ internal class SpecificCommandlineParser : CommandlineParser
     private void BackupDefaultArgs()
     {
         _defaultArgs.Clear();
-        ExtractArgs(DefaultCommandSettings.Definitions.ContentRoot.Name);
-        ExtractArgs(DefaultCommandSettings.Definitions.Stage.Name);
-        ExtractArgs(DefaultCommandSettings.Definitions.Demo.Name);
+        ExtractArgs(EnvironmentOptions.Definitions.ContentRoot.Name);
+        ExtractArgs(EnvironmentOptions.Definitions.Stage.Name);
+        ExtractArgs(EnvironmentOptions.Definitions.Demo.Name);
     }
 
     private void RestoreDefaultArgs()

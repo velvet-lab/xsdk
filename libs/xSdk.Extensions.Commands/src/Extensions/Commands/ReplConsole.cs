@@ -1,4 +1,5 @@
 using Spectre.Console.Cli;
+using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
@@ -36,6 +37,8 @@ public class ReplConsole(ICommandApp app, IConsolePluginBuilder builder) : ICons
             replArgs = CommandlineParser.Parse(input).Arguments;
             
         } while (shouldRun);
+
+        builder.CreateLastWill();
 
         return Environment.ExitCode;
     }

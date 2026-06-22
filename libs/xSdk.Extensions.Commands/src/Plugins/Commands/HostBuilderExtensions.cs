@@ -37,7 +37,7 @@ public static class HostBuilderExtensions
             where TDefaultCommand : class, ICommand
             => builder
                 .RegisterServices(services => services.AddSingleton<IConsole, ReplConsole>())
-                .EnableConsole<TConsoleBuilder, TDefaultCommand>(configure);
+                .EnableConsole<TConsoleBuilder, ConsolePluginOptions, TDefaultCommand>(configure);
 
 
 
@@ -45,18 +45,18 @@ public static class HostBuilderExtensions
 
 
         public IHostBuilder EnableDefaultConsole()
-            => builder.EnableDefaultConsole<DefaultConsolePluginBuilder, DefaultCommand>(_ => { });
+            => builder.EnableDefaultConsole<DefaultConsolePluginBuilder, DefaultConsoleCommand>(_ => { });
 
         public IHostBuilder EnableDefaultConsole(Action<ConsolePluginOptions> configure)
-            => builder.EnableDefaultConsole<DefaultConsolePluginBuilder, DefaultCommand>(configure);
+            => builder.EnableDefaultConsole<DefaultConsolePluginBuilder, DefaultConsoleCommand>(configure);
 
         public IHostBuilder EnableDefaultConsole<TConsoleBuilder>()
             where TConsoleBuilder : class, IConsolePluginBuilder
-            => builder.EnableDefaultConsole<TConsoleBuilder, DefaultCommand>(_ => { });
+            => builder.EnableDefaultConsole<TConsoleBuilder, DefaultConsoleCommand>(_ => { });
 
         public IHostBuilder EnableDefaultConsole<TConsoleBuilder>(Action<ConsolePluginOptions> configure)
             where TConsoleBuilder : class, IConsolePluginBuilder
-            => builder.EnableDefaultConsole<TConsoleBuilder, DefaultCommand>(configure);
+            => builder.EnableDefaultConsole<TConsoleBuilder, DefaultConsoleCommand>(configure);
 
         public IHostBuilder EnableDefaultConsole<TConsoleBuilder, TDefaultCommand>()
             where TConsoleBuilder : class, IConsolePluginBuilder
@@ -68,7 +68,7 @@ public static class HostBuilderExtensions
             where TDefaultCommand : class, ICommand
             => builder
                 .RegisterServices(services => services.AddSingleton<IConsole, DefaultConsole>())
-                .EnableConsole<TConsoleBuilder, TDefaultCommand>(configure);
+                .EnableConsole<TConsoleBuilder, ConsolePluginOptions, TDefaultCommand>(configure);
 
 
 
@@ -76,16 +76,17 @@ public static class HostBuilderExtensions
 
 
 
-        public IHostBuilder EnableConsole<TConsoleBuilder, TDefaultCommand>()
+        public IHostBuilder EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>()
             where TConsoleBuilder : class, IConsolePluginBuilder
+            where TConsolePluginOptions : ConsolePluginOptions, new()
             where TDefaultCommand : class, ICommand
             => builder
-                .EnableConsole<TConsoleBuilder, TDefaultCommand>(_ => { });
+                .EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>(_ => { });
 
 
-
-        public IHostBuilder EnableConsole<TConsoleBuilder, TDefaultCommand>(Action<ConsolePluginOptions> configure)
+        public IHostBuilder EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>(Action<TConsolePluginOptions> configure)
             where TConsoleBuilder : class, IConsolePluginBuilder
+            where TConsolePluginOptions : ConsolePluginOptions, new()
             where TDefaultCommand : class, ICommand
             => builder
                 .RegisterPluginServices(services =>
@@ -94,7 +95,7 @@ public static class HostBuilderExtensions
                         .AddSingleton<ICommandAppBuilder, CommandAppBuilder<TDefaultCommand>>();
                 })
                 .RegisterPluginHost<ConsolePluginHost>()
-                .RegisterPluginHostOptions<ConsolePluginOptions>(configure)
+                .RegisterPluginHostOptions<TConsolePluginOptions>(configure)
                 .RegisterPluginBuilder<IConsolePluginBuilder, TConsoleBuilder>();
     }
 }

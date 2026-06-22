@@ -8,11 +8,11 @@ using Spectre.Console.Cli;
 using xSdk.Demos.AI;
 using xSdk.Extensions.Commands;
 
-namespace xSdk.Demos;
+namespace xSdk.Demos.Commands;
 
 [Description(Definitions.HelpText)]
 [ExcludeFromCodeCoverage]
-internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)] Workflow workflow, IOptions<ChatConsolePluginOptions> options) : Command<ChatCommandSettings>
+internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)] Workflow workflow) : Command<ChatCommandSettings>
 {
     internal static class Definitions
     {
@@ -22,9 +22,13 @@ internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)]
 
     protected override int Execute(CommandContext context, ChatCommandSettings settings, CancellationToken cancellationToken)
     {
-        if(!string.IsNullOrEmpty(settings.Message))
+        if (settings.Args != null && settings.Args.Length > 0)
         {
-            return SendMessage(settings.Message, cancellationToken);
+            var args = string.Join(" ", settings.Args);
+            if (!string.IsNullOrEmpty(args))
+            {
+                return SendMessage(args, cancellationToken);
+            }
         }
         return 0;
     }

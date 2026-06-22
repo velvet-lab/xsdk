@@ -51,9 +51,9 @@ public sealed partial class EnvironmentOptions
         ServiceFullName = serviceDescription.ServiceFullName;
     }
 
-    internal static partial class Definitions
+    public static partial class Definitions
     {
-        public static class ServiceName
+        internal static class ServiceName
         {
             public const string Name = "service-name";
             public const string Template = "--service-name <name>";
@@ -61,7 +61,7 @@ public sealed partial class EnvironmentOptions
             public const string DefaultValue = "DefaultService";
         }
 
-        public static class ServiceNamespace
+        internal static class ServiceNamespace
         {
             public const string Name = "service-namespace";
             public const string Template = "--service-namespace <namespace>";
@@ -69,7 +69,7 @@ public sealed partial class EnvironmentOptions
             public const string DefaultValue = "xSdk";
         }
 
-        public static class ServiceVersion
+        internal static class ServiceVersion
         {
             public const string Name = "service-version";
             public const string Template = "--service-version <version>";

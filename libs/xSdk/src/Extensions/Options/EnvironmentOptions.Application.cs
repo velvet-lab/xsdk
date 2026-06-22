@@ -27,16 +27,16 @@ namespace xSdk.Extensions.Options;
 public sealed partial class EnvironmentOptions
 {
     [Variable(
-        name: Commands.DefaultCommandSettings.Definitions.Stage.Name,
-        template: Commands.DefaultCommandSettings.Definitions.Stage.Template,
-        helpText: Commands.DefaultCommandSettings.Definitions.Stage.HelpText,
-        defaultValue: Commands.DefaultCommandSettings.Definitions.Stage.DefaultValue,
+        name: Definitions.Stage.Name,
+        template: Definitions.Stage.Template,
+        helpText: Definitions.Stage.HelpText,
+        defaultValue: Definitions.Stage.DefaultValue,
         resourceNames: ["{{app.prefix}}.environment.stage", "deployment.environment"]
     )]
     public Stage Stage
     {
-        get => ReadValue<Stage>(Commands.DefaultCommandSettings.Definitions.Stage.Name);
-        set => SetValue(Commands.DefaultCommandSettings.Definitions.Stage.Name, value);
+        get => ReadValue<Stage>(Definitions.Stage.Name);
+        set => SetValue(Definitions.Stage.Name, value);
     }
 
     public string StageAsString => Stage switch
@@ -51,38 +51,38 @@ public sealed partial class EnvironmentOptions
     };
 
     [Variable(
-        name: Commands.DefaultCommandSettings.Definitions.Demo.Name,
-        template: Commands.DefaultCommandSettings.Definitions.Demo.Template,
-        helpText: Commands.DefaultCommandSettings.Definitions.Demo.HelpText,
+        name: Definitions.Demo.Name,
+        template: Definitions.Demo.Template,
+        helpText: Definitions.Demo.HelpText,
         resourceNames: ["{{app.prefix}}.environment.demo"]
     )]
     public bool IsDemo
     {
-        get => ReadValue<bool>(Commands.DefaultCommandSettings.Definitions.Demo.Name);
-        set => SetValue(Commands.DefaultCommandSettings.Definitions.Demo.Name, value);
+        get => ReadValue<bool>(Definitions.Demo.Name);
+        set => SetValue(Definitions.Demo.Name, value);
     }
 
     [Variable(
-        name: Commands.DefaultCommandSettings.Definitions.ContentRoot.Name,
-        template: Commands.DefaultCommandSettings.Definitions.ContentRoot.Template,
-        helpText: Commands.DefaultCommandSettings.Definitions.ContentRoot.HelpText
+        name: Definitions.ContentRoot.Name,
+        template: Definitions.ContentRoot.Template,
+        helpText: Definitions.ContentRoot.HelpText
     )]
     public string? ContentRoot
     {
-        get => ReadValue<string>(Commands.DefaultCommandSettings.Definitions.ContentRoot.Name);
-        set => SetValue(Commands.DefaultCommandSettings.Definitions.ContentRoot.Name, value);
+        get => ReadValue<string>(Definitions.ContentRoot.Name);
+        set => SetValue(Definitions.ContentRoot.Name, value);
     }
 
     [Variable(
-        name: Commands.DefaultCommandSettings.Definitions.LogLevel.Name,
-        template: Commands.DefaultCommandSettings.Definitions.LogLevel.Template,
-        helpText: Commands.DefaultCommandSettings.Definitions.LogLevel.HelpText,
-        defaultValue: Commands.DefaultCommandSettings.Definitions.LogLevel.DefaultValue
+        name: Definitions.LogLevel.Name,
+        template: Definitions.LogLevel.Template,
+        helpText: Definitions.LogLevel.HelpText,
+        defaultValue: Definitions.LogLevel.DefaultValue
     )]
     public string? LogLevelAsString
     {
-        get => ReadValue<string>(Commands.DefaultCommandSettings.Definitions.LogLevel.Name);
-        set => SetValue(Commands.DefaultCommandSettings.Definitions.LogLevel.Name, value);
+        get => ReadValue<string>(Definitions.LogLevel.Name);
+        set => SetValue(Definitions.LogLevel.Name, value);
     }
 
     public LogLevel LogLevel => LogLevelAsString?.ToLowerInvariant() switch
@@ -103,7 +103,7 @@ public sealed partial class EnvironmentOptions
 
     private static string DetermineContentRoot()
     {
-        string? contentRoot = ReadCommandlineValue<string>(Commands.DefaultCommandSettings.Definitions.ContentRoot.Name);
+        string? contentRoot = ReadCommandlineValue<string>( Definitions.ContentRoot.Name);
         if (string.IsNullOrEmpty(contentRoot))
         {
             contentRoot = Environment.CurrentDirectory;
@@ -126,7 +126,7 @@ public sealed partial class EnvironmentOptions
     {
         string? result = string.Empty;
 
-        var parser = Commands.CommandlineParser.Parse();
+        var parser = CommandlineParser.Parse();
         if (parser.ContainsPattern(pattern))
         {
             result = parser.ReadPattern(pattern);
@@ -138,5 +138,39 @@ public sealed partial class EnvironmentOptions
         }
 
         return default;
-    }            
+    }
+
+    public static partial class Definitions
+    {
+        public static class LogLevel
+        {
+            public const string Name = "log-level";
+            public const string Template = "--log-level <LEVEL>";
+            public const string HelpText =
+                "Set the log level for the application. Default primaryKey is 'Info'. Possible Values: Off, Trace, Debug, Info, Warn, Error or Fatal";
+            public const string DefaultValue = "Warning";
+        }
+
+        public static class Stage
+        {
+            public const string Name = "stage";
+            public const string Template = "--stage <STAGE>";
+            public const string HelpText = "Stage where application is running. Default primaryKey is 'Development'.";
+            public const xSdk.Stage DefaultValue = xSdk.Stage.Development;
+        }
+
+        public static class Demo
+        {
+            public const string Name = "demo";
+            public const string Template = "--demo";
+            public const string HelpText = "Enables the demo mode for the application. This will generate fake data for demostration";
+        }
+
+        public static class ContentRoot
+        {
+            public const string Name = "content-root";
+            public const string Template = "--content-root <ROOT>";
+            public const string HelpText = "Content root folder where application should working. If not given, content root will automatically determined";
+        }
+    }
 }
