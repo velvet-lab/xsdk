@@ -51,7 +51,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin", "demos\plugin\plug
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "console", "console", "{DA7FFC51-C7FB-473F-B855-DC1170B069B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Host", "demos\console\host\Host.csproj", "{A27FBB1F-7B93-4093-AC3D-49F0073457BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReplConsole", "demos\console\host\ReplConsole.csproj", "{A27FBB1F-7B93-4093-AC3D-49F0073457BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSdk.Data.EntityFramework.MongoDB", "libs\xSdk.Data.EntityFramework.MongoDB\src\xSdk.Data.EntityFramework.MongoDB.csproj", "{8D86FB99-E0B5-430F-B57E-57C1118D0CFF}"
 EndProject
