@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-using System.ComponentModel;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
+using xSdk.Extensions.Variable.Commands;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Plugins.Commands;
 
-[Description(Definitions.HelpText)]
-internal class ConsoleCommand : Command<EmptyCommandSettings>
+internal sealed class DefaultConsolePluginBuilder() : ConsolePluginBuilder, IConsolePluginBuilder
 {
-    internal static class Definitions
+    public override void Configure(IConfigurator builder)
     {
-        public const string Name = "console";
-        public const string HelpText = "Creates a interactive REPL Console";
-    }
-
-    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
-    {
-        return 0;
+        builder.AddVariableCommands();
+        builder.AddDefaultCommands();
     }
 }

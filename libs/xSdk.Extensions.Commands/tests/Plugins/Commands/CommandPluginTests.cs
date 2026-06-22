@@ -27,11 +27,11 @@ public class CommandPluginTests(TestHostFixture fixture) : IClassFixture<TestHos
     public void EnableCommands_CreatesCommandPlugin()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
+            .ConfigureBuilder(builder => builder.EnableDefaultConsole())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
+        ConsolePluginHost? plugin = service.GetPlugin<ConsolePluginHost>();
 
         Assert.NotNull(plugin);
     }

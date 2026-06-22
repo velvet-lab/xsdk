@@ -16,24 +16,27 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
+using Spectre.Console.Cli.Help;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ServiceRegistrar(IServiceCollection builder) : ITypeRegistrar
+public sealed class ServiceRegistrar(IServiceCollection services) : ITypeRegistrar
 {
     public ITypeResolver Build()
     {
-        return new ServiceResolver(builder.BuildServiceProvider());
+        return new ServiceResolver(services.BuildServiceProvider());
     }
 
     public void Register(Type service, Type implementation)
     {
-        builder.AddSingleton(service, implementation);
+        RegisterNonExistingTypes(service, implementation);
+        services.AddSingleton(service, implementation);
     }
 
     public void RegisterInstance(Type service, object implementation)
     {
-        builder.AddSingleton(service, implementation);
+        RegisterNonExistingTypes(service,implementation);
+        services.AddSingleton(service, implementation);
     }
 
     public void RegisterLazy(Type service, Func<object> factory)
@@ -43,6 +46,38 @@ internal class ServiceRegistrar(IServiceCollection builder) : ITypeRegistrar
             throw new ArgumentNullException(nameof(factory));
         }
 
-        builder.AddSingleton(service, _ => factory());
+        services.AddSingleton(service, _ => factory());
+    }
+
+    // HACK: Registration of non-existent types such as `ICommandModel` and `IConfigurator` to ensure their availability for injection within
+    // the `CommandApp` configuration. This is necessary because Spectre.Console.Cli registers certain types only internally. This hack makes
+    // these non-publicly registered types available to the DI container.
+    private void RegisterNonExistingTypes(Type service, object implementation)
+    {
+        if (implementation is ICommandModel model && !ExistsNonExistingType<ICommandModel>())
+        {
+            services.AddSingleton<ICommandModel>(model);
+        }
+
+        if (implementation is IConfigurator configurator && !ExistsNonExistingType<IConfigurator>())
+        {
+            services.AddSingleton<IConfigurator>(configurator);
+            if (!ExistsNonExistingType<ICommandAppSettings>())
+            {
+                services.AddSingleton<ICommandAppSettings>(configurator.Settings);
+            }
+        }
+    }
+
+    private bool ExistsNonExistingType<TType>()
+    {
+        foreach(var serviceDescriptor in services)
+        {
+            if (serviceDescriptor.ServiceType == typeof(TType))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

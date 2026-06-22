@@ -23,12 +23,12 @@ namespace xSdk.Extensions.Commands;
 
 [Description(Definitions.HelpText)]
 [ExcludeFromCodeCoverage]
-internal class ClearCommand : Command<EmptyCommandSettings>
+public sealed class ClearCommand : Command<EmptyCommandSettings>
 {
-    internal static class Definitions
+    public static class Definitions
     {
         public const string Name = "clear";
-        public const string HelpText = "Clears the last console output";
+        public const string HelpText = "Clears the console output";
     }
 
     protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)

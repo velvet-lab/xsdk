@@ -28,7 +28,7 @@ public class CommandPluginHostTests(TestHostFixture fixture) : IClassFixture<Tes
     public void EnableCommands_CommandApp_IsRegistered()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
+            .ConfigureBuilder(builder => builder.EnableDefaultConsole())
             .BuildHost();
 
         var app = host.Services.GetService<ICommandApp>();
@@ -40,11 +40,11 @@ public class CommandPluginHostTests(TestHostFixture fixture) : IClassFixture<Tes
     public void EnableCommands_WithDefaultBuilder_CommandPluginIsCreated()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableCommands())
+            .ConfigureBuilder(builder => builder.EnableDefaultConsole())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CommandPluginHost? plugin = service.GetPlugin<CommandPluginHost>();
+        ConsolePluginHost? plugin = service.GetPlugin<ConsolePluginHost>();
 
         Assert.NotNull(plugin);
     }

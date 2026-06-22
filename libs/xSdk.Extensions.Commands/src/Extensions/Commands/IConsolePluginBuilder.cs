@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
+using Spectre.Console.Cli.Help;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Extensions.Commands;
 
-public interface ICommandsPluginBuilder : IPluginBuilder
+public interface IConsolePluginBuilder : IPluginBuilder
 {
-    ICommandApp CreateApplication(IServiceCollection? services = null);
+    void Configure(IConfigurator builder);
 
-    Func<string> PromptFactory { get; }
+    void CreateBanner();
 
-    void Configure(IConfigurator setup);
+    void CreateHelp(ICommandAppSettings settings, ICommandModel model);
+
+    void CreateLastWill();
+    
+    string CreateUserPrompt();
 }

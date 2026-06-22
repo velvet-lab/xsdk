@@ -18,13 +18,9 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
-using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
-using xSdk.Extensions.Logging;
-using xSdk.Plugins.Commands;
 
 namespace xSdk.Hosting;
 
@@ -37,52 +33,11 @@ public static class HostExtensions
     {
         Guard.IsNotNull(host);
 
-        ICommandApp? app = host.Services.GetService<ICommandApp>() ?? throw new InvalidOperationException("Command application has not been configured.");
-                
         await host.StartAsync();
 
-        var parser = CommandlineParser.Parse(args);
-        string[] defaultArgs = parser.BackupDefaultArgs();
-        bool isReplConsole = parser.ContainsPattern(ConsoleCommand.Definitions.Name);
-        string[] replArgs = parser.Arguments;
-
-        ClearConsole();
-
-        do
-        {
-            Environment.ExitCode = await app.RunAsync(replArgs);
-            if (isReplConsole)
-            {
-                string? prompt = PromptFactory.Factory?.Invoke();
-                if (prompt is not null)
-                {
-                    System.Console.Write(prompt);
-                }
-                else
-                {
-                    System.Console.Write("> ");
-                }
-
-                string? input = System.Console.ReadLine();
-                if (CommandlineParser.Parse(input).AddDefaultArgs(defaultArgs).ContainsPattern(ExitCommand.Definitions.Name))
-                {
-                    isReplConsole = false;
-                }
-                else if(string.Compare(input, "help", true) == 0)
-                {
-                    input = "--help";
-                }
-
-                replArgs = CommandlineParser.Parse(input).Arguments;
-            }
-        } while (isReplConsole);
-
-        return Environment.ExitCode;
-    }
-
-    private static void ClearConsole()
-    {
         System.Console.Clear();
         AnsiConsole.Clear();
+
+        return await host.Services.GetRequiredService<IConsole>().RunAsync(args);
     }
 }

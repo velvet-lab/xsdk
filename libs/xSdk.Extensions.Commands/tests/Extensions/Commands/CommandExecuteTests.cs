@@ -21,17 +21,6 @@ namespace xSdk.Extensions.Commands;
 public class CommandExecuteTests
 {
     [Fact]
-    public void ConsoleCommand_Execute_ReturnsZero()
-    {
-        var app = new CommandApp();
-        app.Configure(cfg => cfg.AddCommand<ConsoleCommand>("console"));
-
-        int result = app.Run(["console"], TestContext.Current.CancellationToken);
-
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
     public void ExitCommand_Execute_ReturnsZero()
     {
         var app = new CommandApp();
