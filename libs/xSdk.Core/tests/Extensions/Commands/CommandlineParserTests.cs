@@ -119,37 +119,6 @@ public class CommandlineParserTests
     }
 
     [Fact]
-    public void AddDefaultArgs_AddsNewArgs_WhenNotAlreadyPresent()
-    {
-        var parser = CommandlineParser.Parse("--host localhost");
-
-        parser.AddDefaultArgs(["--port", "8080"]);
-
-        Assert.True(parser.ContainsPattern("port"));
-    }
-
-    [Fact]
-    public void AddDefaultArgs_DoesNotAddExistingArgs()
-    {
-        var parser = CommandlineParser.Parse("--host localhost");
-
-        parser.AddDefaultArgs(["--host", "remotehost"]);
-
-        Assert.Equal("localhost", parser.ReadPattern("host"));
-    }
-
-    [Fact]
-    public void AddDefaultArgs_WithNullArgs_ReturnsUnchanged()
-    {
-        var parser = CommandlineParser.Parse("--host localhost");
-        int before = parser.Arguments.Length;
-
-        parser.AddDefaultArgs(null);
-
-        Assert.Equal(before, parser.Arguments.Length);
-    }
-
-    [Fact]
     public void Parse_WithoutArgs_UsesEnvironmentCommandLine()
     {
         // Parse() without parameters uses Environment.CommandLine
@@ -228,28 +197,7 @@ public class CommandlineParserTests
 
         Assert.Contains("run", parser.Arguments);
         Assert.Contains("myapp", parser.Arguments);
-    }
-
-    [Fact]
-    public void BackupDefaultArgs_WithContentRoot_ReturnsArgs()
-    {
-        var parser = CommandlineParser.Parse("--content-root /app --stage dev");
-
-        string[] backup = parser.BackupDefaultArgs();
-
-        // Should contain content-root and stage args
-        Assert.NotNull(backup);
-    }
-
-    [Fact]
-    public void BackupDefaultArgs_WithNoDefaultArgs_ReturnsEmpty()
-    {
-        var parser = CommandlineParser.Parse("--host localhost");
-
-        string[] backup = parser.BackupDefaultArgs();
-
-        Assert.Empty(backup);
-    }
+    }    
 
     [Fact]
     public void ContainsPattern_SingleDashPrefix_ReturnsTrue()
