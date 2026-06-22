@@ -19,78 +19,23 @@ using System.Reflection;
 
 namespace xSdk.Extensions.Commands;
 
-public partial class CommandlineParser
+public class CommandlineParser
 {
-    private CommandlineParser() { }
-
-    public string[] BackupDefaultArgs()
+    protected CommandlineParser(string? args)
     {
-        var result = new List<string>();
-
-        ExtractDefaultArgs(DefaultCommandSettings.Definitions.ContentRoot.Name, ref result);
-        ExtractDefaultArgs(DefaultCommandSettings.Definitions.Stage.Name, ref result);
-        ExtractDefaultArgs(DefaultCommandSettings.Definitions.Demo.Name, ref result);
-
-        return [.. result];
+        Arguments = ParseInternal(args);
     }
 
-    public string[] Arguments { get; private set; } = [];
+    public string[] Arguments { get; protected set; }
 
     public static CommandlineParser Parse()
-    {
-        var parser = new CommandlineParser
-        {
-            Arguments = ParseInternal(Environment.CommandLine)
-        };
-
-        return parser;
-    }
+        => new(Environment.CommandLine);
 
     public static CommandlineParser Parse(string? input)
-    {
-        var parser = new CommandlineParser
-        {
-            Arguments = ParseInternal(input)
-        };
-
-        return parser;
-    }
+        => new(input);
 
     public static CommandlineParser Parse(string[] input)
-    {
-        var parser = new CommandlineParser
-        {
-            Arguments = ParseInternal(string.Join(" ", input))
-        };
-
-        return parser;
-    }
-
-    public CommandlineParser AddDefaultArgs(string[]? args)
-    {
-        if (args != null && args.Length > 0)
-        {
-            List<string> result = [.. Arguments];
-            var parser = CommandlineParser.Parse(args);
-
-            foreach (string arg in args)
-            {
-                if (!ContainsPattern(arg) && IsPattern(arg))
-                {
-                    string? value = parser.ReadPattern(arg);
-                    result.Add(arg);
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        result.Add(value);
-                    }
-                }
-            }
-
-            Arguments = [.. result];
-        }
-
-        return this;
-    }
+        => new(string.Join(" ", input));
 
     public bool ContainsPattern(string? pattern)
     {
@@ -147,7 +92,7 @@ public partial class CommandlineParser
         return defaultValue;
     }
 
-    private static string[] ParseInternal(string? input)
+    protected string[] ParseInternal(string? input)
     {
         var result = new List<string>();
         if (!string.IsNullOrEmpty(input))
@@ -220,6 +165,8 @@ public partial class CommandlineParser
 
         return RemoveEntryAssemblyIfExists([.. result]);
     }
+
+    protected static bool IsPattern(string value) => value.StartsWith('-') || value.StartsWith("--");
 
     private static string CleanCommandArg(string pattern)
     {
@@ -336,26 +283,6 @@ public partial class CommandlineParser
 
         return args;
     }
-    
-    private void ExtractDefaultArgs(string pattern, ref List<string> result)
-    {
-        // Remove not needed Commandline Params
-        if (ContainsPattern(pattern))
-        {
-            string? template = Arguments.SingleOrDefault(x => x.IndexOf(pattern, StringComparison.InvariantCultureIgnoreCase) > -1);
-            if (!string.IsNullOrEmpty(template))
-            {
-                string? value = ReadPattern(pattern);
-                result.Add(template);
-                if (!string.IsNullOrEmpty(value))
-                {
-                    result.Add(value);
-                }
-            }
-        }
-    }
-
-    private static bool IsPattern(string value) => value.StartsWith('-') || value.StartsWith("--");
 }
 
 internal class PatternComparer : IEqualityComparer<string>
