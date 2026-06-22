@@ -15,11 +15,11 @@
     
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
+        <ProjectReference Include="..\..\xSdk.Extensions.Commands\src\xSdk.Extensions.Commands.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Data\Models\" />
-      <Folder Include="Extensions\Commands\" />
     </ItemGroup>
 
 </Project>

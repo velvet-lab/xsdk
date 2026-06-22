@@ -13,40 +13,31 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.AI;
 
-internal partial class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<AIPluginHost> logger) : WebPluginHost
+internal partial class AIPluginHost(IAIPluginBuilder pluginBuilder, IOptions<AIPluginOptions> pluginOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<AIPluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        IAIPluginBuilder? pluginBuilder = GetBuilder<IAIPluginBuilder>();
+        logger.LogInformation("Configuring services for AgentsPluginHost with plugin pluginBuilder {PluginBuilderType}.", pluginBuilder.GetType().FullName);
 
-        if (pluginBuilder is not null)
+        logger.LogDebug("Initializing plugin builder.");
+        if (pluginBuilder is AIPluginBuilder concreatePluginBuilder)
         {
-            logger.LogInformation("Configuring services for AgentsPluginHost with plugin pluginBuilder {PluginBuilderType}.", pluginBuilder.GetType().FullName);
+            pluginBuilder.Initialize();
 
-            logger.LogDebug("Initializing plugin builder.");
-            if (pluginBuilder is AIPluginBuilder concreatePluginBuilder)
+            logger.LogDebug("Adding OpenAI responses, conversations, and DevUI services.");
+            services
+                .AddOpenAIChatCompletions()
+                .AddOpenAIResponses()
+                .AddOpenAIConversations();
+
+            if (environmentOptions.Value?.Stage == Stage.Development)
             {
-                pluginBuilder.Initialize();
-
-                logger.LogDebug("Adding OpenAI responses, conversations, and DevUI services.");
-                services
-                    .AddOpenAIChatCompletions()
-                    .AddOpenAIResponses()
-                    .AddOpenAIConversations();
-
-                if (environmentOptions.Value?.Stage == Stage.Development)
-                {
-                    logger.LogDebug("Development environment detected. Adding DevUI services.");
-                    services.AddDevUI(options => options.AllowRemoteAccess = true);
-                }
-
-                concreatePluginBuilder.InitializeLayers(services, pluginOptions.Value, environmentOptions.Value);
+                logger.LogDebug("Development environment detected. Adding DevUI services.");
+                services.AddDevUI(options => options.AllowRemoteAccess = true);
             }
-        }
-        else
-        {
-            logger.LogError("Failed to get IAgentsPluginBuilder from plugin host. Ensure that the plugin is configured correctly.");
-        }        
+
+            concreatePluginBuilder.InitializeLayers(services, pluginOptions.Value, environmentOptions.Value);
+        }            
     }
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder builder)
@@ -60,8 +51,6 @@ internal partial class AIPluginHost(IOptions<AIPluginOptions> pluginOptions, IOp
         logger.LogDebug("Mapping OpenAI conversations and responses endpoints.");
         builder.MapOpenAIConversations();
         builder.MapOpenAIResponses();
-
-        IAIPluginBuilder? pluginBuilder = GetBuilder<IAIPluginBuilder>();
 
         if (pluginBuilder is AIPluginBuilder concretePluginBuilder)
         {
