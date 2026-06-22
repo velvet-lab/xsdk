@@ -17,7 +17,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 
@@ -72,14 +71,14 @@ public abstract class PluginHost : PluginDescription, IPluginHost
         return builders.Any();
     }
 
-    protected TBuilder? GetBuilder<TBuilder>()
-        where TBuilder : IPluginBuilder
-    {
-        if (Services == null)
-        {
-            throw new InvalidOperationException("Services must be set before getting the plugin builder.");
-        }
+    //protected TBuilder? GetBuilder<TBuilder>()
+    //    where TBuilder : IPluginBuilder
+    //{
+    //    if (Services == null)
+    //    {
+    //        throw new InvalidOperationException("Services must be set before getting the plugin builder.");
+    //    }
 
-        return Services.GetService<TBuilder>();
-    }
+    //    return Services.GetService<TBuilder>();
+    //}
 }
