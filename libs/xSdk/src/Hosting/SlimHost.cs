@@ -16,14 +16,12 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
-using xSdk.Hosting.Managers;
 
 namespace xSdk.Hosting;
 
@@ -31,8 +29,9 @@ public class SlimHost
 {
     private bool _isBuilded;
     private IServiceCollection _slimServices = null!;
-    private IServiceCollection? _appServices;
-    private readonly List<Action> _appServicesDelegates = [];
+    private readonly List<Action<IServiceCollection>> _slimServicesDelegates = [];
+    private IServiceCollection? _hostServices;
+    private readonly List<Action> _hostServicesDelegates = [];
     private ApplicationOptions? _applicationOptions;
     private readonly List<Type> _registeredPluginHostTypes = [];
 
@@ -89,17 +88,17 @@ public class SlimHost
         return instance;
     }
 
-    internal void PostConfigure(IServiceCollection applicationServices)
+    internal void PostConfigure(IServiceCollection hostServices)
     {
-        _appServices = applicationServices;
-        foreach (Action action in _appServicesDelegates)
+        _hostServices = hostServices;
+        foreach (Action action in _hostServicesDelegates)
         {
             action?.Invoke();
         }
 
         // Expose the same IPluginHostCollection in the application DI container
         // so post-build consumers (e.g. HostInitializer) can inject it directly.
-        applicationServices.AddSingleton<IPluginHostCollection>(
+        hostServices.AddSingleton<IPluginHostCollection>(
             new PluginHostCollection(_registeredPluginHostTypes.AsReadOnly()));
     }
 
@@ -132,13 +131,13 @@ public class SlimHost
         }
 
         _slimServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
-        if (_appServices != null)
+        if (_hostServices != null)
         {
-            _appServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+            _hostServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
         }
         else
         {
-            _appServicesDelegates.Add(new Action(() => _appServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>()));
+            _hostServicesDelegates.Add(new Action(() => _hostServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>()));
         }
     }
 
@@ -153,26 +152,48 @@ public class SlimHost
         if (configureOptions != null)
         {
             _slimServices.RegisterOptions<TOptions>(configureOptions);
-            if (_appServices != null)
+            if (_hostServices != null)
             {
-                _appServices.RegisterOptions<TOptions>(configureOptions);
+                _hostServices.RegisterOptions<TOptions>(configureOptions);
             }
             else
             {
-                _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>(configureOptions)));
+                _hostServicesDelegates.Add(new Action(() => _hostServices?.RegisterOptions<TOptions>(configureOptions)));
             }
         }
         else
         {
             _slimServices.RegisterOptions<TOptions>();
-            if (_appServices != null)
+            if (_hostServices != null)
             {
-                _appServices.RegisterOptions<TOptions>();
+                _hostServices.RegisterOptions<TOptions>();
             }
             else
             {
-                _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>()));
+                _hostServicesDelegates.Add(new Action(() => _hostServices?.RegisterOptions<TOptions>()));
             }
+        }
+    }
+
+    internal void RegisterPluginServices(Action<IServiceCollection> configureServices)        
+    {
+        if (_isBuilded)
+        {
+            throw new SdkException("Cannot register plugin services after the service provider has been built.");
+        }
+
+        configureServices(_slimServices);
+    }
+
+    internal void RegisterHostServices(Action<IServiceCollection> configureServices)
+    {   
+        if (_hostServices != null)
+        {
+            configureServices(_hostServices);
+        }
+        else
+        {
+            _hostServicesDelegates.Add(new Action(() => configureServices(_hostServices!)));
         }
     }
 
