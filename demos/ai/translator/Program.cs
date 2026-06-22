@@ -17,18 +17,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Agents.AI;
+using Spectre.Console;
 using xSdk.Demos;
 using xSdk.Demos.Builder;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.AI;
+using xSdk.Plugins.Commands;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.Telemetry;
 using xSdk.Plugins.WebApi;
 using xSdk.Plugins.WebSecurity;
-using xSdk.Demos.Hosting;
-using xSdk.Plugins.Commands;
-using xSdk.Extensions.Logging;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
@@ -40,12 +39,26 @@ const string APP_PREFIX = "ai";
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableCommands()
+    .EnableChatConsole<ChatCommand>(options =>
+    {
+        //options.Banner = () =>
+        //{
+        //    var text = new FigletText("Chat Console")
+        //        .Color(Color.Green)
+        //        .Centered();
+        //    AnsiConsole.Write(text);
+        //};
+
+        //options.UserPrompt = "You:";
+        //options.LastWill = () =>
+        //{
+        //    AnsiConsole.WriteLine("Chat console is shutting down. Goodbye!");
+        //};
+    })
     .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
     .EnableTelemetry<TelemetryPluginBuilder>(TelemetryConfiguration.Default)
     .EnableWebSecurity()
     .EnableCompression()
-    .AddHost<TranslationService>()
     .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

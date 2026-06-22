@@ -16,6 +16,8 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Spectre.Console;
+using xSdk.Demos;
 using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.Commands;
@@ -29,8 +31,7 @@ IHost host = xSdk
         .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
 
         // Enable Commands with default configuration
-        .EnableCommands()
-
+        .EnableReplConsole<ReplConsoleBuilder, ReplCommand>()
         .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();
