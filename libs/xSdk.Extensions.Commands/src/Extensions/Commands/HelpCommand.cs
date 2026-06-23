@@ -17,7 +17,9 @@ public sealed class HelpCommand(ICommandAppSettings appSettings, ICommandModel m
 
     protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
     {
-        if (options.Value.DisableDefaultHelp)
+        var setup = options.Value;
+
+        if (setup.DisableDefaultHelp)
         {
             builder.CreateHelp(appSettings, model);
         }

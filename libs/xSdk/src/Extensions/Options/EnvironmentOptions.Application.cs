@@ -144,7 +144,7 @@ public sealed partial class EnvironmentOptions
     {
         public static class LogLevel
         {
-            public const string Name = "log-level";
+            public const string Name = nameof(LogLevel);
             public const string Template = "--log-level <LEVEL>";
             public const string HelpText =
                 "Set the log level for the application. Default primaryKey is 'Info'. Possible Values: Off, Trace, Debug, Info, Warn, Error or Fatal";
@@ -153,7 +153,7 @@ public sealed partial class EnvironmentOptions
 
         public static class Stage
         {
-            public const string Name = "stage";
+            public const string Name = nameof(Stage);
             public const string Template = "--stage <STAGE>";
             public const string HelpText = "Stage where application is running. Default primaryKey is 'Development'.";
             public const xSdk.Stage DefaultValue = xSdk.Stage.Development;
@@ -161,14 +161,14 @@ public sealed partial class EnvironmentOptions
 
         public static class Demo
         {
-            public const string Name = "demo";
+            public const string Name = nameof(Demo);
             public const string Template = "--demo";
             public const string HelpText = "Enables the demo mode for the application. This will generate fake data for demostration";
         }
 
         public static class ContentRoot
         {
-            public const string Name = "content-root";
+            public const string Name = nameof(ContentRoot);
             public const string Template = "--content-root <ROOT>";
             public const string HelpText = "Content root folder where application should working. If not given, content root will automatically determined";
         }

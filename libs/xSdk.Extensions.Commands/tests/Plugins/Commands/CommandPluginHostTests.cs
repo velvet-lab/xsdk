@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
@@ -44,7 +45,7 @@ public class CommandPluginHostTests(TestHostFixture fixture) : IClassFixture<Tes
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        ConsolePluginHost? plugin = service.GetPlugin<ConsolePluginHost>();
+        ConsolePluginHost<ConsolePluginOptions>? plugin = service.GetPlugin<ConsolePluginHost<ConsolePluginOptions>>();
 
         Assert.NotNull(plugin);
     }

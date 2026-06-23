@@ -209,85 +209,85 @@ public sealed partial class EnvironmentOptions
     {
         internal static class MachineName
         {
-            public const string Name = "machinename";
+            public const string Name = nameof(MachineName);
             public const string HelpText = "Machine name for the host";
         }
 
         internal static class Arch
         {
-            public const string Name = "arch";
+            public const string Name = nameof(Arch);
             public const string HelpText = "Architecture of the host";
         }
 
         internal static class Mac
         {
-            public const string Name = "mac";
+            public const string Name = nameof(Mac);
             public const string HelpText = "MAC Address of the host";
         }
 
         internal static class IPv4
         {
-            public const string Name = "ipv4";
+            public const string Name = nameof(IPv4);
             public const string HelpText = "IPv4 Address of the host";
         }
 
         internal static class OsDescription
         {
-            public const string Name = "osdescription";
+            public const string Name = nameof(OsDescription);
             public const string HelpText = "Description of the Operating System";
         }
 
         internal static class OsName
         {
-            public const string Name = "osname";
+            public const string Name = nameof(OsName);
             public const string HelpText = "Name of the Operating System";
         }
 
         internal static class OsType
         {
-            public const string Name = "ostype";
+            public const string Name = nameof(OsType);
             public const string HelpText = "Type of the Operating System";
         }
 
         internal static class OsVersion
         {
-            public const string Name = "osversion";
+            public const string Name = nameof(OsVersion);
             public const string HelpText = "Version of the Operating System";
         }
 
         internal static class FrameworkName
         {
-            public const string Name = "frameworkname";
+            public const string Name = nameof(FrameworkName);
             public const string HelpText = "Name of the .Net Framework";
         }
 
         internal static class FrameworkVersion
         {
-            public const string Name = "frameworkversion";
+            public const string Name = nameof(FrameworkVersion);
             public const string HelpText = "Version of the .Net Framework";
         }
 
         internal static class FrameworkDescription
         {
-            public const string Name = "frameworkdescription";
+            public const string Name = nameof(FrameworkDescription);
             public const string HelpText = "Description of the .Net Framework";
         }
 
         internal static class Owner
         {
-            public const string Name = "owner";
+            public const string Name = nameof(Owner);
             public const string HelpText = "Process owner of the current running process";
         }
 
         internal static class Commandline
         {
-            public const string Name = "commandline";
+            public const string Name = nameof(Commandline);
             public const string HelpText = "Currently used commandline";
         }
 
         internal static class Pid
         {
-            public const string Name = "pid";
+            public const string Name = nameof(Pid);
             public const string HelpText = "Process PrimaryKey of the current running process";
         }
     }

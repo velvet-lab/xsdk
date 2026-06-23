@@ -83,15 +83,15 @@ public class CertAuthOptions : VariableSetup
     {
         public static class Certificate
         {
-            public const string Name = "client_cert";
-            public const string Template = $"--vault-client-cert <pem>";
+            public const string Name = nameof(Certificate);
+            public const string Template = $"--client-cert <pem>";
             public const string HelpText = "Public certificate chain for cert based auth to access vault";
         }
 
         public static class Key
         {
-            public const string Name = "client_key";
-            public const string Template = $"--vault-client-key <token>";
+            public const string Name = nameof(Key);
+            public const string Template = $"--client-key <token>";
             public const string HelpText = "Private certificate key for cert based auth to access vault";
         }
     }

@@ -37,7 +37,7 @@ internal class SetupWithoutPrefix : VariableSetup
     {
         internal static class StringValue
         {
-            public const string Name = "noprefix-string-value";
+            public const string Name = nameof(StringValue);
             public const string Template = "--noprefix-string-value <val>";
             public const string HelpText = "A string value without prefix.";
             public const string DefaultValue = "no-prefix-default";

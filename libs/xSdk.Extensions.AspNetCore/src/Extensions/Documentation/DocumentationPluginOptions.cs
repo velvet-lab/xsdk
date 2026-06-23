@@ -50,14 +50,14 @@ public sealed class DocumentationPluginOptions : PluginOptions
     {
         public static class Enabled
         {
-            public const string Name = "enabled";
+            public const string Name = nameof(Enabled);
             public const string Template = "--enabled";
             public const string HelpText = "Enabled OpenAPI document generation and UI";
         }
 
         public static class DocumentPattern
         {
-            public const string Name = "document-pattern";
+            public const string Name = nameof(DocumentPattern);
             public const string Template = "--document-pattern <pattern>";
             public const string HelpText = "DocumentPattern prefix for the api";
             public const string DefaultValue = "openapi/{documentName}.json";

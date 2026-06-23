@@ -3,15 +3,17 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using Spectre.Console.Cli.Help;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Variable.Commands;
 
 namespace xSdk.Demos;
 
-internal class ReplConsoleBuilder(IServiceProvider provider, IOptions<ConsolePluginOptions> options) : ConsolePluginBuilder
+internal class ReplConsoleBuilder() : ConsolePluginBuilder
 {
     public override void Configure(IConfigurator builder)
     {
         builder
-            .AddDefaultCommands();
+            .AddDefaultCommands()
+            .AddVariableCommands();
     }
 
     public override void CreateBanner()

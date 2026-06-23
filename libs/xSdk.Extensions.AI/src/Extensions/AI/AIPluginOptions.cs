@@ -45,21 +45,21 @@ public sealed class AIPluginOptions : PluginOptions
     {
         public static class Model
         {
-            public const string Name = "model";
+            public const string Name = nameof(Model);
             public const string Template = "--model <model>";
             public const string HelpText = "The default model to use for the chat client";
         }
 
         public static class EmbeddingModel
         {
-            public const string Name = "embeddingmodel";
+            public const string Name = nameof(EmbeddingModel);
             public const string Template = "--embeddingmodel <embeddingmodel>";
             public const string HelpText = "The default model to use for the embedding client";
         }
 
         public static class Path
         {
-            public const string Name = "path";
+            public const string Name = nameof(Path);
             public const string Template = "--path <path>";
             public const string HelpText = "The YAML definitions path for the AI agents and workflows";
         }

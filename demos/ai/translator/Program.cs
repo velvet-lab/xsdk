@@ -40,7 +40,7 @@ const string APP_PREFIX = "ai";
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableChatConsole<ChatConsoleBuilder, ChatCommand>()
+    .EnableChatConsole<ChatConsoleBuilder, ChatMessageHandler>()
     .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
     .EnableTelemetry<TelemetryPluginBuilder>(TelemetryConfiguration.Default)
     .EnableWebSecurity()

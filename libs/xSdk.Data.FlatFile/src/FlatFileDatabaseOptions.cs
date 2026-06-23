@@ -99,14 +99,14 @@ public class FlatFileDatabaseOptions : DatabaseOptions
     {
         public static class FilePath
         {
-            public const string Name = "file-path";
+            public const string Name = nameof(FilePath);
             public const string Template = "--path <path>";
             public const string HelpText = "Path to the folder where the flat files are stored.";
         }
 
         public static class UseLowerCamelCase
         {
-            public const string Name = "use-lower-camel-case";
+            public const string Name = nameof(UseLowerCamelCase);
             public const string Template = "--use-lower-camel-case";
             public const string HelpText = "Whether to use lower camel case for property names in the flat file.";
             public const bool DefaultValue = true;
@@ -114,7 +114,7 @@ public class FlatFileDatabaseOptions : DatabaseOptions
 
         public static class ReloadBeforeGetCollection
         {
-            public const string Name = "reload-before-get-collection";
+            public const string Name = nameof(ReloadBeforeGetCollection);
             public const string Template = "--reload-before-get-collection";
             public const string HelpText = "Whether to reload the flat file before getting a collection.";
             public const bool DefaultValue = false;
@@ -122,21 +122,21 @@ public class FlatFileDatabaseOptions : DatabaseOptions
 
         public static class KeyProperty
         {
-            public const string Name = "key-property";
+            public const string Name = nameof(KeyProperty);
             public const string Template = "--key-property <property-name>";
             public const string HelpText = "The name of the property that is used as key in the flat file.";
         }
 
         public static class EncryptionKey
         {
-            public const string Name = "encryption-key";
+            public const string Name = nameof(EncryptionKey);
             public const string Template = "--encryption-key <key>";
             public const string HelpText = "The key used to encrypt the flat file. If not set, the flat file will not be encrypted.";
         }
 
         public static class MinifyJson
         {
-            public const string Name = "minify-json";
+            public const string Name = nameof(MinifyJson);
             public const string Template = "--minify-json";
             public const string HelpText = "Whether to minify the JSON output in the flat file.";
         }

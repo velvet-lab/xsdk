@@ -37,7 +37,7 @@ public sealed class TokenAuthOptions : VariableSetup
     {
         public static class Token
         {
-            public const string Name = "token";
+            public const string Name = nameof(Token);
             public const string Template = $"--vault-token <token>";
             public const string HelpText = "Token for token based auth to access vault";
         }

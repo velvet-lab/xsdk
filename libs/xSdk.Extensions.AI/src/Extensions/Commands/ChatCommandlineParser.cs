@@ -30,16 +30,33 @@ internal class ChatCommandlineParser : CommandlineParser
         return false;
     }
 
-    internal string? ExtractChatCommand(string? input)
+    internal (string?, string?) ExtractChatCommand(string? input)
     {
+        string? command = null;
+
         var args = ParseInternal(input);
         foreach (var arg in args)
         {
             if (!string.IsNullOrEmpty(arg) && _chatCommandPatterns.Any(x => arg.StartsWith(x)))
             {
-                return arg.TrimStart(_chatCommandPatterns);
+                command = arg.TrimStart(_chatCommandPatterns);
+                break;
             }
         }
-        return default;
+
+        string remainingArgs = ExtractRemainingArgs(input, command);
+        return (command, remainingArgs);
+    }
+
+    private string ExtractRemainingArgs(string? input, string? command)
+    {
+        if (string.IsNullOrEmpty(command))
+        {
+            return input ?? string.Empty;
+        }
+
+        var args = ParseInternal(input);
+        var remainingArgs = args.SkipWhile(x => !string.Equals(x.TrimStart(_chatCommandPatterns), command, StringComparison.InvariantCultureIgnoreCase)).Skip(1);
+        return string.Join(" ", remainingArgs);
     }
 }

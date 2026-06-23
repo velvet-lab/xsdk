@@ -49,7 +49,7 @@ internal class SetupWithPrefix : VariableSetup
     {
         internal static class StringValue
         {
-            public const string Name = "string-value";
+            public const string Name = nameof(StringValue);
             public const string Template = "--value <val>";
             public const string HelpText = "A string value for testing.";
             public const string DefaultValue = "default-string";
@@ -57,7 +57,7 @@ internal class SetupWithPrefix : VariableSetup
 
         internal static class BoolValue
         {
-            public const string Name = "bool-value";
+            public const string Name = nameof(BoolValue);
             public const string Template = "--bool-value";
             public const string HelpText = "A bool value for testing.";
             public const bool DefaultValue = true;

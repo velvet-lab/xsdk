@@ -1,39 +1,26 @@
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Spectre.Console;
-using Spectre.Console.Cli;
 using xSdk.Demos.AI;
 using xSdk.Extensions.Commands;
 
 namespace xSdk.Demos.Commands;
 
-[Description(Definitions.HelpText)]
-[ExcludeFromCodeCoverage]
-internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)] Workflow workflow) : Command<ChatCommandSettings>
+internal class ChatMessageHandler([FromKeyedServices(NameRegistry.TranslationWorkflow)] Workflow workflow) : IChatMessageHandler
 {
-    internal static class Definitions
+    public async Task<int> HandleMessageAsync(string? message, CancellationToken token = default)
     {
-        public const string Name = "chat";
-        public const string HelpText = "Start a chat session";
-    }
-
-    protected override int Execute(CommandContext context, ChatCommandSettings settings, CancellationToken cancellationToken)
-    {
-        if (settings.Args != null && settings.Args.Length > 0)
+        if (!string.IsNullOrEmpty(message))
         {
-            var args = string.Join(" ", settings.Args);
-            if (!string.IsNullOrEmpty(args))
-            {
-                return SendMessage(args, cancellationToken);
-            }
+            return SendMessage(message, token);
         }
         return 0;
     }
 
-    private int SendMessage(string input, CancellationToken stoppingToken)
+    private int SendMessage(string message, CancellationToken stoppingToken)
     {
         var returnCode = AnsiConsole
             .Status()
@@ -44,7 +31,7 @@ internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)]
                 return Task.Run<int>(async () =>
                 {
                     context.Status = "Agent is responding";
-                    await using StreamingRun run = await InProcessExecution.RunStreamingAsync(workflow, input: input, cancellationToken: stoppingToken);
+                    await using StreamingRun run = await InProcessExecution.RunStreamingAsync(workflow, input: message, cancellationToken: stoppingToken);
 
                     await run.TrySendMessageAsync(new TurnToken(emitEvents: true));
                     await foreach (WorkflowEvent evt in run.WatchStreamAsync(stoppingToken))
@@ -76,7 +63,7 @@ internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)]
     {
         string? result = executorCompleted.Data as string;
         if (result is not null)
-        {            
+        {
             AnsiConsole.MarkupLine($"[green]{executorCompleted.ExecutorId}:[/] {result}");
         }
     }
@@ -99,4 +86,3 @@ internal class ChatCommand([FromKeyedServices(NameRegistry.TranslationWorkflow)]
         return -1;
     }
 }
-

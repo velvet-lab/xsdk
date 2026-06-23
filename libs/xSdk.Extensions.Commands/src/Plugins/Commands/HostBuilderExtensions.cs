@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
@@ -94,7 +95,7 @@ public static class HostBuilderExtensions
                     services
                         .AddSingleton<ICommandAppBuilder, CommandAppBuilder<TDefaultCommand>>();
                 })
-                .RegisterPluginHost<ConsolePluginHost>()
+                .RegisterPluginHost<ConsolePluginHost<TConsolePluginOptions>>()
                 .RegisterPluginHostOptions<TConsolePluginOptions>(configure)
                 .RegisterPluginBuilder<IConsolePluginBuilder, TConsoleBuilder>();
     }

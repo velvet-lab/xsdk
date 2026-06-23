@@ -1,4 +1,5 @@
 using Spectre.Console.Cli;
+using xSdk.Demos.Commands;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
@@ -27,7 +28,7 @@ internal class ChatConsole(ICommandApp app, IConsolePluginBuilder builder) : ICo
             string input = builder.CreateUserPrompt();
             if (parser.ContainsChatCommand(input))
             {
-                string? command = parser.ExtractChatCommand(input);
+                (string? command, string? remainingArgs) = parser.ExtractChatCommand(input);
                 if (!string.IsNullOrEmpty(command))
                 {
                     if (string.Equals(command, ExitCommand.Definitions.Name, StringComparison.InvariantCultureIgnoreCase))
@@ -36,18 +37,14 @@ internal class ChatConsole(ICommandApp app, IConsolePluginBuilder builder) : ICo
                     }
                     else if (string.Equals(command, ClearCommand.Definitions.Name, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        chatArgs = [command];
                         isCleared = true;
                     }
-                    else
-                    {
-                        chatArgs = [command];
-                    }
+                    input = $"{command} {remainingArgs}".Trim();
                 }
             }
             else
-            {   
-                chatArgs = [input];
+            {
+                input = $"{ChatCommand.Definitions.Name} '{input}'".Trim();
             }
 
             chatArgs = CommandlineParser.Parse(input).Arguments;

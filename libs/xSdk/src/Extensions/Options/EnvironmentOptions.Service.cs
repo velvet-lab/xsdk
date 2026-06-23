@@ -55,7 +55,7 @@ public sealed partial class EnvironmentOptions
     {
         internal static class ServiceName
         {
-            public const string Name = "service-name";
+            public const string Name = nameof(ServiceName);
             public const string Template = "--service-name <name>";
             public const string HelpText = "Service name to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "DefaultService";
@@ -63,7 +63,7 @@ public sealed partial class EnvironmentOptions
 
         internal static class ServiceNamespace
         {
-            public const string Name = "service-namespace";
+            public const string Name = nameof(ServiceNamespace);
             public const string Template = "--service-namespace <namespace>";
             public const string HelpText = "Service namespace to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "xSdk";
@@ -71,7 +71,7 @@ public sealed partial class EnvironmentOptions
 
         internal static class ServiceVersion
         {
-            public const string Name = "service-version";
+            public const string Name = nameof(ServiceVersion);
             public const string Template = "--service-version <version>";
             public const string HelpText = "Service version to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "stable";

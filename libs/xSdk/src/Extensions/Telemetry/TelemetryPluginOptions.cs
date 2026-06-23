@@ -58,21 +58,21 @@ public sealed class TelemetryPluginOptions : PluginOptions
     {
         public static class LoggingEnabled
         {
-            public const string Name = "telemetry-enable-logging";
+            public const string Name = nameof(LoggingEnabled);
             public const string Template = "--enable-logging";
             public const string HelpText = "Enables logging telemetry.";
         }
 
         public static class TracingEnabled
         {
-            public const string Name = "telemetry-enable-tracing";
+            public const string Name = nameof(TracingEnabled);
             public const string Template = "--enable-tracing";
             public const string HelpText = "Enables tracing telemetry.";
         }
 
         public static class MetricsEnabled
         {
-            public const string Name = "telemetry-enable-metrics";
+            public const string Name = nameof(MetricsEnabled);
             public const string Template = "--enable-metrics";
             public const string HelpText = "Enables metrics telemetry.";
         }

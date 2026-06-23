@@ -21,7 +21,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Options;
 using Spectre.Console.Cli;
-using Spectre.Console.Cli.Internal.Configuration;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
@@ -29,7 +28,8 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
-public sealed class ConsolePluginHost(IConsolePluginBuilder builder, ICommandAppBuilder applicationBuilder, IOptions<ConsolePluginOptions> options) : PluginHost
+public sealed class ConsolePluginHost<TConsolePluginOptions>(IConsolePluginBuilder builder, ICommandAppBuilder applicationBuilder, IOptions<TConsolePluginOptions> options) : PluginHost
+    where TConsolePluginOptions : ConsolePluginOptions, new()
 {
     public override void ConfigureLogging(ILogBuilder builder)
     {
@@ -43,7 +43,6 @@ public sealed class ConsolePluginHost(IConsolePluginBuilder builder, ICommandApp
             .TryAddSingleton<ICommandApp>(provider =>
             {
                 ICommandApp app = applicationBuilder.Build(services);
-                CommandApp d;
 
                 var applicationOptions = provider.GetRequiredService<IOptions<ApplicationOptions>>();
                 app.Configure(config =>
@@ -58,7 +57,8 @@ public sealed class ConsolePluginHost(IConsolePluginBuilder builder, ICommandApp
                         config.SetApplicationName(applicationOptions.Value.Name);
                     }
 
-                    builder.Configure(config);
+                    builder
+                        .Configure(config);
                 });
                                 
                 return app;

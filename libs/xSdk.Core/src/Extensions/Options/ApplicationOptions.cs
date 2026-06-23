@@ -79,34 +79,34 @@ public sealed class ApplicationOptions
     {
         public static class AppName
         {
-            public const string Name = "app-name";
+            public const string Name = nameof(AppName);
             public const string HelpText = "Short name of the application";
             public const string DefaultValue = "xsdk";
         }
 
         public static class AppDescription
         {
-            public const string Name = "app-description";
+            public const string Name = nameof(AppDescription);
             public const string HelpText = "Description of the application";
         }
 
         public static class AppCompany
         {
-            public const string Name = "app-company";
+            public const string Name = nameof(AppCompany);
             public const string HelpText = "Company name of the application";
             public const string DefaultValue = "xcom";
         }
 
         public static class AppPrefix
         {
-            public const string Name = "app-prefix";
+            public const string Name = nameof(AppPrefix);
             public const string HelpText = "Prefix for the application";
             public const string DefaultValue = "XSDK";
         }
 
         public static class AppVersion
         {
-            public const string Name = "app-version";
+            public const string Name = nameof(AppVersion);
             public const string HelpText = "Version of the application";
         }
     }

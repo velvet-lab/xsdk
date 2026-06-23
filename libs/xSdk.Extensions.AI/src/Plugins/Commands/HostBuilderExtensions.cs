@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console.Cli;
+using xSdk.Demos.Commands;
 using xSdk.Extensions.Commands;
 using xSdk.Hosting;
 
@@ -10,17 +11,21 @@ public static class HostBuilderExtensions
 {
     extension(IHostBuilder builder)
     {        
-        public IHostBuilder EnableChatConsole<TConsoleBuilder, TDefaultCommand>()
+        public IHostBuilder EnableChatConsole<TConsoleBuilder, TChatMessageHandler>()
             where TConsoleBuilder : class, IConsolePluginBuilder
-            where TDefaultCommand : class, ICommand
+            where TChatMessageHandler : class, IChatMessageHandler
             => builder
-                .EnableChatConsole<TConsoleBuilder, TDefaultCommand>(_ => { });
+                .EnableChatConsole<TConsoleBuilder, TChatMessageHandler>(_ => { });
 
-        public IHostBuilder EnableChatConsole<TConsoleBuilder, TDefaultCommand>(Action<ChatConsolePluginOptions> configure)
+        public IHostBuilder EnableChatConsole<TConsoleBuilder, TChatMessageHandler>(Action<ChatConsolePluginOptions> configure)
             where TConsoleBuilder : class, IConsolePluginBuilder
-            where TDefaultCommand : class, ICommand
+            where TChatMessageHandler : class, IChatMessageHandler
             => builder
-                .RegisterServices(services => services.AddSingleton<IConsole, ChatConsole>())
-                .EnableConsole<TConsoleBuilder, ChatConsolePluginOptions, TDefaultCommand>(configure);
+                .RegisterServices(services =>
+                    services
+                        .AddSingleton<IConsole, ChatConsole>()
+                        .AddSingleton<IChatMessageHandler, TChatMessageHandler>()
+                )
+                .EnableConsole<TConsoleBuilder, ChatConsolePluginOptions, ChatCommand>(configure);
     }
 }
