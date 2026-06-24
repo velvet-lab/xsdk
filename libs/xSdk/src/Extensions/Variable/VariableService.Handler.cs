@@ -57,6 +57,21 @@ internal partial class VariableService
         }
     }
 
+    /// <summary>
+    /// Imports variable definitions (metadata only, no values) from a SlimHost-phase
+    /// VariableService into this instance. Already-existing definitions are preserved.
+    /// </summary>
+    internal void ImportVariableDefinitions(IEnumerable<IVariable> definitions)
+    {
+        foreach (IVariable definition in definitions)
+        {
+            if (LoadVariableInternal(definition.Name) == null)
+            {
+                Variables.Add(definition);
+            }
+        }
+    }
+
     public void NewVariable(IVariable variable) => NewVariable<object>(variable, default, false);
 
     public void NewVariable(IVariable variable, bool throwIfAlreadyExists) => NewVariable<object>(variable, default, throwIfAlreadyExists);

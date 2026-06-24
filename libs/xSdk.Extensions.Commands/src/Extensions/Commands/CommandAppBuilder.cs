@@ -6,8 +6,8 @@ namespace xSdk.Extensions.Commands;
 internal class CommandAppBuilder<TDefaultCommand> : ICommandAppBuilder
     where TDefaultCommand : class, ICommand
 {
-    public ICommandApp Build(IServiceCollection services)
+    public ICommandApp Build(ITypeRegistrar registrar)
     {
-        return new CommandApp<TDefaultCommand>(new ServiceRegistrar(services));
+        return new CommandApp<TDefaultCommand>(registrar);
     }
 }

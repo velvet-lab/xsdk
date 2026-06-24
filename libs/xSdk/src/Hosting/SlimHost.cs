@@ -100,6 +100,26 @@ public class SlimHost
         // so post-build consumers (e.g. HostInitializer) can inject it directly.
         hostServices.AddSingleton<IPluginHostCollection>(
             new PluginHostCollection(_registeredPluginHostTypes.AsReadOnly()));
+
+        // Register a fresh VariableService for the main host that has IConfiguration
+        // available from the start (unlike the SlimHost instance which has IConfiguration=null).
+        // Variable definitions collected during the SlimHost phase (via NewVariable / direct calls)
+        // are imported as metadata only — no cached MemoryProvider values — so that OptionProvider
+        // can resolve the correct values on first access.
+        var slimVariableService = Provider.GetRequiredService<IVariableService>() as VariableService;
+        hostServices.AddSingleton<IVariableService>(provider =>
+        {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var appOptions = provider.GetService<IOptions<ApplicationOptions>>();
+            var mainVariableService = new VariableService(appOptions, config);
+
+            if (slimVariableService != null)
+            {
+                mainVariableService.ImportVariableDefinitions(slimVariableService.Variables);
+            }
+
+            return mainVariableService;
+        });
     }
 
     internal void RegisterPluginHost<TPluginHost, TPluginHostImplementation>()
@@ -175,7 +195,7 @@ public class SlimHost
         }
     }
 
-    internal void RegisterPluginServices(Action<IServiceCollection> configureServices)        
+    internal void RegisterPluginServices(Action<IServiceCollection> configureServices)
     {
         if (_isBuilded)
         {
@@ -186,7 +206,7 @@ public class SlimHost
     }
 
     internal void RegisterHostServices(Action<IServiceCollection> configureServices)
-    {   
+    {
         if (_hostServices != null)
         {
             configureServices(_hostServices);

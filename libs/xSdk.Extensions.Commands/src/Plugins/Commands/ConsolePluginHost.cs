@@ -28,7 +28,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
-public sealed class ConsolePluginHost<TConsolePluginOptions>(IConsolePluginBuilder builder, ICommandAppBuilder applicationBuilder, IOptions<TConsolePluginOptions> options) : PluginHost
+public sealed class ConsolePluginHost<TConsolePluginOptions>(IConsolePluginBuilder builder, ICommandAppBuilder applicationBuilder, IOptions<TConsolePluginOptions> options, IOptions<ApplicationOptions> applicationOptions) : PluginHost
     where TConsolePluginOptions : ConsolePluginOptions, new()
 {
     public override void ConfigureLogging(ILogBuilder builder)
@@ -39,28 +39,29 @@ public sealed class ConsolePluginHost<TConsolePluginOptions>(IConsolePluginBuild
 
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
+        var registrar = new ServiceRegistrar(services);
+        ICommandApp app = applicationBuilder.Build(registrar);
+        app
+            .Configure(config =>
+            {
+                if (options.Value.DisableDefaultHelp)
+                {
+                    config.SetHelpProvider<SilentHelpProvider>();
+                }
+
+                if (!string.IsNullOrEmpty(applicationOptions.Value.Name))
+                {
+                    config.SetApplicationName(applicationOptions.Value.Name);
+                }
+
+                builder
+                    .Configure(config);
+            });
+
         services            
             .TryAddSingleton<ICommandApp>(provider =>
             {
-                ICommandApp app = applicationBuilder.Build(services);
-
-                var applicationOptions = provider.GetRequiredService<IOptions<ApplicationOptions>>();
-                app.Configure(config =>
-                {
-                    if (options.Value.DisableDefaultHelp)
-                    {
-                        config.SetHelpProvider<SilentHelpProvider>();
-                    }
-
-                    if (!string.IsNullOrEmpty(applicationOptions.Value.Name))
-                    {
-                        config.SetApplicationName(applicationOptions.Value.Name);
-                    }
-
-                    builder
-                        .Configure(config);
-                });
-                                
+                registrar.SetServiceProvider(provider);
                 return app;
             });
     }

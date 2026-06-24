@@ -23,12 +23,4 @@ namespace xSdk.Extensions.Commands;
 public interface IConsolePluginBuilder : IPluginBuilder
 {
     void Configure(IConfigurator builder);
-
-    void CreateBanner();
-
-    void CreateHelp(ICommandAppSettings settings, ICommandModel model);
-
-    void CreateLastWill();
-    
-    string CreateUserPrompt();
 }

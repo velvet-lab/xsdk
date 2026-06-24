@@ -17,14 +17,14 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using DotMake.CommandLine;
 using Microsoft.Extensions.Logging;
-using Spectre.Console;
-using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Variable.Commands;
 
 [ExcludeFromCodeCoverage(Justification = "Spectre.Console command – renders to an interactive terminal and cannot be unit tested.")]
 [Description(Definitions.HelpText)]
+[CliCommand(Description = Definitions.HelpText)]
 internal class ListCommand(IVariableService variableSvc, ILogger<ListCommand> logger) : Command<ListCommandSettings>
 {
     internal static class Definitions

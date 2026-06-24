@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace xSdk.Extensions.Variable;
 
@@ -22,7 +23,10 @@ public static class SerivceCollectionExtensions
 {
     public static IServiceCollection AddVariableServices(this IServiceCollection services)
     {
-        services.AddSingleton<IVariableService, VariableService>();
+        // TryAddSingleton: when PostConfigure already registered a factory-based instance
+        // (e.g. the main host bridging from SlimHost), this call becomes a no-op so the
+        // factory registration is not overwritten by a plain new VariableService.
+        services.TryAddSingleton<IVariableService, VariableService>();
         return services;
     }
 }

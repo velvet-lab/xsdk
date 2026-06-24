@@ -28,36 +28,17 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableReplConsole<TConsoleBuilder, TDefaultCommand>()
-            where TConsoleBuilder : class, IConsolePluginBuilder
+            where TConsoleBuilder : class, IReplConsolePluginBuilder
             where TDefaultCommand : class, ICommand
             => builder
                 .EnableReplConsole<TConsoleBuilder, TDefaultCommand>(_ => { });
 
         public IHostBuilder EnableReplConsole<TConsoleBuilder, TDefaultCommand>(Action<ConsolePluginOptions> configure)
-            where TConsoleBuilder : class, IConsolePluginBuilder
+            where TConsoleBuilder : class, IReplConsolePluginBuilder
             where TDefaultCommand : class, ICommand
             => builder
                 .RegisterServices(services => services.AddSingleton<IConsole, ReplConsole>())
                 .EnableConsole<TConsoleBuilder, ConsolePluginOptions, TDefaultCommand>(configure);
-
-
-
-
-
-
-        public IHostBuilder EnableDefaultConsole()
-            => builder.EnableDefaultConsole<DefaultConsolePluginBuilder, DefaultConsoleCommand>(_ => { });
-
-        public IHostBuilder EnableDefaultConsole(Action<ConsolePluginOptions> configure)
-            => builder.EnableDefaultConsole<DefaultConsolePluginBuilder, DefaultConsoleCommand>(configure);
-
-        public IHostBuilder EnableDefaultConsole<TConsoleBuilder>()
-            where TConsoleBuilder : class, IConsolePluginBuilder
-            => builder.EnableDefaultConsole<TConsoleBuilder, DefaultConsoleCommand>(_ => { });
-
-        public IHostBuilder EnableDefaultConsole<TConsoleBuilder>(Action<ConsolePluginOptions> configure)
-            where TConsoleBuilder : class, IConsolePluginBuilder
-            => builder.EnableDefaultConsole<TConsoleBuilder, DefaultConsoleCommand>(configure);
 
         public IHostBuilder EnableDefaultConsole<TConsoleBuilder, TDefaultCommand>()
             where TConsoleBuilder : class, IConsolePluginBuilder
@@ -70,12 +51,6 @@ public static class HostBuilderExtensions
             => builder
                 .RegisterServices(services => services.AddSingleton<IConsole, DefaultConsole>())
                 .EnableConsole<TConsoleBuilder, ConsolePluginOptions, TDefaultCommand>(configure);
-
-
-
-
-
-
 
         public IHostBuilder EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>()
             where TConsoleBuilder : class, IConsolePluginBuilder

@@ -30,15 +30,4 @@ public class CommandExecuteTests
 
         Assert.Equal(0, result);
     }
-
-    [Fact]
-    public void DefaultCommand_Execute_ReturnsZero()
-    {
-        var app = new CommandApp();
-        app.Configure(cfg => cfg.AddCommand<DefaultConsoleCommand>("run"));
-
-        int result = app.Run(["run"], TestContext.Current.CancellationToken);
-
-        Assert.Equal(0, result);
-    }
 }

@@ -11,7 +11,8 @@
 
     <!--External dependencies-->
     <ItemGroup>
-        <PackageReference Include="Spectre.Console.Cli" />
+        <PackageReference Include="DotMake.CommandLine" />
+        <PackageReference Include="Spectre.Console" />
     </ItemGroup>
 
     <ItemGroup>

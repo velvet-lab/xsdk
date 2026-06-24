@@ -4,7 +4,7 @@ using xSdk.Extensions.Commands;
 
 namespace xSdk.Plugins.Commands;
 
-public abstract class ChatConsolePluginBuilder : ConsolePluginBuilder
+public abstract class ChatConsolePluginBuilder : ReplConsolePluginBuilder
 {
     public sealed override void Configure(IConfigurator builder)
     {

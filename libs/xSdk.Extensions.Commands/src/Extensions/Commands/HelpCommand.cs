@@ -7,7 +7,7 @@ using Spectre.Console.Cli.Help;
 namespace xSdk.Extensions.Commands;
 
 [Description(Definitions.HelpText)]
-public sealed class HelpCommand(ICommandAppSettings appSettings, ICommandModel model, IConsolePluginBuilder builder, IOptions<ConsolePluginOptions> options) : Command<EmptyCommandSettings>
+public sealed class HelpCommand(ICommandAppSettings appSettings, ICommandModel model, IReplConsolePluginBuilder builder, IOptions<ConsolePluginOptions> options) : Command<EmptyCommandSettings>
 {
     public static class Definitions
     {

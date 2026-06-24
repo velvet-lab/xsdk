@@ -3,7 +3,7 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-public class ReplConsole(ICommandApp app, IConsolePluginBuilder builder) : IConsole
+public class ReplConsole(ICommandApp app, IReplConsolePluginBuilder builder) : IConsole
 {
     public async Task<int> RunAsync(string[] args)
     {

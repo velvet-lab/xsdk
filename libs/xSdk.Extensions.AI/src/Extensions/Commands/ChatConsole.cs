@@ -4,7 +4,7 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ChatConsole(ICommandApp app, IConsolePluginBuilder builder) : IConsole
+internal class ChatConsole(ICommandApp app, IReplConsolePluginBuilder builder) : IConsole
 {
     public async Task<int> RunAsync(string[] args)
     {

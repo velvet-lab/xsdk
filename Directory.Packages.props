@@ -24,6 +24,7 @@
     <PackageVersion Include="CloudNative.CloudEvents.SystemTextJson" Version="2.8.0" />
     <PackageVersion Include="CommunityToolkit.Diagnostics" Version="8.4.2" />
     <PackageVersion Include="Consul" Version="1.8.0" />
+    <PackageVersion Include="CommandDotNet" Version="8.1.1" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageVersion Include="Handlebars.Net" Version="2.1.6" />
@@ -90,7 +91,7 @@
     <PackageVersion Include="Sewer56.Update.Resolvers.GitHub" Version="1.5.2" />
     <PackageVersion Include="Sewer56.Update.Resolvers.NuGet" Version="1.4.1" />
     <PackageVersion Include="SharpCompress" Version="0.49.1" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageVersion Include="Spectre.Console" Version="0.57.0" />
     <PackageVersion Include="Testcontainers" Version="4.12.0" />
     <PackageVersion Include="Testcontainers.MongoDb" Version="4.12.0" />
     <PackageVersion Include="VaultSharp" Version="1.17.5.1" />

@@ -5,5 +5,5 @@ namespace xSdk.Extensions.Commands;
 
 public interface ICommandAppBuilder
 {
-    ICommandApp Build(IServiceCollection services);
+    ICommandApp Build(ITypeRegistrar registrar);
 }

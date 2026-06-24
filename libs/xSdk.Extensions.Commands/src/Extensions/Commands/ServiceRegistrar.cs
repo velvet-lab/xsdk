@@ -17,18 +17,30 @@
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 using Spectre.Console.Cli.Help;
+using xSdk.Hosting;
 
 namespace xSdk.Extensions.Commands;
 
 public sealed class ServiceRegistrar(IServiceCollection services) : ITypeRegistrar
 {
+    private IServiceProvider _mainServiceProvider;
+
     public ITypeResolver Build()
     {
-        return new ServiceResolver(services.BuildServiceProvider());
+        if(_mainServiceProvider is null)
+        {
+            throw new InvalidOperationException("Service provider is not built yet.");
+        }
+        return new ServiceResolver(services.BuildServiceProvider(), _mainServiceProvider);
+    }
+
+    internal void SetServiceProvider(IServiceProvider serviceProvider)
+    {
+        _mainServiceProvider = serviceProvider;
     }
 
     public void Register(Type service, Type implementation)
-    {
+    {        
         RegisterNonExistingTypes(service, implementation);
         services.AddSingleton(service, implementation);
     }

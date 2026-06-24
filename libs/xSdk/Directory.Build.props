@@ -21,11 +21,12 @@
 
     <!--Internal Dependencies-->
     <ItemGroup>
+        <PackageReference Include="CommandDotNet" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.Extensions.Configuration.KeyPerFile" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Testing" PrivateAssets="contentfiles;analyzers;build;compile" Condition="'$(IsTestProject)' == 'false'" />
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Spectre.Console" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Weikio.PluginFramework" PrivateAssets="contentfiles;analyzers;build;compile" />
     </ItemGroup>
 

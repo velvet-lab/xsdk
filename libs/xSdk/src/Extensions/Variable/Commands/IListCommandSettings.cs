@@ -16,6 +16,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using DotMake.CommandLine;
 using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Variable.Commands;
@@ -23,7 +24,7 @@ namespace xSdk.Extensions.Variable.Commands;
 [ExcludeFromCodeCoverage(Justification = "Spectre.Console CLI settings class; no testable business logic")]
 internal class ListCommandSettings : CommandSettings
 {
-    [CommandOption("-f|--format <FORMAT>")]
+    [CliOption("-f|--format <FORMAT>")]
     [Description("Formats the Output (default Name, Template, Protected, Prefix, Defined, Value)")]
     [DefaultValue("Name, Template, Protected, Prefix, Defined, Value")]
     public string? FormatString { get; set; }
