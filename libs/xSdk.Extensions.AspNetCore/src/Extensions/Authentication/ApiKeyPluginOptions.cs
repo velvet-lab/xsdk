@@ -39,7 +39,7 @@ public class ApiKeyPluginOptions : PluginOptions
     {
         public static class Realm
         {
-            public const string Name = "realm";
+            public const string Name = nameof(Realm);
             public const string Template = "--realm <realm>";
             public const string HelpText = "A realm for Authenication";
             public const string DefaultValue = "xSdk Authentication Realm";

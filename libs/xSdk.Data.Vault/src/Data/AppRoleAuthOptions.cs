@@ -49,15 +49,15 @@ public class AppRoleAuthOptions : VariableSetup
     {
         public static class RoleId
         {
-            public const string Name = "role_id";
-            public const string Template = $"--vault-role-id <role>";
+            public const string Name = nameof(RoleId);
+            public const string Template = $"--role-id <role>";
             public const string HelpText = "RoleId for approle based auth to access vault";
         }
 
         public static class Secret
         {
-            public const string Name = "role_secret";
-            public const string Template = $"--vault-role-secret <secret>";
+            public const string Name = nameof(Secret);
+            public const string Template = $"--role-secret <secret>";
             public const string HelpText = "Secret for approle based auth to access vault";
         }
     }

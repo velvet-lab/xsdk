@@ -21,34 +21,12 @@ namespace xSdk.Extensions.Commands;
 public class CommandExecuteTests
 {
     [Fact]
-    public void ConsoleCommand_Execute_ReturnsZero()
-    {
-        var app = new CommandApp();
-        app.Configure(cfg => cfg.AddCommand<ConsoleCommand>("console"));
-
-        int result = app.Run(["console"], TestContext.Current.CancellationToken);
-
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
     public void ExitCommand_Execute_ReturnsZero()
     {
         var app = new CommandApp();
         app.Configure(cfg => cfg.AddCommand<ExitCommand>("exit"));
 
         int result = app.Run(["exit"], TestContext.Current.CancellationToken);
-
-        Assert.Equal(0, result);
-    }
-
-    [Fact]
-    public void DefaultCommand_Execute_ReturnsZero()
-    {
-        var app = new CommandApp();
-        app.Configure(cfg => cfg.AddCommand<DefaultCommand>("run"));
-
-        int result = app.Run(["run"], TestContext.Current.CancellationToken);
 
         Assert.Equal(0, result);
     }

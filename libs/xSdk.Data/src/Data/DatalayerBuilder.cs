@@ -18,15 +18,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
-using xSdk.Hosting;
 
 namespace xSdk.Data;
 
 public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBuilder
 {
-    private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
     private readonly List<string> _logicalNames = [];
     private readonly Dictionary<object, object> _objectPools = [];
 
@@ -35,20 +34,21 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
         where TDatabase : class, IDatabase
         where TDatabaseOptions : class, IVariableSetup
     {
+        ILogger logger = LogManager.CreateLogger<DatalayerBuilder>();    
         if (string.IsNullOrEmpty(name))
         {
             name = Globals.DefaultDatalayerName;
         }
 
-        _logger.LogInformation("Registering database with name '{name}'", name);
+        logger.LogInformation("Registering database with name '{name}'", name);
 
         TryAddLogicalName(name);
 
-        _logger.LogTrace("Adding database '{name}' to object pool and registering database handler", name);
+        logger.LogTrace("Adding database '{name}' to object pool and registering database handler", name);
         AddDatabaseToObjectPool<TDatabase>(name);
         AddDatabaseHandler<TDatabase>(name);
 
-        _logger.LogTrace("Registering database options for database '{name}'", name);
+        logger.LogTrace("Registering database options for database '{name}'", name);
         services.RegisterOptions<TDatabaseOptions>(name, options => factory?.Invoke(options));
 
         return new DatabaseBuilder(name, services);

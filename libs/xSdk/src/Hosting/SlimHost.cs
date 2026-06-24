@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
@@ -28,10 +29,26 @@ public class SlimHost
 {
     private bool _isBuilded;
     private IServiceCollection _slimServices = null!;
-    private IServiceCollection? _appServices;
-    private readonly List<Action> _appServicesDelegates = [];
+    private readonly List<Action<IServiceCollection>> _slimServicesDelegates = [];
+    private IServiceCollection? _hostServices;
+    private readonly List<Action> _hostServicesDelegates = [];
     private ApplicationOptions? _applicationOptions;
     private readonly List<Type> _registeredPluginHostTypes = [];
+
+    public IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
+        where TPluginHost : IPluginHost
+    {
+        bool onlyWebPlugins = typeof(TPluginHost) != typeof(IPluginHost);
+
+        IEnumerable<TPluginHost> plugins = Provider.GetServices<IPluginHost>()
+            .Cast<PluginDescription>()
+            .OrderBy(p => p.Order)
+            .Cast<PluginHost>()
+            .Where(x => x.IsWebPluginHost == onlyWebPlugins)
+            .Cast<TPluginHost>();
+
+        return plugins;
+    }
 
     internal IServiceProvider Provider
     {
@@ -48,36 +65,11 @@ public class SlimHost
 
     internal void ConfigurePluginHost(Action<IPluginHost> factory)
     {
-        IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
-            .Cast<PluginDescription>()
-            .OrderBy(p => p.Order)
-            .Cast<IPluginHost>();
-
+        IEnumerable<IPluginHost> plugins = GetPluginHosts<IPluginHost>();
         foreach (IPluginHost plugin in plugins)
         {
             factory?.Invoke(plugin);
         }
-    }
-
-    internal IEnumerable<TPluginHost> GetPluginHosts<TPluginHost>()
-        where TPluginHost : IPluginHost
-    {
-        IEnumerable<IPluginHost> plugins = Provider.GetServices<IPluginHost>()
-            .Cast<PluginDescription>()
-            .OrderBy(p => p.Order)
-            .Cast<IPluginHost>();
-
-        List<TPluginHost> result = [];
-        foreach (IPluginHost plugin in plugins)
-        {
-            Type pluginType = plugin.GetType();
-            if (pluginType.IsAssignableTo(typeof(TPluginHost)))
-            {
-                result.Add((TPluginHost)plugin);
-            }
-        }
-
-        return result;
     }
 
     internal static SlimHost InitializeSlimHost(string[] args, ApplicationOptions appOptions)
@@ -87,24 +79,47 @@ public class SlimHost
             _applicationOptions = appOptions,
             _slimServices = new ServiceCollection()
         };
+
         instance.ConfigureDefaults(instance._slimServices);
-        instance._slimServices.AddSingleton<IPluginHostCollection>(_ =>
-            new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()));
+        instance._slimServices
+            .AddSingleton<IPluginHostCollection>(_ => new PluginHostCollection(instance._registeredPluginHostTypes.AsReadOnly()))
+            .AddHostedService<SlimHostInitializer>();
+
         return instance;
     }
 
-    internal void PostConfigure(IServiceCollection applicationServices)
+    internal void PostConfigure(IServiceCollection hostServices)
     {
-        _appServices = applicationServices;
-        foreach (Action action in _appServicesDelegates)
+        _hostServices = hostServices;
+        foreach (Action action in _hostServicesDelegates)
         {
             action?.Invoke();
         }
 
         // Expose the same IPluginHostCollection in the application DI container
         // so post-build consumers (e.g. HostInitializer) can inject it directly.
-        applicationServices.AddSingleton<IPluginHostCollection>(
+        hostServices.AddSingleton<IPluginHostCollection>(
             new PluginHostCollection(_registeredPluginHostTypes.AsReadOnly()));
+
+        // Register a fresh VariableService for the main host that has IConfiguration
+        // available from the start (unlike the SlimHost instance which has IConfiguration=null).
+        // Variable definitions collected during the SlimHost phase (via NewVariable / direct calls)
+        // are imported as metadata only — no cached MemoryProvider values — so that OptionProvider
+        // can resolve the correct values on first access.
+        var slimVariableService = Provider.GetRequiredService<IVariableService>() as VariableService;
+        hostServices.AddSingleton<IVariableService>(provider =>
+        {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var appOptions = provider.GetService<IOptions<ApplicationOptions>>();
+            var mainVariableService = new VariableService(appOptions, config);
+
+            if (slimVariableService != null)
+            {
+                mainVariableService.ImportVariableDefinitions(slimVariableService.Variables);
+            }
+
+            return mainVariableService;
+        });
     }
 
     internal void RegisterPluginHost<TPluginHost, TPluginHostImplementation>()
@@ -136,17 +151,17 @@ public class SlimHost
         }
 
         _slimServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
-        if (_appServices != null)
+        if (_hostServices != null)
         {
-            _appServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+            _hostServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
         }
         else
         {
-            _appServicesDelegates.Add(new Action(() => _appServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>()));
+            _hostServicesDelegates.Add(new Action(() => _hostServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>()));
         }
     }
 
-    internal void RegisterPluginHostOptions<TOptions>()
+    internal void RegisterPluginHostOptions<TOptions>(Action<TOptions>? configureOptions)
         where TOptions : class, IVariableSetup
     {
         if (_isBuilded)
@@ -154,19 +169,57 @@ public class SlimHost
             throw new SdkException("Cannot register plugin host options after the service provider has been built.");
         }
 
-        _slimServices.RegisterOptions<TOptions>();
-        if (_appServices != null)
+        if (configureOptions != null)
         {
-            _appServices.RegisterOptions<TOptions>();
+            _slimServices.RegisterOptions<TOptions>(configureOptions);
+            if (_hostServices != null)
+            {
+                _hostServices.RegisterOptions<TOptions>(configureOptions);
+            }
+            else
+            {
+                _hostServicesDelegates.Add(new Action(() => _hostServices?.RegisterOptions<TOptions>(configureOptions)));
+            }
         }
         else
         {
-            _appServicesDelegates.Add(new Action(() => _appServices?.RegisterOptions<TOptions>()));
+            _slimServices.RegisterOptions<TOptions>();
+            if (_hostServices != null)
+            {
+                _hostServices.RegisterOptions<TOptions>();
+            }
+            else
+            {
+                _hostServicesDelegates.Add(new Action(() => _hostServices?.RegisterOptions<TOptions>()));
+            }
+        }
+    }
+
+    internal void RegisterPluginServices(Action<IServiceCollection> configureServices)
+    {
+        if (_isBuilded)
+        {
+            throw new SdkException("Cannot register plugin services after the service provider has been built.");
+        }
+
+        configureServices(_slimServices);
+    }
+
+    internal void RegisterHostServices(Action<IServiceCollection> configureServices)
+    {
+        if (_hostServices != null)
+        {
+            configureServices(_hostServices);
+        }
+        else
+        {
+            _hostServicesDelegates.Add(new Action(() => configureServices(_hostServices!)));
         }
     }
 
     internal EnvironmentOptions? BuildEnvironmentOptions()
     {
+        // Builds temporary Environment Options
         if (_applicationOptions == null)
         {
             throw new SdkException("Application options must be set before building environment options.");
@@ -192,9 +245,9 @@ public class SlimHost
             .AddSingleton<IServiceProvider>(provider => provider)
             .AddSingleton(provider => provider)
             .RegisterApplicationOptions(_applicationOptions)
-            .RegisterOptions<EnvironmentOptions>()
+            .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(_applicationOptions))
             .AddSingleton<IConfiguration>(provider => default!)
-            .AddLogging()
+            .AddLoggingQueue()
             .AddVariableServices()
             .AddFileServices();
     }

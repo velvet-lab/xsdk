@@ -15,14 +15,14 @@
  */
 
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Tools;
 
 namespace xSdk.Security;
 
 public static class CredentialManager
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CredentialManager));
 
     private static string Context => throw new NotImplementedException(); // SlimHost.Instance.AppPrefix;
 
@@ -31,8 +31,8 @@ public static class CredentialManager
 
     public static TCredentials? LoadCredentials<TCredentials>(string context)
         where TCredentials : Credentials, new()
-    {
-        _logger.LogInformation("Try to load encrypted credentials");
+    {        
+        Logger.LogInformation("Try to load encrypted credentials");
 
         var credsFile = GetCredsFileName(context);
         if (File.Exists(credsFile))
@@ -41,7 +41,7 @@ public static class CredentialManager
         }
         else
         {
-            _logger.LogWarning("No saved credentials found");
+            Logger.LogWarning("No saved credentials found");
         }
         return new TCredentials();
     }
@@ -59,7 +59,7 @@ public static class CredentialManager
         }
         catch (Exception ex)
         {
-            _logger.LogWarning("Credentials could not saved. (Reason: {message})", ex.Message);
+            Logger.LogWarning(ex, "Credentials could not saved. (Reason: {message})", ex.Message);
         }
     }
 
@@ -67,7 +67,7 @@ public static class CredentialManager
 
     public static void Reset(string context)
     {
-        _logger.LogInformation("Reset encrypted credentials");
+        Logger.LogInformation("Reset encrypted credentials");
         var credsFile = GetCredsFileName(context);
         if (File.Exists(credsFile))
         {

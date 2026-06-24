@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting;
@@ -26,7 +27,7 @@ namespace xSdk.Hosting;
 [ExcludeFromCodeCoverage(Justification = "Web host infrastructure – requires full ASP.NET Core runtime to exercise.")]
 public static partial class WebHost
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(WebHost));
 
     public static IHostBuilder CreateBuilder(string[] args) => CreateBuilder(args, default, default, default);
 
@@ -37,12 +38,10 @@ public static partial class WebHost
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
         IHostBuilder hostBuilder = xSdk.Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix);
-        SlimHost slimHost = hostBuilder.GetSlimHost();
+        SlimHost slimHost = hostBuilder.GetSlimHost();        
 
         hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
-            _logger.LogDebug("Configuring WebHostBuilder");
-
             EnvironmentOptions environmentSetup = slimHost.GetEnvironment();
             Stage stage = environmentSetup.Stage;
 
@@ -55,18 +54,27 @@ public static partial class WebHost
                 .UseEnvironment(stage.ToString())
                 // Enabled detailed Errors if in Development Mode
                 .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
-                // Configure Services
-                .ConfigureServices((services) =>
+                // Configure App Configuration with Context
+                .ConfigureAppConfiguration((context, configBuilder) =>
+                {
+                    context.EnrichEnvironment(environmentSetup);
+                    slimHost.ConfigureWebPluginHost(x => x.ConfigureAppConfiguration(context, configBuilder));
+                })                
+                // Configure Services with Context
+                .ConfigureServices((context, services) =>
                 {
                     services
                         .RegisterOptions<WebHostOptions>();
 
-                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(services));
+                    context.EnrichEnvironment(environmentSetup);
+                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));
                 })
-                // Configure Services with Context
-                .ConfigureServices((context, services) => slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services)))
                 // Load Middlewares
-                .Configure((context, app) => ConfigureApplicationWithContext(context, app, slimHost))
+                .Configure((context, app) =>
+                {
+                    context.EnrichEnvironment(environmentSetup);
+                    ConfigureApplicationWithContext(context, app, slimHost);
+                })
                 // Configure Kestrel
                 .UseKestrel(ConfigureKestrel);
 
@@ -81,8 +89,8 @@ public static partial class WebHost
 
     private static string GetContentRoot(EnvironmentOptions environmentOptions)
     {
-        _logger.LogDebug(environmentOptions.IsDemo ? "Demo Mode" : "Production Mode");
-        _logger.LogDebug("Try to get Content Root");
+        Logger.LogDebug(environmentOptions.IsDemo ? "Demo Mode" : "Production Mode");
+        Logger.LogDebug("Try to get Content Root");
 
         if (environmentOptions.IsDemo)
         {
@@ -96,7 +104,7 @@ public static partial class WebHost
             {
                 try
                 {
-                    _logger.LogTrace("Content root does not exist, creating it");
+                    Logger.LogTrace("Content root does not exist, creating it");
                     Directory.CreateDirectory(root);
                 }
                 catch

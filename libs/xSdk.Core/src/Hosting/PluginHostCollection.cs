@@ -21,7 +21,10 @@ namespace xSdk.Hosting;
 internal sealed class PluginHostCollection(IReadOnlyList<Type> types) : IPluginHostCollection
 {
     public Type this[int index] => types[index];
+
     public int Count => types.Count;
+
     public IEnumerator<Type> GetEnumerator() => types.GetEnumerator();
+
     IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)types).GetEnumerator();
 }

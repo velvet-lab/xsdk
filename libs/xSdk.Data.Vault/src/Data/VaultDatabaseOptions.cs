@@ -69,21 +69,21 @@ public class VaultDatabaseOptions : DatabaseOptions
     {
         public static class Endpoint
         {
-            public const string Name = "endpoint";
+            public const string Name = nameof(Endpoint);
             public const string Template = $"--vault-endpoint <endpoint>";
             public const string HelpText = "Endpoint where vault lives";
         }
 
         public static class BasePath
         {
-            public const string Name = "basePath";
+            public const string Name = nameof(BasePath);
             public const string Template = $"--vault-basePath <basePath>";
             public const string HelpText = "Base path where hashicorp vault lives";
         }
 
         public static class AuthMethod
         {
-            public const string Name = "authMethod";
+            public const string Name = nameof(AuthMethod);
             public const string Template = $"--vault-authMethod <authMethod>";
             public const string HelpText = "Authentication method to access vault. Supported values are: None, AppRole, Jwt, Ldap, Oidc, UsernamePassword, Token and Cert.";
         }

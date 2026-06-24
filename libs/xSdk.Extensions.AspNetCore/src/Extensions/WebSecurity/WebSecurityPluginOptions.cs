@@ -38,7 +38,7 @@ public sealed class WebSecurityPluginOptions : PluginOptions
     {
         public static class Origins
         {
-            public const string Name = "origins";
+            public const string Name = nameof(Origins);
             public const string Template = "--origins <origins>";
             public const string HelpText = "Comma seperated list of origins";
         }

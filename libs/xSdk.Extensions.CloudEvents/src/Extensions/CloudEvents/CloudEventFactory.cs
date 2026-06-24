@@ -18,15 +18,15 @@ using System.Text.Json;
 using CloudNative.CloudEvents;
 using CloudNative.CloudEvents.SystemTextJson;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Web;
-using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventFactory
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CloudEventFactory));
 
     internal const string BASE_URL = $"https://xsdk.io";
     internal const string SOURCE_BASE_URL = $"{BASE_URL}/events/spec/v1";
@@ -174,7 +174,7 @@ public static class CloudEventFactory
 
         if (!cloudEvent.IsValid)
         {
-            _logger.LogWarning("Cloud Event is not valid. Some Attributes missing");
+            Logger.LogWarning("Cloud Event is not valid. Some Attributes missing");
         }
 
         // Add Default Attributes

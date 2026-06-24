@@ -14,6 +14,8 @@ superseded_by: ""
 
 Accepted
 
+**Extended by [ADR-032](ADR-032-plugin-host-lifecycle-extension.md)** (2026-06-11) — `IPluginHost` was extended with additional lifecycle hooks: `ConfigureHostConfiguration`, `ConfigureAppConfiguration`, and `ConfigureLogging`, giving plugins full control over the host configuration pipeline.
+
 ## Date
 
 2026-04-27
@@ -145,3 +147,4 @@ All concrete plugin host implementations are placed in the `xSdk.Plugins.*` name
 - **REF-001**: [ADR-003](ADR-003-plugin-extensibility-model.md) — Superseded design
 - **REF-002**: [ADR-022](ADR-022-weikio-plugin-framework.md) — Weikio dynamic loading (still active for filesystem plugins)
 - **REF-003**: [ADR-026](ADR-026-slim-host-builder-redesign.md) — SlimHost builder-scoped design
+- **REF-004**: [ADR-032](ADR-032-plugin-host-lifecycle-extension.md) — Extended lifecycle hooks for configuration and logging control

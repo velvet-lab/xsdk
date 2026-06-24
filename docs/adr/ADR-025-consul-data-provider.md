@@ -8,9 +8,9 @@ Accepted (implementation in think-tank — not yet promoted to production `libs/
 
 2026-04-04
 
-## Implementation Note (2026-04-27)
+## Implementation Note (2026-04-27, verified 2026-05-27)
 
-`xSdk.Data.Consul` resides in `think-tank/libs/xSdk.Data.Consul/` and has not yet been promoted to the production `libs/` folder. The design described in this ADR reflects the intended architecture. The package will be added to `libs/` and released as a NuGet package once stabilized.
+`xSdk.Data.Consul` resides in `think-tank/libs/xSdk.Data.Consul/` and has not yet been promoted to the production `libs/` folder. The design described in this ADR reflects the intended architecture. The package will be added to `libs/` and released as a NuGet package once stabilized. (Note: `xSdk.Data.NoSql` — the sibling think-tank library — was promoted in May 2026; Consul promotion criteria and timeline are independent.)
 
 ## Context
 

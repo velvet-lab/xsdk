@@ -37,7 +37,7 @@ public static partial class WebHost
 
         if (webSetup == null)
         {
-            _logger.LogDebug("No WebHostOptions found, using default Kestrel configuration");
+            Logger.LogDebug("No WebHostOptions found, using default Kestrel configuration");
         }
         else
         {
@@ -98,7 +98,7 @@ public static partial class WebHost
                 }
                 else
                 {
-                    _logger.LogDebug("Http Port is not set");
+                    Logger.LogDebug("Http Port is not set");
                 }
             }
 
@@ -119,12 +119,12 @@ public static partial class WebHost
                     }
                     else
                     {
-                        _logger.LogError("Https configuration is needed for gRpc");
+                        Logger.LogError("Https configuration is needed for gRpc");
                     }
                 }
                 else
                 {
-                    _logger.LogDebug("gRpc Port is not set");
+                    Logger.LogDebug("gRpc Port is not set");
                 }
             }
         }
@@ -159,7 +159,7 @@ public static partial class WebHost
                     {
                         try
                         {
-                            _logger.LogInformation("Load Certificate from certificate and key File");
+                            Logger.LogInformation("Load Certificate from certificate and key File");
                             var innerCert = X509Certificate2.CreateFromPemFile(certFilePath, keyFilePath);
                             cert = X509CertificateLoader.LoadCertificate(innerCert.Export(X509ContentType.Pkcs12));
 
@@ -167,22 +167,22 @@ public static partial class WebHost
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {message})", ex.Message);
+                            Logger.LogError(ex, "Certificate could not created from certificate- and key File. (Reason: {message})", ex.Message);
                         }
                     }
                     else
                     {
-                        _logger.LogWarning("Https is enabled, but no key file '{file}' could not found", keyFilePath);
+                        Logger.LogWarning("Https is enabled, but no key file '{file}' could not found", keyFilePath);
                     }
                 }
                 else
                 {
-                    _logger.LogWarning("Https is enabled, but no certificate file '{file}' could not found", certFilePath);
+                    Logger.LogWarning("Https is enabled, but no certificate file '{file}' could not found", certFilePath);
                 }
             }
             else
             {
-                _logger.LogWarning("Https is enabled, but no certificate and key file specified");
+                Logger.LogWarning("Https is enabled, but no certificate and key file specified");
             }
         }
 

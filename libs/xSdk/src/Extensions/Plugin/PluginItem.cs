@@ -16,14 +16,14 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Plugin;
 
 internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugin, IServiceProvider provider)
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<PluginItem>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<PluginItem>();
 
     private object? _concretePlugin;
     public int Order { get; set; } = PluginDescription.DefaultOrder;
@@ -73,7 +73,7 @@ internal class PluginItem(Weikio.PluginFramework.Abstractions.Plugin weikioPlugi
         if (weikioPlugin != null && _concretePlugin is PluginDescription description)
         {
 #pragma warning disable CA1873 // Potenziell kostspielige Protokollierung vermeiden
-            _logger.LogInformation("Initializing plugin {name} v{version}", weikioPlugin.Name, weikioPlugin.Version);
+            Logger.LogInformation("Initializing plugin {name} v{version}", weikioPlugin.Name, weikioPlugin.Version);
 #pragma warning restore CA1873 // Potenziell kostspielige Protokollierung vermeiden
 
             description.Name = weikioPlugin.Name;

@@ -17,6 +17,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 
 const string APP_NAME = "plugin";

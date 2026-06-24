@@ -6,6 +6,5 @@ using xSdk.Extensions.Variable;
 namespace xSdk.Extensions.Plugin;
 
 public abstract class PluginOptions : VariableSetup
-{
-
+{    
 }

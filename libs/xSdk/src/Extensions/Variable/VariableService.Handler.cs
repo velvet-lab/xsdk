@@ -15,6 +15,7 @@
  */
 
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Variable.Providers;
 using xSdk.Tools;
 
@@ -53,6 +54,21 @@ internal partial class VariableService
         else
         {
             ReplaceVariable(variable, true);
+        }
+    }
+
+    /// <summary>
+    /// Imports variable definitions (metadata only, no values) from a SlimHost-phase
+    /// VariableService into this instance. Already-existing definitions are preserved.
+    /// </summary>
+    internal void ImportVariableDefinitions(IEnumerable<IVariable> definitions)
+    {
+        foreach (IVariable definition in definitions)
+        {
+            if (LoadVariableInternal(definition.Name) == null)
+            {
+                Variables.Add(definition);
+            }
         }
     }
 
@@ -109,7 +125,9 @@ internal partial class VariableService
 
     private IVariable? LoadVariableInternal(string name)
     {
-        IEnumerable<IVariable> result = Variables.Where(x => string.Compare(x.Name, name, true) == 0);
+        IEnumerable<IVariable> result = Variables.Where(x =>
+            string.Compare(x.Name, name, StringComparison.OrdinalIgnoreCase) == 0 ||
+            (x is Variable v && string.Compare(v.RawName, name, StringComparison.OrdinalIgnoreCase) == 0));
         if (result.Any())
         {
             if (result.Count() > 1)
@@ -142,6 +160,10 @@ internal partial class VariableService
             if (throwIfAlreadyExists)
             {
                 throw new SdkException($"Variable '{variable.Name}' could not added, because its already exists");
+            }
+            else
+            {
+                Logger.LogWarning("Variable '{name}' already exists and will not be registered again. Check for naming collisions across options classes.", variable.Name);
             }
         }
     }

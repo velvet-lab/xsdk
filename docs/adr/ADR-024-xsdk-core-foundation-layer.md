@@ -19,7 +19,7 @@ Over time, the scope of shared abstractions grew substantially beyond plugin pri
 - Variable and setup system (`IVariable`, `ISetup`, `IVariableService`, `VariableAttribute`)
 - Authentication primitives (`IApiKeyHandler`, `IApiKeyModel`, `ClaimsPrincipalExtensions`)
 - ASP.NET abstraction interfaces (`IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`, `IHateoasItem`)
-- Telemetry interfaces (`ITelemetryService`, `ITelemetryPluginBuilder`)
+- Telemetry interfaces (`ITelemetryPluginBuilder`, `VariableResourceDetector`; `ITelemetryService` ist aufgegeben)
 - Cryptography and security utilities (`CryptoTool`, `SecurityContext`, `CredentialManager`)
 - General utilities (`StringHelper`, `HashTools`, `NetworkTools`, `TypeConverter`, `ObjectHelper`)
 
@@ -42,19 +42,31 @@ The name `xSdk.Plugin` no longer accurately described the package's contents and
 | File System        | `IFileSystemService`, `FileSystemContext`, `FileSystemHelper`                                |
 | Authentication     | `IApiKeyHandler`, `IApiKeyModel`, `AuthenticationDefaults`                                   |
 | Web Abstractions   | `IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`                         |
-| Telemetry          | `ITelemetryService`, `ITelemetryPluginBuilder`                                               |
+| Telemetry          | `ITelemetryPluginBuilder`, `VariableResourceDetector` — `ITelemetryService` ist aufgegeben (siehe [ADR-014](ADR-014-opentelemetry-observability.md), Dezentralisierung) |
 | Security Utilities | `CryptoTool`, `SecurityContext`, `CredentialManager`, `CertificateHelper`                    |
 | Shared SDK Types   | `SdkException`, `Stage`, `SemVer`, `Mapster` mapping base, REST client helpers               |
 
 ### Dependency Rule
 
-`xSdk.Core` has deliberately minimal runtime dependencies (only `Mapster`, `RestSharp`, `FluentValidation`, `Asp.Versioning.Http`, and `Weikio.PluginFramework.Abstractions`). It must **not** depend on:
+`xSdk.Core` has deliberately minimal runtime dependencies. It must **not** depend on:
 
 - `Microsoft.EntityFrameworkCore` or any data provider
 - `Microsoft.AspNetCore.*` host/runtime packages
 - Any external storage client (MongoDB driver, LiteDB, etc.)
 
 This constraint ensures that external plugins can reference `xSdk.Core` without pulling in host-runtime or storage dependencies.
+
+**Actual runtime dependencies (as of 2026-05-27):**
+
+| Package | Reason |
+|---------|--------|
+| `FluentValidation` | Validation primitives used across core abstractions |
+| `Microsoft.Extensions.Hosting` | `IHostBuilder`/`IHost` base abstractions for `SlimHostBuilder` |
+| `Zio` | Cross-platform file system abstraction ([ADR-019](ADR-019-zio-filesystem-abstraction.md)) |
+| `CommunityToolkit.Diagnostics` | Guard/argument validation helpers |
+| `Bogus` | Fake data generation for demo/fake repository mode ([ADR-012](ADR-012-demo-fake-repository-mode.md)) |
+
+> **Note (2026-05-27):** The original decision listed `Mapster`, `RestSharp`, `Asp.Versioning.Http`, and `Weikio.PluginFramework.Abstractions` as the intended minimal set. The actual csproj evolved to include `Microsoft.Extensions.Hosting`, `Zio`, `CommunityToolkit.Diagnostics`, and `Bogus` as the SDK stabilized. The prohibition on EF Core, ASP.NET Core runtime packages, and storage clients remains strictly enforced.
 
 ### Migration from xSdk.Plugin
 
@@ -82,9 +94,10 @@ The rename is a breaking change at the NuGet package level:
 ## Implementation Notes
 
 - **IMP-001**: All internal project references previously pointing to `xSdk.Plugin` are updated to `xSdk.Core` in their `.csproj` files as part of the rename.
-- **IMP-002**: The `csproj` description field is updated to reflect the new purpose: `xSdk.Core - Foundation layer for the xSdk project`.
+- **IMP-002**: The `csproj` description field must be updated to `xSdk.Core - Foundation layer for the xSdk project`. As of 2026-05-27 it still reads `xSdk.Plugin - Plugin framework extensions for the xSdk project.` — this is a known tracking issue.
 - **IMP-003**: ADR-001 package table is updated to replace `xSdk.Plugin` with `xSdk.Core` (see [ADR-001](ADR-001-modular-library-architecture.md)).
 - **IMP-004**: ADR-002 references to `xSdk.Plugin` as the host for `ISlimHost` are updated to `xSdk.Core`.
+- **IMP-005**: The actual runtime dependencies should be reviewed periodically against the constraint in the Dependency Rule section. `Bogus` in particular should be evaluated for extraction to a separate `xSdk.Core.Testing` or `xSdk.Testing` package to keep production builds lean.
 
 ## References
 

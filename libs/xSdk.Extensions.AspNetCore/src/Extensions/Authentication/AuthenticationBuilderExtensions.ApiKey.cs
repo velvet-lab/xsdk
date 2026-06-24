@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Authentication;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 
 namespace xSdk.Plugins.Authentication;
@@ -131,7 +132,7 @@ public static partial class AuthenticationBuilderExtensions
         }
         else
         {
-            _logger.LogWarning("API Key could not validated, because no Authorization Service is available");
+            Logger.LogWarning("API Key could not validated, because no Authorization Service is available");
         }
     }
 

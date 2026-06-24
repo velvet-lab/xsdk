@@ -105,42 +105,42 @@ public class MongoDbOptions : DatabaseOptions
     {
         public static class Database
         {
-            public const string Name = "database";
+            public const string Name = nameof(Database);
             public const string Template = $"--database <database>";
             public const string HelpText = "Connection String or CloudFoundry Binding Name for the Database";
         }
 
         public static class Username
         {
-            public const string Name = "username";
+            public const string Name = nameof(Username);
             public const string Template = $"--username <username>";
             public const string HelpText = "Username for MongoDB Database";
         }
 
         public static class Password
         {
-            public const string Name = "password";
+            public const string Name = nameof(Password);
             public const string Template = $"--password <password>";
             public const string HelpText = "Password for MongoDB Database";
         }
 
         public static class Hosts
         {
-            public const string Name = "hosts";
+            public const string Name = nameof(Hosts);
             public const string Template = $"--hosts <host1,host2,host3>";
             public const string HelpText = "Hosts for MongoDB Database Cluster";
         }
 
         public static class RootCertificate
         {
-            public const string Name = "cacrt";
+            public const string Name = nameof(RootCertificate);
             public const string Template = $"--cacrt <value>";
             public const string HelpText = "Root RoleId which should client certificates trusted";
         }
 
         public static class Uri
         {
-            public const string Name = "uri";
+            public const string Name = nameof(Uri);
             public const string Template = $"--uri <uri>";
             public const string HelpText = "MongoDB Connection URI";
         }

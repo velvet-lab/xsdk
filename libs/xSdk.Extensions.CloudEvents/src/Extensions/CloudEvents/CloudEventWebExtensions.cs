@@ -25,15 +25,16 @@ using CloudNative.CloudEvents.Http;
 using CloudNative.CloudEvents.SystemTextJson;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Web;
-using xSdk.Hosting;
+using xSdk.Security;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;
 
 public static class CloudEventWebExtensions
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(CloudEventWebExtensions));
 
     public static string ToJson(this CloudEvent cloudEvent)
     {
@@ -206,7 +207,7 @@ public static class CloudEventWebExtensions
 
         try
         {
-            _logger.LogInformation("Send CloudEvent to '{url}'", url);
+            Logger.LogInformation("Send CloudEvent to '{url}'", url);
             using HttpClient client = HttpClientBuilder.CreateHttpClient(new Uri(url));
             foreach (KeyValuePair<string, string> header in additionalHeaders ?? new Dictionary<string, string>())
             {
@@ -217,7 +218,7 @@ public static class CloudEventWebExtensions
             var streamContent = new StreamContent(stream);
             streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse(contentType.MediaType);
 
-            _logger.LogInformation("Add CloudEvent Attributes as Http Header");
+            Logger.LogInformation("Add CloudEvent Attributes as Http Header");
             foreach (KeyValuePair<CloudEventAttribute, object> item in cloudEvent.GetPopulatedAttributes())
             {
                 CloudEventAttribute attribute = item.Key;
@@ -234,7 +235,7 @@ public static class CloudEventWebExtensions
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "CloudEvent could not posted to '{url}' (Reason: {reason})", url, ex.Message);
+            Logger.LogError(ex, "CloudEvent could not posted to '{url}' (Reason: {reason})", url, ex.Message);
             throw new InvalidOperationException($"CloudEvent could not be posted to '{url}'.", ex);
         }
     }

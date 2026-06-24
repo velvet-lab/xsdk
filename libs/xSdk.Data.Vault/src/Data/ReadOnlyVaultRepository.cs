@@ -19,8 +19,8 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using VaultSharp;
 using VaultSharp.V1.Commons;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Data;
@@ -28,7 +28,7 @@ namespace xSdk.Data;
 [ExcludeFromCodeCoverage(Justification = "Requires a live HashiCorp Vault instance – integration-only.")]
 internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepository
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<ReadOnlyVaultRepository>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<ReadOnlyVaultRepository>();
 
     public async Task<IDictionary<string, string>> GetSecretsAsync(string? mountPoint, string path, CancellationToken token = default)
     {
@@ -101,7 +101,7 @@ internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepos
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, "A Error occured while Vault will readed");
+                Logger.LogCritical(ex, "A Error occured while Vault will readed");
                 throw;
             }
             finally

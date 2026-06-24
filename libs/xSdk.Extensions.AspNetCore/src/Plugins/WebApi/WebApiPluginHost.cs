@@ -34,19 +34,19 @@ using xSdk.Tools;
 namespace xSdk.Plugins.WebApi;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core MVC/WebApi pipeline configuration – requires a running web host.")]
-internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection) : WebPluginHost
+internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection, ILogger<WebApiPluginHost> logger) : WebPluginHost
 {
     public override int Order => 50;
 
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        Logger.LogTrace("Load Setups for Web Host Builder");
+        logger.LogTrace("Load Setups for Web Host Builder");
         services
             // Add Context Accessor
             .AddHttpContextAccessor()
             .AddProblemDetails(_ =>
             {
-                Logger.LogDebug("Configure Problem Details");
+                logger.LogDebug("Configure Problem Details");
                 var currentStage = environmentOptions.Value.Stage;
 
                 _.IncludeExceptionDetails = (ctx, ex) =>
@@ -64,7 +64,7 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
             // Add Routing
             .AddRouting(_ =>
             {
-                Logger.LogDebug("Configure Routing");
+                logger.LogDebug("Configure Routing");
                 _.LowercaseUrls = true;
                 _.LowercaseQueryStrings = true;
                 _.SuppressCheckForUnhandledSecurityMetadata = false;
@@ -73,7 +73,7 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
         var mvcBuilder = services
             .AddControllers(_ =>
             {
-                Logger.LogDebug("Configure Mvc");
+                logger.LogDebug("Configure Mvc");
                 _.InputFormatters.Add(new PlainTextFormatter());
                 _.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
@@ -82,7 +82,7 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
             })
             .AddJsonOptions(_ =>
             {
-                Logger.LogDebug("Configure Json");
+                logger.LogDebug("Configure Json");
                 _.JsonSerializerOptions.ConfigureSerializerOptions();
             });
 
@@ -90,7 +90,7 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
         services
             .AddApiVersioning(_ =>
             {
-                Logger.LogDebug("Enabled Api Versioning");
+                logger.LogDebug("Enabled Api Versioning");
 
                 // Add the headers "api-supported-versions" and "api-deprecated-versions"
                 // This is better for discoverability
@@ -118,15 +118,15 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
                 _.SubstituteApiVersionInUrl = true;
             });
 
-        Logger.LogDebug("Enabled Endpoints for API Explorer");
+        logger.LogDebug("Enabled Endpoints for API Explorer");
         services.AddEndpointsApiExplorer();
 
         var assemblies = AssemblyCollector.Collect(pluginHostCollection);
 
-        Logger.LogDebug("Add Fluent Validation");
+        logger.LogDebug("Add Fluent Validation");
         services.AddValidatorsFromAssemblies(assemblies);
 
-        Logger.LogDebug("Add Application Parts");
+        logger.LogDebug("Add Application Parts");
         foreach (var assembly in assemblies)
         {
             mvcBuilder.AddApplicationPart(assembly);
@@ -135,13 +135,13 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
 
     public override void ConfigureDefaults(WebHostBuilderContext context, IApplicationBuilder app)
     {
-        Logger.LogDebug("Load Environtment Setup");
+        logger.LogDebug("Load Environtment Setup");
         if (environmentOptions.Value.Stage == Stage.Development)
         {
             app.UseDeveloperExceptionPage();
         }
 
-        Logger.LogDebug("Enabled HTTPS Redirection");
+        logger.LogDebug("Enabled HTTPS Redirection");
         app.UseHttpsRedirection();
 
         app.UseRouting();

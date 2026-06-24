@@ -14,20 +14,64 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Spectre.Console.Cli;
 using xSdk.Extensions.Commands;
+using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableCommands(this IHostBuilder builder)
-        => builder.EnableCommands<DefaultCommandsPluginBuilder>();
+    extension(IHostBuilder builder)
+    {
+        public IHostBuilder EnableReplConsole<TConsoleBuilder, TDefaultCommand>()
+            where TConsoleBuilder : class, IReplConsolePluginBuilder
+            where TDefaultCommand : class, ICommand
+            => builder
+                .EnableReplConsole<TConsoleBuilder, TDefaultCommand>(_ => { });
 
-    public static IHostBuilder EnableCommands<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : class, ICommandsPluginBuilder
-        => builder
-            .RegisterPluginHost<CommandPluginHost>()
-            .RegisterPluginBuilder<ICommandsPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableReplConsole<TConsoleBuilder, TDefaultCommand>(Action<ConsolePluginOptions> configure)
+            where TConsoleBuilder : class, IReplConsolePluginBuilder
+            where TDefaultCommand : class, ICommand
+            => builder
+                .RegisterServices(services => services.AddSingleton<IConsole, ReplConsole>())
+                .EnableConsole<TConsoleBuilder, ConsolePluginOptions, TDefaultCommand>(configure);
+
+        public IHostBuilder EnableDefaultConsole<TConsoleBuilder, TDefaultCommand>()
+            where TConsoleBuilder : class, IConsolePluginBuilder
+            where TDefaultCommand : class, ICommand
+            => builder.EnableDefaultConsole<TConsoleBuilder, TDefaultCommand>(_ => { });
+
+        public IHostBuilder EnableDefaultConsole<TConsoleBuilder, TDefaultCommand>(Action<ConsolePluginOptions> configure)
+            where TConsoleBuilder : class, IConsolePluginBuilder
+            where TDefaultCommand : class, ICommand
+            => builder
+                .RegisterServices(services => services.AddSingleton<IConsole, DefaultConsole>())
+                .EnableConsole<TConsoleBuilder, ConsolePluginOptions, TDefaultCommand>(configure);
+
+        public IHostBuilder EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>()
+            where TConsoleBuilder : class, IConsolePluginBuilder
+            where TConsolePluginOptions : ConsolePluginOptions, new()
+            where TDefaultCommand : class, ICommand
+            => builder
+                .EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>(_ => { });
+
+
+        public IHostBuilder EnableConsole<TConsoleBuilder, TConsolePluginOptions, TDefaultCommand>(Action<TConsolePluginOptions> configure)
+            where TConsoleBuilder : class, IConsolePluginBuilder
+            where TConsolePluginOptions : ConsolePluginOptions, new()
+            where TDefaultCommand : class, ICommand
+            => builder
+                .RegisterPluginServices(services =>
+                {
+                    services
+                        .AddSingleton<ICommandAppBuilder, CommandAppBuilder<TDefaultCommand>>();
+                })
+                .RegisterPluginHost<ConsolePluginHost<TConsolePluginOptions>>()
+                .RegisterPluginHostOptions<TConsolePluginOptions>(configure)
+                .RegisterPluginBuilder<IConsolePluginBuilder, TConsoleBuilder>();
+    }
 }

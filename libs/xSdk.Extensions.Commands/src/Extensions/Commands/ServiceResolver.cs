@@ -18,7 +18,7 @@ using Spectre.Console.Cli;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ServiceResolver(IServiceProvider provider) : ITypeResolver
+internal class ServiceResolver(IServiceProvider provider, IServiceProvider mainServiceProvider) : ITypeResolver
 {
     public object? Resolve(Type? type)
     {
@@ -27,6 +27,12 @@ internal class ServiceResolver(IServiceProvider provider) : ITypeResolver
             return default;
         }
 
-        return provider.GetService(type);
+        var result = provider.GetService(type);
+        if(result is null)
+        {
+            result = mainServiceProvider.GetService(type);
+        }
+
+        return result;
     }
 }

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>a368c448-4395-4d74-8df9-335cf0e8df42</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Spectre.Console.Cli" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\libs\xSdk.Data.FlatFile\src\xSdk.Data.FlatFile.csproj" />
+        <ProjectReference Include="..\shared\Shared.csproj" />
+    </ItemGroup>
+
+</Project>

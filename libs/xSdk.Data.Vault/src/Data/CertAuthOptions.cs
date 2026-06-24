@@ -16,9 +16,9 @@
 
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
-using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Data;
@@ -26,7 +26,7 @@ namespace xSdk.Data;
 [VariablePrefix("vault-cert-auth")]
 public class CertAuthOptions : VariableSetup
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<CertAuthOptions>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<CertAuthOptions>();
 
     [Variable(
         name: Definitions.Certificate.Name,
@@ -54,22 +54,22 @@ public class CertAuthOptions : VariableSetup
     {
         try
         {
-            var cert = Certificate;
+            string? cert = Certificate;
             if (Base64Tools.IsBase64(cert))
             {
-                _logger.LogInformation("Converting base64 encoded certificate to PEM format.");
+                Logger.LogInformation("Converting base64 encoded certificate to PEM format.");
                 cert = Base64Tools.ConvertFromBase64(cert);
             }
 
-            var key = Key;
+            string? key = Key;
             if (Base64Tools.IsBase64(key))
             {
-                _logger.LogInformation("Converting base64 encoded key to PEM format.");
+                Logger.LogInformation("Converting base64 encoded key to PEM format.");
                 key = Base64Tools.ConvertFromBase64(key);
             }
 
             var certificate = X509Certificate2.CreateFromPem(cert, key);
-            var pkcsCertificate = X509CertificateLoader.LoadCertificate(certificate.Export(X509ContentType.Pkcs12));
+            X509Certificate2 pkcsCertificate = X509CertificateLoader.LoadCertificate(certificate.Export(X509ContentType.Pkcs12));
 
             return pkcsCertificate;
         }
@@ -83,15 +83,15 @@ public class CertAuthOptions : VariableSetup
     {
         public static class Certificate
         {
-            public const string Name = "client_cert";
-            public const string Template = $"--vault-client-cert <pem>";
+            public const string Name = nameof(Certificate);
+            public const string Template = $"--client-cert <pem>";
             public const string HelpText = "Public certificate chain for cert based auth to access vault";
         }
 
         public static class Key
         {
-            public const string Name = "client_key";
-            public const string Template = $"--vault-client-key <token>";
+            public const string Name = nameof(Key);
+            public const string Template = $"--client-key <token>";
             public const string HelpText = "Private certificate key for cert based auth to access vault";
         }
     }

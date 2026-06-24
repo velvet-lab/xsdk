@@ -16,11 +16,12 @@
 
 
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
+using xSdk.Security;
 
 namespace xSdk.Plugins.Authentication;
 
 public static partial class AuthenticationBuilderExtensions
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(AuthenticationBuilderExtensions));
 }

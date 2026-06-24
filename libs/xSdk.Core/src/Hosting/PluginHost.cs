@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
@@ -24,7 +26,13 @@ public abstract class PluginHost : PluginDescription, IPluginHost
 {
     public IServiceProvider? Services { get; internal set; }
 
-    public virtual void ConfigureServices(IServiceCollection services) { }
+    internal protected virtual bool IsWebPluginHost => false;
+
+    public virtual void ConfigureHostConfiguration(IConfigurationBuilder builder) { }
+
+    public virtual void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder) { }
+
+    public virtual void ConfigureLogging(ILogBuilder builder) { }
 
     public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
 
@@ -63,14 +71,14 @@ public abstract class PluginHost : PluginDescription, IPluginHost
         return builders.Any();
     }
 
-    protected TBuilder? GetBuilder<TBuilder>()
-        where TBuilder : IPluginBuilder
-    {
-        if (Services == null)
-        {
-            throw new InvalidOperationException("Services must be set before getting the plugin builder.");
-        }
+    //protected TBuilder? GetBuilder<TBuilder>()
+    //    where TBuilder : IPluginBuilder
+    //{
+    //    if (Services == null)
+    //    {
+    //        throw new InvalidOperationException("Services must be set before getting the plugin builder.");
+    //    }
 
-        return Services.GetService<TBuilder>();
-    }
+    //    return Services.GetService<TBuilder>();
+    //}
 }

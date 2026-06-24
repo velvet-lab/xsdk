@@ -15,19 +15,20 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Hosting;
 
 namespace xSdk.Demos;
 
-public class MyPluginHost : PluginHost
+public class MyPluginHost(ILogger<MyPluginHost> logger) : PluginHost
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         // Hier können weitere Services konfiguriert werden
 
         // Wir fügen am besten einen Host hinzu, wenn dieser gestartet wird, dann ist das Framework komplett geladen
-        Logger.LogInformation("Add hosted Service");
+        logger.LogInformation("Add hosted Service");
         services.AddHostedService<MyHost>();
     }
 }

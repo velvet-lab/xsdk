@@ -24,8 +24,7 @@
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" PrivateAssets="contentfiles;analyzers;build;compile" />        
         <PackageReference Include="Microsoft.Extensions.ObjectPool" PrivateAssets="contentfiles;analyzers;build;compile" />
         <PackageReference Include="Newtonsoft.Json" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />
-        <PackageReference Include="Spectre.Console.Cli" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="SemanticVersioning" PrivateAssets="contentfiles;analyzers;build;compile" />        
         <PackageReference Include="Weikio.PluginFramework.Abstractions" PrivateAssets="contentfiles;analyzers;build;compile" />        
     </ItemGroup>
 

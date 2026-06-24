@@ -41,16 +41,4 @@ public class CommandDefinitionsTests
     {
         Assert.False(string.IsNullOrEmpty(ExitCommand.Definitions.HelpText));
     }
-
-    [Fact]
-    public void ConsoleCommand_DefinitionsName_IsConsole()
-    {
-        Assert.Equal("console", ConsoleCommand.Definitions.Name);
-    }
-
-    [Fact]
-    public void ConsoleCommand_DefinitionsHelpText_IsNotEmpty()
-    {
-        Assert.False(string.IsNullOrEmpty(ConsoleCommand.Definitions.HelpText));
-    }
 }

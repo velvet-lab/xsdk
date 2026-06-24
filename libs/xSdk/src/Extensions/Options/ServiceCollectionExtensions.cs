@@ -18,70 +18,75 @@ using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.Options;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services)
-        where TOptions : class, IVariableSetup
-        => services.RegisterOptions<TOptions>(options => { });
-
-    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, string? name)
-        where TOptions : class, IVariableSetup
-        => services.RegisterOptions<TOptions>(name, options => { });
-
-    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, Action<TOptions>? configure)
-        where TOptions : class, IVariableSetup
-        => services.RegisterOptions(null, configure);
-
-    public static IServiceCollection RegisterOptions<TOptions>(this IServiceCollection services, string? name, Action<TOptions>? configure)
-        where TOptions : class, IVariableSetup
+    extension(IServiceCollection services)
     {
-        services
-            .AddOptions<TOptions>(name)
-            .Configure<IVariableService, IValidator<TOptions>>((options, variableService, validator) =>
-            {
-                variableService.ParseForVariables(options);
+        public IServiceCollection RegisterOptions<TOptions>()
+            where TOptions : class, IVariableSetup
+            => services.RegisterOptions<TOptions>(options => { });
 
-                if (options is VariableSetup variableSetup)
-                {
-                    variableSetup.Initialize(variableService);
-                }
+        public IServiceCollection RegisterOptions<TOptions>(string? name)
+            where TOptions : class, IVariableSetup
+            => services.RegisterOptions<TOptions>(name, options => { });
 
-                configure?.Invoke(options);
-                validator.ValidateAndThrow(options);
-            });
+        public IServiceCollection RegisterOptions<TOptions>(Action<TOptions>? configure)
+            where TOptions : class, IVariableSetup
+            => services.RegisterOptions(null, configure);
 
-        services.SearchAndRegisterValidators<TOptions>();
-
-        return services;
-    }
-
-    private static void SearchAndRegisterValidators<TOptions>(this IServiceCollection services)
-        where TOptions : class, IVariableSetup
-    {
-        Assembly assembly = typeof(TOptions).Assembly;
-        IEnumerable<Type> validatorTypes = assembly.GetTypes()
-            .Where(type => typeof(AbstractValidator<TOptions>).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface);
-
-        if (validatorTypes.Any())
+        public IServiceCollection RegisterOptions<TOptions>(string? name, Action<TOptions>? configure)
+            where TOptions : class, IVariableSetup
         {
-            foreach (Type validatorType in validatorTypes)
+            services
+                .AddOptions<TOptions>(name)               
+                .Configure<IVariableService, IValidator<TOptions>>((options, variableService, validator) =>
+                {
+                    variableService.ParseForVariables(options);
+                    if (options is VariableSetup variableSetup)
+                    {
+                        variableSetup.Initialize(variableService);
+                    }
+
+                    configure?.Invoke(options);
+                    validator.ValidateAndThrow(options);
+                });
+
+            services.SearchAndRegisterValidators<TOptions>();
+
+            return services;
+        }
+
+        private void SearchAndRegisterValidators<TOptions>()
+            where TOptions : class, IVariableSetup
+        {
+            Assembly assembly = typeof(TOptions).Assembly;
+            IEnumerable<Type> validatorTypes = assembly.GetTypes()
+                .Where(type => typeof(AbstractValidator<TOptions>).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface);
+
+            if (validatorTypes.Any())
             {
-                services.TryAddSingleton(typeof(IValidator<TOptions>), validatorType);
+                foreach (Type validatorType in validatorTypes)
+                {
+                    services.TryAddSingleton(typeof(IValidator<TOptions>), validatorType);
+                }
+            }
+            else
+            {
+                services.RegisterDefaultValidator<TOptions>();
             }
         }
-        else
-        {
-            services.RegisterDefaultValidator<TOptions>();
-        }
-    }
 
-    private static void RegisterDefaultValidator<TOptions>(this IServiceCollection services)
-        where TOptions : class, IVariableSetup
-    {
-        services.TryAddSingleton<IValidator<TOptions>, DefaultOptionsValidator<TOptions>>();
+        private void RegisterDefaultValidator<TOptions>()
+            where TOptions : class, IVariableSetup
+        {
+            services.TryAddSingleton<IValidator<TOptions>, DefaultOptionsValidator<TOptions>>();
+        }
+
+    
     }
-}
+}   

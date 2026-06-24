@@ -17,24 +17,26 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
+using xSdk.Security;
 
 namespace xSdk.Shared;
 
 internal static class AssemblyCollector
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(AssemblyCollector));
 
     internal static List<Assembly> Collect(IPluginHostCollection pluginHostCollection)
     {
-        _logger.LogInformation("Collect loaded Assemblies");
+        Logger.LogInformation("Collect loaded Assemblies");
 
         var assemblies = new List<Assembly>();
 
-        _logger.LogDebug("Add assemblies from executing folder");
+        Logger.LogDebug("Add assemblies from executing folder");
         AddAssembliesFromExecutingFolder(assemblies);
 
-        _logger.LogDebug("Add assemblies from loaded plugins");
+        Logger.LogDebug("Add assemblies from loaded plugins");
         foreach (var pluginType in pluginHostCollection)
         {
             AddAssembly(assemblies, pluginType.Assembly);
@@ -51,7 +53,7 @@ internal static class AssemblyCollector
         {
             assemblies.Add(assembly);
 
-            _logger.LogDebug("Add referenced Assemblies for found Assemblies");
+            Logger.LogDebug("Add referenced Assemblies for found Assemblies");
             AddReferencedAssemblies(assemblies, assembly);
         }
     }

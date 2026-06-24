@@ -44,7 +44,7 @@ public class EntityFrameworkDatabaseOptions : DatabaseOptions
     {
         public static class TransactionsEnabled
         {
-            public const string Name = "transactions-enabled";
+            public const string Name = nameof(TransactionsEnabled);
             public const string Template = "--transactions-enabled <true|false>";
             public const string HelpText = "Indicates whether transactions are enabled for the Entity Framework database.";
             public const bool DefaultValue = true;

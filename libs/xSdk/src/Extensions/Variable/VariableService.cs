@@ -19,8 +19,8 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Variable;
@@ -30,7 +30,7 @@ internal partial class VariableService : IVariableService
     private readonly IConfiguration? _config;
     private readonly ApplicationOptions? _applicationOptions;
 
-    private static readonly ILogger _logger = LogManager.CreateLogger<VariableService>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<VariableService>();
 
     public VariableService(IOptions<ApplicationOptions>? options, IConfiguration? config)
     {
@@ -38,6 +38,11 @@ internal partial class VariableService : IVariableService
         _applicationOptions = options?.Value;
 
         InitProviders();
+
+        if (_applicationOptions != null)
+        {
+            this.ParseForVariables(_applicationOptions);
+        }
     }
 
     public Dictionary<string, object> ToDictionary()
@@ -53,7 +58,7 @@ internal partial class VariableService : IVariableService
                 }
                 else
                 {
-                    _logger.LogWarning("Variable Value '{name}' not found", variable.Name);
+                    Logger.LogWarning("Variable Value '{name}' not found", variable.Name);
                 }
             }
             catch

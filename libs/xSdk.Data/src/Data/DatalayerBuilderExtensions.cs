@@ -20,8 +20,11 @@ namespace xSdk.Data;
 
 public static class DatalayerBuilderExtensions
 {
-    public static IDatabaseBuilder UseDatabase<TDatabase, TDatabaseOptions>(this IDatalayerBuilder builder, string? name, Action<TDatabaseOptions> configure)
-        where TDatabase : class, IDatabase
-        where TDatabaseOptions : class, IVariableSetup
-        => builder.ConfigureDatabase<TDatabase, TDatabaseOptions>(name, configure);
+    extension(IDatalayerBuilder builder)
+    {
+        public IDatabaseBuilder UseDatabase<TDatabase, TDatabaseOptions>(string? name, Action<TDatabaseOptions> configure)
+            where TDatabase : class, IDatabase
+            where TDatabaseOptions : class, IVariableSetup
+            => builder.ConfigureDatabase<TDatabase, TDatabaseOptions>(name, configure);
+    }
 }

@@ -15,6 +15,7 @@
         <PackageReference Include="CommunityToolkit.Diagnostics" />
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="Microsoft.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="Zio" />
     </ItemGroup>        
 

@@ -101,7 +101,7 @@ internal partial class VariableService
         valueFound = true;
 
         IVariable? variable = LoadVariableInternal(name);
-        if (TryReadValuesFromProviders(variable, shouldThrowIfNotFound, out TType? value) && value is null)
+        if (!TryReadValuesFromProviders(variable, shouldThrowIfNotFound, out TType? value))
         {
             object? defaultValue = TryReadDefaultValue<TType>(variable);
             if (defaultValue != null)
@@ -232,7 +232,7 @@ internal partial class VariableService
         }
 
         // last Chance, try to load the Fallback
-        if (!Fallback(variable, shouldThrowIfNotFound, out TType? tmpValue6))
+        if (Fallback(variable, shouldThrowIfNotFound, out TType? tmpValue6))
         {
             value = tmpValue6;
             return true;

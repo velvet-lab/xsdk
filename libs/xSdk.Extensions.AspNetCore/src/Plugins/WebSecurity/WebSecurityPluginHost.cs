@@ -30,13 +30,13 @@ namespace xSdk.Plugins.WebSecurity;
 
 [SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core request pipeline configuration – requires a running web host.")]
-internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
+internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<WebSecurityPluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
         if (websecurityOptions.Value.IsCorsEnabled)
         {
-            Logger.LogInformation("Cors is enabled. Configure further security options");
+            logger.LogInformation("Cors is enabled. Configure further security options");
             services.AddCors(cors =>
                 cors.AddDefaultPolicy(policy =>
                     policy
@@ -68,7 +68,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> w
             app.UseDeveloperExceptionPage();
         }
 
-        Logger.LogDebug("Enabled Cookie Policy");
+        logger.LogDebug("Enabled Cookie Policy");
         app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax, Secure = CookieSecurePolicy.Always });
 
         Build(app);
@@ -95,7 +95,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> w
         // KnownNetworks und KnownProxies werden geleert, damit der Forwarded Header
         // unabhängig vom vorgelagerten Proxy akzeptiert wird.
 
-        Logger.LogDebug("Configure Forwarded Headers");
+        logger.LogDebug("Configure Forwarded Headers");
         var fordwardedHeaderOptions = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
         fordwardedHeaderOptions.KnownIPNetworks.Clear();
         fordwardedHeaderOptions.KnownProxies.Clear();
@@ -104,7 +104,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> w
 
     private void Build(IApplicationBuilder app)
     {
-        Logger.LogDebug("Configure HSTS");
+        logger.LogDebug("Configure HSTS");
         app.UseHsts()
             .UseReferrerPolicy(_ => _.NoReferrer());
     }
@@ -113,7 +113,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> w
     {
         string[] origins = GetOrigins();
 
-        Logger.LogDebug("Configure Security Headers");
+        logger.LogDebug("Configure Security Headers");
         app.UseXXssProtection(options => options.EnabledWithBlockMode());
         app.UseXContentTypeOptions();
 
@@ -186,7 +186,7 @@ internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> w
             origins = origins.Concat(additionalOrigins);
         }
 
-        Logger.LogInformation("Cors Origins configured: {origins}", string.Join(", ", origins));
+        logger.LogInformation("Cors Origins configured: {origins}", string.Join(", ", origins));
 
         return [.. origins];
     }

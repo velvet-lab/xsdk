@@ -23,7 +23,7 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.DataProtection;
 
-internal class DefaultDataProtectionBuilder(IFileSystemService fileSystemService) : PluginBuilder, IDataProtectionPluginBuilder
+internal class DefaultDataProtectionBuilder(IFileSystemService fileSystemService, ILogger<DefaultDataProtectionBuilder> logger) : PluginBuilder, IDataProtectionPluginBuilder
 {
     public void ConfigureDataProtection(IDataProtectionBuilder builder)
     {
@@ -33,7 +33,7 @@ internal class DefaultDataProtectionBuilder(IFileSystemService fileSystemService
 
     private string GetKeyFolder()
     {
-        Logger.LogInformation("Try to get Key Folder for Data Protection");
+        logger.LogInformation("Try to get Key Folder for Data Protection");
 
         string? keyFolder = null;
         if (Debugger.IsAttached)
@@ -53,7 +53,7 @@ internal class DefaultDataProtectionBuilder(IFileSystemService fileSystemService
             }
             catch
             {
-                Logger.LogWarning("KeyFolder '{0}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
+                logger.LogWarning("KeyFolder '{0}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
 
                 keyFolder = fileSystemService.User.Data.GetFullPath("/keys");
                 if (!Directory.Exists(keyFolder))

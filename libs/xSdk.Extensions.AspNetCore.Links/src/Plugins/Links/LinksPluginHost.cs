@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Links;
 using xSdk.Hosting;
 
@@ -22,7 +23,7 @@ namespace xSdk.Plugins.Links;
 
 internal class LinksPluginHost : PluginHost
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
         services
             .AddLinksService(() =>

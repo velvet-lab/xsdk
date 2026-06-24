@@ -31,7 +31,7 @@ using xSdk.Hosting;
 namespace xSdk.Plugins.Authentication;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core authentication pipeline – requires a running web host.")]
-internal sealed class AuthenticationPluginHost(IOptions<ApiKeyPluginOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions) : WebPluginHost
+internal sealed class AuthenticationPluginHost(IOptions<ApiKeyPluginOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<AuthenticationPluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
@@ -73,14 +73,14 @@ internal sealed class AuthenticationPluginHost(IOptions<ApiKeyPluginOptions> api
 
     private void EnableMultiAuth(PolicySchemeOptions options)
     {
-        Logger.LogTrace("Try to find the correct authentication for incomming request");
+        logger.LogTrace("Try to find the correct authentication for incomming request");
         options.ForwardDefaultSelector = context =>
         {
             string? scheme = null;
             TryRetrieveAuthenticationScheme(context, out scheme);
             if (!string.IsNullOrEmpty(scheme))
             {
-                Logger.LogTrace("Found the correct authentication for incomming request: {scheme}", scheme);
+                logger.LogTrace("Found the correct authentication for incomming request: {scheme}", scheme);
                 return scheme;
             }
 
@@ -89,13 +89,13 @@ internal sealed class AuthenticationPluginHost(IOptions<ApiKeyPluginOptions> api
             {
                 if (authorizationHeader.StartsWith(AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Header))
                 {
-                    Logger.LogTrace("API Key Auth is requested");
+                    logger.LogTrace("API Key Auth is requested");
                     return AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Scheme;
                 }
             }
 
             // Default Api Auth Scheme
-            Logger.LogTrace("API Key Auth is requested");
+            logger.LogTrace("API Key Auth is requested");
             return AuthenticationDefaults.ApiKeyAuth.InHeader.Scheme;
         };
     }

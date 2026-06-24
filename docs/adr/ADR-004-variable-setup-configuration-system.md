@@ -6,7 +6,7 @@ Accepted
 
 ## Date
 
-2026-03-17
+2026-03-17, updated 2026-05-31
 
 ## Context
 
@@ -30,11 +30,11 @@ A two-layer system is introduced: **`Variable`** (metadata) and **`Setup`** (typ
 
 | Property      | Description                                                                                                     |
 |---------------|-----------------------------------------------------------------------------------------------------------------|
-| `Name`        | Logical name (e.g., `"stage"`)                                                                                  |
+| `Name`        | Qualified logical name. When `[VariablePrefix]` is set on the options class, the prefix is automatically prepended at read time: e.g. `"file-path"` with prefix `"flat-file"` yields `"flat-file-file-path"`. Raw name is stored internally. |
 | `ValueType`   | CLR type for the value                                                                                          |
-| `Prefix`      | Application prefix override                                                                                     |
-| `NoPrefix`    | Skip prefix when building the environment variable key                                                          |
-| `Template`    | Handlebars-style template (via `Handlebars.Net`) for the env-var key (e.g., `{{app.prefix}}_ENVIRONMENT_STAGE`) |
+| `Prefix`      | Class-level prefix (set via `[VariablePrefix("...")]`). Only present when the attribute is explicitly declared — no auto-derivation from class name. |
+| `NoPrefix`    | Per-variable override: skip the class prefix for this specific variable                                         |
+| `Template`    | CLI template stored as raw input (e.g. `"--path <path>"`). Rendered with the prefix prepended at read time: e.g. `"--flat-file-path <path>"`. |
 | `IsProtected` | Marks as secret — value never logged                                                                            |
 | `IsHidden`    | Excluded from help/diagnostic output                                                                            |
 | `HelpText`    | Description for CLI help                                                                                        |
@@ -46,20 +46,22 @@ Keys are derived deterministically:
 
 ### Setup
 
-`Setup` is an abstract base class. Concrete setups declare their variables as properties decorated with `[Variable(...)]`. Values are read/written through `ReadValue<TValue>(name)` / `SetValue(name, value)`, which delegate to the underlying `IVariableService`.
+`Setup` is an abstract base class. Concrete setups declare their variables as properties decorated with `[Variable(...)]`. Values are read/written through `ReadValue<TValue>(name)` / `SetValue(name, value)`, which delegate to the underlying `IVariableService`. The raw short name (e.g. `"file-path"`) is used in the property body — prefix qualification is resolved automatically by the service.
 
 ```csharp
-[VariableNoPrefix]
-public sealed partial class EnvironmentSetup : Setup, IEnvironmentSetup
+[VariablePrefix("flat-file")]
+public class FlatFileDatabaseOptions : DatabaseOptions
 {
-    [Variable(name: "appname", resourceNames: ["app.name"], hidden: true)]
-    public string AppName
+    [Variable(name: "file-path", template: "--path <path>", helpText: "...")]
+    public string FilePath
     {
-        get => ReadValue<string>("appname");
-        set => SetValue("appname", value);
+        get => ReadValue<string>("file-path");   // resolves to "flat-file-file-path" internally
+        set => SetValue("file-path", value);
     }
 }
 ```
+
+A class **without** `[VariablePrefix]` has no prefix — the auto-derivation from the class name was removed. The former `[VariableNoPrefix]` attribute is therefore no longer needed and has been deleted.
 
 ### IVariableService
 
@@ -95,6 +97,9 @@ Validation can throw `SdkException` or collect `ValidationResult` objects.
 
 - Strong typing for all configuration values — no string-key lookups in application code.
 - Unified source of truth for variable metadata (help text, defaults, prefix rules).
+- Prefix is opt-in via `[VariablePrefix("...")]`: no surprise namespace derived from the class name.
+- `Variable.Name` and `Variable.Template` are computed at read time from the stored prefix — no duplication, no drift.
+- Collision detection: `VariableService` logs a warning when two registrations produce the same qualified name.
 - Automatic CLI flag derivation means configuration properties are exposed as command-line arguments without extra code.
 - Protected/hidden flags prevent secrets from leaking in logs or help output.
 - Resource aliases enable tenant-specific naming conventions.

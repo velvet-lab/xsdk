@@ -18,7 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
-using xSdk.Hosting;
+using xSdk.Demos.Builders;
+using xSdk.Extensions.Logging;
 using xSdk.Plugins.Telemetry;
 
 const string APP_NAME = "telemetry";
@@ -27,7 +28,12 @@ const string APP_PREFIX = "te";
 
 var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .EnableTelemetry()
+    .EnableTelemetry<TelemetryPluginBuilder>(options =>
+    {
+        options.TracingEnabled = true;
+        options.MetricsEnabled = true;
+        options.LoggingEnabled = true;
+    })
     .ConfigureServices((context, services) =>
     {
         services

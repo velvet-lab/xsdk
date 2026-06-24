@@ -28,7 +28,7 @@ using xSdk.Hosting;
 namespace xSdk.Plugins.Documentation;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core OpenAPI/documentation pipeline – requires a running web host.")]
-public sealed class DocumentationPluginHost(IOptions<DocumentationPluginOptions> options) : WebPluginHost
+public sealed class DocumentationPluginHost(IDocumentationPluginBuilder docPluginBuilder, IOptions<DocumentationPluginOptions> options) : WebPluginHost
 {
     private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
     {
@@ -47,8 +47,6 @@ public sealed class DocumentationPluginHost(IOptions<DocumentationPluginOptions>
         var descriptionProvider = services
             .BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
-
-        IDocumentationPluginBuilder? docPluginBuilder = GetBuilder<IDocumentationPluginBuilder>();
 
         DocumentationPluginOptions documentationOptions = options.Value;
         if (documentationOptions.Enabled)

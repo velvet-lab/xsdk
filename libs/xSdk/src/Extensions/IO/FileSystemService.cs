@@ -17,7 +17,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Security;
 using Zio;
 using Zio.FileSystems;
@@ -26,7 +26,8 @@ namespace xSdk.Extensions.IO;
 
 internal class FileSystemService : IFileSystemService
 {
-    private static readonly ILogger _logger = LogManager.CreateLogger<FileSystemService>();
+    private static ILogger Logger => field ??= LogManager.CreateLogger<FileSystemService>();
+
     private readonly FileSystemOptions _options;
 
     public FileSystemService(IOptions<FileSystemOptions> options) : this(options.Value)
@@ -45,13 +46,13 @@ internal class FileSystemService : IFileSystemService
 
     public Task<IFileSystemResult> RequestFileSystemAsync(FileSystemContext context = FileSystemContext.None, CancellationToken token = default)
     {
-        var rootFolders = CreateRootFolders();
+        RootFolders rootFolders = CreateRootFolders();
 
-        _logger.LogInformation("Request filesystem for context '{0}'", context);
+        Logger.LogInformation("Request filesystem for context '{context}'", context);
 
         InternalFileSystemResult result = new() { App = new PhysicalFileSystem(), Data = new PhysicalFileSystem() };
 
-        IFileSystem rootFileSystem = new PhysicalFileSystem();
+        var rootFileSystem = new PhysicalFileSystem();
         if (context == FileSystemContext.Machine)
         {
             if (rootFileSystem.DirectoryExists(rootFolders.Machine))
@@ -83,7 +84,7 @@ internal class FileSystemService : IFileSystemService
 
     private RootFolders CreateRootFolders()
     {
-        _logger.LogTrace("Determine root folders");
+        Logger.LogTrace("Determine root folders");
 
         RootFolders result;
 
@@ -100,7 +101,7 @@ internal class FileSystemService : IFileSystemService
         }
         else
         {
-            var home = Environment.GetEnvironmentVariable("HOME");
+            string? home = Environment.GetEnvironmentVariable("HOME");
             if (string.IsNullOrEmpty(home))
             {
                 home = "/home/" + Environment.UserName;
@@ -119,14 +120,14 @@ internal class FileSystemService : IFileSystemService
         result.Local = FileSystemHelper.GetExecutingFolder();
         result.LocalData = FileSystemHelper.GetExecutingFolder();
 
-        var companyName = "default";
-        var appName = "default";
+        string? companyName = "default";
+        string? appName = "default";
         if (_options != null)
         {
             companyName = _options.Company;
             appName = _options.ApplicationName;
 
-            var contentRoot = _options.ContentRoot;
+            string? contentRoot = _options.ContentRoot;
 
             if (!string.IsNullOrEmpty(contentRoot))
             {
@@ -150,12 +151,12 @@ internal class FileSystemService : IFileSystemService
         return result;
     }
 
-    private UPath CreateFolder(UPath path, bool shouldCreate = true)
+    private static UPath CreateFolder(UPath path, bool shouldCreate = true)
     {
-        _logger.LogTrace("Create folder if not exists");
+        Logger.LogTrace("Create folder if not exists");
 
         var fs = new PhysicalFileSystem();
-        var realPath = fs.ConvertPathFromInternal(path.FullName);
+        UPath realPath = fs.ConvertPathFromInternal(path.FullName);
 
         if (!fs.DirectoryExists(realPath))
         {
@@ -163,32 +164,33 @@ internal class FileSystemService : IFileSystemService
             {
                 if (shouldCreate)
                 {
-                    _logger.LogTrace("Creating folder '{0}'", realPath);
+                    Logger.LogTrace("Creating folder '{realPath}'", realPath);
                     fs.CreateDirectory(realPath);
                 }
             }
-            catch
+            catch(Exception ex)
             {
-                _logger.LogTrace("Folder '{0}' could not created", realPath);
+                Logger.LogTrace(ex, "Folder '{realPath}' could not created", realPath);
             }
         }
+
         return realPath;
     }
 
-    private UPath ValidatePaths(UPath path, UPath fallback)
+    private static UPath ValidatePaths(UPath path, UPath fallback)
     {
         var pfs = new PhysicalFileSystem();
-        var realPath = pfs.GetFullPath(path);
-        var realFallbackPath = pfs.GetFullPath(fallback);
+        string realPath = pfs.GetFullPath(path);
+        string realFallbackPath = pfs.GetFullPath(fallback);
 
         if (Directory.Exists(realPath))
         {
-            _logger.LogDebug("Path '{0}' exists", realPath);
+            Logger.LogDebug("Path '{realPath}' exists", realPath);
             return path;
         }
         else if (Directory.Exists(realFallbackPath))
         {
-            _logger.LogWarning("Path '{0}' does not exist. Use fallback path '{1}'", realPath, realFallbackPath);
+            Logger.LogWarning("Path '{realPath}' does not exist. Use fallback path '{realFallbackPath}'", realPath, realFallbackPath);
             return fallback;
         }
         else

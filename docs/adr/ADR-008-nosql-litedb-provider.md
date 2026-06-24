@@ -2,15 +2,15 @@
 
 ## Status
 
-Accepted (implementation in think-tank — not yet promoted to production `libs/`)
+Accepted
 
 ## Date
 
 2026-03-17
 
-## Implementation Note (2026-04-27)
+## Promotion Note (2026-05-27)
 
-`xSdk.Data.NoSql` resides in `think-tank/libs/xSdk.Data.NoSql/` and has not yet been promoted to the production `libs/` folder. The design described in this ADR reflects the intended architecture. The package will be added to `libs/` and released as a NuGet package once stabilized.
+`xSdk.Data.NoSql` has been promoted from `think-tank/libs/xSdk.Data.NoSql/` to the production `libs/xSdk.Data.NoSql/` folder. The package is now part of the standard `xsdk.sln` build and will be released as a NuGet package on the next release cycle.
 
 ## Context
 

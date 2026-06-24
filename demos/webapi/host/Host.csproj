@@ -21,7 +21,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AspNetCore.Links\src\xSdk.Extensions.AspNetCore.Links.csproj" />
         <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+        <ProjectReference Include="..\..\datalayer\shared\Shared.csproj" />
     </ItemGroup>
 
 </Project>

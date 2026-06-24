@@ -1,0 +1,60 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using System.ClientModel;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using OpenAI;
+using OpenAI.Chat;
+using xSdk.Demos;
+using xSdk.Demos.Builder;
+using xSdk.Extensions.AI;
+using xSdk.Extensions.Logging;
+using xSdk.Plugins.AI;
+using xSdk.Plugins.Compression;
+using xSdk.Plugins.Telemetry;
+using xSdk.Plugins.WebApi;
+using xSdk.Plugins.WebSecurity;
+using static xSdk.Security.Claims.SdkClaimTypes;
+
+[assembly: ApiController]
+[assembly: ApiConventionType(typeof(DefaultApiConventions))]
+
+const string APP_NAME = "agent";
+const string APP_COMPANY = "xdemos";
+const string APP_PREFIX = "ai";
+
+IHost host = xSdk.Hosting.WebHost
+    .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+    .EnableWebApi()
+    .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
+    .EnableTelemetry<TelemetryPluginBuilder>(options =>
+    {
+        options.LoggingEnabled = true;
+        options.TracingEnabled = true;
+        options.MetricsEnabled = true;
+    })
+    .EnableWebSecurity()
+    .EnableCompression()
+    .Build();
+
+ILogger logger = LogManager.GetCurrentClassLogger();
+logger.LogInformation("Starting {AppName}", APP_NAME);
+
+await host.RunAsync();
