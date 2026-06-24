@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ReplConsole": {
+      "commandName": "Project",
+      "commandLineArgs": "variable list"
+    }
+  }
+}

@@ -7,7 +7,7 @@ using xSdk.Extensions.Variable.Commands;
 
 namespace xSdk.Demos;
 
-internal class ReplConsoleBuilder() : ConsolePluginBuilder
+internal class ReplConsoleBuilder() : ReplConsolePluginBuilder
 {
     public override void Configure(IConfigurator builder)
     {
