@@ -18,10 +18,10 @@ using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.Documentation;
+namespace xSdk.Plugins.Documentation;
 
 [VariablePrefix("openapi")]
-public sealed class DocumentationPluginOptions : PluginOptions
+public sealed class PluginOptions : PluginOptionsBase
 {
     [Variable(
         name: Definitions.DocumentPattern.Name,

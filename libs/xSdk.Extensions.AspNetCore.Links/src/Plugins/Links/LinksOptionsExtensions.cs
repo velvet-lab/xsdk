@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-using Asp.Versioning.ApiExplorer;
-using Microsoft.OpenApi;
-using xSdk.Extensions.Plugin;
+using xSdk.Data;
+using xSdk.Plugins.Links;
 
-namespace xSdk.Extensions.Documentation;
+namespace xSdk.Extensions.Links;
 
-public interface IDocumentationPluginBuilder : IPluginBuilder
+public static class LinksOptionsExtensions
 {
-    OpenApiInfo CreateApiInfo(ApiVersionDescription description);
+    public static LinksOptions AddPolicy<TModel>(this LinksOptions options, Action<Policy<TModel>> configure)
+        where TModel : IModel
+    {
+        var policy = new Policy<TModel>();
+        configure?.Invoke(policy);
+
+        options.Policies.Add(policy);
+
+        return options;
+    }
 }

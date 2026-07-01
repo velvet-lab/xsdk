@@ -17,10 +17,10 @@
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.DataProtection;
+namespace xSdk.Plugins.DataProtection;
 
 [VariablePrefix("encryption")]
-public sealed class DataProtectionPluginOptions : PluginOptions
+public sealed class PluginOptions : PluginOptionsBase
 {
     [Variable(
         name: Definitions.Discriminator.Name,

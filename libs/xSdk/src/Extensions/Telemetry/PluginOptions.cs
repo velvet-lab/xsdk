@@ -19,7 +19,7 @@ using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Extensions.Telemetry;
 
-public sealed class TelemetryPluginOptions : PluginOptions
+public sealed class PluginOptions : PluginOptionsBase
 {
     [Variable(
         name: Definitions.LoggingEnabled.Name,

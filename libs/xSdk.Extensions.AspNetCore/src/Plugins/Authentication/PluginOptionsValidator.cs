@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-using xSdk.Data;
+using FluentValidation;
 
-namespace xSdk.Extensions.Links;
+namespace xSdk.Plugins.Authentication;
 
-public static class LinksOptionsExtensions
+public sealed class PluginOptionsValidator : AbstractValidator<PluginOptions>
 {
-    public static LinksOptions AddPolicy<TModel>(this LinksOptions options, Action<Policy<TModel>> configure)
-        where TModel : IModel
+    public PluginOptionsValidator()
     {
-        var policy = new Policy<TModel>();
-        configure?.Invoke(policy);
-
-        options.Policies.Add(policy);
-
-        return options;
+        RuleFor(x => x.Realm)
+            .NotEmpty()
+            .WithMessage("Authentication realm is missing")
+            .WithErrorCode(PluginOptions.Definitions.Realm.Name);
     }
 }

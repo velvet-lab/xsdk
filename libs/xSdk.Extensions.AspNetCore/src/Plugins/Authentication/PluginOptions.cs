@@ -18,10 +18,10 @@ using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.Authentication;
+namespace xSdk.Plugins.Authentication;
 
 [VariablePrefix("auth_apikey")]
-public class ApiKeyPluginOptions : PluginOptions
+public class PluginOptions : PluginOptionsBase
 {
     [Variable(
         name: Definitions.Realm.Name,

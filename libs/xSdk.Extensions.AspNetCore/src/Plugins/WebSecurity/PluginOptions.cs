@@ -17,9 +17,9 @@
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.WebSecurity;
+namespace xSdk.Plugins.WebSecurity;
 
-public sealed class WebSecurityPluginOptions : PluginOptions
+public sealed class PluginOptions : PluginOptionsBase
 {
     [Variable(
         name: Definitions.Origins.Name,

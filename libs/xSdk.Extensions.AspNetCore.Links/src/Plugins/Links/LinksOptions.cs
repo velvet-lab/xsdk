@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Links;
 
-namespace xSdk.Extensions.Authentication;
+namespace xSdk.Plugins.Links;
 
-public interface IAuthenticationPluginBuilder : IPluginBuilder
+public class LinksOptions
 {
-    void ConfigureAuthentication(AuthenticationBuilder builder);
-
-    void ConfigureAuthorization(AuthorizationOptions options);
-
-    void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme);
+    public List<IPolicy> Policies { get; } = new List<IPolicy>();
 }
