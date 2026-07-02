@@ -1,14 +1,9 @@
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using xSdk.Extensions.Commands;
+using xSdk.Extensions.Commands.Attributes;
 
-namespace xSdk.Demos.Commands;
+namespace xSdk.Extensions.Commands;
 
-[Description(Definitions.HelpText)]
-[ExcludeFromCodeCoverage]
-internal class ChatCommand(IChatMessageHandler handler) : AsyncCommand<ChatCommandSettings>
+internal class ChatCommand(IChatMessageHandler handler) : CommandHandler
 {
     internal static class Definitions
     {
@@ -16,11 +11,15 @@ internal class ChatCommand(IChatMessageHandler handler) : AsyncCommand<ChatComma
         public const string HelpText = "Start a chat session";
     }
 
-    protected override async Task<int> ExecuteAsync(CommandContext context, ChatCommandSettings settings, CancellationToken cancellationToken)
+    [CommandArgument("userInput")]
+    [Description("The user input to send to the chat client")]
+    public string[]? UserInput { get; set; }
+
+    public override async Task<int> ExecuteAsync(CancellationToken cancellationToken)
     {
-        if(settings.Args is not null && settings.Args.Length > 0)
+        if(UserInput is not null && UserInput.Length > 0)
         {
-            var message = string.Join(" ", settings.Args);
+            var message = string.Join(" ", UserInput);
             return await handler.HandleMessageAsync(message, cancellationToken);
         }
     

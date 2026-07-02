@@ -18,7 +18,7 @@ using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.AI;
+namespace xSdk.Plugins.AI;
 
 public interface IAIPluginBuilder : IPluginBuilder
 {    

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
+using xSdk.Plugins.AI;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.AI;
@@ -36,7 +37,7 @@ public abstract class AIPluginBuilder : PluginBuilder, IAIPluginBuilder
         return [.. _aiLayerBuilders.Values.SelectMany(x => x.Definitions.Select(y => y.Name)) ];
     }
 
-    internal void InitializeLayers(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
+    internal void InitializeLayers(IServiceCollection services, PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
     {
         foreach (IAILayerBuilder builder in _aiLayerBuilders.Values)
         {

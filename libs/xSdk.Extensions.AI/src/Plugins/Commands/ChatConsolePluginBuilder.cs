@@ -1,23 +1,27 @@
-using Spectre.Console.Cli;
-using xSdk.Demos.Commands;
+using System.CommandLine;
 using xSdk.Extensions.Commands;
 
 namespace xSdk.Plugins.Commands;
 
-public abstract class ChatConsolePluginBuilder : ReplConsolePluginBuilder
+public abstract class ChatConsolePluginBuilder : IReplConsolePluginBuilder
 {
-    public sealed override void Configure(IConfigurator builder)
+    public void Configure(IApplicationBuilder builder)
     {
         builder
-            .PropagateExceptions()
-            .AddDefaultCommands()            
+            .AddDefaultCommands()
             .AddCommand<ChatCommand>(ChatCommand.Definitions.Name);
 
-        ConfigureChatCommands(builder);
+        // ConfigureChatCommands(builder);
     }
 
-    protected virtual void ConfigureChatCommands(IConfigurator builder)
-    {
-        
-    }
+    public virtual void CreateBanner()
+    { }
+
+    public virtual void CreateHelp(IList<Command> commands)
+    { }
+
+    public virtual void CreateLastWill()
+    { }
+
+    public abstract string CreateUserPrompt();
 }

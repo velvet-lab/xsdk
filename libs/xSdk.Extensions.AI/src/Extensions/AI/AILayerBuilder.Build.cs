@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
+using xSdk.Plugins.AI;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.AI;
@@ -16,7 +17,7 @@ internal partial class AILayerBuilder<TClient>
 {
     private readonly Dictionary<string, IChatClient> _chatClients = [];
 
-    public void Build(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
+    public void Build(IServiceCollection services, PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
     {
         BuildExecutors(services);
         BuildTools(services);
@@ -25,7 +26,7 @@ internal partial class AILayerBuilder<TClient>
         BuildWorkflows(services);
     }
 
-    private void BuildAgents(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
+    private void BuildAgents(IServiceCollection services, PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)
     {
         Logger.LogInformation("Initializing AI Layer for client type: {ClientType}", typeof(TClient).Name);
 

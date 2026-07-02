@@ -1,6 +1,7 @@
 using Microsoft.Agents.ObjectModel;
 using Microsoft.Agents.ObjectModel.Yaml;
 using xSdk.Extensions.Options;
+using xSdk.Plugins.AI;
 
 namespace xSdk.Extensions.AI;
 
@@ -8,7 +9,7 @@ internal static class YamlDeclarationTool
 {
     extension(AIDefinition definition)
     {
-        internal bool TryReadYamlContent(AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions, out string? content)
+        internal bool TryReadYamlContent(PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions, out string? content)
         {
             string? basePath = pluginOptions?.Path;
             if (environmentOptions is not null && string.IsNullOrEmpty(basePath))
@@ -32,7 +33,7 @@ internal static class YamlDeclarationTool
             return false;
         }
 
-        internal bool TryReadMetadata(AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions, out GptComponentMetadata? metadata)
+        internal bool TryReadMetadata(PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions, out GptComponentMetadata? metadata)
         {
             if (!definition.TryReadYamlContent(pluginOptions, environmentOptions, out string? content))
             {

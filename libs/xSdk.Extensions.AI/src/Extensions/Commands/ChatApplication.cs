@@ -1,10 +1,11 @@
-using Spectre.Console.Cli;
-using xSdk.Demos.Commands;
+using System.CommandLine;
+using xSdk.Extensions.Commands.Commands;
+using xSdk.Plugins.Commands;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ChatConsole(ICommandApp app, IReplConsolePluginBuilder builder) : IConsole
+public sealed class ChatApplication(RootCommand command, IReplConsolePluginBuilder builder) : IApplication
 {
     public async Task<int> RunAsync(string[] args)
     {
@@ -18,11 +19,16 @@ internal class ChatConsole(ICommandApp app, IReplConsolePluginBuilder builder) :
 
         do
         {
-            Environment.ExitCode = await app.RunAsync(chatArgs);
-            if (isCleared)
+            if (chatArgs.Length > 0)
             {
-                builder.CreateBanner();
-                isCleared = false;
+                ParseResult parseResult = command.Parse(chatArgs);
+
+                Environment.ExitCode = await parseResult.InvokeAsync();
+                if (isCleared)
+                {
+                    builder.CreateBanner();
+                    isCleared = false;
+                }
             }
 
             string input = builder.CreateUserPrompt();
@@ -54,5 +60,5 @@ internal class ChatConsole(ICommandApp app, IReplConsolePluginBuilder builder) :
         builder.CreateLastWill();
 
         return Environment.ExitCode;
-    }
+    }    
 }

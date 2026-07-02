@@ -1,10 +1,10 @@
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.AI;
+namespace xSdk.Plugins.AI;
 
 [VariablePrefix("ai")]
-public sealed class AIPluginOptions : PluginOptions
+public sealed class PluginOptions : PluginOptionsBase
 {
     internal const string DefaultChatClientKey = nameof(DefaultChatClientKey);
 

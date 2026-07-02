@@ -3,6 +3,7 @@ using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Options;
+using xSdk.Plugins.AI;
 
 namespace xSdk.Extensions.AI;
 
@@ -10,7 +11,7 @@ public interface IAILayerBuilder
 {
     IList<AIDefinition> Definitions { get; }
 
-    void Build(IServiceCollection services, AIPluginOptions? pluginOptions, EnvironmentOptions? environmentOptions);
+    void Build(IServiceCollection services, PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions);
 }
 
 public interface IAILayerBuilder<TClient> : IAILayerBuilder

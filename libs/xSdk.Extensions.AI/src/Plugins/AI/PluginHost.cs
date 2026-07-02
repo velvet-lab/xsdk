@@ -13,7 +13,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.AI;
 
-internal partial class AIPluginHost(IAIPluginBuilder pluginBuilder, IOptions<AIPluginOptions> pluginOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<AIPluginHost> logger) : WebPluginHost
+internal partial class PluginHost(IAIPluginBuilder pluginBuilder, IOptions<PluginOptions> pluginOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
