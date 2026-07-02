@@ -29,7 +29,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Telemetry;
 
-public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemetryOptions) : PluginHost
+public sealed class PluginHost(IOptions<PluginOptions> telemetryOptions) : PluginHostBase
 {
     public override void ConfigureLogging(ILogBuilder builder)
     {
@@ -39,7 +39,7 @@ public sealed class TelemetryPluginHost(IOptions<TelemetryPluginOptions> telemet
 
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
-        TelemetryPluginOptions telemetrySetup = telemetryOptions.Value;
+        PluginOptions telemetrySetup = telemetryOptions.Value;
 
         // ConfigureResource on OpenTelemetryBuilder invokes the callback once per active signal
         // (Tracing, Metrics, Logging). Pre-building the ResourceBuilder here ensures

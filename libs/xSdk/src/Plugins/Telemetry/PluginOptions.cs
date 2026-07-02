@@ -17,7 +17,7 @@
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.Telemetry;
+namespace xSdk.Plugins.Telemetry;
 
 public sealed class PluginOptions : PluginOptionsBase
 {

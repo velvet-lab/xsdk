@@ -26,10 +26,10 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, ITelemetryPluginBuilder
         => builder.EnableTelemetry<TPluginBuilder>(options => { });
 
-    public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder, Action<TelemetryPluginOptions> configureOptions)
+    public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder, Action<PluginOptions> configureOptions)
         where TPluginBuilder : class, ITelemetryPluginBuilder
         => builder
-            .RegisterPluginHost<TelemetryPluginHost>()
+            .RegisterPluginHost<PluginHost>()
             .RegisterPluginHostOptions(configureOptions)
             .RegisterPluginBuilder<ITelemetryPluginBuilder, TPluginBuilder>();
 }
