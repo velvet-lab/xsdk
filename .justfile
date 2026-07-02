@@ -38,18 +38,18 @@ update:
 # Clean whole repository by removing build artifacts, node_modules and other garbage files and folders
 [group('maintenance')]
 clean:
-    @just dotnet::clean xsdk.sln
+    @just dotnet::clean xsdk.slnx
     @just repository::clean
 
 # Build whole solution
 [group('development')]
 build:
-    @just dotnet::build xsdk.sln
+    @just dotnet::build xsdk.slnx
 
 # Tests whole solution
 [group('development')]
 test:
-    @just dotnet::test xsdk.sln
+    @just dotnet::test xsdk.slnx
 
 # Lint whole solution
 [group('linting')]
@@ -67,7 +67,7 @@ lint:
 [group('format')]
 check-format:
     @just repository::check-format
-    @just dotnet::check-format xsdk-demos.sln
+    @just dotnet::check-format xsdk-demos.slnx
 
 # Verify license headers in all files according to the configuration in .licenserc.json
 [group('license')]
@@ -83,4 +83,4 @@ apply-license:
 [group('format')]
 format:
     @just repository::format
-    @just dotnet::format xsdk-demos.sln
+    @just dotnet::format xsdk-demos.slnx

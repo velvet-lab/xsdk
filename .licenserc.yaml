@@ -15,7 +15,7 @@ header:
     - '**/*.json'
     - '**/*.yml'
     - '**/*.md'
-    - '**/*.sln'
+    - '**/*.slnx'
     - '**/*.txt'
     - '**/*.csproj'
   comment: on-failure

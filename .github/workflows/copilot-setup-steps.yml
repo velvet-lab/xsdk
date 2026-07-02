@@ -35,7 +35,7 @@ jobs:
       - name: Display project structure
         run: |
           echo "=== Project Structure ==="
-          dotnet sln xsdk.sln list
+          dotnet sln xsdk.slnx list
           echo ""
           echo "=== Key Directories ==="
           ls -la libs/

@@ -233,8 +233,8 @@ xsdk/
 ├── Directory.Build.targets             # Shared MSBuild targets
 ├── Directory.Packages.props            # Central NuGet package version management
 ├── global.json                         # .NET SDK version pin
-├── xsdk.sln                            # Main solution file
-└── xsdk-demos.sln                      # Demos solution file
+├── xsdk.slnx                            # Main solution file
+└── xsdk-demos.slnx                     # Demos solution file
 ```
 
 Each library under `libs/` follows the same layout:
@@ -465,7 +465,7 @@ just test
 dotnet test libs/xSdk/tests/
 
 # With coverage
-dotnet test xsdk.sln --collect:"XPlat Code Coverage"
+dotnet test xsdk.slnx --collect:"XPlat Code Coverage"
 ```
 
 Test projects are named `[ProjectName].Tests` and mirror the source project structure. Tests must be independent and runnable in any order.

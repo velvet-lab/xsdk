@@ -1,0 +1,73 @@
+<Solution>
+  <Folder Name="/demos/">
+    <File Path="demos/Directory.Build.props" />
+    <File Path="demos/Directory.Build.targets" />
+  </Folder>
+  <Folder Name="/demos/ai/">
+    <Project Path="demos/ai/agents/Agents.csproj" />
+    <Project Path="demos/ai/embedding/Embedding.csproj" />
+    <Project Path="demos/ai/shared/Shared/Shared.csproj" />
+    <Project Path="demos/ai/translator/Translator.csproj" />
+  </Folder>
+  <Folder Name="/demos/console/">
+    <Project Path="demos/console/default/DefaultConsole.csproj" />
+    <Project Path="demos/console/repl/ReplConsole.csproj" />
+  </Folder>
+  <Folder Name="/demos/datalayer/">
+    <Project Path="demos/datalayer/entityframework/EntityFramework.csproj" />
+    <Project Path="demos/datalayer/flatfile/Flatfile.csproj" />
+    <Project Path="demos/datalayer/mongodb/MongoDb.csproj" />
+    <Project Path="demos/datalayer/shared/Shared.csproj" />
+    <Project Path="demos/datalayer/vault/Vault.csproj" />
+  </Folder>
+  <Folder Name="/demos/host/">
+    <Project Path="demos/host/host/Host.csproj" />
+  </Folder>
+  <Folder Name="/demos/plugin/">
+    <Project Path="demos/plugin/host/Host.csproj" />
+    <Project Path="demos/plugin/plugin/Plugin.csproj" />
+  </Folder>
+  <Folder Name="/demos/telemetry/">
+    <Project Path="demos/telemetry/host/Host.csproj" />
+  </Folder>
+  <Folder Name="/demos/webapi/">
+    <Project Path="demos/webapi/host/Host.csproj" />
+  </Folder>
+  <Folder Name="/libs/" />
+  <Folder Name="/libs/Core/">
+    <Project Path="libs/xSdk.Core/src/xSdk.Core.csproj" />
+    <Project Path="libs/xSdk.Core/tests/xSdk.Core.Tests.csproj" />
+    <Project Path="libs/xSdk.Data/src/xSdk.Data.csproj" />
+    <Project Path="libs/xSdk.Data/tests/xSdk.Data.Tests.csproj" />
+    <Project Path="libs/xSdk/src/xSdk.csproj" />
+    <Project Path="libs/xSdk/tests/xSdk.Tests.csproj" />
+  </Folder>
+  <Folder Name="/libs/Data/">
+    <Project Path="libs/xSdk.Data.EntityFramework.MongoDB/src/xSdk.Data.EntityFramework.MongoDB.csproj" />
+    <Project Path="libs/xSdk.Data.EntityFramework.MongoDB/tests/xSdk.Data.EntityFramework.MongoDB.Tests.csproj" />
+    <Project Path="libs/xSdk.Data.EntityFramework/src/xSdk.Data.EntityFramework.csproj" />
+    <Project Path="libs/xSdk.Data.EntityFramework/tests/xSdk.Data.EntityFramework.Tests.csproj" />
+    <Project Path="libs/xSdk.Data.FlatFile/src/xSdk.Data.FlatFile.csproj" />
+    <Project Path="libs/xSdk.Data.FlatFile/tests/xSdk.Data.FlatFile.Tests.csproj" />
+    <Project Path="libs/xSdk.Data.Vault/src/xSdk.Data.Vault.csproj" />
+    <Project Path="libs/xSdk.Data.Vault/tests/xSdk.Data.Vault.Tests.csproj" />
+  </Folder>
+  <Folder Name="/libs/Extensions/">
+    <Project Path="libs/xSdk.Extensions.AI/src/xSdk.Extensions.AI.csproj" />
+    <Project Path="libs/xSdk.Extensions.AI/tests/xSdk.Extensions.AI.Tests.csproj" />
+    <Project Path="libs/xSdk.Extensions.AspNetCore.Links/src/xSdk.Extensions.AspNetCore.Links.csproj" />
+    <Project Path="libs/xSdk.Extensions.AspNetCore.Links/tests/xSdk.Extensions.AspNetCore.Links.Tests.csproj" />
+    <Project Path="libs/xSdk.Extensions.AspNetCore/src/xSdk.Extensions.AspNetCore.csproj" />
+    <Project Path="libs/xSdk.Extensions.AspNetCore/tests/xSdk.Extensions.AspNetCore.Tests.csproj" />
+    <Project Path="libs/xSdk.Extensions.CloudEvents/src/xSdk.Extensions.CloudEvents.csproj" />
+    <Project Path="libs/xSdk.Extensions.CloudEvents/tests/xSdk.Extensions.CloudEvents.Tests.csproj" />
+    <Project Path="libs/xSdk.Extensions.Commands/src/xSdk.Extensions.Commands.csproj" />
+    <Project Path="libs/xSdk.Extensions.Commands/tests/xSdk.Extensions.Commands.Tests.csproj" />
+  </Folder>
+  <Folder Name="/_globals/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="testconfig.json" />
+  </Folder>
+</Solution>
