@@ -75,11 +75,11 @@ Example — EF Core tracing is contributed by a plugin that implements `ITelemet
 
 Um Konsistenz in allen Monitoring-Backends (Grafana, Jaeger, Datadog etc.) zu gewährleisten, gilt folgendes dreigeteiltes Schema:
 
-| Telemetrie-Komponente | OTel-Attribut / Typ | Namensschema | Beispiel |
-| :--- | :--- | :--- | :--- |
-| **Service-Name** | `service.name` (Resource) | `kebab-case` — beschreibt die logische Anwendung nach außen | `order-api`, `billing-service` |
-| **Source- / Meter-Name** | `ActivitySource` / `Meter` | Assembly-Name des Pakets (`PascalCase`) — eine `Diagnostics`-Klasse pro Paket | `xSdk.Core`<br>`xSdk.Data.Vault` |
-| **Metrik-Namen** | `Instrument` (Counter, Histogram …) | `lowercase.with.dots` — beginnt mit dem funktionalen Objekt | `redis.cache.hits`<br>`rabbitmq.message.duration` |
+| Telemetrie-Komponente    | OTel-Attribut / Typ                 | Namensschema                                                                  | Beispiel                                          |
+|:-------------------------|:------------------------------------|:------------------------------------------------------------------------------|:--------------------------------------------------|
+| **Service-Name**         | `service.name` (Resource)           | `kebab-case` — beschreibt die logische Anwendung nach außen                   | `order-api`, `billing-service`                    |
+| **Source- / Meter-Name** | `ActivitySource` / `Meter`          | Assembly-Name des Pakets (`PascalCase`) — eine `Diagnostics`-Klasse pro Paket | `xSdk.Core`<br>`xSdk.Data.Vault`                  |
+| **Metrik-Namen**         | `Instrument` (Counter, Histogram …) | `lowercase.with.dots` — beginnt mit dem funktionalen Objekt                   | `redis.cache.hits`<br>`rabbitmq.message.duration` |
 
 ### VariableResourceDetector
 

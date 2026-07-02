@@ -33,18 +33,18 @@ The name `xSdk.Plugin` no longer accurately described the package's contents and
 
 `xSdk.Core` is the lowest-level package in the SDK dependency graph. It contains:
 
-| Category           | Key Types                                                                                    |
-|--------------------|----------------------------------------------------------------------------------------------|
-| Host Abstractions  | `ISlimHost`, `SlimHostBase`, `SlimHostBuilder`, `IPluginHost<TSetup>`                        |
-| Plugin Primitives  | `IPlugin`, `IPluginBuilder`, `IPluginDescription`, `IPluginService`                          |
-| Data Abstractions  | `IEntity`, `IModel`, `IPrimaryKey`, `IRepository<TEntity>`, `IDatabase`, `IDatalayerFactory` |
-| Configuration      | `ISetup`, `IVariable`, `IVariableService`, `VariableAttribute`, `SetupLoader`                |
-| File System        | `IFileSystemService`, `FileSystemContext`, `FileSystemHelper`                                |
-| Authentication     | `IApiKeyHandler`, `IApiKeyModel`, `AuthenticationDefaults`                                   |
-| Web Abstractions   | `IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`                         |
+| Category           | Key Types                                                                                                                                                               |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Host Abstractions  | `ISlimHost`, `SlimHostBase`, `SlimHostBuilder`, `IPluginHost<TSetup>`                                                                                                   |
+| Plugin Primitives  | `IPlugin`, `IPluginBuilder`, `IPluginDescription`, `IPluginService`                                                                                                     |
+| Data Abstractions  | `IEntity`, `IModel`, `IPrimaryKey`, `IRepository<TEntity>`, `IDatabase`, `IDatalayerFactory`                                                                            |
+| Configuration      | `ISetup`, `IVariable`, `IVariableService`, `VariableAttribute`, `SetupLoader`                                                                                           |
+| File System        | `IFileSystemService`, `FileSystemContext`, `FileSystemHelper`                                                                                                           |
+| Authentication     | `IApiKeyHandler`, `IApiKeyModel`, `AuthenticationDefaults`                                                                                                              |
+| Web Abstractions   | `IWebApiPluginBuilder`, `IWebSecurityPluginBuilder`, `ILinksService`                                                                                                    |
 | Telemetry          | `ITelemetryPluginBuilder`, `VariableResourceDetector` — `ITelemetryService` ist aufgegeben (siehe [ADR-014](ADR-014-opentelemetry-observability.md), Dezentralisierung) |
-| Security Utilities | `CryptoTool`, `SecurityContext`, `CredentialManager`, `CertificateHelper`                    |
-| Shared SDK Types   | `SdkException`, `Stage`, `SemVer`, `Mapster` mapping base, REST client helpers               |
+| Security Utilities | `CryptoTool`, `SecurityContext`, `CredentialManager`, `CertificateHelper`                                                                                               |
+| Shared SDK Types   | `SdkException`, `Stage`, `SemVer`, `Mapster` mapping base, REST client helpers                                                                                          |
 
 ### Dependency Rule
 
@@ -58,13 +58,13 @@ This constraint ensures that external plugins can reference `xSdk.Core` without 
 
 **Actual runtime dependencies (as of 2026-05-27):**
 
-| Package | Reason |
-|---------|--------|
-| `FluentValidation` | Validation primitives used across core abstractions |
-| `Microsoft.Extensions.Hosting` | `IHostBuilder`/`IHost` base abstractions for `SlimHostBuilder` |
-| `Zio` | Cross-platform file system abstraction ([ADR-019](ADR-019-zio-filesystem-abstraction.md)) |
-| `CommunityToolkit.Diagnostics` | Guard/argument validation helpers |
-| `Bogus` | Fake data generation for demo/fake repository mode ([ADR-012](ADR-012-demo-fake-repository-mode.md)) |
+| Package                        | Reason                                                                                               |
+|--------------------------------|------------------------------------------------------------------------------------------------------|
+| `FluentValidation`             | Validation primitives used across core abstractions                                                  |
+| `Microsoft.Extensions.Hosting` | `IHostBuilder`/`IHost` base abstractions for `SlimHostBuilder`                                       |
+| `Zio`                          | Cross-platform file system abstraction ([ADR-019](ADR-019-zio-filesystem-abstraction.md))            |
+| `CommunityToolkit.Diagnostics` | Guard/argument validation helpers                                                                    |
+| `Bogus`                        | Fake data generation for demo/fake repository mode ([ADR-012](ADR-012-demo-fake-repository-mode.md)) |
 
 > **Note (2026-05-27):** The original decision listed `Mapster`, `RestSharp`, `Asp.Versioning.Http`, and `Weikio.PluginFramework.Abstractions` as the intended minimal set. The actual csproj evolved to include `Microsoft.Extensions.Hosting`, `Zio`, `CommunityToolkit.Diagnostics`, and `Bogus` as the SDK stabilized. The prohibition on EF Core, ASP.NET Core runtime packages, and storage clients remains strictly enforced.
 

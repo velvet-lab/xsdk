@@ -33,7 +33,7 @@ We implemented a new logging architecture using:
 1. **QueueLogger**: A custom `ILogger` implementation that buffers log messages
 2. **QueueLoggerProvider**: Creates QueueLogger instances for DI
 3. **LogManager**: Centralized logging manager that coordinates between phases
-4. **Two-Phase Registration**: 
+4. **Two-Phase Registration**:
    - SlimHost registers QueueLoggerProvider for DI
    - Host initializes real logging factory and flushes queue
 

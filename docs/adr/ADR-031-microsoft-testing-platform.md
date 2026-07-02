@@ -32,11 +32,11 @@ Key motivations for migrating:
 
 ### Alternatives Considered
 
-| Alternative | Reason not chosen |
-|-------------|-------------------|
-| Stay on VSTest + xUnit v2 | VSTest is a legacy path; no active feature development; coverage tooling is external |
-| NUnit + MTP | xUnit v3 + MTP is the officially preferred combination and already used throughout the repo |
-| Coverlet for coverage | `Microsoft.Testing.Extensions.CodeCoverage` is the first-party solution; eliminates a tool dependency |
+| Alternative               | Reason not chosen                                                                                     |
+|---------------------------|-------------------------------------------------------------------------------------------------------|
+| Stay on VSTest + xUnit v2 | VSTest is a legacy path; no active feature development; coverage tooling is external                  |
+| NUnit + MTP               | xUnit v3 + MTP is the officially preferred combination and already used throughout the repo           |
+| Coverlet for coverage     | `Microsoft.Testing.Extensions.CodeCoverage` is the first-party solution; eliminates a tool dependency |
 
 ## Decision
 
@@ -79,14 +79,14 @@ All test projects (identified by `<IsTestProject>true</IsTestProject>`) receive 
 </ItemGroup>
 ```
 
-| Property / Package | Purpose |
-|--------------------|---------|
-| `TestingPlatformDotnetTestSupport=true` | Enables MTP mode for `dotnet test` |
-| `TestingPlatformCaptureOutput=false` | Allows test output to flow directly to the terminal |
-| `--config-file testconfig.json` | Points all test processes at the shared test configuration file |
-| `xunit.v3.mtp-v2` | xUnit v3 MTP adapter; replaces the legacy `xunit.runner.visualstudio` |
-| `Microsoft.Testing.Extensions.CodeCoverage` | First-party code coverage collection (replaces Coverlet) |
-| `Microsoft.Extensions.Hosting.Testing` | Microsoft's integration testing host utilities used for plugin/host fixtures |
+| Property / Package                          | Purpose                                                                      |
+|---------------------------------------------|------------------------------------------------------------------------------|
+| `TestingPlatformDotnetTestSupport=true`     | Enables MTP mode for `dotnet test`                                           |
+| `TestingPlatformCaptureOutput=false`        | Allows test output to flow directly to the terminal                          |
+| `--config-file testconfig.json`             | Points all test processes at the shared test configuration file              |
+| `xunit.v3.mtp-v2`                           | xUnit v3 MTP adapter; replaces the legacy `xunit.runner.visualstudio`        |
+| `Microsoft.Testing.Extensions.CodeCoverage` | First-party code coverage collection (replaces Coverlet)                     |
+| `Microsoft.Extensions.Hosting.Testing`      | Microsoft's integration testing host utilities used for plugin/host fixtures |
 
 ### Test Configuration (`testconfig.json`)
 

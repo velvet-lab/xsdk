@@ -30,11 +30,11 @@ The `Microsoft.Agents.AI` SDK (version 1.6.x) and `ModelContextProtocol.AspNetCo
 
 ### Alternatives Considered
 
-| Alternative | Reason not chosen |
-|-------------|-------------------|
-| Directly wrapping `Microsoft.Extensions.AI` in `WebHost` | Couples AI to every web host; violates opt-in principle |
-| Standalone NuGet package without plugin integration | Requires manual wiring per-application; bypasses the Variable/Setup system |
-| Using Semantic Kernel | Heavier dependency footprint; ADR-018 (Mapster) already covers mapping; SK introduces a full orchestration framework that exceeds current requirements |
+| Alternative                                              | Reason not chosen                                                                                                                                      |
+|----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Directly wrapping `Microsoft.Extensions.AI` in `WebHost` | Couples AI to every web host; violates opt-in principle                                                                                                |
+| Standalone NuGet package without plugin integration      | Requires manual wiring per-application; bypasses the Variable/Setup system                                                                             |
+| Using Semantic Kernel                                    | Heavier dependency footprint; ADR-018 (Mapster) already covers mapping; SK introduces a full orchestration framework that exceeds current requirements |
 
 ## Decision
 
@@ -42,23 +42,23 @@ The `Microsoft.Agents.AI` SDK (version 1.6.x) and `ModelContextProtocol.AspNetCo
 
 ### Package and Project
 
-| Property | Value |
-|----------|-------|
-| Library  | `libs/xSdk.Extensions.Agents/` |
-| Package name | `xSdk.Extensions.AI.Agents` |
-| Target framework | `net10.0` |
-| Dependencies | `Microsoft.Agents.AI`, `Microsoft.Agents.AI.DevUI`, `Microsoft.Agents.AI.Hosting.OpenAI`, `Microsoft.Agents.AI.OpenAI`, `ModelContextProtocol.AspNetCore`, `Microsoft.AspNetCore.OpenApi` |
+| Property         | Value                                                                                                                                                                                     |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Library          | `libs/xSdk.Extensions.Agents/`                                                                                                                                                            |
+| Package name     | `xSdk.Extensions.AI.Agents`                                                                                                                                                               |
+| Target framework | `net10.0`                                                                                                                                                                                 |
+| Dependencies     | `Microsoft.Agents.AI`, `Microsoft.Agents.AI.DevUI`, `Microsoft.Agents.AI.Hosting.OpenAI`, `Microsoft.Agents.AI.OpenAI`, `ModelContextProtocol.AspNetCore`, `Microsoft.AspNetCore.OpenApi` |
 
 ### Core Types
 
-| Type | Namespace | Responsibility |
-|------|-----------|----------------|
-| `AgentsPluginHost` | `xSdk.Plugins.AI.Agents` | `WebPluginHost`; wires `IChatClient`, OpenAI responses, conversations, DevUI, and MCP endpoint |
-| `IAgentsPluginBuilder` | `xSdk.Extensions.AI.Agents` | Extensibility interface; consuming code implements `CreateChatClient()` |
-| `DefaultAgentsPluginBuilder` | `xSdk.Plugins.AI.Agents` | Internal default; throws `NotImplementedException` — forces consumers to supply a real builder |
-| `AgentsPluginOptions` | `xSdk.Extensions.AI.Agents` | `PluginOptions` subclass; holds `Endpoint` and `ApiKey` via the Variable system ([ADR-004](ADR-004-variable-setup-configuration-system.md)) |
-| `IAgentService` | `xSdk.Extensions.AI.Agents` | Placeholder interface for higher-level agent orchestration (not yet implemented) |
-| `HostBuilderExtensions` | `xSdk.Plugins.AI.Agents` | `EnableAgents<TPluginBuilder>(configureOptions)` extension on `IHostBuilder` |
+| Type                         | Namespace                   | Responsibility                                                                                                                              |
+|------------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `AgentsPluginHost`           | `xSdk.Plugins.AI.Agents`    | `WebPluginHost`; wires `IChatClient`, OpenAI responses, conversations, DevUI, and MCP endpoint                                              |
+| `IAgentsPluginBuilder`       | `xSdk.Extensions.AI.Agents` | Extensibility interface; consuming code implements `CreateChatClient()`                                                                     |
+| `DefaultAgentsPluginBuilder` | `xSdk.Plugins.AI.Agents`    | Internal default; throws `NotImplementedException` — forces consumers to supply a real builder                                              |
+| `AgentsPluginOptions`        | `xSdk.Extensions.AI.Agents` | `PluginOptions` subclass; holds `Endpoint` and `ApiKey` via the Variable system ([ADR-004](ADR-004-variable-setup-configuration-system.md)) |
+| `IAgentService`              | `xSdk.Extensions.AI.Agents` | Placeholder interface for higher-level agent orchestration (not yet implemented)                                                            |
+| `HostBuilderExtensions`      | `xSdk.Plugins.AI.Agents`    | `EnableAgents<TPluginBuilder>(configureOptions)` extension on `IHostBuilder`                                                                |
 
 ### Activation Pattern
 

@@ -28,16 +28,16 @@ A two-layer system is introduced: **`Variable`** (metadata) and **`Setup`** (typ
 
 `Variable` / `Variable<TType>` represents a single configuration entry with:
 
-| Property      | Description                                                                                                     |
-|---------------|-----------------------------------------------------------------------------------------------------------------|
+| Property      | Description                                                                                                                                                                                                                                  |
+|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `Name`        | Qualified logical name. When `[VariablePrefix]` is set on the options class, the prefix is automatically prepended at read time: e.g. `"file-path"` with prefix `"flat-file"` yields `"flat-file-file-path"`. Raw name is stored internally. |
-| `ValueType`   | CLR type for the value                                                                                          |
-| `Prefix`      | Class-level prefix (set via `[VariablePrefix("...")]`). Only present when the attribute is explicitly declared — no auto-derivation from class name. |
-| `NoPrefix`    | Per-variable override: skip the class prefix for this specific variable                                         |
-| `Template`    | CLI template stored as raw input (e.g. `"--path <path>"`). Rendered with the prefix prepended at read time: e.g. `"--flat-file-path <path>"`. |
-| `IsProtected` | Marks as secret — value never logged                                                                            |
-| `IsHidden`    | Excluded from help/diagnostic output                                                                            |
-| `HelpText`    | Description for CLI help                                                                                        |
+| `ValueType`   | CLR type for the value                                                                                                                                                                                                                       |
+| `Prefix`      | Class-level prefix (set via `[VariablePrefix("...")]`). Only present when the attribute is explicitly declared — no auto-derivation from class name.                                                                                         |
+| `NoPrefix`    | Per-variable override: skip the class prefix for this specific variable                                                                                                                                                                      |
+| `Template`    | CLI template stored as raw input (e.g. `"--path <path>"`). Rendered with the prefix prepended at read time: e.g. `"--flat-file-path <path>"`.                                                                                                |
+| `IsProtected` | Marks as secret — value never logged                                                                                                                                                                                                         |
+| `IsHidden`    | Excluded from help/diagnostic output                                                                                                                                                                                                         |
+| `HelpText`    | Description for CLI help                                                                                                                                                                                                                     |
 
 Keys are derived deterministically:
 - **Environment / file system** key: `{APP_PREFIX}_{VARIABLE_NAME}` (upper-case)
