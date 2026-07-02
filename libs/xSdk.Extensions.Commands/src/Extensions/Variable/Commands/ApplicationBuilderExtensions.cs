@@ -15,26 +15,21 @@
  */
 
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using Spectre.Console;
-using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Extensions.Variable.Commands;
 
-[Description(Definitions.HelpText)]
-[ExcludeFromCodeCoverage]
-public sealed class ClearCommand : Command<EmptyCommandSettings>
+public static class ApplicationBuilderExtensions
 {
-    public static class Definitions
+    extension(IApplicationBuilder builder)
     {
-        public const string Name = "clear";
-        public const string HelpText = "Clears the console output";
-    }
+        public IApplicationBuilder AddVariableCommands()
+        {
+            builder
+                .AddBranch("variable", "Helps to show current configured application variables")
+                .AddCommand<ListCommand>(ListCommand.Definitions.Name, ListCommand.Definitions.HelpText);
 
-    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
-    {
-        System.Console.Clear();
-        AnsiConsole.Clear();
-        return 0;
+            return builder;
+        }
     }
 }

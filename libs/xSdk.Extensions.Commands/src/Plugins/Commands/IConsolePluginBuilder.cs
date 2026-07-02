@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
+using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Plugins.Commands;
 
-internal class ServiceResolver(IServiceProvider provider, IServiceProvider mainServiceProvider) : ITypeResolver
+public interface IConsolePluginBuilder : IPluginBuilder
 {
-    public object? Resolve(Type? type)
-    {
-        if (type == null)
-        {
-            return default;
-        }
-
-        var result = provider.GetService(type);
-        if(result is null)
-        {
-            result = mainServiceProvider.GetService(type);
-        }
-
-        return result;
-    }
+    void Configure(IApplicationBuilder builder);
 }

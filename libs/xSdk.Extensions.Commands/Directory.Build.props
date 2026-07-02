@@ -21,7 +21,7 @@
 
     <!--Internal Dependencies-->
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="contentfiles;analyzers;build;compile" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="contentfiles;analyzers;build;compile" />        
     </ItemGroup>
 
 </Project>

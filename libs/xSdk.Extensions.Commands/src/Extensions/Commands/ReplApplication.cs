@@ -1,9 +1,11 @@
-using Spectre.Console.Cli;
+using System.CommandLine;
+using xSdk.Extensions.Commands.Commands;
+using xSdk.Plugins.Commands;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-public class ReplConsole(ICommandApp app, IReplConsolePluginBuilder builder) : IConsole
+internal class ReplApplication(RootCommand command, IReplConsolePluginBuilder builder) : IApplication
 {
     public async Task<int> RunAsync(string[] args)
     {
@@ -11,17 +13,22 @@ public class ReplConsole(ICommandApp app, IReplConsolePluginBuilder builder) : I
         bool isCleared = false;
 
         var parser = SpecificCommandlineParser.Create(args);
-        string[] replArgs = parser.Arguments;
+        string[] replArgs = parser.Arguments;        
 
         builder.CreateBanner();
 
         do
         {
-            Environment.ExitCode = await app.RunAsync(replArgs);
-            if (isCleared)
+            if (replArgs.Length > 0)
             {
-                builder.CreateBanner();
-                isCleared = false;
+                ParseResult parseResult = command.Parse(replArgs);
+
+                Environment.ExitCode = await parseResult.InvokeAsync();
+                if (isCleared)
+                {
+                    builder.CreateBanner();
+                    isCleared = false;
+                }
             }
 
             string input = builder.CreateUserPrompt();
@@ -29,13 +36,13 @@ public class ReplConsole(ICommandApp app, IReplConsolePluginBuilder builder) : I
             {
                 shouldRun = false;
             }
-            else if(parser.Reparse(input).ContainsPattern(ClearCommand.Definitions.Name))
+            else if (parser.Reparse(input).ContainsPattern(ClearCommand.Definitions.Name))
             {
                 isCleared = true;
             }
 
             replArgs = CommandlineParser.Parse(input).Arguments;
-            
+
         } while (shouldRun);
 
         builder.CreateLastWill();

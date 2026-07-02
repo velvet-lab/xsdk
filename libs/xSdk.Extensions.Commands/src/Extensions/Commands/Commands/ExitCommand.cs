@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-using System.ComponentModel;
-using Spectre.Console.Cli;
+namespace xSdk.Extensions.Commands.Commands;
 
-namespace xSdk.Extensions.Commands;
-
-[Description(Definitions.HelpText)]
-public sealed class ExitCommand : Command<EmptyCommandSettings>
+public sealed class ExitCommand : CommandHandler
 {
     public static class Definitions
     {
@@ -28,7 +24,7 @@ public sealed class ExitCommand : Command<EmptyCommandSettings>
         public const string HelpText = "Exit the Console";
     }
 
-    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
+    public override int Execute()
     {
         return 0;
     }

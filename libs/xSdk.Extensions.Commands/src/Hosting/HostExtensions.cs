@@ -38,6 +38,7 @@ public static class HostExtensions
         System.Console.Clear();
         AnsiConsole.Clear();
 
-        return await host.Services.GetRequiredService<IConsole>().RunAsync(args);
+        var app = host.Services.GetRequiredService<IApplication>();
+        return await app.RunAsync(args);
     }
 }

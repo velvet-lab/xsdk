@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-using Spectre.Console.Cli;
-using Spectre.Console.Cli.Help;
-using xSdk.Extensions.Plugin;
+using Spectre.Console;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Extensions.Commands.Commands;
 
-public interface IConsolePluginBuilder : IPluginBuilder
+public sealed class ClearCommand : CommandHandler
 {
-    void Configure(IConfigurator builder);
+    public static class Definitions
+    {
+        public const string Name = "clear";
+        public const string HelpText = "Clears the console output";
+    }
+
+    public override int Execute()
+    {
+        System.Console.Clear();
+        AnsiConsole.Clear();
+        return 0;
+    }
 }

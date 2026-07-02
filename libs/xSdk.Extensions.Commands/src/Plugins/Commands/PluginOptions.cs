@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Plugins.Commands;
 
 [VariablePrefix("console")]
-public class ConsolePluginOptions : PluginOptions
+public class PluginOptions :  PluginOptionsBase
 {
     [Variable(
             name: Definitions.DisableDefaultHelp.Name,
@@ -19,7 +22,7 @@ public class ConsolePluginOptions : PluginOptions
 
     public static class Definitions
     {
-        public static class DisableDefaultHelp  
+        public static class DisableDefaultHelp
         {
             public const string Name = nameof(DisableDefaultHelp);
             public const string Template = "--disable-help";
