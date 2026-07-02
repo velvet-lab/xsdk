@@ -20,7 +20,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.CloudEvents;
 
-internal class CloudEventPluginHost : WebPluginHost
+internal class PluginHost : WebPluginHost
 {
     public void ConfigureMvc(MvcOptions options)
     {
