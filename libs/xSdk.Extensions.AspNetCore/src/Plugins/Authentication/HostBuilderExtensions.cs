@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Authentication;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
@@ -25,8 +24,8 @@ public static class HostBuilderExtensions
     public static IHostBuilder EnableAuthentication(this IHostBuilder hostBuilder)
     {
         hostBuilder
-            .RegisterPluginHostOptions<ApiKeyPluginOptions>()
-            .RegisterPluginHost<AuthenticationPluginHost>();
+            .RegisterPluginHostOptions<PluginOptions>()
+            .RegisterPluginHost<PluginHost>();
 
         return hostBuilder;
     }

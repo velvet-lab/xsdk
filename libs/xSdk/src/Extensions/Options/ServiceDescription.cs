@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace xSdk.Extensions.Options;
 
-public sealed class ServiceDescription
+internal sealed class ServiceDescription
 {
     private const char NamespaceSeperator = '.';
 
@@ -16,9 +16,9 @@ public sealed class ServiceDescription
     {
     }
 
-    public string ServiceFullName => $"{ServiceNamespace}{NamespaceSeperator}{ServiceName}".Trim();
+    internal string ServiceFullName => $"{ServiceNamespace}{NamespaceSeperator}{ServiceName}".Trim();
 
-    public string ServiceName
+    internal string ServiceName
     {
         get
         {
@@ -35,7 +35,7 @@ public sealed class ServiceDescription
         private set => _serviceName = value;
     }
 
-    public string ServiceVersion
+    internal string ServiceVersion
     {
         get
         {
@@ -52,7 +52,7 @@ public sealed class ServiceDescription
         private set => _serviceVersion = value;
     }
 
-    public string ServiceNamespace
+    internal string ServiceNamespace
     {
         get
         {
@@ -71,22 +71,32 @@ public sealed class ServiceDescription
         private set => _serviceNamespace = value;
     }
 
-    public static ServiceDescription Create()
-        => Create(null, null, null);
+    //public static ServiceDescription Create()
+    //    => Create(null, null, null);
 
-    public static ServiceDescription Create(string? serviceName)
-        => Create(serviceName, null, null);
+    //public static ServiceDescription Create(string? serviceName)
+    //    => Create(serviceName, null, null);
 
-    public static ServiceDescription Create(string? serviceName, string? serviceVersion)
-        => Create(serviceName, null, serviceVersion);
+    //public static ServiceDescription Create(string? serviceName, string? serviceVersion)
+    //    => Create(serviceName, null, serviceVersion);
 
-    public static ServiceDescription Create(string? serviceName, string? serviceNamespace, string? serviceVersion)
+    //public static ServiceDescription Create(string? serviceName, string? serviceNamespace, string? serviceVersion)
+    //{
+    //    return new ServiceDescription
+    //    {
+    //        ServiceName = serviceName ?? EnvironmentOptions.Definitions.ServiceName.DefaultValue,
+    //        ServiceNamespace = serviceNamespace ?? EnvironmentOptions.Definitions.ServiceNamespace.DefaultValue,
+    //        ServiceVersion = serviceVersion ?? EnvironmentOptions.Definitions.ServiceVersion.DefaultValue
+    //    };
+    //}
+
+    internal static ServiceDescription Create(ApplicationOptions options)
     {
         return new ServiceDescription
         {
-            ServiceName = serviceName ?? EnvironmentOptions.Definitions.ServiceName.DefaultValue,
-            ServiceNamespace = serviceNamespace ?? EnvironmentOptions.Definitions.ServiceNamespace.DefaultValue,
-            ServiceVersion = serviceVersion ?? EnvironmentOptions.Definitions.ServiceVersion.DefaultValue
+            ServiceName = options.Name ?? EnvironmentOptions.Definitions.ServiceName.DefaultValue,
+            ServiceNamespace = options.Company ?? EnvironmentOptions.Definitions.ServiceNamespace.DefaultValue,
+            ServiceVersion = options.AppVersion ?? EnvironmentOptions.Definitions.ServiceVersion.DefaultValue
         };
     }
 

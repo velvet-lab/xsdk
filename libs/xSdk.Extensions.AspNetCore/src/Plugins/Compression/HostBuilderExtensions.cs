@@ -23,6 +23,6 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableCompression(this IHostBuilder hostBuilder)
     {
-        return hostBuilder.RegisterPluginHost<CompressionPluginHost>();
+        return hostBuilder.RegisterPluginHost<PluginHost>();
     }
 }

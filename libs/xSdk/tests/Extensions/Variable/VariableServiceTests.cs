@@ -230,4 +230,45 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
         Assert.True(dict.ContainsKey("dict_test_var"));
         Assert.Equal("dict_value", dict["dict_test_var"]?.ToString());
     }
+
+    [Fact]
+    public void LoadVariable_ByRawName_FindsVariableWithPrefix()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        // Register a variable with a prefix — Name returns "pfx-raw-name", RawName is "raw-name"
+        var variable = Variable.Create("raw-name", typeof(string));
+        variable.SetPrefix("pfx");
+        service.NewVariable(variable);
+
+        // Should be findable by qualified name
+        var byQualified = service.LoadVariable("pfx-raw-name");
+        Assert.NotNull(byQualified);
+
+        // Should also be findable by raw name
+        var byRaw = service.LoadVariable("raw-name");
+        Assert.NotNull(byRaw);
+
+        // Both lookups return the same variable instance
+        Assert.Same(byQualified, byRaw);
+    }
+
+    [Fact]
+    public void LoadVariable_ByQualifiedName_FindsVariableWithPrefix()
+    {
+        var service = fixture
+            .BuildHost()
+            .Services.GetRequiredService<IVariableService>();
+
+        var variable = Variable.Create("my-option", typeof(string));
+        variable.SetPrefix("my-plugin");
+        service.NewVariable(variable);
+
+        var found = service.LoadVariable("my-plugin-my-option");
+
+        Assert.NotNull(found);
+        Assert.Equal("my-plugin-my-option", found.Name);
+    }
 }

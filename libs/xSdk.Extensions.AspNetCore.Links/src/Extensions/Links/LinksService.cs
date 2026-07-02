@@ -17,6 +17,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using xSdk.Data;
+using xSdk.Plugins.Links;
 
 namespace xSdk.Extensions.Links;
 

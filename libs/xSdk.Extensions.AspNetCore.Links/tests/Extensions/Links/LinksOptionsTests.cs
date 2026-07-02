@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Plugins.Links;
+
 namespace xSdk.Extensions.Links;
 
 public class LinksOptionsTests

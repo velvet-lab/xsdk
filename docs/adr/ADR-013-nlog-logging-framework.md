@@ -2,22 +2,22 @@
 
 ## Status
 
-Superseded by [ADR-014](ADR-014-opentelemetry-observability.md)
+Superseded by [ADR-033](ADR-033-logging-architecture.md)
 
 ## Date
 
 2026-03-17
 
-## Supersession Note (2026-03-27)
+## Supersession Note (2026-06-12)
 
-NLog is being replaced by the native `Microsoft.Extensions.Logging` (MEL) abstraction with OpenTelemetry as the unified backend. The decision is driven by:
+NLog is being replaced by a new logging architecture that uses a QueueLogger pattern to handle the two-phase hosting pattern (SlimHost → Host). The decision is driven by:
 
-1. **Tight coupling** — `LogManager.GetCurrentClassLogger()` is used in ~25 SDK classes, making the framework a cross-cutting dependency across all libraries.
-2. **Redundancy** — ADR-014 already provides OTLP log export via OpenTelemetry. Running NLog in parallel is unnecessary overhead.
-3. **Design conflict** — OTel's `ILogger<T>`-first model cannot coexist cleanly with NLog's static `LogManager` API in DI-managed contexts.
-4. **Convergence** — .NET 10's `Microsoft.Extensions.Logging` combined with OpenTelemetry covers all use cases NLog provided (console, file via providers, structured output, OTLP export) without third-party dependencies.
+1. **Dual LoggerFactories** — Previously, both SlimHost and Host created separate ILoggerFactory instances, causing configuration loss
+2. **Plugin Filtering** — The new architecture enables proper plugin-specific logging configuration
+3. **Early Logging Preservation** — Log messages before Host start are now properly buffered and flushed
+4. **Single Source of Truth** — One logging infrastructure shared between both phases
 
-See [ADR-014](ADR-014-opentelemetry-observability.md) for the target architecture.
+See [ADR-033](ADR-033-logging-architecture.md) for the new architecture.
 
 ## Context
 

@@ -123,14 +123,6 @@ public class VariableAttributeTests
     }
 
     [Fact]
-    public void VariableNoPrefixAttribute_DefaultConstructor_CreatesInstance()
-    {
-        var attr = new VariableNoPrefixAttribute();
-
-        Assert.NotNull(attr);
-    }
-
-    [Fact]
     public void VariableAttribute_WithResourceNames_SetsResourceNames()
     {
         var names = new[] { "app.name", "service.name" };

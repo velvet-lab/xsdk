@@ -47,10 +47,6 @@ public static partial class TestWebHost
 #pragma warning restore EXTEXP0014 // Der Typ dient nur zu Testzwecken und kann in zukünftigen Aktualisierungen geändert oder entfernt werden. Unterdrücken Sie diese Diagnose, um fortzufahren.
 
             webhostBuilder
-                .ConfigureServices(services =>
-                {
-                    slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(services));
-                })
                 .ConfigureServices((context, services) =>
                 {
                     slimHost.ConfigureWebPluginHost(x => x.ConfigureServices(context, services));

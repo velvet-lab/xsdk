@@ -11,10 +11,15 @@
 
     <!--External dependencies-->
     <ItemGroup>
-        
+        <PackageReference Include="OpenTelemetry" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk\src\xSdk.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions\Telemetry\" />
+      <Folder Include="Plugins\" />
     </ItemGroup>
 </Project>

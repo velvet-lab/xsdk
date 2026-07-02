@@ -101,9 +101,9 @@ public class EnvironmentSetupTests(TestHostFixture fixture) : IClassFixture<Test
     {
         var options = GetEnvironmentOptions();
 
-        options.LogLevel = "Debug";
+        options.LogLevelAsString = "Debug";
 
-        Assert.Equal("Debug", options.LogLevel);
+        Assert.Equal("Debug", options.LogLevelAsString);
     }
 
     [Fact]

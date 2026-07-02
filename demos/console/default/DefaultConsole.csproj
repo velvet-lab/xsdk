@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>{11442E8F-7BC6-4136-9489-7B65B17CA527}</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\libs\xSdk.Extensions.Commands\src\xSdk.Extensions.Commands.csproj" />
+        <ProjectReference Include="..\..\datalayer\shared\Shared.csproj" />
+    </ItemGroup>
+
+</Project>

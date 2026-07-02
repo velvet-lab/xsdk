@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>{3D0664B0-6587-4316-AE70-A36CA4F74BB3}</ProjectGuid>
+        <SonarQubeExclude>true</SonarQubeExclude>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AI\src\xSdk.Extensions.AI.csproj" />
+      <ProjectReference Include="..\shared\Shared\Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="AI\Agents\Assistant.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="AI\Agents\GetWeather.yaml">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+
+</Project>

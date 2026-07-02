@@ -20,71 +20,61 @@ namespace xSdk.Extensions.Options;
 
 public sealed partial class EnvironmentOptions
 {
-    private ServiceDescription _serviceDescription = ServiceDescription.Create();
-
     [Variable(name: Definitions.ServiceName.Name, template: Definitions.ServiceName.Template, helpText: Definitions.ServiceName.HelpText)]
     public string ServiceName
     {
-        get => ReadValue<string>(Definitions.ServiceName.Name) ?? _serviceDescription.ServiceName;
+        get => ReadValue<string>(Definitions.ServiceName.Name);
         set => SetValue(Definitions.ServiceName.Name, value);
     }
 
     [Variable(name: Definitions.ServiceNamespace.Name, template: Definitions.ServiceNamespace.Template, helpText: Definitions.ServiceNamespace.HelpText)]
     public string ServiceNamespace
     {
-        get => ReadValue<string>(Definitions.ServiceNamespace.Name) ?? _serviceDescription.ServiceNamespace;
+        get => ReadValue<string>(Definitions.ServiceNamespace.Name);
         set => SetValue(Definitions.ServiceNamespace.Name, value);
     }
 
     [Variable(name: Definitions.ServiceVersion.Name, template: Definitions.ServiceVersion.Template, helpText: Definitions.ServiceVersion.HelpText)]
     public string ServiceVersion
     {
-        get => ReadValue<string>(Definitions.ServiceVersion.Name) ?? _serviceDescription.ServiceVersion;
+        get => ReadValue<string>(Definitions.ServiceVersion.Name);
         set => SetValue(Definitions.ServiceVersion.Name, value);
     }
 
-    [Variable(name: Definitions.ServiceFullName.Name, helpText: Definitions.ServiceFullName.HelpText, protect: true, hidden: true)]
-    public string ServiceFullName => _serviceDescription.ServiceFullName;
+    public string ServiceFullName { get; private set; }
 
-    private void InitializeService()
+    internal void InitializeService(ServiceDescription serviceDescription)
     {
-        _serviceDescription = ServiceDescription.Create(ServiceName, ServiceNamespace, ServiceVersion);
-
-        ServiceName = _serviceDescription.ServiceName;
-        ServiceNamespace = _serviceDescription.ServiceNamespace;
-        ServiceVersion = _serviceDescription.ServiceVersion;
+        ServiceName = serviceDescription.ServiceName;
+        ServiceNamespace = serviceDescription.ServiceNamespace;
+        ServiceVersion = serviceDescription.ServiceVersion;
+        ServiceFullName = serviceDescription.ServiceFullName;
     }
 
-    internal static partial class Definitions
+    public static partial class Definitions
     {
-        public static class ServiceName
+        internal static class ServiceName
         {
-            public const string Name = "service-name";
+            public const string Name = nameof(ServiceName);
             public const string Template = "--service-name <name>";
             public const string HelpText = "Service name to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "DefaultService";
         }
 
-        public static class ServiceNamespace
+        internal static class ServiceNamespace
         {
-            public const string Name = "service-namespace";
+            public const string Name = nameof(ServiceNamespace);
             public const string Template = "--service-namespace <namespace>";
             public const string HelpText = "Service namespace to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "xSdk";
         }
 
-        public static class ServiceVersion
+        internal static class ServiceVersion
         {
-            public const string Name = "service-version";
+            public const string Name = nameof(ServiceVersion);
             public const string Template = "--service-version <version>";
             public const string HelpText = "Service version to identify the application in OpenTelemetry environments";
             public const string DefaultValue = "stable";
-        }
-
-        public static class ServiceFullName
-        {
-            public const string Name = "service-fullname";
-            public const string HelpText = "Fullname for the service identify the application in OpenTelemetry environments";
         }
     }
 }

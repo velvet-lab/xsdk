@@ -17,18 +17,18 @@
 using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Logging;
 
 namespace xSdk.Data;
 
 public static class MappingFactory
 {
-    private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+    private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(MappingFactory));
 
     public static IMapper CreateMapper<TProfile>()
         where TProfile : MappingProfile, new()
     {
-        _logger.LogTrace("Create Mapper for Profile '{0}'", typeof(TProfile));
+        Logger.LogTrace("Create Mapper for Profile '{0}'", typeof(TProfile));
 
         var profile = new TProfile();
         var config = profile.CreateConfig((adapter) => { });
@@ -40,7 +40,7 @@ public static class MappingFactory
     public static IMapper CreateMapper<TProfile>(Action<TypeAdapterConfig> configure)
         where TProfile : MappingProfile, new()
     {
-        _logger.LogTrace("Create Mapper for Profile '{0}' with custom configuration", typeof(TProfile));
+        Logger.LogTrace("Create Mapper for Profile '{0}' with custom configuration", typeof(TProfile));
 
         var profile = new TProfile();
         var config = profile.CreateConfig(configure);

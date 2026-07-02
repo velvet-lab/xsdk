@@ -147,4 +147,39 @@ public class WebHostSetupTests
     {
         Assert.Equal("tls-key-file", WebHostOptions.Definitions.TlsKeyFile.Name);
     }
+
+    [Fact]
+    public void WebHostSetup_IsHttpsEnabled_DefaultsToFalse()
+    {
+        var setup = new WebHostOptions();
+
+        // Access a property to trigger initialization
+        _ = setup.Https;
+
+        Assert.False(setup.IsHttpsEnabled);
+    }
+
+    [Fact]
+    public void WebHostSetup_Definitions_AllowSystemPortsName_IsCorrect()
+    {
+        Assert.Equal("allow-system-ports", WebHostOptions.Definitions.AllowSystemPorts.Name);
+    }
+
+    [Fact]
+    public void WebHostSetup_Definitions_BindDefaultValue_IsLocalhost()
+    {
+        Assert.Equal("localhost", WebHostOptions.Definitions.Bind.DefaultValue);
+    }
+
+    [Fact]
+    public void WebHostSetup_Definitions_HttpDefaultValue_Is8080()
+    {
+        Assert.Equal(8080, WebHostOptions.Definitions.Http.DefaultValue);
+    }
+
+    [Fact]
+    public void WebHostSetup_Definitions_HttpsDefaultValue_Is8081()
+    {
+        Assert.Equal(8081, WebHostOptions.Definitions.Https.DefaultValue);
+    }
 }

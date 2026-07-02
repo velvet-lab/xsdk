@@ -23,7 +23,7 @@ public static class HostBuilderExtensions
 {
     public static IHostBuilder EnableCloudEvents(this IHostBuilder hostBuilder)
     {
-        hostBuilder.RegisterPluginHost<CloudEventPluginHost>();
+        hostBuilder.RegisterPluginHost<PluginHost>();
 
         return hostBuilder;
     }

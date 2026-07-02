@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- SonarQube needs this, do not change -->
+        <ProjectGuid>7a6d82f3-f74a-4512-96bf-a39d87b24ad8</ProjectGuid>
+    </PropertyGroup>
+    
+    <!--External dependencies-->
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Agents.AI" />
+        <PackageReference Include="Microsoft.Agents.AI.Declarative" />
+        <PackageReference Include="Microsoft.Agents.AI.Workflows" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\xSdk.Extensions.AspNetCore\src\xSdk.Extensions.AspNetCore.csproj" />
+        <ProjectReference Include="..\..\xSdk.Extensions.Commands\src\xSdk.Extensions.Commands.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\Models\" />
+    </ItemGroup>
+
+</Project>

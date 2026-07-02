@@ -40,4 +40,11 @@ Each ADR follows this structure:
 | [ADR-022](ADR-022-weikio-plugin-framework.md)             | Weikio.PluginFramework for Runtime Plugin Loading                | Accepted                       |
 | [ADR-023](ADR-023-aspnetcore-links-hypermedia.md)         | Hypermedia Links Extension for REST APIs                         | Accepted                       |
 | [ADR-024](ADR-024-xsdk-core-foundation-layer.md)          | xSdk.Core as Unified Foundation Layer                            | Accepted                       |
-| [ADR-025](ADR-025-consul-data-provider.md)                | HashiCorp Consul as Service-Discovery and Configuration Provider | Accepted                       |
+| [ADR-025](ADR-025-consul-data-provider.md)                | HashiCorp Consul as Service-Discovery and Configuration Provider | Accepted (think-tank)          |
+| [ADR-026](ADR-026-slim-host-builder-redesign.md)          | Slim Host Builder Redesign                                       | Accepted                       |
+| [ADR-027](ADR-027-plugin-host-model.md)                   | Plugin Host Model (IPluginHost / WebPluginHost)                  | Accepted                       |
+| [ADR-028](ADR-028-database-handler-objectpool.md)         | Database Handler Object Pool                                     | Accepted                       |
+| [ADR-029](ADR-029-aspnetcore-security-plugins.md)         | ASP.NET Core Security and Infrastructure Plugins                 | Accepted                       |
+| [ADR-030](ADR-030-ai-agents-extension.md)                 | AI Agents Integration as Host Extension                          | Accepted                       |
+| [ADR-031](ADR-031-microsoft-testing-platform.md)          | Microsoft Testing Platform for .NET Test Execution               | Accepted                       |
+| [ADR-032](ADR-032-plugin-host-lifecycle-extension.md)     | Plugin Host Lifecycle Extension                                  | Accepted                       |

@@ -31,23 +31,12 @@ public static class VariableServiceExtensions
             // Read all properties of the Implementation
             Type setupType = implementation.GetType();
 
-            string? mainPrefix = setupType
-                .Name
-                .Replace("implementation", "", StringComparison.InvariantCultureIgnoreCase)
-                .Replace("impl", "", StringComparison.InvariantCultureIgnoreCase)
-                .Replace("options", "", StringComparison.InvariantCultureIgnoreCase)
-                .Replace("setup", "", StringComparison.InvariantCultureIgnoreCase);
+            string? mainPrefix = null;
 
             VariablePrefixAttribute? prefixAttribute = setupType.GetAttribute<VariablePrefixAttribute>();
-            VariableNoPrefixAttribute? noprefixAttribute = setupType.GetAttribute<VariableNoPrefixAttribute>();
             if (prefixAttribute != null)
             {
                 mainPrefix = prefixAttribute.Prefix;
-            }
-
-            if (noprefixAttribute != null)
-            {
-                mainPrefix = null;
             }
 
             foreach (PropertyInfo property in setupType.GetProperties())

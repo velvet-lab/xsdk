@@ -16,6 +16,7 @@
 
 using xSdk.Data;
 using xSdk.Extensions.Links;
+using xSdk.Plugins.Links;
 
 namespace xSdk.Extensions.AspNetCore.Links.Tests;
 

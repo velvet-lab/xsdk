@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Logging;
 using VaultSharp;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
 
 namespace xSdk.Data;
 

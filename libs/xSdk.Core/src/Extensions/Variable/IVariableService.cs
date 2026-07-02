@@ -15,6 +15,7 @@
  */
 
 using System.Collections.Concurrent;
+using OpenTelemetry.Resources;
 
 namespace xSdk.Extensions.Variable;
 
@@ -43,4 +44,6 @@ public interface IVariableService
     Dictionary<string, object> ToDictionary();
 
     void RegisterProvider(Type providerType);
+
+    IResourceDetector CreateResourceDetector(IServiceProvider serviceProvider);
 }

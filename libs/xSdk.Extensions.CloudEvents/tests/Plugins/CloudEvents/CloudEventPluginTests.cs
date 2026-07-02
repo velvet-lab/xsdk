@@ -31,7 +31,7 @@ public class CloudEventPluginTests(WebHostTestFixture fixture) : IClassFixture<W
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        CloudEventPluginHost? plugin = service.GetPlugin<CloudEventPluginHost>();
+        PluginHost? plugin = service.GetPlugin<PluginHost>();
 
         Assert.NotNull(plugin);
     }

@@ -42,19 +42,30 @@ public static partial class Host
         };
 
         var slimHost = SlimHost.InitializeSlimHost(args, appOptions);
+        EnvironmentOptions slimEnvironmentOptions = slimHost.GetEnvironment();
 
         IHostBuilder builder = new HostBuilder()
             .SetSlimHost(slimHost)
-            .ConfigureHostConfiguration(configBuilder => HostConfigurationManager.LoadHostConfiguration(configBuilder, appOptions))
-            .ConfigureAppConfiguration((context, configBuilder) => HostConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions))
+            .ConfigureHostConfiguration(configBuilder =>
+            {
+                ConfigurationManager.LoadHostConfiguration(configBuilder, appOptions);
+                slimHost.ConfigurePluginHost(x => x.ConfigureHostConfiguration(configBuilder));
+            })
+            .ConfigureAppConfiguration((context, configBuilder) =>
+            {
+                context.EnrichEnvironment(slimEnvironmentOptions);
+
+                ConfigurationManager.LoadAppConfiguration(context, configBuilder, appOptions);
+                slimHost.ConfigurePluginHost(x => x.ConfigureAppConfiguration(context, configBuilder));
+            })
             .ConfigureServices(services =>
             {
                 slimHost.PostConfigure(services);
 
                 services
+                    .AddHostLogging(slimHost, slimEnvironmentOptions)
                     .RegisterApplicationOptions(appOptions)
-                    .RegisterOptions<EnvironmentOptions>(options => services
-                            .AddLogging(logBuilder => HostLoggingManager.ConfigureLogging(logBuilder, options)))
+                    .RegisterOptions<EnvironmentOptions>(options => options.PostConfigure(appOptions))
                     .AddVariableServices()
                     .AddFileServices()
                     .AddPluginServices();
@@ -63,10 +74,12 @@ public static partial class Host
                 services
                     .AddHostedService<HostInitializer>();
 
-                slimHost.ConfigurePluginHost(x => x.ConfigureServices(services));
-
             })
-            .ConfigureServices((context, services) => slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services)));
+            .ConfigureServices((context, services) =>
+            {
+                context.EnrichEnvironment(slimEnvironmentOptions);
+                slimHost.ConfigurePluginHost(x => x.ConfigureServices(context, services));
+            });
 
         return builder;
     }

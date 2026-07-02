@@ -20,12 +20,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
-using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Authentication;
 
-internal class DefaultAuthenticationPluginBuilder : PluginBuilder, IAuthenticationPluginBuilder
+internal class DefaultAuthenticationPluginBuilder(ILogger<DefaultAuthenticationPluginBuilder> logger) : PluginBuilder, IAuthenticationPluginBuilder
 {
     public void ConfigureAuthentication(AuthenticationBuilder builder)
     {
@@ -50,7 +49,7 @@ internal class DefaultAuthenticationPluginBuilder : PluginBuilder, IAuthenticati
         string? authorizationHeader = context.Request.Headers[HeaderNames.Authorization];
         if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith(JwtBearerDefaults.AuthenticationScheme))
         {
-            Logger.LogTrace("Bearer Auth is requested");
+            logger.LogTrace("Bearer Auth is requested");
             scheme = JwtBearerDefaults.AuthenticationScheme;
         }
     }

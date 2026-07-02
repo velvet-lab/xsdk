@@ -8,7 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\xSdk.Extensions.Telemetry.csproj" />
+      <Folder Include="Extensions\" />
+      <Folder Include="Plugins\" />
     </ItemGroup>
 
 </Project>

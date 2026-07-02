@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebApi;

@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
-
 namespace xSdk.Extensions.Plugin;
 
 public class PluginDescription : IPluginDescription
 {
     internal static int DefaultOrder => 99999;
-
-    protected ILogger Logger { get; } = LogManager.CreateLogger<PluginDescription>();
 
     public virtual int Order { get; } = DefaultOrder;
 

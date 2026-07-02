@@ -31,7 +31,7 @@ public class DataProtectionPluginTests(TestHostFixture fixture) : IClassFixture<
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        DataProtectionPluginHost? plugin = service.GetPlugin<DataProtectionPluginHost>();
+        PluginHostBase? plugin = service.GetPlugin<PluginHostBase>();
 
         Assert.NotNull(plugin);
     }

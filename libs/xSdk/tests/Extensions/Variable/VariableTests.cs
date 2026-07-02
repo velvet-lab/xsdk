@@ -154,4 +154,87 @@ public class VariableTests()
         Assert.Throws<ArgumentNullException>(() => Variable.Create(NAME, null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
+    [Fact]
+    public void Variable_Name_WithPrefix_ReturnsQualifiedName()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+        variable.SetPrefix("flat-file");
+
+        Assert.Equal("flat-file-file-path", variable.Name);
+    }
+
+    [Fact]
+    public void Variable_Name_WithoutPrefix_ReturnsRawName()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+
+        Assert.Equal("file-path", variable.Name);
+    }
+
+    [Fact]
+    public void Variable_Name_PrefixAlreadyPresent_DoesNotDoublePrefix()
+    {
+        var variable = Variable.Create("flat-file-file-path", typeof(string));
+        variable.SetPrefix("flat-file");
+
+        Assert.Equal("flat-file-file-path", variable.Name);
+    }
+
+    [Fact]
+    public void Variable_RawName_AlwaysReturnsUnqualifiedName()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+        variable.SetPrefix("flat-file");
+
+        Assert.Equal("file-path", variable.RawName);
+    }
+
+    [Fact]
+    public void Variable_Name_NoPrefixFlag_ReturnsRawName()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+        variable.SetPrefix("flat-file").DisablePrefix();
+
+        Assert.Equal("file-path", variable.Name);
+    }
+
+    [Fact]
+    public void Variable_Template_WithPrefix_PrependsPrefixToCommand()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+        variable.SetPrefix("flat-file");
+        variable.SetTemplate("--path <path>");
+
+        Assert.Equal("--flat-file-path <path>", variable.Template);
+    }
+
+    [Fact]
+    public void Variable_Template_WithoutPrefix_ReturnsOriginalCommand()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+        variable.SetTemplate("--path <path>");
+
+        Assert.Equal("--path <path>", variable.Template);
+    }
+
+    [Fact]
+    public void Variable_Template_WithPrefix_NoArgPart_ReturnsCommandOnly()
+    {
+        var variable = Variable.Create("use-lower-camel-case", typeof(bool));
+        variable.SetPrefix("flat-file");
+        variable.SetTemplate("--use-lower-camel-case");
+
+        Assert.Equal("--flat-file-use-lower-camel-case", variable.Template);
+    }
+
+    [Fact]
+    public void Variable_Template_NoPrefixFlag_DoesNotPrependPrefix()
+    {
+        var variable = Variable.Create("file-path", typeof(string));
+        variable.SetPrefix("flat-file").DisablePrefix();
+        variable.SetTemplate("--path <path>");
+
+        Assert.Equal("--path <path>", variable.Template);
+    }
+
 }

@@ -8,8 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\libs\xSdk\src\xSdk.csproj" />
-      <ProjectReference Include="..\..\shared\lib\Shared.csproj" />
+      <ProjectReference Include="..\..\..\libs\xSdk\src\xSdk.csproj" />      
     </ItemGroup>
 
 </Project>

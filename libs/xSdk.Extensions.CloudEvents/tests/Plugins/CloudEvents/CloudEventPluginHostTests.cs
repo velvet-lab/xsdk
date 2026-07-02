@@ -24,7 +24,7 @@ public class CloudEventPluginHostTests
     [Fact]
     public void ConfigureMvc_AddsCloudEventJsonInputFormatter()
     {
-        var host = new CloudEventPluginHost();
+        var host = new PluginHost();
         var options = new MvcOptions();
 
         host.ConfigureMvc(options);
@@ -35,7 +35,7 @@ public class CloudEventPluginHostTests
     [Fact]
     public void ConfigureMvc_InsertsFormatterAtIndexZero()
     {
-        var host = new CloudEventPluginHost();
+        var host = new PluginHost();
         var options = new MvcOptions();
 
         host.ConfigureMvc(options);
@@ -46,7 +46,7 @@ public class CloudEventPluginHostTests
     [Fact]
     public void ConfigureMvc_CalledTwice_AddsTwoFormatters()
     {
-        var host = new CloudEventPluginHost();
+        var host = new PluginHost();
         var options = new MvcOptions();
 
         host.ConfigureMvc(options);

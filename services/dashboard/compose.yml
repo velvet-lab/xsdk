@@ -6,5 +6,10 @@ services:
       - '18888:18888'
       - '4317:18889'
       - '4318:18890'
+    environment:
+      # Disable OTLP auth so exporters can push without an API key
+      - DASHBOARD__OTLP__AUTHMODE=Unsecured
+      # Disable frontend login for local development
+      - DASHBOARD__FRONTEND__AUTHMODE=Unsecured
     stdin_open: true
     tty: true

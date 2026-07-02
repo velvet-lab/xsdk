@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
-
 namespace xSdk.Extensions.Plugin;
 
 public abstract class PluginBuilder : IPluginBuilder
 {
-    protected ILogger Logger { get => LogManager.GetCurrentClassLogger(); }
+
 }

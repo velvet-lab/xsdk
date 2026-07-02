@@ -48,14 +48,14 @@ public sealed class UsernamePasswordAuth : VariableSetup
     {
         public static class Username
         {
-            public const string Name = "username";
+            public const string Name = nameof(Username);
             public const string Template = $"--vault-username <username>";
             public const string HelpText = "Username for username/password auth to access vault";
         }
 
         public static class Password
         {
-            public const string Name = "password";
+            public const string Name = nameof(Password);
             public const string Template = $"--vault-password <password>";
             public const string HelpText = "Password for username/password auth to access vault";
         }
