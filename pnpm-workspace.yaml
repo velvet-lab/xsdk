@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@semantic-release/github@12.0.9'
