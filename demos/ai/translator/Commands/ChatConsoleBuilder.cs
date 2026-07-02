@@ -1,6 +1,4 @@
 using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.Console.Cli.Help;
 using xSdk.Plugins.Commands;
 
 namespace xSdk.Demos.Commands;

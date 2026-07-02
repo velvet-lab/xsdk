@@ -2,6 +2,7 @@ using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Demos.AI.Executors;
 using xSdk.Extensions.AI;
+using xSdk.Plugins.AI;
 
 namespace xSdk.Demos.AI;
 

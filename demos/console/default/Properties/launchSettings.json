@@ -2,7 +2,7 @@
   "profiles": {
     "ReplConsole": {
       "commandName": "Project",
-      "commandLineArgs": "variable list"
+      "commandLineArgs": "variable list --format hallo"
     }
   }
 }

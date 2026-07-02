@@ -9,10 +9,11 @@ using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Telemetry;
 using xSdk.Extensions.Variable;
+using xSdk.Plugins.Telemetry;
 
 namespace xSdk.Demos.Builders;
 
-internal class TelemetryPluginBuilder(IVariableService variableService, IOptions<TelemetryPluginOptions> telemetryOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryPluginBuilder> logger) : PluginBuilder, ITelemetryPluginBuilder
+internal class TelemetryPluginBuilder(IVariableService variableService, IOptions<PluginOptions> telemetryOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<TelemetryPluginBuilder> logger) : PluginBuilder, ITelemetryPluginBuilder
 {
     internal const string OtlpEndpoint = "http://localhost:4317";
 

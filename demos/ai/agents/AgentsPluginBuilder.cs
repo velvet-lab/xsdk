@@ -1,11 +1,7 @@
-using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using OpenAI;
 using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
-using xSdk.Hosting;
+using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;
 

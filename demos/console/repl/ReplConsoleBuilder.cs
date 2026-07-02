@@ -1,22 +1,23 @@
-using Microsoft.Extensions.Options;
+using System.CommandLine;
 using Spectre.Console;
-using Spectre.Console.Cli;
-using Spectre.Console.Cli.Help;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Variable.Commands;
+using xSdk.Plugins.Commands;
 
 namespace xSdk.Demos;
 
-internal class ReplConsoleBuilder() : ReplConsolePluginBuilder
+internal class ReplConsoleBuilder() : IReplConsolePluginBuilder
 {
-    public override void Configure(IConfigurator builder)
+    public void Configure(IApplicationBuilder builder)
     {
-        builder
+        var root = builder
+            .SetDescription("Repl Console")
             .AddDefaultCommands()
-            .AddVariableCommands();
+            .AddVariableCommands()
+            .AddCommand<ReplCommand>("my", "Hello command");
     }
 
-    public override void CreateBanner()
+    public void CreateBanner()
     {
         AnsiConsole.Write(
             new FigletText("xSDK REPL Console")
@@ -24,20 +25,19 @@ internal class ReplConsoleBuilder() : ReplConsolePluginBuilder
                 .Centered());
     }
 
-    public override string CreateUserPrompt()
+    public string CreateUserPrompt()
         => AnsiConsole.Ask<string>("REPL> ");
 
-    public override void CreateLastWill()
+    public void CreateLastWill()
         => AnsiConsole.WriteLine("REPL console is shutting down. Goodbye!");
 
-    public override void CreateHelp(ICommandAppSettings settings, ICommandModel model)
+    public void CreateHelp(IList<Command> commands)
     {
-        var helpProvider = new HelpProvider(settings);
-
-        var helpItems = helpProvider.Write(model, null);
-        foreach (var item in helpItems.Skip(3))
+        foreach(var command in commands)
         {
-            AnsiConsole.Write(item);
+            AnsiConsole.WriteLine($"Command: {command.Name}");
+            AnsiConsole.WriteLine($"Description: {command.Description}");
+            AnsiConsole.WriteLine();
         }
     }
 }

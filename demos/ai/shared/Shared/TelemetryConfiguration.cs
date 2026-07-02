@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using xSdk.Extensions.AI;
-using xSdk.Extensions.Telemetry;
+using xSdk.Plugins.Telemetry;
+
 
 namespace xSdk.Demos;
 
 public static class TelemetryConfiguration
 {
-    public static void Default(TelemetryPluginOptions options)
+    public static void Default(PluginOptions options)
     {
         options.LoggingEnabled = true;
         options.TracingEnabled = true;

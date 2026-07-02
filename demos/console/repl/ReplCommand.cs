@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
 
 namespace xSdk.Demos;
 
-internal class ReplCommand : Command<EmptyCommandSettings>
+internal class ReplCommand : CommandHandler
 {
-    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
+    public override int Execute()
     {
         return 0;
     }

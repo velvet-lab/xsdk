@@ -6,6 +6,7 @@ using OpenAI;
 using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
 using xSdk.Extensions.Logging;
+using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;
 
@@ -29,7 +30,7 @@ public static class OpenAIHelper
         });
     }
 
-    public static IEmbeddingGenerator? CreateEmbeddingGenerator(AIPluginOptions? options)
+    public static IEmbeddingGenerator? CreateEmbeddingGenerator(PluginOptions? options)
     {
         if (options is not null)
         {

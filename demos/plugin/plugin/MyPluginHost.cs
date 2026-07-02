@@ -21,7 +21,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Demos;
 
-public class MyPluginHost(ILogger<MyPluginHost> logger) : PluginHost
+public class MyPluginHost(ILogger<MyPluginHost> logger) : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {

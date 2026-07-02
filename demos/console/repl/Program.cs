@@ -31,7 +31,7 @@ IHost host = xSdk
         .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
 
         // Enable Commands with default configuration
-        .EnableReplConsole<ReplConsoleBuilder, ReplCommand>()
+        .EnableReplConsole<ReplConsoleBuilder>()
         .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

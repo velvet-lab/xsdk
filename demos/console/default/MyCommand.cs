@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using Spectre.Console;
-using Spectre.Console.Cli;
+using xSdk.Extensions.Commands;
 
 namespace xSdk.Demos;
 
-[Description(Definitions.HelpText)]
-internal class MyCommand : Command<EmptyCommandSettings>
+
+internal partial class MyCommand : CommandHandler
 {
     public static class Definitions
     {
@@ -16,9 +12,9 @@ internal class MyCommand : Command<EmptyCommandSettings>
         public const string HelpText = "Custom Command";
     }
 
-    protected override int Execute(CommandContext context, EmptyCommandSettings settings, CancellationToken cancellationToken)
+    public override Task<int> ExecuteAsync(CancellationToken cancellationToken)
     {
         AnsiConsole.MarkupLine("[green]Hello from MyCommand![/]");
-        return 0;
+        return Task.FromResult(0);
     }
 }
