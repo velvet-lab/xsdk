@@ -3,12 +3,12 @@ name: WeatherAssistant
 description: Helpful weather assistant
 instructions: You are a helpful assistant. You answer questions using the tools provided.
 model:
-    name: qwen3:8b
-    options:
-        temperature: 0.9
-        topP: 0.95
-        allowMultipleToolCalls: true
-        chatToolMode: auto
+  name: qwen3:8b
+  options:
+    temperature: 0.9
+    topP: 0.95
+    allowMultipleToolCalls: true
+    chatToolMode: auto
 tools:
   - kind: function
     name: GetWeather

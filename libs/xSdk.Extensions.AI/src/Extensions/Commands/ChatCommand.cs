@@ -17,12 +17,12 @@ internal class ChatCommand(IChatMessageHandler handler) : CommandHandler
 
     public override async Task<int> ExecuteAsync(CancellationToken cancellationToken)
     {
-        if(UserInput is not null && UserInput.Length > 0)
+        if (UserInput is not null && UserInput.Length > 0)
         {
             var message = string.Join(" ", UserInput);
             return await handler.HandleMessageAsync(message, cancellationToken);
         }
-    
+
         return 0;
     }
 }

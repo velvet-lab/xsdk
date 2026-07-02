@@ -8,7 +8,7 @@ namespace xSdk.Demos;
 internal class AgentsPluginBuilder() : AIPluginBuilder, IAIPluginBuilder
 {
     public override void Initialize()
-    {   
+    {
         // Register a Layer for OpenAI Clients, so that it can be used by agents and tools
         CreateAILayer(OpenAIHelper.CreateClient)
 

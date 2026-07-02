@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
+using System.Runtime.CompilerServices;
+using Microsoft.Agents.AI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Agents.AI;
 using xSdk.Demos;
 using xSdk.Demos.Builder;
+using xSdk.Demos.Hosting;
+using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.AI;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.Telemetry;
 using xSdk.Plugins.WebApi;
 using xSdk.Plugins.WebSecurity;
-using xSdk.Demos.Hosting;
-using System.Runtime.CompilerServices;
-using xSdk.Extensions.Logging;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]

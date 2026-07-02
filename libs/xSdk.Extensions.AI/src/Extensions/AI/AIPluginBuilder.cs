@@ -12,7 +12,7 @@ namespace xSdk.Extensions.AI;
 
 public abstract class AIPluginBuilder : PluginBuilder, IAIPluginBuilder
 {
-    private readonly Dictionary<Type, IAILayerBuilder> _aiLayerBuilders = [];    
+    private readonly Dictionary<Type, IAILayerBuilder> _aiLayerBuilders = [];
 
     public abstract void Initialize();
 
@@ -29,12 +29,12 @@ public abstract class AIPluginBuilder : PluginBuilder, IAIPluginBuilder
             var aiLayer = new AILayerBuilder<TClient>(value);
             _aiLayerBuilders.AddOrNew(key, aiLayer);
             return aiLayer;
-        }        
+        }
     }
 
     internal string[] GetRegisteredAgentKeys()
     {
-        return [.. _aiLayerBuilders.Values.SelectMany(x => x.Definitions.Select(y => y.Name)) ];
+        return [.. _aiLayerBuilders.Values.SelectMany(x => x.Definitions.Select(y => y.Name))];
     }
 
     internal void InitializeLayers(IServiceCollection services, PluginOptions? pluginOptions, EnvironmentOptions? environmentOptions)

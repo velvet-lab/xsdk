@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
         {
             Guard.IsNotNull(name);
             Guard.IsNotNull(factory);
-            
+
             services.AddKeyedService(name, (sp, key) =>
             {
                 Guard.IsNotNull(key);

@@ -38,7 +38,7 @@ public static partial class WebHost
     public static IHostBuilder CreateBuilder(string[] args, string? appName, string? appCompany, string? appPrefix)
     {
         IHostBuilder hostBuilder = xSdk.Hosting.Host.CreateBuilder(args, appName, appCompany, appPrefix);
-        SlimHost slimHost = hostBuilder.GetSlimHost();        
+        SlimHost slimHost = hostBuilder.GetSlimHost();
 
         hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
@@ -59,7 +59,7 @@ public static partial class WebHost
                 {
                     context.EnrichEnvironment(environmentSetup);
                     slimHost.ConfigureWebPluginHost(x => x.ConfigureAppConfiguration(context, configBuilder));
-                })                
+                })
                 // Configure Services with Context
                 .ConfigureServices((context, services) =>
                 {

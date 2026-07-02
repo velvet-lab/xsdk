@@ -42,9 +42,9 @@ internal sealed class QueueLogger() : ILogger
                 try
                 {
                     string category = nameof(QueueLogger);
-                    if(!string.IsNullOrEmpty(logInformation.CategoryName))
+                    if (!string.IsNullOrEmpty(logInformation.CategoryName))
                     {
-                        category = logInformation.CategoryName;                        
+                        category = logInformation.CategoryName;
                     }
 
                     ILogger logger = factory.CreateLogger(category);
@@ -55,7 +55,7 @@ internal sealed class QueueLogger() : ILogger
                     else
                     {
                         logger.Log(logInformation.LogLevel, logInformation.EventId, logInformation.Exception, logInformation.Message);
-                    }                    
+                    }
                 }
                 catch
                 {

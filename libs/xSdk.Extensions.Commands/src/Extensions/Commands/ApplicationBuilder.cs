@@ -67,7 +67,7 @@ public class ApplicationBuilder : IApplicationBuilder
 
 public sealed class ApplicationBuilder<TApplication> : ApplicationBuilder
     where TApplication : class, IApplication
-{   
+{
     public override void Build(IServiceCollection services)
     {
         base.Build(services);
@@ -81,7 +81,7 @@ public sealed class ApplicationBuilder<TApplication> : ApplicationBuilder
             var options = provider.GetRequiredService<IOptions<PluginOptions>>();
             if (options.Value.DisableDefaultHelp)
             {
-                foreach(var option in rootCommand.Options)
+                foreach (var option in rootCommand.Options)
                 {
                     if (option is HelpOption helpOption)
                     {
@@ -93,6 +93,6 @@ public sealed class ApplicationBuilder<TApplication> : ApplicationBuilder
 
             return ActivatorUtilities.CreateInstance<TApplication>(provider);
         });
-        
-    }    
+
+    }
 }

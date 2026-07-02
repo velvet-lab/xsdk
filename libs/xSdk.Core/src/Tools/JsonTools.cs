@@ -53,7 +53,7 @@ public static class JsonTools
 
     public static string Merge(string income, string outcome)
     {
-        var result = new JObject();        
+        var result = new JObject();
         try
         {
             Logger.LogInformation("Try to merge States");

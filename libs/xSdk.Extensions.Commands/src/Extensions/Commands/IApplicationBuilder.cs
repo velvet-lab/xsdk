@@ -13,6 +13,6 @@ public interface IApplicationBuilder
 
     IApplicationBuilder SetDescription(string description);
 
-    void Build(IServiceCollection services);    
+    void Build(IServiceCollection services);
 }
 

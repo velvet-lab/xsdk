@@ -34,7 +34,7 @@ public sealed class DatalayerBuilder(IServiceCollection services) : IDatalayerBu
         where TDatabase : class, IDatabase
         where TDatabaseOptions : class, IVariableSetup
     {
-        ILogger logger = LogManager.CreateLogger<DatalayerBuilder>();    
+        ILogger logger = LogManager.CreateLogger<DatalayerBuilder>();
         if (string.IsNullOrEmpty(name))
         {
             name = Globals.DefaultDatalayerName;

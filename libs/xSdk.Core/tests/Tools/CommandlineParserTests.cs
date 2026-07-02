@@ -197,7 +197,7 @@ public class CommandlineParserTests
 
         Assert.Contains("run", parser.Arguments);
         Assert.Contains("myapp", parser.Arguments);
-    }    
+    }
 
     [Fact]
     public void ContainsPattern_SingleDashPrefix_ReturnsTrue()

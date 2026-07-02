@@ -1,14 +1,14 @@
-using Microsoft.Extensions.Hosting;
-using xSdk.Hosting;
-using xSdk.Extensions.Commands;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Commands;
+using xSdk.Hosting;
 
 namespace xSdk.Plugins.Commands;
 
 public static class HostBuilderExtensions
 {
     extension(IHostBuilder builder)
-    {        
+    {
         public IHostBuilder EnableChatConsole<TBuilder, TChatMessageHandler>()
             where TBuilder : class, IReplConsolePluginBuilder
             where TChatMessageHandler : class, IChatMessageHandler

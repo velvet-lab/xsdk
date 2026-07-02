@@ -14,6 +14,6 @@ internal sealed partial class FileInspectorExecutor([FromKeyedServices("FileInsp
 
         AgentResponse<InspectionResult> result = await agent.RunAsync<InspectionResult>(message, session: session, cancellationToken: cancellationToken);
 
-        return result.Result;        
+        return result.Result;
     }
 }

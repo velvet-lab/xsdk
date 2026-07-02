@@ -20,7 +20,7 @@ public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuild
         CommandArgument("commands"),
         Description("Show help for the specified commands")
     ]
-    public string[] Commands {  get; set; }
+    public string[] Commands { get; set; }
 
     public override int Execute()
     {
@@ -45,14 +45,14 @@ public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuild
         }
 
         return 0;
-    
+
     }
 
     private IEnumerable<Command> SearchCommand(Command parent, string filter)
     {
-        foreach(var command in parent.Subcommands)
+        foreach (var command in parent.Subcommands)
         {
-            if(string.Compare(command.Name, filter, StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(command.Name, filter, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 yield return command;
             }
@@ -64,5 +64,5 @@ public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuild
                 }
             }
         }
-    }    
+    }
 }

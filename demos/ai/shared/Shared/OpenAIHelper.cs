@@ -60,5 +60,5 @@ public static class OpenAIHelper
             .AsBuilder()
             .EnableTelemetry(true)
             .Build();
-    }    
+    }
 }

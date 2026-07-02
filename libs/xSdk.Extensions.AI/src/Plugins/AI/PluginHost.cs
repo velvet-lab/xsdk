@@ -37,7 +37,7 @@ internal partial class PluginHost(IAIPluginBuilder pluginBuilder, IOptions<Plugi
             }
 
             concreatePluginBuilder.InitializeLayers(services, pluginOptions.Value, environmentOptions.Value);
-        }            
+        }
     }
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder builder)

@@ -20,11 +20,11 @@ public abstract class CommandHandler : ICommandHandler
     /// <returns>True if the method has been overridden</returns>
     private static bool HasMethodBeenOverridden(MethodInfo? method)
     {
-        if(method == null)
+        if (method == null)
         {
             return false;
         }
-    
+
         // Check if this is the actual implementation in CommandHandler
         // If a child class overrides this method, it won't be the same implementation
         if (method.DeclaringType == typeof(CommandHandler))

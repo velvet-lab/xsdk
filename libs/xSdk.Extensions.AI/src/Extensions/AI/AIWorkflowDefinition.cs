@@ -21,7 +21,7 @@ internal class AIWorkflowDefinition<TStartExecutor>(string name, string? descrip
         string executorName = ExecutorExtensions.RetrieveExecutorName<TStartExecutor>();
 
         TStartExecutor firstExecutor = provider.GetKeyedService<TStartExecutor>(executorName) ?? throw new InvalidOperationException($"Unable to resolve the starting executor of type {typeof(TStartExecutor).FullName} for workflow '{Name}'. Ensure it is registered in the service collection.");
-        var builder = new WorkflowBuilder(firstExecutor);        
+        var builder = new WorkflowBuilder(firstExecutor);
 
         if (!string.IsNullOrEmpty(Name))
         {

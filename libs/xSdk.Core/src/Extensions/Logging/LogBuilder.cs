@@ -4,7 +4,7 @@ namespace xSdk.Extensions.Logging;
 
 internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLevel) : ILogBuilder
 {
-    private readonly List<FilterItem> _filters = new ();
+    private readonly List<FilterItem> _filters = new();
 
     private class FilterItem
     {
@@ -21,7 +21,7 @@ internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLev
         public Func<string?, string?, LogLevel, bool>? ProviderAndCategoryFilter { get; set; }
 
         public bool IsLoggingAllowed(LogLevel level)
-        {            
+        {
             if (Filter is not null)
             {
                 return Filter(level);
@@ -39,7 +39,7 @@ internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLev
 
             if (CategoryFilter is not null)
             {
-                return CategoryFilter(category, level);                
+                return CategoryFilter(category, level);
             }
             else if (Filter is not null)
             {
@@ -50,7 +50,7 @@ internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLev
         }
         public bool IsLoggingAllowed(string? provider, string? category, LogLevel level)
         {
-            if(!string.Equals(provider, Provider))
+            if (!string.Equals(provider, Provider))
             {
                 return true;
             }
@@ -83,7 +83,7 @@ internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLev
     }
 
     public void IsLoggingAllowed(Func<string?, LogLevel, bool> filter)
-    {        
+    {
         _filters.Add(new FilterItem
         {
             CategoryFilter = filter

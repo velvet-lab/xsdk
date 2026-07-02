@@ -168,7 +168,7 @@ internal class FileSystemService : IFileSystemService
                     fs.CreateDirectory(realPath);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogTrace(ex, "Folder '{realPath}' could not created", realPath);
             }

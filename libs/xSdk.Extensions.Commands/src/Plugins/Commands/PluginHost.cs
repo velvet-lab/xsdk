@@ -39,6 +39,6 @@ internal sealed class PluginHost(IApplicationBuilder builder) : PluginHostBase
 
         services.AddSingleton<CommandActivator>();
         builder
-            .Build(services);        
+            .Build(services);
     }
 }

@@ -65,7 +65,7 @@ public static class HostBuilderExtensions
                 .EnableConsole<TConsolePluginOptions>(_ => { });
 
         public IHostBuilder EnableConsole<TConsolePluginOptions>(Action<TConsolePluginOptions> configure)
-            where TConsolePluginOptions : PluginOptions, new()           
+            where TConsolePluginOptions : PluginOptions, new()
             => builder
                 .RegisterPluginHost<PluginHost>()
                 .RegisterPluginHostOptions<TConsolePluginOptions>(configure);

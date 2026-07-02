@@ -43,7 +43,7 @@ public class TelemetryOptionsTests
 
         Assert.False(options.MetricsEnabled);
     }
-    
+
     [Fact]
     public void TelemetryOptions_SetIsLoggingEnabled_StoresValue()
     {

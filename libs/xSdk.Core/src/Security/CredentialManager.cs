@@ -31,7 +31,7 @@ public static class CredentialManager
 
     public static TCredentials? LoadCredentials<TCredentials>(string context)
         where TCredentials : Credentials, new()
-    {        
+    {
         Logger.LogInformation("Try to load encrypted credentials");
 
         var credsFile = GetCredsFileName(context);

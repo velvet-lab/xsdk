@@ -1,7 +1,7 @@
+using System.Linq;
 using Microsoft.Agents.ObjectModel;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 
 namespace xSdk.Extensions.AI;
 

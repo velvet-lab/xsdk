@@ -7,6 +7,6 @@ public sealed class CommandArgumentAttribute : Attribute
 
     public CommandArgumentAttribute(string name)
     {
-        Name = name;        
+        Name = name;
     }
 }

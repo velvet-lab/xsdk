@@ -60,5 +60,5 @@ public sealed class ChatApplication(RootCommand command, IReplConsolePluginBuild
         builder.CreateLastWill();
 
         return Environment.ExitCode;
-    }    
+    }
 }

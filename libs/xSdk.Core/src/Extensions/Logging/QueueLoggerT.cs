@@ -32,7 +32,7 @@ internal sealed class QueueLogger<T> : ILogger<T>
         string categoryName = GetCategoryName();
         _logger = factory.CreateLogger(categoryName);
     }
-    
+
     public IDisposable? BeginScope<TState>(TState state)
         where TState : notnull
         => _logger.BeginScope<TState>(state);

@@ -61,7 +61,7 @@ public class LogManagerTests
         ILogger logger = LogManager.CreateLogger("InitTest");
         Assert.NotNull(logger);
     }
-    
+
     [Fact]
     public void CreateLogger_TwiceSameName_ReturnsDifferentInstances()
     {

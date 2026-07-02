@@ -25,7 +25,7 @@ using xSdk.Extensions.Plugin;
 namespace xSdk.Plugins.Authentication;
 
 internal class DefaultAuthenticationPluginBuilder(ILogger<DefaultAuthenticationPluginBuilder> logger) : PluginBuilder, IAuthenticationPluginBuilder
-{    
+{
     public void ConfigureAuthentication(AuthenticationBuilder builder)
     {
 

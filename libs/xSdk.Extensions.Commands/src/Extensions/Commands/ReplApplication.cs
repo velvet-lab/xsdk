@@ -13,7 +13,7 @@ internal class ReplApplication(RootCommand command, IReplConsolePluginBuilder bu
         bool isCleared = false;
 
         var parser = SpecificCommandlineParser.Create(args);
-        string[] replArgs = parser.Arguments;        
+        string[] replArgs = parser.Arguments;
 
         builder.CreateBanner();
 

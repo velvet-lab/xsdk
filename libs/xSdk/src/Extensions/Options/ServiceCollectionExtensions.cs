@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
             where TOptions : class, IVariableSetup
         {
             services
-                .AddOptions<TOptions>(name)               
+                .AddOptions<TOptions>(name)
                 .Configure<IVariableService, IValidator<TOptions>>((options, variableService, validator) =>
                 {
                     variableService.ParseForVariables(options);
@@ -87,6 +87,6 @@ public static class ServiceCollectionExtensions
             services.TryAddSingleton<IValidator<TOptions>, DefaultOptionsValidator<TOptions>>();
         }
 
-    
+
     }
-}   
+}

@@ -30,14 +30,14 @@ internal class CommandActivator
             OptionManager.Inject(handler, parseResult);
             ArgumentManager.Inject(handler, parseResult);
 
-            concrecteHandler.Context = new CommandContext { ParseResult = parseResult };            
+            concrecteHandler.Context = new CommandContext { ParseResult = parseResult };
             if (concrecteHandler.IsAsyncOverridden)
             {
                 commandResult = await handler.ExecuteAsync(token);
             }
             else
             {
-                commandResult = handler.Execute();                
+                commandResult = handler.Execute();
             }
         }
 

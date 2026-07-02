@@ -191,7 +191,7 @@ public class TestHostFixture : IDisposable
         {
             foreach (IHostedService hostedService in hostedServices.Where(x => x is HostInitializer))
             {
-                hostedService.StartAsync(CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();                                
+                hostedService.StartAsync(CancellationToken.None).ConfigureAwait(false).GetAwaiter().GetResult();
             }
         }
 

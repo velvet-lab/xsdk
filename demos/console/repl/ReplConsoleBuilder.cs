@@ -33,7 +33,7 @@ internal class ReplConsoleBuilder() : IReplConsolePluginBuilder
 
     public void CreateHelp(IList<Command> commands)
     {
-        foreach(var command in commands)
+        foreach (var command in commands)
         {
             AnsiConsole.WriteLine($"Command: {command.Name}");
             AnsiConsole.WriteLine($"Description: {command.Description}");

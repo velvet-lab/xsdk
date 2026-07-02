@@ -22,7 +22,7 @@ internal partial class AILayerBuilder<TClient>
         BuildExecutors(services);
         BuildTools(services);
 
-        BuildAgents(services, pluginOptions, environmentOptions);        
+        BuildAgents(services, pluginOptions, environmentOptions);
         BuildWorkflows(services);
     }
 
@@ -72,7 +72,8 @@ internal partial class AILayerBuilder<TClient>
         }
     }
 
-    private void BuildTools(IServiceCollection services) {
+    private void BuildTools(IServiceCollection services)
+    {
 
         Logger.LogInformation("Registering {ToolCount} tools in the AI Layer", _tools.Count);
         foreach (KeyValuePair<string, AIFunction> tool in _tools)

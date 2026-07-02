@@ -9,8 +9,8 @@ namespace xSdk.Extensions.AI;
 internal partial class AILayerBuilder<TClient>
 {
     private Func<TClient, string, IChatClient>? _chatClientFactory;
-    private Func<IServiceProvider, string, AIDefinition, AIAgent?>? _agentFactory;    
-    private readonly Dictionary<string, AIFunction> _tools = [];    
+    private Func<IServiceProvider, string, AIDefinition, AIAgent?>? _agentFactory;
+    private readonly Dictionary<string, AIFunction> _tools = [];
     private readonly Dictionary<string, Type> _executorDefinitions = [];
 
     private readonly List<AIDefinition> _agentDefinitions = [];
@@ -41,7 +41,7 @@ internal partial class AILayerBuilder<TClient>
     {
         AddExecutor<TStartExecutor>();
 
-        _workflowDefinitions.Add(new AIWorkflowDefinition<TStartExecutor>(name, description, factory));        
+        _workflowDefinitions.Add(new AIWorkflowDefinition<TStartExecutor>(name, description, factory));
         return this;
     }
 
@@ -59,7 +59,7 @@ internal partial class AILayerBuilder<TClient>
 
     public IAILayerBuilder<TClient> AddExecutor<TExecutor>()
         where TExecutor : Executor
-    {        
+    {
         AddExecutor<TExecutor>(ExecutorExtensions.RetrieveExecutorName<TExecutor>());
         return this;
     }

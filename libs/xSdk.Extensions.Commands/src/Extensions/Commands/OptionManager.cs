@@ -20,22 +20,22 @@ internal static class OptionManager
     internal static Option[] Build(PropertyInfo[] properties)
     {
         var result = new List<Option>();
-        foreach(PropertyInfo property in properties)
+        foreach (PropertyInfo property in properties)
         {
             var option = Build(property);
-            if(option is not null)
+            if (option is not null)
             {
                 result.Add(option);
             }
-            
+
         }
         return result.ToArray();
     }
 
     internal static Option? Build(PropertyInfo property)
-    { 
+    {
         var attribute = property.GetAttribute<CommandOptionAttribute>();
-        if(attribute is null)
+        if (attribute is null)
         {
             return default;
         }
@@ -46,7 +46,7 @@ internal static class OptionManager
         {
             var name = Normalizer.NormalizeOptionName(attribute.Name.ToLowerInvariant());
             var aliases = Normalizer.NormalizeOptionAliases(attribute.Aliases);
-            
+
 
             var optionObject = constructor.Invoke(new object[] { name, aliases }) as Option;
             if (optionObject is not null)

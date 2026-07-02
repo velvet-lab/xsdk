@@ -48,8 +48,8 @@ internal static class ArgumentManager
 
             var argumentObject = constructor.Invoke(new object[] { name }) as Argument;
             if (argumentObject is not null)
-            {                
-                argumentObject.Description = property.Description();                
+            {
+                argumentObject.Description = property.Description();
                 return argumentObject;
             }
         }
@@ -90,7 +90,7 @@ internal static class ArgumentManager
         }
         catch (Exception ex)
         {
-            Logger.LogWarning(ex, "Failed to inject argument '{attributeName}' into property '{propertyName}' of handler '{handlerName}'.", attribute.Name, property.Name, handler.GetType().Name);            
+            Logger.LogWarning(ex, "Failed to inject argument '{attributeName}' into property '{propertyName}' of handler '{handlerName}'.", attribute.Name, property.Name, handler.GetType().Name);
         }
     }
 }

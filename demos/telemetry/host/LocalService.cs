@@ -22,7 +22,7 @@ namespace xSdk.Demos;
 
 internal class LocalService(ILogger<LocalService> logger)
 {
-    private static readonly ActivitySource LocalSource = Diagnostics.Source;    
+    private static readonly ActivitySource LocalSource = Diagnostics.Source;
 
     // Metrik-Namen folgen lowercase.with.dots-Konvention (ADR-014)
     private readonly Counter<int> _counter = Diagnostics.Meter.CreateCounter<int>("demo.local.work.calls", description: "Count the calls for methods", unit: "times");

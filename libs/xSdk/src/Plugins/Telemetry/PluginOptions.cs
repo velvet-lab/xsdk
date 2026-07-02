@@ -24,7 +24,7 @@ public sealed class PluginOptions : PluginOptionsBase
     [Variable(
         name: Definitions.LoggingEnabled.Name,
         template: Definitions.LoggingEnabled.Template,
-        helpText: Definitions.LoggingEnabled.HelpText        
+        helpText: Definitions.LoggingEnabled.HelpText
     )]
     public bool LoggingEnabled
     {
@@ -35,7 +35,7 @@ public sealed class PluginOptions : PluginOptionsBase
     [Variable(
         name: Definitions.TracingEnabled.Name,
         template: Definitions.TracingEnabled.Template,
-        helpText: Definitions.TracingEnabled.HelpText       
+        helpText: Definitions.TracingEnabled.HelpText
     )]
     public bool TracingEnabled
     {
@@ -46,7 +46,7 @@ public sealed class PluginOptions : PluginOptionsBase
     [Variable(
         name: Definitions.MetricsEnabled.Name,
         template: Definitions.MetricsEnabled.Template,
-        helpText: Definitions.MetricsEnabled.HelpText        
+        helpText: Definitions.MetricsEnabled.HelpText
     )]
     public bool MetricsEnabled
     {

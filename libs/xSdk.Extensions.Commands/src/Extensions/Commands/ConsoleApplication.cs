@@ -3,7 +3,7 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ConsoleApplication(RootCommand command) : IApplication    
+internal class ConsoleApplication(RootCommand command) : IApplication
 {
     public virtual async Task<int> RunAsync(string[] args)
     {

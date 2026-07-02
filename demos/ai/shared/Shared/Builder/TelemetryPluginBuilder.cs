@@ -34,7 +34,7 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
     public void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options)
     {
         options.IncludeFormattedMessage = true;
-        options.IncludeScopes = true;        
+        options.IncludeScopes = true;
     }
 
     public void ConfigureLoggingProvider(LoggerProviderBuilder builder)
@@ -49,7 +49,7 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
         builder
             .AddAIInstrumentation()
             .AddAspNetCoreInstrumentation()
-            .AddEventCountersInstrumentation()            
+            .AddEventCountersInstrumentation()
             .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
             .AddProcessInstrumentation()
@@ -63,10 +63,10 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
             .AddAIInstrumentation()
             .AddAspNetCoreInstrumentation()
             .AddGrpcClientInstrumentation()
-            .AddHttpClientInstrumentation()            
+            .AddHttpClientInstrumentation()
             // Add Exporters
             .AddOtlpExporter(ConfigureOtlp);
-    }  
+    }
 
     private static void ConfigureOtlp(OtlpExporterOptions options)
     {
@@ -76,6 +76,6 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
         options.Protocol = OtlpExportProtocol.Grpc;
-        options.Endpoint = new Uri(OtlpEndpoint);        
+        options.Endpoint = new Uri(OtlpEndpoint);
     }
 }

@@ -14,7 +14,7 @@ public static class ChatClientBuilderExtensions
         {
             builder
                 .UseOpenTelemetry(sourceName: Diagnostics.SourceName, configure: cfg => cfg.EnableSensitiveData = enableSensitiveData);
-                //.UseLogging();
+            //.UseLogging();
 
             return builder;
         }

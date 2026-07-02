@@ -31,7 +31,7 @@ public interface IPluginHost : IPluginDescription
 
     void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder);
 
-    void ConfigureLogging(ILogBuilder builder);    
+    void ConfigureLogging(ILogBuilder builder);
 
     void ConfigureServices(HostBuilderContext context, IServiceCollection services);
 }

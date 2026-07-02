@@ -103,7 +103,7 @@ public sealed partial class EnvironmentOptions
 
     private static string DetermineContentRoot()
     {
-        string? contentRoot = ReadCommandlineValue<string>( Definitions.ContentRoot.Name);
+        string? contentRoot = ReadCommandlineValue<string>(Definitions.ContentRoot.Name);
         if (string.IsNullOrEmpty(contentRoot))
         {
             contentRoot = Environment.CurrentDirectory;

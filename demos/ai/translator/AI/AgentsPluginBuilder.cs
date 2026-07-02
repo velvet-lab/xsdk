@@ -36,7 +36,7 @@ internal class AgentsPluginBuilder() : AIPluginBuilder, IAIPluginBuilder
 
         Workflow workflow = builder
             .AddEdge(startExecutor, frenchExecutor)
-            .AddEdge(startExecutor, italianExecutor)   
+            .AddEdge(startExecutor, italianExecutor)
             .Build();
 
         return workflow;

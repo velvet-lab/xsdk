@@ -25,6 +25,6 @@ internal sealed class QueueLogInformation<TState>(
     string? message) : QueueLogInformation(categoryName, logLevel, eventId, exception, message)
 {
     public TState State => state;
-    
+
     public Func<TState, Exception?, string> Formatter => formatter;
 }

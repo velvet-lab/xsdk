@@ -4,7 +4,7 @@ namespace xSdk.Extensions.AI;
 
 internal static class ExecutorExtensions
 {
-    extension<TExecutor> (TExecutor executor)
+    extension<TExecutor>(TExecutor executor)
         where TExecutor : Executor
     {
         internal string RetrieveExecutorName()

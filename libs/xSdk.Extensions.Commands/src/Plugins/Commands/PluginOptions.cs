@@ -7,7 +7,7 @@ using xSdk.Extensions.Variable.Attributes;
 namespace xSdk.Plugins.Commands;
 
 [VariablePrefix("console")]
-public class PluginOptions :  PluginOptionsBase
+public class PluginOptions : PluginOptionsBase
 {
     [Variable(
             name: Definitions.DisableDefaultHelp.Name,

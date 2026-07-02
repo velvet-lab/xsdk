@@ -21,6 +21,6 @@ using xSdk.Extensions.Plugin;
 namespace xSdk.Plugins.AI;
 
 public interface IAIPluginBuilder : IPluginBuilder
-{    
+{
     void Initialize();
 }

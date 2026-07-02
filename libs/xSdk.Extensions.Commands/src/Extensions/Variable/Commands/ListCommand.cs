@@ -35,7 +35,7 @@ internal partial class ListCommand(IVariableService variableSvc, ILogger<ListCom
     [
         CommandOption("format", "f"),
         Description("Formats the Output (default Name, Template, Protected, Prefix, Defined, Value)"),
-    ]    
+    ]
     public string? FormatString { get; set; } = "Name, Template, Protected, Prefix, Defined, Value";
 
     [

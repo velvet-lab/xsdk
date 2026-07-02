@@ -11,7 +11,7 @@ internal class ChatCommandlineParser : CommandlineParser
 
     protected ChatCommandlineParser(string? input) : base(input)
     {
-        
+
     }
 
     internal static ChatCommandlineParser Create(string[] args)

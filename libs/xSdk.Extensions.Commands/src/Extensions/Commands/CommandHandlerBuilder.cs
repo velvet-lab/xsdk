@@ -138,5 +138,5 @@ internal class CommandHandlerBuilder : ICommandHandlerBuilder
         {
             command.Arguments.Add(argument);
         }
-    }    
+    }
 }

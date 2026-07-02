@@ -21,5 +21,5 @@ namespace xSdk.Extensions.Plugin;
 
 public abstract class PluginBuilder : IPluginBuilder
 {
-    
+
 }
