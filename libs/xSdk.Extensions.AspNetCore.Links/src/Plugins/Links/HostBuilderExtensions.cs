@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Links;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Links;
@@ -26,7 +25,7 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, ILinksPluginBuilder
     {
         return hostBuilder
-            .RegisterPluginHost<LinksPluginHost>()
+            .RegisterPluginHost<PluginHost>()
             .RegisterPluginBuilder<ILinksPluginBuilder, TPluginBuilder>();
     }
 }

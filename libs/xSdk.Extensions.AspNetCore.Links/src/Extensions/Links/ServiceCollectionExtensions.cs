@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using xSdk.Plugins.Links;
 
 namespace xSdk.Extensions.Links;
 

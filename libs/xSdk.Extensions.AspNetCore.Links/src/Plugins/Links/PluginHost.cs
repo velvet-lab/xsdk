@@ -21,7 +21,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Links;
 
-internal class LinksPluginHost : PluginHost
+internal class PluginHost : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {

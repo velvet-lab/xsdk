@@ -32,7 +32,7 @@ public class LinksPluginTests(TestHostFixture fixture) : IClassFixture<TestHostF
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        LinksPluginHost? plugin = service.GetPlugin<LinksPluginHost>();
+        PluginHostBase? plugin = service.GetPlugin<PluginHostBase>();
 
         Assert.NotNull(plugin);
     }

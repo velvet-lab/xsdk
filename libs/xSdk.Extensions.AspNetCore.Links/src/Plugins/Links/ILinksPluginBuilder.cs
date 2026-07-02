@@ -33,7 +33,7 @@
 
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Extensions.Links;
+namespace xSdk.Plugins.Links;
 
 public interface ILinksPluginBuilder : IPluginBuilder
 {
