@@ -2,7 +2,7 @@
   "name": "xsdk",
   "version": "2.0.0-next.11",
   "description": "Base SDK for generic services",
-  "packageManager": "pnpm@10.31.0",
+  "packageManager": "pnpm@11.9.0",
   "author": {
     "name": "danlorb",
     "email": "danlorb@velvet-lab.net"
@@ -17,16 +17,16 @@
     "url": "git+https://github.com/velvet-lab/xsdk.git"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.3",
-    "@commitlint/config-conventional": "^20.5.3",
-    "@commitlint/format": "^20.5.0",
-    "@commitlint/types": "^20.5.0",
+    "@commitlint/cli": "^21.2.0",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@commitlint/format": "^21.2.0",
+    "@commitlint/types": "^21.2.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.8",
-    "conventional-changelog-conventionalcommits": "^9.3.1",
+    "@semantic-release/github": "^12.0.9",
+    "conventional-changelog-conventionalcommits": "^10.2.0",
     "mega-linter-runner": "^9.5.0",
-    "prettier": "^3.8.3",
-    "semantic-release": "^25.0.3"
+    "prettier": "^3.9.4",
+    "semantic-release": "^25.0.5"
   }
 }
