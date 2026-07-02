@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Spectre.Console.Rendering;
 
 namespace xSdk.Extensions.Logging;
 
@@ -175,19 +170,4 @@ internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLev
             return isAllowed;
         });
     }
-
-    //public void AddFilterTemp()
-    //{
-    //    builder.IsLoggingAllowed(level => true);
-    //    builder.IsLoggingAllowed((category, level) => true);
-    //    builder.IsLoggingAllowed((provider, category, level) => true);
-    //    builder.IsLoggingAllowed<ConsoleLoggerProvider>(level => true);
-    //    builder.IsLoggingAllowed<ConsoleLoggerProvider>((category, level) => true);
-
-    //    builder.IsLoggingAllowed("category", LogLevel.Information);
-    //    builder.IsLoggingAllowed("category", level => true);
-    //    builder.IsLoggingAllowed<ConsoleLoggerProvider>("category", LogLevel.Information);
-    //    builder.IsLoggingAllowed<ConsoleLoggerProvider>("category", level => true);
-
-    //}    
 }
