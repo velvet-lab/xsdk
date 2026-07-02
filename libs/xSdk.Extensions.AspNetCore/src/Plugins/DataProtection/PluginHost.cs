@@ -20,7 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Options;
 using xSdk.Hosting;
 using xSdk.Tools;
@@ -28,7 +27,7 @@ using xSdk.Tools;
 namespace xSdk.Plugins.DataProtection;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core data-protection pipeline – requires a running host with filesystem/key-ring.")]
-public sealed class DataProtectionPluginHost(IOptions<ApplicationOptions> applicationOptions, IOptions<DataProtectionPluginOptions> pluginOptions, ILogger<DataProtectionPluginHost> logger) : PluginHost
+internal sealed class PluginHost(IOptions<ApplicationOptions> applicationOptions, IOptions<PluginOptions> pluginOptions, ILogger<PluginHost> logger) : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {

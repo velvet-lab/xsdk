@@ -23,14 +23,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
-using xSdk.Extensions.WebSecurity;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
 [SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core request pipeline configuration – requires a running web host.")]
-internal sealed class WebSecurityPluginHost(IOptions<WebSecurityPluginOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<WebSecurityPluginHost> logger) : WebPluginHost
+internal sealed class PluginHost(IOptions<PluginOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {

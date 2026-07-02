@@ -16,7 +16,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.WebApi;
@@ -28,15 +27,15 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
     [Fact]
     public void ApiKeySetup_DefaultRealm_HasDefaultValue()
     {
-        var setup = new ApiKeyPluginOptions();
+        var setup = new PluginOptions();
 
-        Assert.Equal(ApiKeyPluginOptions.Definitions.Realm.DefaultValue, setup.Realm);
+        Assert.Equal(PluginOptions.Definitions.Realm.DefaultValue, setup.Realm);
     }
 
     [Fact]
     public void ApiKeySetup_SetRealm_StoresValue()
     {
-        var setup = new ApiKeyPluginOptions();
+        var setup = new PluginOptions();
 
         setup.Realm = "my-test-realm";
 
@@ -46,19 +45,19 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
     [Fact]
     public void ApiKeySetup_Definitions_RealmName_IsCorrect()
     {
-        Assert.Equal("realm", ApiKeyPluginOptions.Definitions.Realm.Name);
+        Assert.Equal("realm", PluginOptions.Definitions.Realm.Name);
     }
 
     [Fact]
     public void ApiKeySetup_Definitions_RealmTemplate_ContainsRealm()
     {
-        Assert.Contains("realm", ApiKeyPluginOptions.Definitions.Realm.Template);
+        Assert.Contains("realm", PluginOptions.Definitions.Realm.Template);
     }
 
     [Fact]
     public void ApiKeySetup_Definitions_RealmDefaultValue_IsNotEmpty()
     {
-        Assert.False(string.IsNullOrEmpty(ApiKeyPluginOptions.Definitions.Realm.DefaultValue));
+        Assert.False(string.IsNullOrEmpty(PluginOptions.Definitions.Realm.DefaultValue));
     }
 
     [Fact]
@@ -71,7 +70,7 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
             .BuildHost();
 
         var service = host.Services.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<AuthenticationPluginHost>();
+        var plugin = service.GetPlugin<PluginHostBase>();
 
         Assert.NotNull(plugin);
     }

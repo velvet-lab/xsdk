@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 
-namespace xSdk.Plugins.DataProtection;
+namespace xSdk.Plugins.Authentication;
 
-public class DataProtectionPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public interface IAuthenticationPluginBuilder : IPluginBuilder
 {
-    [Fact]
-    public void EnableDataProtection_CreatesPlugin()
-    {
-        IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableDataProtection())
-            .BuildHost();
+    void ConfigureAuthentication(AuthenticationBuilder builder);
 
-        IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        PluginHostBase? plugin = service.GetPlugin<PluginHostBase>();
+    void ConfigureAuthorization(AuthorizationOptions options);
 
-        Assert.NotNull(plugin);
-    }
+    void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme);
 }

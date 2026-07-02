@@ -31,7 +31,7 @@ using xSdk.Hosting;
 namespace xSdk.Plugins.Authentication;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core authentication pipeline – requires a running web host.")]
-internal sealed class AuthenticationPluginHost(IOptions<ApiKeyPluginOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<AuthenticationPluginHost> logger) : WebPluginHost
+internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {

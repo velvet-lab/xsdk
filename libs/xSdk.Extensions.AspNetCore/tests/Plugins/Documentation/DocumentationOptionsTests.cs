@@ -17,7 +17,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
 using xSdk.Plugins.Documentation.Mocks;
 using xSdk.Plugins.WebApi;
@@ -35,28 +34,28 @@ public class DocumentationOptionsTests(WebHostTestFixture fixture) : IClassFixtu
                 .EnableDocumentation<DocumentationPluginBuilderMock>())
             .BuildHost();
 
-        DocumentationPluginOptions? options = host.Services
-            .GetService<IOptions<DocumentationPluginOptions>>()?.Value;
+        PluginOptions? options = host.Services
+            .GetService<IOptions<PluginOptions>>()?.Value;
 
         Assert.NotNull(options);
-        Assert.Equal(DocumentationPluginOptions.Definitions.DocumentPattern.DefaultValue, options.DocumentPattern);
+        Assert.Equal(PluginOptions.Definitions.DocumentPattern.DefaultValue, options.DocumentPattern);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternDefaultValue_IsSet()
     {
-        Assert.Equal("openapi/{documentName}.json", DocumentationPluginOptions.Definitions.DocumentPattern.DefaultValue);
+        Assert.Equal("openapi/{documentName}.json", PluginOptions.Definitions.DocumentPattern.DefaultValue);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternName_IsCorrect()
     {
-        Assert.Equal("document-pattern", DocumentationPluginOptions.Definitions.DocumentPattern.Name);
+        Assert.Equal("document-pattern", PluginOptions.Definitions.DocumentPattern.Name);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternTemplate_ContainsPattern()
     {
-        Assert.Contains("pattern", DocumentationPluginOptions.Definitions.DocumentPattern.Template);
+        Assert.Contains("pattern", PluginOptions.Definitions.DocumentPattern.Template);
     }
 }

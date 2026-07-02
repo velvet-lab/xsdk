@@ -17,7 +17,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
-using xSdk.Extensions.WebSecurity;
 using xSdk.Hosting;
 using xSdk.Plugins.WebApi;
 
@@ -28,7 +27,7 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
     [Fact]
     public void WebSecuritySetup_DefaultProperties_AreEmpty()
     {
-        var setup = new WebSecurityPluginOptions();
+        var setup = new PluginOptions();
 
         Assert.NotNull(setup);
         Assert.True(string.IsNullOrEmpty(setup.Origins));
@@ -44,7 +43,7 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
             .BuildHost();
 
         var service = host.Services.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<WebSecurityPluginHost>();
+        var plugin = service.GetPlugin<PluginHost>();
 
         Assert.NotNull(plugin);
     }
@@ -52,19 +51,19 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
     [Fact]
     public void WebSecuritySetup_Definitions_OriginsName_IsCorrect()
     {
-        Assert.Equal("origins", WebSecurityPluginOptions.Definitions.Origins.Name);
+        Assert.Equal("origins", PluginOptions.Definitions.Origins.Name);
     }
 
     [Fact]
     public void WebSecuritySetup_Definitions_OriginsTemplate_IsCorrect()
     {
-        Assert.Contains("origins", WebSecurityPluginOptions.Definitions.Origins.Template);
+        Assert.Contains("origins", PluginOptions.Definitions.Origins.Template);
     }
 
     [Fact]
     public void WebSecurityOptions_IsCorsEnabled_WhenOriginsIsEmpty_ReturnsFalse()
     {
-        var setup = new WebSecurityPluginOptions();
+        var setup = new PluginOptions();
 
         Assert.False(setup.IsCorsEnabled);
     }
@@ -72,6 +71,6 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
     [Fact]
     public void WebSecurityOptions_Definitions_OriginsHelpText_IsNotEmpty()
     {
-        Assert.False(string.IsNullOrEmpty(WebSecurityPluginOptions.Definitions.Origins.HelpText));
+        Assert.False(string.IsNullOrEmpty(PluginOptions.Definitions.Origins.HelpText));
     }
 }

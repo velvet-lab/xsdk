@@ -16,7 +16,6 @@
 
 using Microsoft.AspNetCore.Mvc;
 using xSdk.Extensions.Plugin;
-using xSdk.Extensions.WebApi;
 
 namespace xSdk.Plugins.WebApi;
 

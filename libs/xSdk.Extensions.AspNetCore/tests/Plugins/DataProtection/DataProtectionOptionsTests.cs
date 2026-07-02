@@ -16,7 +16,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 
@@ -27,7 +26,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_DefaultProperties_AreEmpty()
     {
-        var setup = new DataProtectionPluginOptions();
+        var setup = new PluginOptions();
 
         Assert.NotNull(setup);
         Assert.True(string.IsNullOrEmpty(setup.Discriminator));
@@ -37,7 +36,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_SetApplicationDiscriminator_StoresValue()
     {
-        var setup = new DataProtectionPluginOptions();
+        var setup = new PluginOptions();
 
         setup.Discriminator = "my-discriminator";
 
@@ -47,7 +46,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_SetKeyLifetime_StoresValue()
     {
-        var setup = new DataProtectionPluginOptions();
+        var setup = new PluginOptions();
 
         setup.KeyLifetime = "30d";
 
@@ -57,13 +56,13 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
     [Fact]
     public void DataProtectionSetup_Definitions_ApplicationDiscriminatorName_IsCorrect()
     {
-        Assert.Equal("discriminator", DataProtectionPluginOptions.Definitions.Discriminator.Name);
+        Assert.Equal("discriminator", PluginOptions.Definitions.Discriminator.Name);
     }
 
     [Fact]
     public void DataProtectionSetup_Definitions_KeyLifetimeName_IsCorrect()
     {
-        Assert.Equal("lifetime", DataProtectionPluginOptions.Definitions.KeyLifetime.Name);
+        Assert.Equal("lifetime", PluginOptions.Definitions.KeyLifetime.Name);
     }
 
     [Fact]
@@ -74,7 +73,7 @@ public class DataProtectionOptionsTests(TestHostFixture fixture) : IClassFixture
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        DataProtectionPluginHost? plugin = service.GetPlugin<DataProtectionPluginHost>();
+        PluginHostBase? plugin = service.GetPlugin<PluginHostBase>();
 
         Assert.NotNull(plugin);
     }

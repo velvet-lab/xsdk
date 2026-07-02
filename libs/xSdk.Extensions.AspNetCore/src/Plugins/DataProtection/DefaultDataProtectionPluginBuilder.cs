@@ -17,13 +17,12 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Logging;
-using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.DataProtection;
 
-internal class DefaultDataProtectionBuilder(IFileSystemService fileSystemService, ILogger<DefaultDataProtectionBuilder> logger) : PluginBuilder, IDataProtectionPluginBuilder
+internal class DefaultDataProtectionPluginBuilder(IFileSystemService fileSystemService, ILogger<DefaultDataProtectionPluginBuilder> logger) : PluginBuilder, IDataProtectionPluginBuilder
 {
     public void ConfigureDataProtection(IDataProtectionBuilder builder)
     {

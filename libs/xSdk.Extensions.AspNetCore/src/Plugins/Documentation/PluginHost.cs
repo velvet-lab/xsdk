@@ -22,13 +22,12 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
-using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core OpenAPI/documentation pipeline – requires a running web host.")]
-public sealed class DocumentationPluginHost(IDocumentationPluginBuilder docPluginBuilder, IOptions<DocumentationPluginOptions> options) : WebPluginHost
+internal sealed class PluginHost(IDocumentationPluginBuilder docPluginBuilder, IOptions<PluginOptions> options) : WebPluginHost
 {
     private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
     {
@@ -48,7 +47,7 @@ public sealed class DocumentationPluginHost(IDocumentationPluginBuilder docPlugi
             .BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
 
-        DocumentationPluginOptions documentationOptions = options.Value;
+        PluginOptions documentationOptions = options.Value;
         if (documentationOptions.Enabled)
         {
             foreach (ApiVersionDescription description in descriptionProvider.ApiVersionDescriptions)

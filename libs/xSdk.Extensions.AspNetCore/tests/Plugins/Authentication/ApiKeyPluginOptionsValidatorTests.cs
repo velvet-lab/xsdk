@@ -15,6 +15,7 @@
  */
 
 using FluentValidation.Results;
+using xSdk.Plugins.Authentication;
 
 namespace xSdk.Extensions.Authentication;
 
@@ -25,8 +26,8 @@ public class ApiKeyPluginOptionsValidatorTests
     {
         // The VariableSetup returns the default value when no value is set,
         // so default options are always valid.
-        var options = new ApiKeyPluginOptions();
-        var validator = new ApiKeyPluginOptionsValidator();
+        var options = new PluginOptions();
+        var validator = new PluginOptionsValidator();
 
         ValidationResult result = validator.Validate(options);
 
@@ -36,8 +37,8 @@ public class ApiKeyPluginOptionsValidatorTests
     [Fact]
     public void Validate_WithExplicitRealm_PassesValidation()
     {
-        var options = new ApiKeyPluginOptions { Realm = "My Custom Realm" };
-        var validator = new ApiKeyPluginOptionsValidator();
+        var options = new PluginOptions { Realm = "My Custom Realm" };
+        var validator = new PluginOptionsValidator();
 
         ValidationResult result = validator.Validate(options);
 
@@ -49,9 +50,9 @@ public class ApiKeyPluginOptionsValidatorTests
     {
         // Verify that the validator uses the correct error code for the Realm property.
         // When the rule fires, it uses ApiKeyPluginOptions.Definitions.Realm.Name.
-        var validator = new ApiKeyPluginOptionsValidator();
+        var validator = new PluginOptionsValidator();
         var descriptor = validator.CreateDescriptor();
-        var rules = descriptor.GetRulesForMember(nameof(ApiKeyPluginOptions.Realm));
+        var rules = descriptor.GetRulesForMember(nameof(PluginOptions.Realm));
 
         Assert.NotNull(rules);
         Assert.NotEmpty(rules);
@@ -62,8 +63,8 @@ public class ApiKeyPluginOptionsValidatorTests
     {
         // VariableSetup stores whitespace as-is (unlike empty string which falls back to default).
         // FluentValidation's NotEmpty() treats whitespace as empty → validation fails.
-        var options = new ApiKeyPluginOptions { Realm = "   " };
-        var validator = new ApiKeyPluginOptionsValidator();
+        var options = new PluginOptions { Realm = "   " };
+        var validator = new PluginOptionsValidator();
 
         ValidationResult result = validator.Validate(options);
 

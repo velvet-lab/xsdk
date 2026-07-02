@@ -39,9 +39,9 @@ public class DocumentationPluginTests : IClassFixture<WebHostTestFixture>
     [Fact]
     public void CreatePlugin()
     {
-        DocumentationPluginHost? pluginHost = _host.Services
+        PluginHost? pluginHost = _host.Services
             .GetRequiredService<IPluginService>()
-            .GetPlugin<DocumentationPluginHost>();
+            .GetPlugin<PluginHost>();
 
         Assert.NotNull(pluginHost);
     }

@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 
-namespace xSdk.Plugins.DataProtection;
+namespace xSdk.Plugins.WebApi;
 
-public class DataProtectionPluginTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
+public interface IWebApiPluginBuilder : IPluginBuilder
 {
-    [Fact]
-    public void EnableDataProtection_CreatesPlugin()
-    {
-        IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableDataProtection())
-            .BuildHost();
-
-        IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        PluginHostBase? plugin = service.GetPlugin<PluginHostBase>();
-
-        Assert.NotNull(plugin);
-    }
+    void ConfigureMvc(MvcOptions options);
 }

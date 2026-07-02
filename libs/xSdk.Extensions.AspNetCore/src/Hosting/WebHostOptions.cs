@@ -20,7 +20,7 @@ using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Hosting;
 
-public sealed class WebHostOptions : PluginOptions
+internal sealed class WebHostOptions : PluginOptionsBase
 {
     protected override void OnInitialize()
     {

@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
@@ -26,12 +25,12 @@ public static class HostBuilderExtensions
         where TPluginBuilder : class, IDocumentationPluginBuilder
         => hostBuilder.EnableDocumentation<TPluginBuilder>(_ => { });
 
-    public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder, Action<DocumentationPluginOptions> configure)
+    public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder, Action<PluginOptions> configure)
         where TPluginBuilder : class, IDocumentationPluginBuilder
     {
         return hostBuilder
-            .RegisterPluginHostOptions<DocumentationPluginOptions>(configure)
-            .RegisterPluginHost<DocumentationPluginHost>()
+            .RegisterPluginHostOptions<PluginOptions>(configure)
+            .RegisterPluginHost<PluginHost>()
             .RegisterPluginBuilder<IDocumentationPluginBuilder, TPluginBuilder>();
     }
 }

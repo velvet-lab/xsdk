@@ -24,7 +24,7 @@ using xSdk.Hosting;
 namespace xSdk.Plugins.Compression;
 
 [ExcludeFromCodeCoverage(Justification = "ASP.NET Core response compression configuration – requires a running web host.")]
-internal sealed class CompressionPluginHost : PluginHost
+internal sealed class PluginHost : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
