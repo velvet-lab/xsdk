@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Plugins.Telemetry;
+
 namespace xSdk.Extensions.Telemetry;
 
 public class TelemetryOptionsTests
@@ -21,7 +23,7 @@ public class TelemetryOptionsTests
     [Fact]
     public void TelemetryOptions_DefaultIsLoggingEnabled_IsFalse()
     {
-        var options = new TelemetryPluginOptions();
+        var options = new PluginOptions();
 
         Assert.False(options.LoggingEnabled);
     }
@@ -29,7 +31,7 @@ public class TelemetryOptionsTests
     [Fact]
     public void TelemetryOptions_DefaultIsTracingEnabled_IsFalse()
     {
-        var options = new TelemetryPluginOptions();
+        var options = new PluginOptions();
 
         Assert.False(options.TracingEnabled);
     }
@@ -37,7 +39,7 @@ public class TelemetryOptionsTests
     [Fact]
     public void TelemetryOptions_DefaultIsMetricsEnabled_IsFalse()
     {
-        var options = new TelemetryPluginOptions();
+        var options = new PluginOptions();
 
         Assert.False(options.MetricsEnabled);
     }
@@ -45,7 +47,7 @@ public class TelemetryOptionsTests
     [Fact]
     public void TelemetryOptions_SetIsLoggingEnabled_StoresValue()
     {
-        var options = new TelemetryPluginOptions();
+        var options = new PluginOptions();
 
         options.LoggingEnabled = true;
 
@@ -55,18 +57,18 @@ public class TelemetryOptionsTests
     [Fact]
     public void TelemetryOptions_Definitions_LoggingEnabledName_IsCorrect()
     {
-        Assert.Equal("enable-logging", TelemetryPluginOptions.Definitions.LoggingEnabled.Name);
+        Assert.Equal("enable-logging", PluginOptions.Definitions.LoggingEnabled.Name);
     }
 
     [Fact]
     public void TelemetryOptions_Definitions_TracingEnabledName_IsCorrect()
     {
-        Assert.Equal("enable-tracing", TelemetryPluginOptions.Definitions.TracingEnabled.Name);
+        Assert.Equal("enable-tracing", PluginOptions.Definitions.TracingEnabled.Name);
     }
 
     [Fact]
     public void TelemetryOptions_Definitions_MetricsEnabledName_IsCorrect()
     {
-        Assert.Equal("enable-metrics", TelemetryPluginOptions.Definitions.MetricsEnabled.Name);
+        Assert.Equal("enable-metrics", PluginOptions.Definitions.MetricsEnabled.Name);
     }
 }

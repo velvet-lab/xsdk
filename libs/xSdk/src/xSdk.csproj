@@ -10,12 +10,9 @@
     </PropertyGroup>
 
     <!--External dependencies-->
-    <ItemGroup>
-        
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\xSdk.Core\src\xSdk.Core.csproj" />
     </ItemGroup>
-    
+
 </Project>

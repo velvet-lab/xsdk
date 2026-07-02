@@ -43,7 +43,7 @@ public class SlimHost
         IEnumerable<TPluginHost> plugins = Provider.GetServices<IPluginHost>()
             .Cast<PluginDescription>()
             .OrderBy(p => p.Order)
-            .Cast<PluginHost>()
+            .Cast<PluginHostBase>()
             .Where(x => x.IsWebPluginHost == onlyWebPlugins)
             .Cast<TPluginHost>();
 
