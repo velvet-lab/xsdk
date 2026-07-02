@@ -358,7 +358,7 @@ public static class FakeGenerator
             {
                 int seed = RandomNumberGenerator.GetInt32(int.MinValue, int.MaxValue);
 #pragma warning disable S2245
-                Randomizer.Seed = new Random(seed);
+                Randomizer.Seed = new Random(seed); // DevSkim: ignore DS148264
 #pragma warning restore S2245
             }
 
