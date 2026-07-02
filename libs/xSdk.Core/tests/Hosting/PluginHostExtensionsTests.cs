@@ -25,7 +25,7 @@ namespace xSdk.Hosting;
 
 public class PluginHostExtensionsTests
 {
-    private sealed class ConcretePluginHost : PluginHost
+    private sealed class ConcretePluginHost : PluginHostBase
     {
     }
 

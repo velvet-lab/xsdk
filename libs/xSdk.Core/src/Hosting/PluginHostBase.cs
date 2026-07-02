@@ -22,7 +22,7 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
 
-public abstract class PluginHost : PluginDescription, IPluginHost
+public abstract class PluginHostBase : PluginDescription, IPluginHost
 {
     public IServiceProvider? Services { get; internal set; }
 

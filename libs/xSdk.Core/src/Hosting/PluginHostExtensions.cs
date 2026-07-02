@@ -22,7 +22,7 @@ public static class PluginHostExtensions
     {
         public void SetServiceProvider(IServiceProvider serviceProvider)
         {
-            if (host is PluginHost pluginHost)
+            if (host is PluginHostBase pluginHost)
             {
                 pluginHost.Services = serviceProvider;
             }
