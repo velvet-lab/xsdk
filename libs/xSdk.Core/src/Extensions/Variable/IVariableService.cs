@@ -15,9 +15,7 @@
  */
 
 using System.Collections.Concurrent;
-using System.Runtime.Serialization;
 using OpenTelemetry.Resources;
-using xSdk.Extensions.Telemetry;
 
 namespace xSdk.Extensions.Variable;
 

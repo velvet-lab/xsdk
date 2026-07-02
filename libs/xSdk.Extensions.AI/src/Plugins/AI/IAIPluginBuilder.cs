@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.AI;

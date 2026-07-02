@@ -1,10 +1,6 @@
-using Microsoft.Agents.AI;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Options;
 using xSdk.Extensions.Plugin;
-using xSdk.Hosting;
 using xSdk.Plugins.AI;
 using xSdk.Tools;
 

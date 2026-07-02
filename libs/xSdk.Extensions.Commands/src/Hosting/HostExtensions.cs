@@ -18,7 +18,6 @@ using System.Diagnostics.CodeAnalysis;
 using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Spectre.Console;
 using xSdk.Extensions.Commands;
 

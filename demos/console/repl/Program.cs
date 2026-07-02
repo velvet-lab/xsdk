@@ -16,7 +16,6 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Spectre.Console;
 using xSdk.Demos;
 using xSdk.Extensions.Logging;
 using xSdk.Hosting;

@@ -3,9 +3,7 @@ using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
-using xSdk.Demos.AI.Tools;
 using xSdk.Extensions.AI;
-using xSdk.Extensions.Logging;
 using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;

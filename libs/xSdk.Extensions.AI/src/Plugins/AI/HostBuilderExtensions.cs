@@ -1,8 +1,5 @@
-using Microsoft.Agents.AI.Hosting;
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
-using xSdk.Plugins.Telemetry;
 
 namespace xSdk.Plugins.AI;
 

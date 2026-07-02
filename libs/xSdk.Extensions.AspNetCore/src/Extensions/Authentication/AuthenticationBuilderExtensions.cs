@@ -17,7 +17,6 @@
 
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Logging;
-using xSdk.Security;
 
 namespace xSdk.Plugins.Authentication;
 

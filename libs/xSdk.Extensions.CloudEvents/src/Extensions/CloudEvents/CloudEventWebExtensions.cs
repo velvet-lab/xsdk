@@ -27,7 +27,6 @@ using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Web;
-using xSdk.Security;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.CloudEvents;

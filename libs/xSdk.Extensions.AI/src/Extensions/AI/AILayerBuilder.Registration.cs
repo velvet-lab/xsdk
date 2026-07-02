@@ -1,7 +1,6 @@
 using CommunityToolkit.Diagnostics;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Workflows;
-using Microsoft.Agents.ObjectModel;
 using Microsoft.Extensions.AI;
 
 namespace xSdk.Extensions.AI;

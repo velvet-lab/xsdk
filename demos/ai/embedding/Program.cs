@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Runtime.CompilerServices;
 using Microsoft.Agents.AI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;

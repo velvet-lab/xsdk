@@ -16,8 +16,6 @@
 
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
 
 namespace xSdk.Extensions.AI;
 

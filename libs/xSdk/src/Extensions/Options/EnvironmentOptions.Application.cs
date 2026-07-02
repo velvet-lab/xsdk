@@ -20,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Tools;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace xSdk.Extensions.Options;
 

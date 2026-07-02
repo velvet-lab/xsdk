@@ -1,5 +1,3 @@
-using System.CommandLine;
-
 namespace xSdk.Extensions.Commands;
 
 public interface IApplication

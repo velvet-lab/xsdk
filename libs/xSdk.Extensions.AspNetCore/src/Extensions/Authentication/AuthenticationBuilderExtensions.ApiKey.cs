@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.Authentication;
-using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
 
 namespace xSdk.Plugins.Authentication;

@@ -1,4 +1,3 @@
-using xSdk.Extensions.AI;
 using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;

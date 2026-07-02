@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-using System.ClientModel;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using OpenAI;
-using OpenAI.Chat;
 using xSdk.Demos;
 using xSdk.Demos.Builder;
-using xSdk.Extensions.AI;
 using xSdk.Extensions.Logging;
 using xSdk.Plugins.AI;
 using xSdk.Plugins.Compression;
 using xSdk.Plugins.Telemetry;
 using xSdk.Plugins.WebApi;
 using xSdk.Plugins.WebSecurity;
-using static xSdk.Security.Claims.SdkClaimTypes;
 
 [assembly: ApiController]
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]

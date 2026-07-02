@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Options;
-using xSdk.Extensions.Plugin;
-using xSdk.Extensions.Variable;
 
 namespace xSdk.Hosting;
 

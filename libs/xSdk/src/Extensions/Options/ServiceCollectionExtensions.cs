@@ -18,7 +18,6 @@ using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using xSdk.Extensions.Variable;
 
 namespace xSdk.Extensions.Options;
