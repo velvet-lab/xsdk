@@ -34,8 +34,6 @@
     <Project Path="libs/xSdk.Extensions.CloudEvents/tests/xSdk.Extensions.CloudEvents.Tests.csproj" />
     <Project Path="libs/xSdk.Extensions.Commands/src/xSdk.Extensions.Commands.csproj" />
     <Project Path="libs/xSdk.Extensions.Commands/tests/xSdk.Extensions.Commands.Tests.csproj" />
-    <Project Path="libs/xSdk.Extensions.Telemetry/src/xSdk.Extensions.Telemetry.csproj" />
-    <Project Path="libs/xSdk.Extensions.Telemetry/tests/xSdk.Extensions.Telemetry.Tests.csproj" />
   </Folder>
   <Folder Name="/_globals/">
     <File Path="Directory.Build.props" />
