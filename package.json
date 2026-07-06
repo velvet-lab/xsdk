@@ -24,7 +24,7 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^12.0.9",
-    "conventional-changelog-conventionalcommits": "^10.2.0",
+    "conventional-changelog-conventionalcommits": "^10.2.1",
     "mega-linter-runner": "^9.5.0",
     "prettier": "^3.9.4",
     "semantic-release": "^25.0.5"
