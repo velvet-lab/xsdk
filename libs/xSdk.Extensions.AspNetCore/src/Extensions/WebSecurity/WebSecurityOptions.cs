@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugins.WebSecurity;
+namespace xSdk.Extensions.WebSecurity;
 
-public sealed class PluginOptions : PluginOptionsBase
+public sealed class WebSecurityOptions : OptionsBase
 {
     [Variable(
         name: Definitions.Origins.Name,

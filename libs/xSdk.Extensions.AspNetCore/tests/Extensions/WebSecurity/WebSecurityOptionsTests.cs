@@ -19,15 +19,16 @@ using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
 using xSdk.Plugins.WebApi;
+using xSdk.Plugins.WebSecurity;
 
-namespace xSdk.Plugins.WebSecurity;
+namespace xSdk.Extensions.WebSecurity;
 
 public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
     [Fact]
     public void WebSecuritySetup_DefaultProperties_AreEmpty()
     {
-        var setup = new PluginOptions();
+        var setup = new WebSecurityOptions();
 
         Assert.NotNull(setup);
         Assert.True(string.IsNullOrEmpty(setup.Origins));
@@ -42,8 +43,8 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
                 .EnableWebApi())
             .BuildHost();
 
-        var service = host.Services.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<PluginHost>();
+        IPluginService service = host.Services.GetRequiredService<IPluginService>();
+        PluginHost? plugin = service.GetPlugin<PluginHost>();
 
         Assert.NotNull(plugin);
     }
@@ -51,19 +52,19 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
     [Fact]
     public void WebSecuritySetup_Definitions_OriginsName_IsCorrect()
     {
-        Assert.Equal("origins", PluginOptions.Definitions.Origins.Name);
+        Assert.Equal("origins", WebSecurityOptions.Definitions.Origins.Name);
     }
 
     [Fact]
     public void WebSecuritySetup_Definitions_OriginsTemplate_IsCorrect()
     {
-        Assert.Contains("origins", PluginOptions.Definitions.Origins.Template);
+        Assert.Contains("origins", WebSecurityOptions.Definitions.Origins.Template);
     }
 
     [Fact]
     public void WebSecurityOptions_IsCorsEnabled_WhenOriginsIsEmpty_ReturnsFalse()
     {
-        var setup = new PluginOptions();
+        var setup = new WebSecurityOptions();
 
         Assert.False(setup.IsCorsEnabled);
     }
@@ -71,6 +72,6 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
     [Fact]
     public void WebSecurityOptions_Definitions_OriginsHelpText_IsNotEmpty()
     {
-        Assert.False(string.IsNullOrEmpty(PluginOptions.Definitions.Origins.HelpText));
+        Assert.False(string.IsNullOrEmpty(WebSecurityOptions.Definitions.Origins.HelpText));
     }
 }
