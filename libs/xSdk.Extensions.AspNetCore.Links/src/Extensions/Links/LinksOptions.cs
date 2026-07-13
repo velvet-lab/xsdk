@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Links;
-
-namespace xSdk.Plugins.Links;
+namespace xSdk.Extensions.Links;
 
 public class LinksOptions
 {
-    public List<IPolicy> Policies { get; } = new List<IPolicy>();
+    public List<IPolicy> Policies { get; } = [];
 }

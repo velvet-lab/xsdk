@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-using xSdk.Plugins.Links;
+using xSdk.Extensions.Links;
 
 namespace xSdk.Extensions.AspNetCore.Links.Tests;
 

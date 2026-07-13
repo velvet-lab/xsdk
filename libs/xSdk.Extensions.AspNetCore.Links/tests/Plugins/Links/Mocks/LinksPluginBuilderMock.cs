@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Links;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Links.Mocks;
 
-internal class LinksPluginBuilderMock : PluginBuilder, ILinksPluginBuilder
+internal class LinksPluginBuilderMock : LinksBuilder
 {
-    public void ConfigureLinks(LinksOptions options) { }
+    protected override void ConfigureLinks(LinksOptions options) { }
 }

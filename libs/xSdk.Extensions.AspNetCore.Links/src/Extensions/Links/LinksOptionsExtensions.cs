@@ -15,9 +15,8 @@
  */
 
 using xSdk.Data;
-using xSdk.Extensions.Links;
 
-namespace xSdk.Plugins.Links;
+namespace xSdk.Extensions.Links;
 
 public static class LinksOptionsExtensions
 {
