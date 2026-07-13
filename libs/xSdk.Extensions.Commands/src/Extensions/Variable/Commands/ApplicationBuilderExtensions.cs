@@ -20,9 +20,9 @@ namespace xSdk.Extensions.Variable.Commands;
 
 public static class ApplicationBuilderExtensions
 {
-    extension(IApplicationBuilder builder)
+    extension(ConsoleBuilder builder)
     {
-        public IApplicationBuilder AddVariableCommands()
+        public ConsoleBuilder AddVariableCommands()
         {
             builder
                 .AddBranch("variable", "Helps to show current configured application variables")

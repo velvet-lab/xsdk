@@ -16,7 +16,7 @@
 
 using Spectre.Console;
 
-namespace xSdk.Extensions.Commands.Commands;
+namespace xSdk.Extensions.Commands;
 
 public sealed class ClearCommand : CommandHandler
 {

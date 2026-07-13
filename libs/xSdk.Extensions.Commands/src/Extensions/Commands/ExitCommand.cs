@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Commands;
-using xSdk.Extensions.Plugin;
+namespace xSdk.Extensions.Commands;
 
-namespace xSdk.Plugins.Commands;
-
-public interface IConsolePluginBuilder : IPluginBuilder
+public sealed class ExitCommand : CommandHandler
 {
-    void Configure(IApplicationBuilder builder);
+    public static class Definitions
+    {
+        public const string Name = "exit";
+        public const string HelpText = "Exit the Console";
+    }
+
+    public override int Execute()
+    {
+        return 0;
+    }
 }

@@ -9,7 +9,7 @@ internal class ConsoleApplication(RootCommand command) : IApplication
     {
         var parser = CommandlineParser.Parse(args);
 
-        var parseResults = command.Parse(parser.Arguments);
+        ParseResult parseResults = command.Parse(parser.Arguments);
         if (parseResults == null)
         {
             return -1;

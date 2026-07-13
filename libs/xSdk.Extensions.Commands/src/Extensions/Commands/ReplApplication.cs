@@ -1,11 +1,9 @@
 using System.CommandLine;
-using xSdk.Extensions.Commands.Commands;
-using xSdk.Plugins.Commands;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ReplApplication(RootCommand command, IReplConsolePluginBuilder builder) : IApplication
+internal class ReplApplication(RootCommand command, ReplConsoleBuilder builder) : IApplication
 {
     public async Task<int> RunAsync(string[] args)
     {
@@ -15,7 +13,7 @@ internal class ReplApplication(RootCommand command, IReplConsolePluginBuilder bu
         var parser = SpecificCommandlineParser.Create(args);
         string[] replArgs = parser.Arguments;
 
-        builder.CreateBanner();
+        builder.CreateBannerAction?.Invoke();
 
         do
         {
@@ -26,12 +24,12 @@ internal class ReplApplication(RootCommand command, IReplConsolePluginBuilder bu
                 Environment.ExitCode = await parseResult.InvokeAsync();
                 if (isCleared)
                 {
-                    builder.CreateBanner();
+                    builder.CreateBannerAction?.Invoke();
                     isCleared = false;
                 }
             }
 
-            string input = builder.CreateUserPrompt();
+            string? input = builder.CreateUserPromptAction?.Invoke();
             if (parser.Reparse(input).ContainsPattern(ExitCommand.Definitions.Name))
             {
                 shouldRun = false;
@@ -45,7 +43,7 @@ internal class ReplApplication(RootCommand command, IReplConsolePluginBuilder bu
 
         } while (shouldRun);
 
-        builder.CreateLastWill();
+        builder.CreateLastWillAction?.Invoke();
 
         return Environment.ExitCode;
     }

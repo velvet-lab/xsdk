@@ -3,12 +3,10 @@ using System.ComponentModel;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
 using xSdk.Extensions.Commands.Attributes;
-using xSdk.Plugins.Commands;
 
 namespace xSdk.Extensions.Commands;
 
-
-public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuilder builder, IOptions<PluginOptions> options) : CommandHandler
+public sealed class HelpCommand(RootCommand rootCommand, ReplConsoleBuilder builder, IOptions<ConsoleOptions> options) : CommandHandler
 {
     public static class Definitions
     {
@@ -24,10 +22,10 @@ public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuild
 
     public override int Execute()
     {
-        List<Command> commandsToShow = new List<Command>();
-        foreach (var command in Commands)
+        var commandsToShow = new List<Command>();
+        foreach (string command in Commands)
         {
-            var foundCommands = SearchCommand(rootCommand, command);
+            IEnumerable<Command> foundCommands = SearchCommand(rootCommand, command);
             if (foundCommands.Any())
             {
                 commandsToShow.AddRange(foundCommands);
@@ -38,19 +36,19 @@ public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuild
             }
         }
 
-        var setup = options.Value;
+        ConsoleOptions setup = options.Value;
         if (setup.DisableDefaultHelp)
         {
-            builder.CreateHelp(commandsToShow);
+            builder.CreateHelpAction?.Invoke(commandsToShow);
         }
 
         return 0;
 
     }
 
-    private IEnumerable<Command> SearchCommand(Command parent, string filter)
+    private static IEnumerable<Command> SearchCommand(Command parent, string filter)
     {
-        foreach (var command in parent.Subcommands)
+        foreach (Command command in parent.Subcommands)
         {
             if (string.Compare(command.Name, filter, StringComparison.OrdinalIgnoreCase) == 0)
             {
@@ -58,7 +56,7 @@ public sealed class HelpCommand(RootCommand rootCommand, IReplConsolePluginBuild
             }
             else
             {
-                foreach (var result in SearchCommand(command, filter))
+                foreach (Command result in SearchCommand(command, filter))
                 {
                     yield return result;
                 }

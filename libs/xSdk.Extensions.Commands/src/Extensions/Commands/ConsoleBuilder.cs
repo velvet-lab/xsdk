@@ -1,31 +1,26 @@
 using System.CommandLine;
 using System.CommandLine.Help;
+using CommunityToolkit.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using xSdk.Plugins.Commands;
+using xSdk.Extensions.Builder;
 
 namespace xSdk.Extensions.Commands;
 
-public class ApplicationBuilder : IApplicationBuilder
+public class ConsoleBuilder : BuilderBase
 {
-    private readonly IList<ICommandHandlerBuilder> _commandBuilders = new List<ICommandHandlerBuilder>();
+    private readonly IList<CommandHandlerBuilder> _commandBuilders = [];
+
+    public string? Description { get; internal set; } = string.Empty;
 
     protected internal RootCommand RootCommand
     {
         get => field ?? throw new InvalidOperationException("RootCommand has not been initialized and builded.");
-        set => field = value;
+        set;
     }
 
-    public string? Description { get; private set; } = string.Empty;
-
-    public IApplicationBuilder SetDescription(string description)
-    {
-        Description = description;
-        return this;
-    }
-
-    public IApplicationBuilder AddCommand<THandler>(string name, string? description = default)
+    internal ConsoleBuilder AddCommand<THandler>(string name, string? description = default)
             where THandler : class, ICommandHandler
     {
         var builder = new CommandHandlerBuilder(this)
@@ -39,7 +34,7 @@ public class ApplicationBuilder : IApplicationBuilder
         return this;
     }
 
-    public ICommandHandlerBuilder AddBranch(string name, string? description = default)
+    internal CommandHandlerBuilder AddBranch(string name, string? description = default)
     {
         var builder = new CommandHandlerBuilder(this)
         {
@@ -50,38 +45,33 @@ public class ApplicationBuilder : IApplicationBuilder
         return builder;
     }
 
-    public virtual void Build(IServiceCollection services)
+    internal void Build(IServiceCollection? services)
     {
+        Guard.IsNotNull(services);
+
+        ConfigureBuilder();
+
         RootCommand = new RootCommand(Description ?? string.Empty);
         services.TryAddSingleton(RootCommand);
 
-        foreach (var commandBuilder in _commandBuilders)
+        foreach (CommandHandlerBuilder commandBuilder in _commandBuilders)
         {
             if (commandBuilder is CommandHandlerBuilder handlerBuilder)
             {
                 handlerBuilder.Build(services);
             }
         }
-    }
-}
-
-public sealed class ApplicationBuilder<TApplication> : ApplicationBuilder
-    where TApplication : class, IApplication
-{
-    public override void Build(IServiceCollection services)
-    {
-        base.Build(services);
 
         services.TryAddSingleton<IApplication>(provider =>
         {
             ActivatorUtilities.CreateInstance<CommandActivator>(provider);
 
-            var rootCommand = provider.GetRequiredService<RootCommand>();
+            RootCommand rootCommand = provider.GetRequiredService<RootCommand>();
 
-            var options = provider.GetRequiredService<IOptions<PluginOptions>>();
+            IOptions<ConsoleOptions> options = provider.GetRequiredService<IOptions<ConsoleOptions>>();
             if (options.Value.DisableDefaultHelp)
             {
-                foreach (var option in rootCommand.Options)
+                foreach (Option option in rootCommand.Options)
                 {
                     if (option is HelpOption helpOption)
                     {
@@ -91,8 +81,10 @@ public sealed class ApplicationBuilder<TApplication> : ApplicationBuilder
                 }
             }
 
-            return ActivatorUtilities.CreateInstance<TApplication>(provider);
+            return BuildApplication(provider);
         });
-
     }
+
+    protected virtual IApplication BuildApplication(IServiceProvider provider)
+        => ActivatorUtilities.CreateInstance<ConsoleApplication>(provider);
 }

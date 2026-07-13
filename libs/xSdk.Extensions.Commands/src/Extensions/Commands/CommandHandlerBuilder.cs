@@ -4,28 +4,28 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace xSdk.Extensions.Commands;
 
-internal class CommandHandlerBuilder : ICommandHandlerBuilder
+public sealed class CommandHandlerBuilder
 {
-    private readonly IList<ICommandHandlerBuilder> _commandHandlerBuilders = new List<ICommandHandlerBuilder>();
+    private readonly IList<CommandHandlerBuilder> _commandHandlerBuilders = [];
 
-    private readonly ICommandHandlerBuilder? _commandHandlerBuilder;
-    private readonly IApplicationBuilder? _consoleApplicationBuilder;
+    private readonly CommandHandlerBuilder? _commandHandlerBuilder;
+    private readonly ConsoleBuilder? _consoleBuilder;
 
     private Command? _command;
 
     private const string CommandPathSeparator = " / ";
 
-    public CommandHandlerBuilder(ICommandHandlerBuilder parent)
+    public CommandHandlerBuilder(CommandHandlerBuilder parent)
     {
         _commandHandlerBuilder = parent;
     }
 
-    public CommandHandlerBuilder(IApplicationBuilder parent)
+    public CommandHandlerBuilder(ConsoleBuilder parent)
     {
-        _consoleApplicationBuilder = parent;
+        _consoleBuilder = parent;
     }
 
-    public IList<ICommandHandlerBuilder> Childs { get; } = new List<ICommandHandlerBuilder>();
+    public IList<CommandHandlerBuilder> Childs { get; } = [];
 
     public string Name { get; internal set; } = string.Empty;
 
@@ -36,9 +36,9 @@ internal class CommandHandlerBuilder : ICommandHandlerBuilder
 
     internal Type? HandlerType { get; set; } = null!;
 
-    private bool IsRoot => _consoleApplicationBuilder != null;
+    private bool IsRoot => _consoleBuilder != null;
 
-    public ICommandHandlerBuilder AddCommand<THandler>(string name, string? description = null)
+    public CommandHandlerBuilder AddCommand<THandler>(string name, string? description = null)
             where THandler : class, ICommandHandler
     {
         var builder = new CommandHandlerBuilder(this)
@@ -57,7 +57,7 @@ internal class CommandHandlerBuilder : ICommandHandlerBuilder
     {
         BuildCommand(services);
 
-        foreach (var commandHandlerBuilder in _commandHandlerBuilders)
+        foreach (CommandHandlerBuilder commandHandlerBuilder in _commandHandlerBuilders)
         {
             if (commandHandlerBuilder is CommandHandlerBuilder handlerBuilder)
             {
@@ -74,7 +74,7 @@ internal class CommandHandlerBuilder : ICommandHandlerBuilder
 
         AddHandler(_command, services);
 
-        if (IsRoot && _consoleApplicationBuilder is ApplicationBuilder consoleBuilder)
+        if (IsRoot && _consoleBuilder is ConsoleBuilder consoleBuilder)
         {
             // Parent is Root
             consoleBuilder.RootCommand?.Subcommands.Add(_command);
@@ -92,7 +92,7 @@ internal class CommandHandlerBuilder : ICommandHandlerBuilder
         {
             command.SetAction((parseResult, cancellationToken) =>
             {
-                var commandPath = BuildCommandPath();
+                string commandPath = BuildCommandPath();
                 return CommandActivator.Instance.ActivateCommandHandlerAsync(commandPath, parseResult, cancellationToken);
             });
 
@@ -120,21 +120,21 @@ internal class CommandHandlerBuilder : ICommandHandlerBuilder
         }
     }
 
-    private void ParseOptionsAndArguments(Command command, Type? handlerType)
+    private static void ParseOptionsAndArguments(Command command, Type? handlerType)
     {
         if (handlerType is null)
         {
             return;
         }
 
-        var options = OptionManager.Build(handlerType);
-        foreach (var option in options)
+        Option[] options = OptionManager.Build(handlerType);
+        foreach (Option option in options)
         {
             command.Options.Add(option);
         }
 
-        var arguments = ArgumentManager.Build(handlerType);
-        foreach (var argument in arguments)
+        Argument[] arguments = ArgumentManager.Build(handlerType);
+        foreach (Argument argument in arguments)
         {
             command.Arguments.Add(argument);
         }

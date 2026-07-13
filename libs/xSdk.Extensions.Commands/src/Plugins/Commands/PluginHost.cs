@@ -20,11 +20,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Commands;
 
-internal sealed class PluginHost(IApplicationBuilder builder) : PluginHostBase
+internal sealed class PluginHost<TBuilder>(TBuilder builder) : PluginHostBase
+    where TBuilder : ConsoleBuilder
 {
     public override void ConfigureLogging(ILogBuilder builder)
     {
@@ -34,10 +35,9 @@ internal sealed class PluginHost(IApplicationBuilder builder) : PluginHostBase
 
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
-        InvokeBuilder<IConsolePluginBuilder>(b => b.Configure(builder));
-        InvokeBuilder<IReplConsolePluginBuilder>(b => b.Configure(builder));
+        services
+            .AddSingleton<CommandActivator>();
 
-        services.AddSingleton<CommandActivator>();
         builder
             .Build(services);
     }

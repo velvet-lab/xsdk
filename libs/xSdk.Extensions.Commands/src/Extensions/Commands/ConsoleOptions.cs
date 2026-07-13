@@ -1,10 +1,10 @@
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugins.Commands;
+namespace xSdk.Extensions.Commands;
 
 [VariablePrefix("console")]
-public class PluginOptions : PluginOptionsBase
+public class ConsoleOptions : OptionsBase
 {
     [Variable(
             name: Definitions.DisableDefaultHelp.Name,
