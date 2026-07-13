@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Logging;
-using xSdk.Extensions.Plugin;
+namespace xSdk.Extensions.Plugin;
 
-namespace xSdk.Hosting;
-
-public interface IPluginHost : IPluginDescription
+/// <summary>
+/// Holds the types of all plugin hosts that were registered during the
+/// host build phase. Consumers (e.g. HostInitializer, AssemblyCollector)
+/// can inject this instead of relying on SlimHost.Instance after build.
+/// </summary>
+public interface IPluginHostCollection : IReadOnlyList<Type>
 {
-    IServiceProvider? Services { get; }
-
-    void ConfigureHostConfiguration(IConfigurationBuilder builder);
-
-    void ConfigureAppConfiguration(HostBuilderContext context, IConfigurationBuilder builder);
-
-    void ConfigureLogging(ILogBuilder builder);
-
-    void ConfigureServices(HostBuilderContext context, IServiceCollection services);
 }

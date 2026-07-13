@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-namespace xSdk.Hosting;
+using System.Collections;
 
-public static class PluginHostExtensions
+namespace xSdk.Extensions.Plugin;
+
+internal sealed class PluginHostCollection(IReadOnlyList<Type> types) : IPluginHostCollection
 {
-    extension(IPluginHost host)
-    {
-        public void SetServiceProvider(IServiceProvider serviceProvider)
-        {
-            if (host is PluginHostBase pluginHost)
-            {
-                pluginHost.Services = serviceProvider;
-            }
-            else
-            {
-                throw new InvalidOperationException($"The plugin host '{host.Name}' does not support setting a service provider.");
-            }
-        }
-    }
+    public Type this[int index] => types[index];
+
+    public int Count => types.Count;
+
+    public IEnumerator<Type> GetEnumerator() => types.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)types).GetEnumerator();
 }

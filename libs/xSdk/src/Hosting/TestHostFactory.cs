@@ -30,9 +30,9 @@ public static class TestHostFactory
     {
         ApplicationOptions appOptions = new()
         {
-            Name = appName ?? ApplicationOptions.Definitions.AppName.DefaultValue,
-            Company = appCompany ?? ApplicationOptions.Definitions.AppCompany.DefaultValue,
-            Prefix = appPrefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue
+            Name = appName,
+            Company = appCompany,
+            Prefix = appPrefix
         };
 
         var slimHost = SlimHost.InitializeSlimHost(args, appOptions);

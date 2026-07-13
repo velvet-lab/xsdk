@@ -16,6 +16,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Builder;
 using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Variable;
 
@@ -47,6 +48,28 @@ public static class HostBuilderExtensions
                     }
                 });
 
+            return builder;
+        }
+
+        public IHostBuilder AddBackgroundHost<TBackgroundHost>()
+            where TBackgroundHost : BackgroundService
+            => builder.AddBackgroundHost<TBackgroundHost>(null);
+
+        public IHostBuilder AddBackgroundHost<TBackgroundHost>(Func<IServiceProvider, TBackgroundHost>? implementationFactory)
+            where TBackgroundHost : BackgroundService
+        {
+            builder
+                .ConfigureServices(services =>
+                {
+                    if (implementationFactory is not null)
+                    {
+                        services.AddHostedService<TBackgroundHost>(implementationFactory);
+                    }
+                    else
+                    {
+                        services.AddHostedService<TBackgroundHost>();
+                    }
+                });
             return builder;
         }
 
@@ -83,52 +106,61 @@ public static class HostBuilderExtensions
             return builder;
         }
 
-        public IHostBuilder RegisterPluginHostOptions<TOptions>(Action<TOptions> configureOptions)
+        public IHostBuilder RegisterPluginHostOptions<TOptions>(Action<TOptions> configure)
             where TOptions : class, IVariableSetup
         {
             builder
                 .GetSlimHost()
-                .RegisterPluginHostOptions<TOptions>(configureOptions);
+                .RegisterPluginHostOptions<TOptions>(configure);
 
             return builder;
         }
 
-        public IHostBuilder RegisterPluginBuilder<TPluginBuilder, TPluginBuilderImplementation>()
-            where TPluginBuilder : class, IPluginBuilder
-            where TPluginBuilderImplementation : class, TPluginBuilder
+        public IHostBuilder RegisterBuilder<TBuilder>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+            where TBuilder : class, IBuilder
         {
             builder
                 .GetSlimHost()
-                .RegisterPluginBuilder<TPluginBuilder, TPluginBuilderImplementation>();
+                .RegisterBuilder<TBuilder>(lifetime);
 
             return builder;
         }
 
-        public IHostBuilder RegisterServices(Action<IServiceCollection> configureServices)
+        public IHostBuilder RegisterBuilder<TBuilder>(Action<TBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+            where TBuilder : class, IBuilder
+        {
+            builder
+                .GetSlimHost()
+                .RegisterBuilder<TBuilder>(configure, lifetime);
+
+            return builder;
+        }
+
+        public IHostBuilder RegisterServices(Action<IServiceCollection> configure)
         {
             var slimHost = builder.GetSlimHost();
 
-            slimHost.RegisterPluginServices(configureServices);
-            slimHost.RegisterHostServices(configureServices);
+            slimHost.RegisterPluginServices(configure);
+            slimHost.RegisterHostServices(configure);
 
             return builder;
         }
 
 
-        public IHostBuilder RegisterPluginServices(Action<IServiceCollection> configureServices)
+        public IHostBuilder RegisterPluginServices(Action<IServiceCollection> configure)
         {
             builder
                 .GetSlimHost()
-                .RegisterPluginServices(configureServices);
+                .RegisterPluginServices(configure);
 
             return builder;
         }
 
-        public IHostBuilder RegisterHostServices(Action<IServiceCollection> configureServices)
+        public IHostBuilder RegisterHostServices(Action<IServiceCollection> configure)
         {
             builder
                 .GetSlimHost()
-                .RegisterHostServices(configureServices);
+                .RegisterHostServices(configure);
 
             return builder;
         }

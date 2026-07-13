@@ -17,6 +17,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using xSdk.Extensions.Builder;
 using xSdk.Extensions.IO;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
@@ -29,7 +30,6 @@ public class SlimHost
 {
     private bool _isBuilded;
     private IServiceCollection _slimServices = null!;
-    private readonly List<Action<IServiceCollection>> _slimServicesDelegates = [];
     private IServiceCollection? _hostServices;
     private readonly List<Action> _hostServicesDelegates = [];
     private ApplicationOptions? _applicationOptions;
@@ -135,33 +135,47 @@ public class SlimHost
         _slimServices.AddSingleton<TPluginHost>(provider =>
         {
             TPluginHostImplementation pluginHost = ActivatorUtilities.CreateInstance<TPluginHostImplementation>(provider);
-            pluginHost.SetServiceProvider(provider);
-
             return pluginHost;
         });
     }
 
-    internal void RegisterPluginBuilder<TPluginBuilder, TPluginBuilderImplementation>()
-        where TPluginBuilder : class, IPluginBuilder
-        where TPluginBuilderImplementation : class, TPluginBuilder
+    internal void RegisterBuilder<TBuilder>(ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TBuilder : class, IBuilder
+        => RegisterBuilder<TBuilder>(builder => { }, lifetime);
+
+    internal void RegisterBuilder<TBuilder>(Action < TBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+        where TBuilder : class, IBuilder
     {
         if (_isBuilded)
         {
             throw new SdkException("Cannot register plugin builder after the service provider has been built.");
         }
 
-        _slimServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+        _slimServices.Add(new ServiceDescriptor(typeof(TBuilder), provider =>
+        {
+            TBuilder builder = ActivatorUtilities.CreateInstance<TBuilder>(provider);
+
+            builder
+                .AsBuilder<BuilderBase>()
+                .SlimServices = provider;
+
+            configure(builder);
+
+            return builder;
+        }, lifetime));
+
+        var descriptor = new ServiceDescriptor(typeof(TBuilder), p => Provider.GetRequiredService<TBuilder>(), lifetime);
         if (_hostServices != null)
         {
-            _hostServices.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>();
+            _hostServices.Add(descriptor);
         }
         else
         {
-            _hostServicesDelegates.Add(new Action(() => _hostServices?.AddSingleton<TPluginBuilder, TPluginBuilderImplementation>()));
+            _hostServicesDelegates.Add(new Action(() => _hostServices?.Add(descriptor)));
         }
     }
 
-    internal void RegisterPluginHostOptions<TOptions>(Action<TOptions>? configureOptions)
+    internal void RegisterPluginHostOptions<TOptions>(Action<TOptions>? configure)
         where TOptions : class, IVariableSetup
     {
         if (_isBuilded)
@@ -169,16 +183,16 @@ public class SlimHost
             throw new SdkException("Cannot register plugin host options after the service provider has been built.");
         }
 
-        if (configureOptions != null)
+        if (configure != null)
         {
-            _slimServices.RegisterOptions<TOptions>(configureOptions);
+            _slimServices.RegisterOptions<TOptions>(configure);
             if (_hostServices != null)
             {
-                _hostServices.RegisterOptions<TOptions>(configureOptions);
+                _hostServices.RegisterOptions<TOptions>(configure);
             }
             else
             {
-                _hostServicesDelegates.Add(new Action(() => _hostServices?.RegisterOptions<TOptions>(configureOptions)));
+                _hostServicesDelegates.Add(new Action(() => _hostServices?.RegisterOptions<TOptions>(configure)));
             }
         }
         else
@@ -195,25 +209,25 @@ public class SlimHost
         }
     }
 
-    internal void RegisterPluginServices(Action<IServiceCollection> configureServices)
+    internal void RegisterPluginServices(Action<IServiceCollection> configure)
     {
         if (_isBuilded)
         {
             throw new SdkException("Cannot register plugin services after the service provider has been built.");
         }
 
-        configureServices(_slimServices);
+        configure(_slimServices);
     }
 
-    internal void RegisterHostServices(Action<IServiceCollection> configureServices)
+    internal void RegisterHostServices(Action<IServiceCollection> configure)
     {
         if (_hostServices != null)
         {
-            configureServices(_hostServices);
+            configure(_hostServices);
         }
         else
         {
-            _hostServicesDelegates.Add(new Action(() => configureServices(_hostServices!)));
+            _hostServicesDelegates.Add(new Action(() => configure(_hostServices!)));
         }
     }
 
@@ -241,6 +255,8 @@ public class SlimHost
             throw new SdkException("Application options must be set before building environment options.");
         }
 
+        var configBuilder = new ConfigurationBuilder();
+
         services
             .AddSingleton<IServiceProvider>(provider => provider)
             .AddSingleton(provider => provider)
@@ -250,5 +266,12 @@ public class SlimHost
             .AddLoggingQueue()
             .AddVariableServices()
             .AddFileServices();
+
+        xSdk.Hosting.Managers.ConfigurationManager.LoadHostConfiguration(configBuilder, _applicationOptions);
+        xSdk.Hosting.Managers.ConfigurationManager.LoadAppConfiguration(configBuilder, _applicationOptions);
+        IConfigurationRoot config = configBuilder.Build();
+
+        services.AddSingleton<IConfiguration>(config);
+        services.AddSingleton<IConfigurationRoot>(config);
     }
 }

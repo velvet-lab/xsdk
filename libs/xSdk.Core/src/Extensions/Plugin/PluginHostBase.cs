@@ -18,13 +18,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Logging;
-using xSdk.Extensions.Plugin;
 
-namespace xSdk.Hosting;
+namespace xSdk.Extensions.Plugin;
 
 public abstract class PluginHostBase : PluginDescription, IPluginHost
 {
-    public IServiceProvider? Services { get; internal set; }
+    //public IServiceProvider? Services { get; internal set; }
 
     internal protected virtual bool IsWebPluginHost => false;
 
@@ -36,40 +35,40 @@ public abstract class PluginHostBase : PluginDescription, IPluginHost
 
     public virtual void ConfigureServices(HostBuilderContext context, IServiceCollection services) { }
 
-    protected bool InvokeBuilder<TPluginBuilder>(Action<TPluginBuilder> action)
-        where TPluginBuilder : IPluginBuilder
-    {
-        if (Services == null)
-        {
-            throw new InvalidOperationException("Services must be set before invoking the plugin builder.");
-        }
+    //protected bool InvokeBuilder<TBuilder>(Action<TBuilder> action)
+    //    where TBuilder : IBuilder
+    //{
+    //    if (Services == null)
+    //    {
+    //        throw new InvalidOperationException("Services must be set before invoking the plugin builder.");
+    //    }
 
-        TPluginBuilder? builder = Services.GetService<TPluginBuilder>();
-        if (builder is not null)
-        {
-            action?.Invoke(builder);
-            return true;
-        }
+    //    TBuilder? builder = Services.GetService<TBuilder>();
+    //    if (builder is not null)
+    //    {
+    //        action?.Invoke(builder);
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 
-    protected bool InvokeBuilders<TPluginBuilder>(Action<TPluginBuilder> action)
-        where TPluginBuilder : IPluginBuilder
-    {
-        if (Services == null)
-        {
-            throw new InvalidOperationException("Services must be set before invoking the plugin builders.");
-        }
+    //protected bool InvokeBuilders<TPluginBuilder>(Action<TPluginBuilder> action)
+    //    where TPluginBuilder : IBuilder
+    //{
+    //    if (Services == null)
+    //    {
+    //        throw new InvalidOperationException("Services must be set before invoking the plugin builders.");
+    //    }
 
-        IEnumerable<TPluginBuilder> builders = Services.GetServices<TPluginBuilder>();
-        foreach (TPluginBuilder builder in builders)
-        {
-            action?.Invoke(builder);
-        }
+    //    IEnumerable<TPluginBuilder> builders = Services.GetServices<TPluginBuilder>();
+    //    foreach (TPluginBuilder builder in builders)
+    //    {
+    //        action?.Invoke(builder);
+    //    }
 
-        return builders.Any();
-    }
+    //    return builders.Any();
+    //}
 
     //protected TBuilder? GetBuilder<TBuilder>()
     //    where TBuilder : IPluginBuilder
