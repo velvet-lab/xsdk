@@ -14,6 +14,7 @@ namespace xSdk.Plugins.AI;
 internal partial class PluginHost<TBuilder>(TBuilder builder, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost<TBuilder>> logger) : WebPluginHost
     where TBuilder : AIBuilder
 {
+    public override int Order => 20;
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
         logger.LogInformation("Configuring services for AgentsPluginHost with plugin builder {PluginBuilderType}.", builder.GetType().FullName);
