@@ -1,11 +1,9 @@
 using System.CommandLine;
-using xSdk.Extensions.Commands.Commands;
-using xSdk.Plugins.Commands;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
-public sealed class ChatApplication(RootCommand command, IReplConsolePluginBuilder builder) : IApplication
+internal sealed class ChatApplication(RootCommand command, ChatConsoleBuilder builder) : IApplication
 {
     public async Task<int> RunAsync(string[] args)
     {
@@ -15,7 +13,7 @@ public sealed class ChatApplication(RootCommand command, IReplConsolePluginBuild
         var parser = ChatCommandlineParser.Create(args);
         string[] chatArgs = [];
 
-        builder.CreateBanner();
+        builder.CreateBannerAction?.Invoke();
 
         do
         {
@@ -26,12 +24,12 @@ public sealed class ChatApplication(RootCommand command, IReplConsolePluginBuild
                 Environment.ExitCode = await parseResult.InvokeAsync();
                 if (isCleared)
                 {
-                    builder.CreateBanner();
+                    builder.CreateBannerAction?.Invoke();
                     isCleared = false;
                 }
             }
 
-            string input = builder.CreateUserPrompt();
+            string input = builder.CreateUserPromptAction?.Invoke() ?? string.Empty;
             if (parser.ContainsChatCommand(input))
             {
                 (string? command, string? remainingArgs) = parser.ExtractChatCommand(input);
@@ -57,7 +55,7 @@ public sealed class ChatApplication(RootCommand command, IReplConsolePluginBuild
 
         } while (shouldRun);
 
-        builder.CreateLastWill();
+        builder.CreateLastWillAction?.Invoke();
 
         return Environment.ExitCode;
     }
