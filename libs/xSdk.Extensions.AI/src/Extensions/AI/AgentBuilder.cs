@@ -15,7 +15,7 @@ public sealed class AgentBuilder<TBuilder>(TBuilder builder, YamlDeclarationLoad
 
 public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) : BuilderBase
 {
-    private Dictionary<string, ToolBuilder> _toolBuilders = new();
+    private readonly Dictionary<string, ToolBuilder> _toolBuilders = new();
 
     internal string? Name { get; set; }
 

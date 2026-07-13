@@ -21,5 +21,5 @@ namespace xSdk.Demos;
 
 internal class MyPluginBuilder : BuilderBase
 {
-    
+
 }

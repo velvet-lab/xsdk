@@ -32,7 +32,7 @@ var host = xSdk.Hosting.Host
     // Ein eigener Host der benutzt werden soll
     .AddHost<MyCustomHost>()
     .ConfigureServices((_, services) =>
-    {    
+    {
         // Register Options with Variable Service
         services
             .RegisterOptions<OptionsWithoutPrefix>()

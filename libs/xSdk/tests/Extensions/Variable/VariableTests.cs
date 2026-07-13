@@ -27,7 +27,7 @@ public class VariableTests()
     private const string PREFIX_SEPERATOR = xSdk.Extensions.Variable.Globals.Constants.PREFIX_SEPERATOR;
     private const string SEPERATOR = xSdk.Extensions.Variable.Globals.Constants.VARIABLE_SEPERATOR;
 
-    private ApplicationOptions? AppOptions = new ApplicationOptions()
+    private readonly ApplicationOptions? AppOptions = new ApplicationOptions()
     {
         Name = "MyApplication",
         Prefix = "MyApp",
