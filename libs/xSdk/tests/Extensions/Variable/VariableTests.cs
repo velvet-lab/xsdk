@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Options;
+
 namespace xSdk.Extensions.Variable;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2263:Generische Überladung bevorzugen, wenn der Typ bekannt ist", Justification = "<Ausstehend>")]
@@ -25,11 +27,17 @@ public class VariableTests()
     private const string PREFIX_SEPERATOR = xSdk.Extensions.Variable.Globals.Constants.PREFIX_SEPERATOR;
     private const string SEPERATOR = xSdk.Extensions.Variable.Globals.Constants.VARIABLE_SEPERATOR;
 
+    private ApplicationOptions? AppOptions = new ApplicationOptions()
+    {
+        Name = "MyApplication",
+        Prefix = "MyApp",
+    };
+
     [Fact]
     public void CreateVariable()
     {
         string name = "my_variable";
-        var variable = Variable.Create(name, typeof(string));
+        var variable = Variable.Create(name, typeof(string), AppOptions);
 
         Assert.NotNull(variable);
         Assert.Equal(name, variable.Name);
@@ -39,7 +47,7 @@ public class VariableTests()
     [Fact]
     public void CreateVariableWithPrefix()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         variable.SetPrefix(PREFIX);
 
@@ -52,7 +60,7 @@ public class VariableTests()
     [Fact]
     public void CreateVariableWithDisabledPrefix()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         variable.SetPrefix(PREFIX).DisablePrefix();
 
@@ -66,7 +74,7 @@ public class VariableTests()
     [Fact]
     public void Variable_GetHashCode_ReturnsConsistentValue()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         int hash1 = variable.GetHashCode();
         int hash2 = variable.GetHashCode();
@@ -77,8 +85,8 @@ public class VariableTests()
     [Fact]
     public void Variable_Equals_SameNameAndType_AreEqual()
     {
-        var v1 = Variable.Create(NAME, typeof(string));
-        var v2 = Variable.Create(NAME, typeof(string));
+        var v1 = Variable.Create(NAME, typeof(string), AppOptions);
+        var v2 = Variable.Create(NAME, typeof(string), AppOptions);
 
         Assert.True(v1.Equals(v2));
     }
@@ -86,8 +94,8 @@ public class VariableTests()
     [Fact]
     public void Variable_Equals_DifferentName_AreNotEqual()
     {
-        var v1 = Variable.Create("var_one", typeof(string));
-        var v2 = Variable.Create("var_two", typeof(string));
+        var v1 = Variable.Create("var_one", typeof(string), AppOptions);
+        var v2 = Variable.Create("var_two", typeof(string), AppOptions);
 
         Assert.False(v1.Equals(v2));
     }
@@ -95,7 +103,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Equals_Null_ReturnsFalse()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         Assert.False(variable.Equals(null));
     }
@@ -103,7 +111,7 @@ public class VariableTests()
     [Fact]
     public void Variable_ToString_ReturnsKey()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         string str = variable.ToString();
 
@@ -114,7 +122,7 @@ public class VariableTests()
     [Fact]
     public void Variable_KeyForSystem_ReturnsUpperCase()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         string key = variable.KeyForSystem;
 
@@ -124,7 +132,7 @@ public class VariableTests()
     [Fact]
     public void Variable_KeyForFile_ContainsFileMarker()
     {
-        var variable = Variable.Create(NAME, typeof(string));
+        var variable = Variable.Create(NAME, typeof(string), AppOptions);
 
         string key = variable.KeyForFile;
 
@@ -134,7 +142,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Generic_Create_ReturnsTypedVariable()
     {
-        var variable = Variable.Create<string>(NAME);
+        var variable = Variable.Create<string>(NAME, AppOptions);
 
         Assert.NotNull(variable);
         Assert.Equal(typeof(string), variable.ValueType);
@@ -143,7 +151,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Generic_Create_WithConfigure_AppliesConfiguration()
     {
-        var variable = Variable.Create<string>(NAME, v => v.HelpText = "Help text");
+        var variable = Variable.Create<string>(NAME, AppOptions, v => v.HelpText = "Help text");
 
         Assert.Equal("Help text", variable.HelpText);
     }
@@ -151,13 +159,13 @@ public class VariableTests()
     [Fact]
     public void Variable_Create_WithNullValueType_ThrowsArgumentNullException() =>
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.Throws<ArgumentNullException>(() => Variable.Create(NAME, null));
+        Assert.Throws<ArgumentNullException>(() => Variable.Create(NAME, null, AppOptions));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
     [Fact]
     public void Variable_Name_WithPrefix_ReturnsQualifiedName()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
         variable.SetPrefix("flat-file");
 
         Assert.Equal("flat-file-file-path", variable.Name);
@@ -166,7 +174,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Name_WithoutPrefix_ReturnsRawName()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
 
         Assert.Equal("file-path", variable.Name);
     }
@@ -174,7 +182,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Name_PrefixAlreadyPresent_DoesNotDoublePrefix()
     {
-        var variable = Variable.Create("flat-file-file-path", typeof(string));
+        var variable = Variable.Create("flat-file-file-path", typeof(string), AppOptions);
         variable.SetPrefix("flat-file");
 
         Assert.Equal("flat-file-file-path", variable.Name);
@@ -183,7 +191,7 @@ public class VariableTests()
     [Fact]
     public void Variable_RawName_AlwaysReturnsUnqualifiedName()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
         variable.SetPrefix("flat-file");
 
         Assert.Equal("file-path", variable.RawName);
@@ -192,7 +200,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Name_NoPrefixFlag_ReturnsRawName()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
         variable.SetPrefix("flat-file").DisablePrefix();
 
         Assert.Equal("file-path", variable.Name);
@@ -201,7 +209,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Template_WithPrefix_PrependsPrefixToCommand()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
         variable.SetPrefix("flat-file");
         variable.SetTemplate("--path <path>");
 
@@ -211,7 +219,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Template_WithoutPrefix_ReturnsOriginalCommand()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
         variable.SetTemplate("--path <path>");
 
         Assert.Equal("--path <path>", variable.Template);
@@ -220,7 +228,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Template_WithPrefix_NoArgPart_ReturnsCommandOnly()
     {
-        var variable = Variable.Create("use-lower-camel-case", typeof(bool));
+        var variable = Variable.Create("use-lower-camel-case", typeof(bool), AppOptions);
         variable.SetPrefix("flat-file");
         variable.SetTemplate("--use-lower-camel-case");
 
@@ -230,7 +238,7 @@ public class VariableTests()
     [Fact]
     public void Variable_Template_NoPrefixFlag_DoesNotPrependPrefix()
     {
-        var variable = Variable.Create("file-path", typeof(string));
+        var variable = Variable.Create("file-path", typeof(string), AppOptions);
         variable.SetPrefix("flat-file").DisablePrefix();
         variable.SetTemplate("--path <path>");
 

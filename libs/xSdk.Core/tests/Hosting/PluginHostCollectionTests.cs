@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Plugin;
+
 namespace xSdk.Hosting;
 
 public class PluginHostCollectionTests

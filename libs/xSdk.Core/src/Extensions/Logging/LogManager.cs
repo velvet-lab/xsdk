@@ -91,7 +91,7 @@ public static class LogManager
     /// Gets the single, shared _logger factory.
     /// Lazy-creates with minimal console configuration if not yet initialized via Initialize().
     /// </summary>
-    private static ILoggerFactory Factory
+    public static ILoggerFactory Factory
     {
         get
         {

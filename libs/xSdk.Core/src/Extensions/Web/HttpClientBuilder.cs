@@ -20,7 +20,6 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
 
-[ExcludeFromCodeCoverage]
 public static class HttpClientBuilder
 {
     public static HttpClient CreateHttpClient(Uri? baseUrl)

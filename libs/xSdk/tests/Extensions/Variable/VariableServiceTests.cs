@@ -15,12 +15,18 @@
  */
 
 using Microsoft.Extensions.DependencyInjection;
+using xSdk.Extensions.Options;
 using xSdk.Hosting;
 
 namespace xSdk.Extensions.Variable;
 
 public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestHostFixture>
 {
+    private ApplicationOptions? GetOptions(IVariableService service)
+    {
+        return (service as VariableService)?.ApplicationOptions;
+    }
+
     [Fact]
     public void GetService_IVariableService_IsRegistered()
     {
@@ -76,7 +82,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("test_new_variable", typeof(string));
+        var variable = Variable.Create("test_new_variable", typeof(string), GetOptions(service));
 
         service.NewVariable(variable);
 
@@ -91,7 +97,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("test_set_variable", typeof(string));
+        var variable = Variable.Create("test_set_variable", typeof(string), GetOptions(service));
         service.NewVariable(variable);
         service.SetVariable("test_set_variable", "hello");
 
@@ -105,7 +111,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("test_bag_variable", typeof(string));
+        var variable = Variable.Create("test_bag_variable", typeof(string), GetOptions(service));
         service.NewVariable(variable);
 
         var found = service.Variables.Any(v => v.Name == "test_bag_variable");
@@ -119,7 +125,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("exists_check_var", typeof(string));
+        var variable = Variable.Create("exists_check_var", typeof(string), GetOptions(service));
         service.NewVariable(variable, "some_value");
 
         var exists = service.ExistsVariable("exists_check_var");
@@ -135,7 +141,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .Services.GetRequiredService<IVariableService>();
 
         // Register variable but set no value - ExistsVariable checks providers for a stored value
-        var variable = Variable.Create("registered_no_value_var", typeof(string));
+        var variable = Variable.Create("registered_no_value_var", typeof(string), GetOptions(service));
         service.NewVariable(variable);
 
         var exists = service.ExistsVariable("registered_no_value_var");
@@ -150,7 +156,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("read_value_var", typeof(string));
+        var variable = Variable.Create("read_value_var", typeof(string), GetOptions(service));
         service.NewVariable(variable, "expected_value");
 
         var value = service.ReadVariableValue<string>("read_value_var");
@@ -165,7 +171,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("int_value_var", typeof(int));
+        var variable = Variable.Create("int_value_var", typeof(int), GetOptions(service));
         service.NewVariable(variable, 42);
 
         var value = service.ReadVariableValue<int>("int_value_var");
@@ -180,7 +186,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("protected_var", typeof(string));
+        var variable = Variable.Create("protected_var", typeof(string), GetOptions(service));
         variable.Protect();
         service.NewVariable(variable);
 
@@ -194,7 +200,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("dup_var_throw", typeof(string));
+        var variable = Variable.Create("dup_var_throw", typeof(string), GetOptions(service));
         service.NewVariable(variable);
 
         Assert.Throws<SdkException>(() => service.NewVariable(variable, throwIfAlreadyExists: true));
@@ -207,7 +213,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("dup_var_no_throw", typeof(string));
+        var variable = Variable.Create("dup_var_no_throw", typeof(string), GetOptions(service));
         service.NewVariable(variable);
 
         var ex = Record.Exception(() => service.NewVariable(variable));
@@ -222,7 +228,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("dict_test_var", typeof(string));
+        var variable = Variable.Create("dict_test_var", typeof(string), GetOptions(service));
         service.NewVariable(variable, "dict_value");
 
         var dict = service.ToDictionary();
@@ -239,7 +245,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .Services.GetRequiredService<IVariableService>();
 
         // Register a variable with a prefix — Name returns "pfx-raw-name", RawName is "raw-name"
-        var variable = Variable.Create("raw-name", typeof(string));
+        var variable = Variable.Create("raw-name", typeof(string), GetOptions(service));
         variable.SetPrefix("pfx");
         service.NewVariable(variable);
 
@@ -262,7 +268,7 @@ public class VariableServiceTests(TestHostFixture fixture) : IClassFixture<TestH
             .BuildHost()
             .Services.GetRequiredService<IVariableService>();
 
-        var variable = Variable.Create("my-option", typeof(string));
+        var variable = Variable.Create("my-option", typeof(string), GetOptions(service));
         variable.SetPrefix("my-plugin");
         service.NewVariable(variable);
 

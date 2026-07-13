@@ -20,7 +20,6 @@ using System.Security.Principal;
 
 namespace xSdk.Security;
 
-[ExcludeFromCodeCoverage(Justification = "OS-specific P/Invoke for user identity – cannot be unit tested without OS-level privilege.")]
 public static class SecurityContext
 {
     [DllImport("libc", SetLastError = true)]
