@@ -16,7 +16,8 @@ public class ClientBuilder(AIBuilder builder) : BuilderBase
 {
     private readonly Dictionary<string, IChatClient> _chatClients = new();
 
-    public Action<ClientBuilder> ConfigureBuilderAction { get; internal set; }
+    internal Action<ClientBuilder> ConfigureBuilderAction { get; set; }
+
     internal string? Name { get; set; }
 
     internal string? ApiKey { get; set; }

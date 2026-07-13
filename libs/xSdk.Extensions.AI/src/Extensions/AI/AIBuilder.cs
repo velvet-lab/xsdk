@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Microsoft.Agents.AI.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -12,10 +13,17 @@ namespace xSdk.Plugins.AI;
 
 public class AIBuilder : BuilderBase
 {
+    private static AIBuilder? _instance;
+
     internal readonly Dictionary<string, ClientBuilder> ClientBuilders = new();
     internal readonly Dictionary<string, AgentBuilder> AgentBuilders = new();
     internal readonly Dictionary<string, ToolBuilder> ToolBuilders = new();
     internal readonly Dictionary<string, SkillBuilder> SkillBuilders = new();
+
+    public AIBuilder()
+    {
+        _instance = this;
+    }
 
     internal AIOptions Options => SlimServices.GetRequiredService<IOptions<AIOptions>>().Value;
 
@@ -25,6 +33,7 @@ public class AIBuilder : BuilderBase
 
     internal bool EnableLogging { get; set; }
 
+    internal static AIBuilder Instance => _instance ?? throw new InvalidOperationException("AIBuilder instance has not been initialized.");
 
     internal void Build(IServiceCollection services)
     {
