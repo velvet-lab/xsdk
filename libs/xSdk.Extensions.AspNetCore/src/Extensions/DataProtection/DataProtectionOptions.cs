@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugins.DataProtection;
+namespace xSdk.Extensions.DataProtection;
 
 [VariablePrefix("encryption")]
-public sealed class PluginOptions : PluginOptionsBase
+public sealed class DataProtectionOptions : OptionsBase
 {
     [Variable(
         name: Definitions.Discriminator.Name,

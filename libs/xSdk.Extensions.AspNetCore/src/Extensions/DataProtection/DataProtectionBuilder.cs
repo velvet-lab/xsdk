@@ -16,25 +16,37 @@
 
 using System.Diagnostics;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using xSdk.Extensions.Builder;
 using xSdk.Extensions.IO;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Logging;
 
-namespace xSdk.Plugins.DataProtection;
+namespace xSdk.Extensions.DataProtection;
 
-internal class DefaultDataProtectionPluginBuilder(IFileSystemService fileSystemService, ILogger<DefaultDataProtectionPluginBuilder> logger) : PluginBuilder, IDataProtectionPluginBuilder
+public class DataProtectionBuilder : BuilderBase
 {
-    public void ConfigureDataProtection(IDataProtectionBuilder builder)
+    private static ILogger Logger => field ??= LogManager.CreateLogger<DataProtectionBuilder>();
+
+    internal Action<IDataProtectionBuilder> ConfigureDataProtectionAction
     {
-        var keysLocation = GetKeyFolder();
+        get => field ?? (_ => ConfigureDataProtection(_));
+        set;
+    }
+
+    protected virtual void ConfigureDataProtection(IDataProtectionBuilder builder)
+    {
+        string keysLocation = GetKeyFolder();
         builder.PersistKeysToFileSystem(new DirectoryInfo(keysLocation));
     }
 
     private string GetKeyFolder()
     {
-        logger.LogInformation("Try to get Key Folder for Data Protection");
+        Logger.LogInformation("Try to get Key Folder for Data Protection");
 
-        string? keyFolder = null;
+        IFileSystemService fileSystemService = SlimServices.GetRequiredService<IFileSystemService>();
+
+        string? keyFolder;
         if (Debugger.IsAttached)
         {
             keyFolder = Path.Combine(FileSystemHelper.GetExecutingFolder(), "keys");
@@ -50,13 +62,15 @@ internal class DefaultDataProtectionPluginBuilder(IFileSystemService fileSystemS
             {
                 Directory.CreateDirectory(keyFolder);
             }
-            catch
+            catch(Exception ex)
             {
-                logger.LogWarning("KeyFolder '{0}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
+                Logger.LogWarning(ex, "KeyFolder '{keyFolder}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
 
                 keyFolder = fileSystemService.User.Data.GetFullPath("/keys");
                 if (!Directory.Exists(keyFolder))
+                {
                     Directory.CreateDirectory(keyFolder);
+                }
             }
         }
 

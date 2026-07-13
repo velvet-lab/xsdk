@@ -15,21 +15,37 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.DataProtection;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.DataProtection;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableDataProtection(this IHostBuilder hostBuilder)
-        => hostBuilder.EnableDataProtection<DefaultDataProtectionPluginBuilder>();
-
-    public static IHostBuilder EnableDataProtection<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : class, IDataProtectionPluginBuilder
+    extension(IHostBuilder builder)
     {
-        return hostBuilder
-            .RegisterPluginHostOptions<PluginOptions>()
-            .RegisterPluginHost<PluginHost>()
-            .RegisterPluginBuilder<IDataProtectionPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableDataProtection()
+            => builder.EnableDataProtection<DataProtectionBuilder>(_ => { }, _ => { });
+
+        public IHostBuilder EnableDataProtection(Action<DataProtectionBuilder> configure)
+            => builder.EnableDataProtection<DataProtectionBuilder>(configure, _ => { });
+
+        public IHostBuilder EnableDataProtection(Action<DataProtectionBuilder> configure, Action<DataProtectionOptions> optionsConfigure)
+            => builder.EnableDataProtection<DataProtectionBuilder>(configure, optionsConfigure);
+
+        public IHostBuilder EnableDataProtection<TBuilder>()
+            where TBuilder : DataProtectionBuilder
+            => builder.EnableDataProtection<TBuilder>(_ => { }, _ => { });
+
+        public IHostBuilder EnableDataProtection<TBuilder>(Action<DataProtectionOptions> configure)
+            where TBuilder : DataProtectionBuilder
+            => builder.EnableDataProtection<TBuilder>(_ => { }, configure);
+
+        private IHostBuilder EnableDataProtection<TBuilder>(Action<TBuilder> configure, Action<DataProtectionOptions> optionsConfigure)
+            where TBuilder : DataProtectionBuilder
+            => builder
+                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterPluginHostOptions<DataProtectionOptions>(optionsConfigure)
+                .RegisterBuilder<TBuilder>(configure);
     }
 }
