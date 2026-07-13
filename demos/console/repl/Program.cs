@@ -17,6 +17,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
+using xSdk.Extensions.Commands;
 using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.Commands;
@@ -30,7 +31,11 @@ IHost host = xSdk
         .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
 
         // Enable Commands with default configuration
-        .EnableReplConsole<ReplConsoleBuilder>()
+        .EnableReplConsole(builder =>
+        {
+            builder
+                .AddCommand<ReplCommand>(ReplCommand.Definitions.Name, ReplCommand.Definitions.Description);
+        })
         .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

@@ -4,7 +4,6 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using OpenAI;
 using xSdk.Extensions.AI;
-using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;
 
@@ -28,35 +27,35 @@ public static class OpenAIHelper
         });
     }
 
-    public static IEmbeddingGenerator? CreateEmbeddingGenerator(PluginOptions? options)
-    {
-        if (options is not null)
-        {
-            OpenAIClient openaiClient = CreateClient();
-            return openaiClient.GetEmbeddingClient(options.EmbeddingModel).AsIEmbeddingGenerator();
-        }
+    //public static IEmbeddingGenerator? CreateEmbeddingGenerator(AIOptions? options)
+    //{
+    //    if (options is not null)
+    //    {
+    //        OpenAIClient openaiClient = CreateClient();
+    //        return openaiClient.GetEmbeddingClient(options.EmbeddingModel).AsIEmbeddingGenerator();
+    //    }
 
-        throw new InvalidOperationException("Invalid plugin options");
-    }
+    //    throw new InvalidOperationException("Invalid plugin options");
+    //}
 
-    public static IChatClient CreateChatClient(OpenAIClient client, string model)
-    {
-        return client.GetChatClient(model)
-            .AsIChatClient()
-            .AsBuilder()
-            .EnableTelemetry(true)
-            .Build();
-    }
+    //public static IChatClient CreateChatClient(OpenAIClient client, string model)
+    //{
+    //    return client.GetChatClient(model)
+    //        .AsIChatClient()
+    //        .AsBuilder()
+    //        .EnableTelemetry(true)
+    //        .Build();
+    //}
 
-    public static AIAgent? CreateAgent(IServiceProvider provider, string name, AIDefinition definition)
-    {
-        IChatClient chatClient = provider.GetRequiredKeyedService<IChatClient>(name);
+    //public static AIAgent? CreateAgent(IServiceProvider provider, string name, AIDefinition definition)
+    //{
+    //    IChatClient chatClient = provider.GetRequiredKeyedService<IChatClient>(name);
 
-        var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: [.. definition.LoadTools(provider)]);
-        return agentFactory
-            .CreateAsync(definition.Metadata).GetAwaiter().GetResult()
-            .AsBuilder()
-            .EnableTelemetry(true)
-            .Build();
-    }
+    //    var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: [.. definition.LoadTools(provider)]);
+    //    return agentFactory
+    //        .CreateAsync(definition.Metadata).GetAwaiter().GetResult()
+    //        .AsBuilder()
+    //        // .EnableTelemetry(true)
+    //        .Build();
+    //}
 }

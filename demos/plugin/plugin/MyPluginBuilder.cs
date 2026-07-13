@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Builder;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Demos;
 
-internal class MyPluginBuilder : PluginBuilder, IMyPluginBuilder
+internal class MyPluginBuilder : BuilderBase
 {
+    
 }

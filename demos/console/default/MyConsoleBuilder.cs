@@ -1,15 +1,14 @@
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Variable.Commands;
-using xSdk.Plugins.Commands;
 
 namespace xSdk.Demos;
 
-internal class ConsoleBuilder : IConsolePluginBuilder
+internal class MyConsoleBuilder : ConsoleBuilder
 {
-    public void Configure(IApplicationBuilder builder)
+    public override void ConfigureBuilder()
     {
-        var root = builder
-            .SetDescription("Custom Command")
+        this
+            .WithDescription("Custom Command")
             .AddDefaultCommands()
             .AddVariableCommands()
             .AddCommand<MyCommand>("my", "Hello command");

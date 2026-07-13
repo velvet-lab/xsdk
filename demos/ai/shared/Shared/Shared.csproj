@@ -32,4 +32,8 @@
       <ProjectReference Include="..\..\..\..\libs\xSdk.Extensions.AI\src\xSdk.Extensions.AI.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="AI\Tools\" />
+    </ItemGroup>
+
 </Project>

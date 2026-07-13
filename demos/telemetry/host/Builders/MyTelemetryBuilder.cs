@@ -5,17 +5,25 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using xSdk.Extensions.Options;
-using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Telemetry;
 using xSdk.Extensions.Variable;
 
-namespace xSdk.Demos.Builder;
+namespace xSdk.Demos.Builders;
 
-public class TelemetryPluginBuilder(IVariableService variableService, IOptions<EnvironmentOptions> environmentOptions) : PluginBuilder, ITelemetryPluginBuilder
+internal class MyTelemetryBuilder(IVariableService variableService, IOptions<EnvironmentOptions> environmentOptions) : TelemetryBuilder
 {
-    internal const string OtlpEndpoint = "http://192.168.189.31:4317";
+    internal const string OtlpEndpoint = "http://localhost:4317";
 
-    public void ConfigureResources(ResourceBuilder builder)
+    public override void ConfigureBuilder()
+    {
+        this
+            .WithLogging(ConfigureLogging, ConfigureLoggingOptions)
+            .WithMetrics(ConfigureMetrics)
+            .WithTracing(ConfigureTracing)
+            .WithResources(ConfigureResources);
+    }
+
+    private void ConfigureResources(ResourceBuilder builder)
     {
         EnvironmentOptions setup = environmentOptions.Value;
 
@@ -27,44 +35,50 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
             .AddOperatingSystemDetector()
             .AddProcessDetector()
             .AddProcessRuntimeDetector()
+            // .AddAttributes(resources)
             .AddDetector(variableService.CreateResourceDetector)
             .AddService(serviceName: setup.ServiceName, serviceNamespace: setup.ServiceNamespace, serviceVersion: setup.ServiceVersion);
     }
 
-    public void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options)
+    private static void ConfigureLoggingOptions(OpenTelemetryLoggerOptions options)
     {
         options.IncludeFormattedMessage = true;
         options.IncludeScopes = true;
     }
 
-    public void ConfigureLoggingProvider(LoggerProviderBuilder builder)
+    private static void ConfigureLogging(LoggerProviderBuilder builder)
     {
         builder
             // Add Exporters
+            .AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }
 
-    public void ConfigureMetrics(MeterProviderBuilder builder)
+    private static void ConfigureMetrics(MeterProviderBuilder builder)
     {
         builder
-            .AddAIInstrumentation()
+            .AddMeter(Diagnostics.SourceName)
             .AddAspNetCoreInstrumentation()
             .AddEventCountersInstrumentation()
             .AddHttpClientInstrumentation()
             .AddRuntimeInstrumentation()
             .AddProcessInstrumentation()
             // Add Exporters
+            .AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }
 
-    public void ConfigureTracing(TracerProviderBuilder builder)
+    private static void ConfigureTracing(TracerProviderBuilder builder)
     {
         builder
-            .AddAIInstrumentation()
+            .AddSource(Diagnostics.SourceName)
             .AddAspNetCoreInstrumentation()
+            .AddEntityFrameworkCoreInstrumentation()
             .AddGrpcClientInstrumentation()
             .AddHttpClientInstrumentation()
+            .AddRedisInstrumentation()
             // Add Exporters
+            .AddConsoleExporter()
             .AddOtlpExporter(ConfigureOtlp);
     }
 
@@ -77,5 +91,6 @@ public class TelemetryPluginBuilder(IVariableService variableService, IOptions<E
 
         options.Protocol = OtlpExportProtocol.Grpc;
         options.Endpoint = new Uri(OtlpEndpoint);
+        // options.Headers = $"OTEL_KEY={telemetrySetup.Token}";
     }
 }

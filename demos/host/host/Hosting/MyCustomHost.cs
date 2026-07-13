@@ -42,17 +42,15 @@ public class MyCustomHost : IHostedService
     {
         await Task.Yield();
 
-        _logger.LogInformation("Host was started");
+        Console.WriteLine("Host was started");
 
-        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithPrefix.WithAppPrefix_WithSetupPrefix), this._optionsWithPrefix.WithAppPrefix_WithSetupPrefix);
-        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithPrefix.NoAppPrefix_NoSetupPrefix), this._optionsWithPrefix.NoAppPrefix_NoSetupPrefix);
+        Console.WriteLine("{0} = {1}", nameof(this._optionsWithPrefix.WithAppPrefix_WithSetupPrefix), this._optionsWithPrefix.WithAppPrefix_WithSetupPrefix);
+        Console.WriteLine("{0} = {1}", nameof(this._optionsWithPrefix.NoAppPrefix_NoSetupPrefix), this._optionsWithPrefix.NoAppPrefix_NoSetupPrefix);
 
-        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithoutPrefix.NoAppPrefix_NoSetupPrefix), this._optionsWithoutPrefix.NoAppPrefix_NoSetupPrefix);
-        _logger.LogInformation("{0} = {1}", nameof(this._optionsWithoutPrefix.WithAppPrefix_NoSetupPrefix), this._optionsWithoutPrefix.WithAppPrefix_NoSetupPrefix);
+        Console.WriteLine("{0} = {1}", nameof(this._optionsWithoutPrefix.NoAppPrefix_NoSetupPrefix), this._optionsWithoutPrefix.NoAppPrefix_NoSetupPrefix);
+        Console.WriteLine("{0} = {1}", nameof(this._optionsWithoutPrefix.WithAppPrefix_NoSetupPrefix), this._optionsWithoutPrefix.WithAppPrefix_NoSetupPrefix);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
-    {
-        return Task.CompletedTask;
-    }
+        => Task.CompletedTask;
 }

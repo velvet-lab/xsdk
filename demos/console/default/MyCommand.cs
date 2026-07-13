@@ -3,7 +3,6 @@ using xSdk.Extensions.Commands;
 
 namespace xSdk.Demos;
 
-
 internal partial class MyCommand : CommandHandler
 {
     public static class Definitions

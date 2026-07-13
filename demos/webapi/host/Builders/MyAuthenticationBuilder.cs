@@ -14,50 +14,40 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Authentication;
 using xSdk.Plugins.Authentication;
 
 namespace xSdk.Demos.Builders;
 
-internal class AuthenticationPluginBuilder : PluginBuilder, IAuthenticationPluginBuilder
+internal class MyAuthenticationBuilder : AuthBuilder
 {
     // Global Constants for an easier handling
     public const string Policy_OnlyRead = "OnlyRead";
     public const string Policy_ReadAndWrite = "ReadAndWrite";
 
-    public void ConfigureAuthentication(AuthenticationBuilder builder)
+    public override void ConfigureBuilder()
     {
-        builder
-            .AddApiKeyRepository<ApiKeyHandler>()
-            .AddApiKeyRepository<ApiKeyHandlerTwo>();
-
+        this
+            .WithAuthentication(ConfigureAuthentication)
+            .WithAuthorization(ConfigureAuthorization);
     }
 
-    public void ConfigureAuthorization(AuthorizationOptions options)
+    private static void ConfigureAuthentication(Microsoft.AspNetCore.Authentication.AuthenticationBuilder builder)
     {
-        // Configure here your Policies which will used in your Controller
+        builder
+            .AddApiKeyRepository<ApiKeyHandler>();
+    }
+
+    private static void ConfigureAuthorization(AuthorizationOptions options)
+    {
+        // ConfigureBuilder here your Policies which will used in your Controller
         options.AddPolicy(
             Policy_ReadAndWrite,
-            policy =>
-            {
-                policy.RequireClaim(MyClaimTypes.MyTableA.Permission, MyClaimValues.Permissions.Write);
-            }
-        );
+            policy => policy.RequireClaim(MyClaimTypes.MyTableA.Permission, MyClaimValues.Permissions.Write));
 
         options.AddPolicy(
             Policy_OnlyRead,
-            policy =>
-            {
-                policy.RequireClaim(MyClaimTypes.MyTableA.Permission, MyClaimValues.Permissions.Read);
-            }
-        );
-    }
-
-    public void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme)
-    {
-        scheme = null;
+            policy => policy.RequireClaim(MyClaimTypes.MyTableA.Permission, MyClaimValues.Permissions.Read));
     }
 }
