@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugins.Documentation;
+namespace xSdk.Extensions.Documentation;
 
 [VariablePrefix("openapi")]
-public sealed class PluginOptions : PluginOptionsBase
+public sealed class DocumentationOptions : OptionsBase
 {
     [Variable(
         name: Definitions.DocumentPattern.Name,
@@ -50,14 +50,14 @@ public sealed class PluginOptions : PluginOptionsBase
     {
         public static class Enabled
         {
-            public const string Name = nameof(Enabled);
+            public const string Name = "enabled";
             public const string Template = "--enabled";
             public const string HelpText = "Enabled OpenAPI document generation and UI";
         }
 
         public static class DocumentPattern
         {
-            public const string Name = nameof(DocumentPattern);
+            public const string Name = "document-pattern";
             public const string Template = "--document-pattern <pattern>";
             public const string HelpText = "DocumentPattern prefix for the api";
             public const string DefaultValue = "openapi/{documentName}.json";

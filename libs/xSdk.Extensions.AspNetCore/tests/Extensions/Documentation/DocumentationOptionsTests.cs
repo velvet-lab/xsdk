@@ -18,10 +18,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using xSdk.Hosting;
+using xSdk.Plugins.Documentation;
 using xSdk.Plugins.Documentation.Mocks;
 using xSdk.Plugins.WebApi;
 
-namespace xSdk.Plugins.Documentation;
+namespace xSdk.Extensions.Documentation;
 
 public class DocumentationOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
@@ -34,28 +35,28 @@ public class DocumentationOptionsTests(WebHostTestFixture fixture) : IClassFixtu
                 .EnableDocumentation<DocumentationPluginBuilderMock>())
             .BuildHost();
 
-        PluginOptions? options = host.Services
-            .GetService<IOptions<PluginOptions>>()?.Value;
+        DocumentationOptions? options = host.Services
+            .GetService<IOptions<DocumentationOptions>>()?.Value;
 
         Assert.NotNull(options);
-        Assert.Equal(PluginOptions.Definitions.DocumentPattern.DefaultValue, options.DocumentPattern);
+        Assert.Equal(DocumentationOptions.Definitions.DocumentPattern.DefaultValue, options.DocumentPattern);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternDefaultValue_IsSet()
     {
-        Assert.Equal("openapi/{documentName}.json", PluginOptions.Definitions.DocumentPattern.DefaultValue);
+        Assert.Equal("openapi/{documentName}.json", DocumentationOptions.Definitions.DocumentPattern.DefaultValue);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternName_IsCorrect()
     {
-        Assert.Equal("document-pattern", PluginOptions.Definitions.DocumentPattern.Name);
+        Assert.Equal("document-pattern", DocumentationOptions.Definitions.DocumentPattern.Name);
     }
 
     [Fact]
     public void DocumentationSetup_Definitions_DocumentPatternTemplate_ContainsPattern()
     {
-        Assert.Contains("pattern", PluginOptions.Definitions.DocumentPattern.Template);
+        Assert.Contains("pattern", DocumentationOptions.Definitions.DocumentPattern.Template);
     }
 }

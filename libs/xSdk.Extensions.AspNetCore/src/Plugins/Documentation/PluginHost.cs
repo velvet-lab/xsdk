@@ -22,32 +22,24 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
+using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
-[ExcludeFromCodeCoverage(Justification = "ASP.NET Core OpenAPI/documentation pipeline – requires a running web host.")]
-internal sealed class PluginHost(IDocumentationPluginBuilder docPluginBuilder, IOptions<PluginOptions> options) : WebPluginHost
+internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<DocumentationOptions> options) : WebPluginHost
+    where TBuilder : DocumentationBuilder
 {
-    private static readonly OpenApiInfo _defaultApiInfo = new OpenApiInfo
-    {
-        Title = "SDK API Documentation",
-        Version = "v1",
-        Description =
-            "Default API Documentation for xSDK. Convert replace the default Documentation use the IDocumentationPluginBuilder Interface while the plugin will enabled.",
-        License = new OpenApiLicense { Name = "MIT" },
-    };
-
 
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
         // Hack: Retrieve currently configured ApiVersions from previously loaded ApiVersionProvider
         // Convert do this, it is neccessary to build the service provider
-        var descriptionProvider = services
+        IApiVersionDescriptionProvider descriptionProvider = services
             .BuildServiceProvider()
             .GetRequiredService<IApiVersionDescriptionProvider>();
 
-        PluginOptions documentationOptions = options.Value;
+        DocumentationOptions documentationOptions = options.Value;
         if (documentationOptions.Enabled)
         {
             foreach (ApiVersionDescription description in descriptionProvider.ApiVersionDescriptions)
@@ -61,15 +53,7 @@ internal sealed class PluginHost(IDocumentationPluginBuilder docPluginBuilder, I
                     {
                         OpenApiInfo? apiInfo = default;
 
-                        if (docPluginBuilder != null)
-                        {
-                            apiInfo = docPluginBuilder.CreateApiInfo(description);
-                        }
-
-                        if (apiInfo == null)
-                        {
-                            apiInfo = _defaultApiInfo;
-                        }
+                        apiInfo = builder.CreateApiInfoAction(description);                        
                         document.Info = apiInfo;
                         return Task.CompletedTask;
                     });
@@ -91,7 +75,7 @@ internal sealed class PluginHost(IDocumentationPluginBuilder docPluginBuilder, I
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder builder)
     {
-        var documentationOptions = options.Value;
+        DocumentationOptions documentationOptions = options.Value;
         if (documentationOptions.Enabled && !string.IsNullOrEmpty(documentationOptions.DocumentPattern))
         {
             builder.MapOpenApi(documentationOptions.DocumentPattern);

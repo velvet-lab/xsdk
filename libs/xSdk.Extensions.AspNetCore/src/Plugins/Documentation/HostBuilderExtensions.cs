@@ -15,22 +15,38 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
+using xSdk.Plugins.DataProtection;
 
 namespace xSdk.Plugins.Documentation;
 
 public static class HostBuilderExtensions
-{
-    public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : class, IDocumentationPluginBuilder
-        => hostBuilder.EnableDocumentation<TPluginBuilder>(_ => { });
-
-    public static IHostBuilder EnableDocumentation<TPluginBuilder>(this IHostBuilder hostBuilder, Action<PluginOptions> configure)
-        where TPluginBuilder : class, IDocumentationPluginBuilder
+{   
+    extension(IHostBuilder builder)
     {
-        return hostBuilder
-            .RegisterPluginHostOptions<PluginOptions>(configure)
-            .RegisterPluginHost<PluginHost>()
-            .RegisterPluginBuilder<IDocumentationPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableDocumentation()
+            => builder.EnableDocumentation<DocumentationBuilder>(_ => { }, _ => { });
+
+        public IHostBuilder EnableDocumentation(Action<DocumentationBuilder> configure)
+            => builder.EnableDocumentation<DocumentationBuilder>(configure, _ => { });
+
+        public IHostBuilder EnableDocumentation(Action<DocumentationBuilder> configure, Action<DocumentationOptions> optionsConfigure)
+            => builder.EnableDocumentation<DocumentationBuilder>(configure, optionsConfigure);
+
+        public IHostBuilder EnableDocumentation<TBuilder>()
+            where TBuilder : DocumentationBuilder
+            => builder.EnableDocumentation<TBuilder>(_ => { }, _ => { });
+
+        public IHostBuilder EnableDocumentation<TBuilder>(Action<DocumentationOptions> configure)
+            where TBuilder : DocumentationBuilder
+            => builder.EnableDocumentation<TBuilder>(_ => { }, configure);
+
+        private IHostBuilder EnableDocumentation<TBuilder>(Action<TBuilder> configure, Action<DocumentationOptions> optionsConfigure)
+            where TBuilder : DocumentationBuilder
+            => builder
+                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterPluginHostOptions<DocumentationOptions>(optionsConfigure)
+                .RegisterBuilder<TBuilder>(configure);
     }
 }

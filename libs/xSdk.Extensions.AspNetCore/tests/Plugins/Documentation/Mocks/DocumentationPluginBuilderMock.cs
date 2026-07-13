@@ -16,18 +16,22 @@
 
 using Asp.Versioning.ApiExplorer;
 using Microsoft.OpenApi;
+using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Documentation.Mocks;
 
-internal class DocumentationPluginBuilderMock : PluginBuilder, IDocumentationPluginBuilder
+internal class DocumentationPluginBuilderMock : DocumentationBuilder
 {
-    public OpenApiInfo CreateApiInfo(ApiVersionDescription description)
+    public override void ConfigureBuilder()
     {
-        return new OpenApiInfo
+        this.WithApiInfo(description =>
         {
-            Title = "Fake API",
-            Version = description.ApiVersion.ToString()
-        };
+            return new OpenApiInfo
+            {
+                Title = "Fake API",
+                Version = description.ApiVersion.ToString()
+            };
+        });
     }
 }
