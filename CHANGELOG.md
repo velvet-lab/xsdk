@@ -1,3 +1,5 @@
+## [2.0.0-next.13](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.12...v2.0.0-next.13) (2026-07-13)
+
 ## [2.0.0-next.12](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.11...v2.0.0-next.12) (2026-07-02)
 
 ## [2.0.0-next.11](https://github.com/velvet-lab/xsdk/compare/v2.0.0-next.10...v2.0.0-next.11) (2026-05-18)
