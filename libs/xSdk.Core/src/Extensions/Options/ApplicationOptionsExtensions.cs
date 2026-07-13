@@ -27,9 +27,9 @@ public static class ApplicationOptionsExtensions
             .AddOptions<ApplicationOptions>()
             .Configure(appOptions =>
             {
-                appOptions.Name = options.Name ?? ApplicationOptions.Definitions.AppName.DefaultValue;
-                appOptions.Company = options.Company ?? ApplicationOptions.Definitions.AppCompany.DefaultValue;
-                appOptions.Prefix = options.Prefix ?? ApplicationOptions.Definitions.AppPrefix.DefaultValue;
+                appOptions.Name = options.Name;
+                appOptions.Company = options.Company;
+                appOptions.Prefix = options.Prefix;
 
                 appOptions.Description = options.Description;
                 appOptions.AppVersion = options.AppVersion;
