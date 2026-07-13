@@ -15,17 +15,29 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Links;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Links;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableLinks<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : class, ILinksPluginBuilder
+    extension(IHostBuilder builder)
     {
-        return hostBuilder
-            .RegisterPluginHost<PluginHost>()
-            .RegisterPluginBuilder<ILinksPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableLinks()
+            => builder.EnableLinks<LinksBuilder>(_ => { });
+
+        public IHostBuilder EnableLinks(Action<LinksBuilder> configure)
+            => builder.EnableLinks<LinksBuilder>(configure);
+
+        public IHostBuilder EnableLinks<TBuilder>()
+            where TBuilder : LinksBuilder
+            => builder.EnableLinks<TBuilder>(_ => { });
+
+        private IHostBuilder EnableLinks<TBuilder>(Action<TBuilder> configure)
+            where TBuilder : LinksBuilder
+            => builder
+                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterBuilder<TBuilder>(configure);
     }
 }

@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\..\libs\xSdk.Extensions.AI\src\xSdk.Extensions.AI.csproj" />
       <ProjectReference Include="..\shared\Shared\Shared.csproj" />
     </ItemGroup>

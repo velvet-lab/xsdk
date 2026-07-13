@@ -10,7 +10,7 @@
         "PL_PLUGIN_ROOT": "../../../plugins",
         "PL_RUNLEVEL": "HEALTHY",
         "PL_STAGE": "DEVELOPMENT",
-        "PL_DISABLE_TELEMETRY": "true",
+        "PL__TELEMETRY__ENABLE_LOGGING": "true",
         "DOTNET_ENVIRONMENT": "DEVELOPMENT"
       }
     }

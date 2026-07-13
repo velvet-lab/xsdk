@@ -17,31 +17,23 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry.Logs;
 using xSdk.Demos;
 using xSdk.Demos.Builders;
 using xSdk.Extensions.Logging;
+using xSdk.Hosting;
 using xSdk.Plugins.Telemetry;
 
-const string APP_NAME = "telemetry";
+const string APP_NAME = "AutomationHub";
 const string APP_COMPANY = "xdemos";
-const string APP_PREFIX = "te";
+const string APP_PREFIX = "ah";
 
 var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .EnableTelemetry<TelemetryPluginBuilder>(options =>
-    {
-        options.TracingEnabled = true;
-        options.MetricsEnabled = true;
-        options.LoggingEnabled = true;
-    })
-    .ConfigureServices((context, services) =>
-    {
-        services
-            .AddSingleton<LocalService>()
-            // Service um Informationen abzurufen
-            // Ein eigener Host der benutzt werden soll
-            .AddHostedService<MyHost>();
-    })
+    .EnableTelemetry<MyTelemetryBuilder>()
+    .ConfigureServices(services => services.AddSingleton<LocalService>())
+    // Ein eigener Host der benutzt werden soll
+    .AddHost<MyHost>()
     .Build();
 
 var logger = LogManager.GetCurrentClassLogger();

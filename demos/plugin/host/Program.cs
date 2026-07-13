@@ -16,20 +16,24 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using OpenTelemetry.Logs;
 using xSdk.Demos;
 using xSdk.Extensions.Logging;
+using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
+using xSdk.Plugins.Telemetry;
 
 const string APP_NAME = "plugin";
 const string APP_COMPANY = "xdemos";
 const string APP_PREFIX = "pl";
 
-var host = xSdk.Hosting.Host
+IHost host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+    .EnableTelemetry(builder => builder.WithLogging(options => options.AddConsoleExporter()))
     .RegisterPluginHost<MyPluginHost>()
     .Build();
 
-var logger = LogManager.GetCurrentClassLogger();
+ILogger logger = LogManager.GetCurrentClassLogger();
 logger.LogInformation("Starting {Name}", APP_NAME);
 
 await host.RunAsync();

@@ -23,21 +23,21 @@ public sealed partial class EnvironmentOptions
     [Variable(name: Definitions.ServiceName.Name, template: Definitions.ServiceName.Template, helpText: Definitions.ServiceName.HelpText)]
     public string ServiceName
     {
-        get => ReadValue<string>(Definitions.ServiceName.Name);
+        get => ReadValue<string>(Definitions.ServiceName.Name)!;
         set => SetValue(Definitions.ServiceName.Name, value);
     }
 
     [Variable(name: Definitions.ServiceNamespace.Name, template: Definitions.ServiceNamespace.Template, helpText: Definitions.ServiceNamespace.HelpText)]
     public string ServiceNamespace
     {
-        get => ReadValue<string>(Definitions.ServiceNamespace.Name);
+        get => ReadValue<string>(Definitions.ServiceNamespace.Name)!;
         set => SetValue(Definitions.ServiceNamespace.Name, value);
     }
 
     [Variable(name: Definitions.ServiceVersion.Name, template: Definitions.ServiceVersion.Template, helpText: Definitions.ServiceVersion.HelpText)]
     public string ServiceVersion
     {
-        get => ReadValue<string>(Definitions.ServiceVersion.Name);
+        get => ReadValue<string>(Definitions.ServiceVersion.Name)!;
         set => SetValue(Definitions.ServiceVersion.Name, value);
     }
 

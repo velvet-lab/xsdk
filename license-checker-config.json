@@ -1,0 +1,53 @@
+{
+  "license": "license.header",
+  "trailingWhitespace": "TRIM",
+  "ignoreFile": ".gitignore",
+  "ignore": [
+    "**/*.csproj",
+    "**/*.json",
+    "**/*.jsonl",
+    "**/*.md",
+    "**/*.props",
+    "**/*.sln",
+    "**/*.slnx",
+    "**/*.targets",
+    "**/*.txt",
+    "**/*.xml",
+    "**/*.yaml",
+    "**/*.yml",
+    "**/bin",
+    "**/obj",
+    ".commitlintrc.ts",
+    ".config",
+    ".editorconfig",
+    ".git",
+    ".gitattributes",
+    ".github",
+    ".gitleaks.toml",
+    ".gitleaksignore",
+    ".just",
+    ".justfile",
+    ".prettierignore",
+    ".prettierrc",
+    ".sonarlint",
+    ".vs",
+    ".vscode",
+    "CODEOWNERS",
+    "docs",
+    "license.header",
+    "megalinter-reports",
+    "node_modules",
+    "release.config.js",
+    "scripts",
+    "services"
+  ],
+  "licenseFormats": {
+    "cs": {
+      "prepend": "/*",
+      "append": " */\n",
+      "eachLine": {
+          "prepend": " * "
+      }
+    }
+  }
+}

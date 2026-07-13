@@ -1,3 +1,19 @@
+/*
+ * Copyright 2026 Roland Breitschaft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using xSdk.Extensions.AI;
@@ -15,10 +31,6 @@ public static class DiagnosticsExtensions
     public static TracerProviderBuilder AddAIInstrumentation(this TracerProviderBuilder builder)
         => builder
             .AddSource(Diagnostics.SourceName);
-    //.AddSource("Experimental.Microsoft.Extensions.AI")
-    //.AddSource("Experimental.Microsoft._agents.AI")
-    //.AddSource("Microsoft.Extensions.AI")
-    //.AddSource("Microsoft._agents.AI");
 
     /// <summary>
     /// Aktiviert Metriken für das xSdk.Extensions.AI Paket.
@@ -29,8 +41,4 @@ public static class DiagnosticsExtensions
     public static MeterProviderBuilder AddAIInstrumentation(this MeterProviderBuilder builder)
         => builder
             .AddMeter(Diagnostics.SourceName);
-    //.AddMeter("Experimental.Microsoft.Extensions.AI")
-    //.AddMeter("Experimental.Microsoft._agents.AI")
-    //.AddMeter("Microsoft.Extensions.AI")
-    //.AddMeter("Microsoft._agents.AI");
 }

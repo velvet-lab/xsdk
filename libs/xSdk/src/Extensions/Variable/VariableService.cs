@@ -45,6 +45,8 @@ internal partial class VariableService : IVariableService
         }
     }
 
+    internal ApplicationOptions? ApplicationOptions => _applicationOptions;
+
     public Dictionary<string, object> ToDictionary()
     {
         var result = new Dictionary<string, object>();
@@ -95,7 +97,7 @@ internal partial class VariableService : IVariableService
                     IVariable? variable = LoadVariableInternal(name);
                     if (variable == null)
                     {
-                        variable = Variable.Create(name, valueType).Protect().DisablePrefix().Hide();
+                        variable = Variable.Create(name, valueType, _applicationOptions).Protect().DisablePrefix().Hide();
 
                         NewVariable(variable);
                     }

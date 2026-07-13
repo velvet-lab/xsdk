@@ -23,19 +23,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
+using xSdk.Extensions.WebSecurity;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebSecurity;
 
 [SuppressMessage("Performance", "CA1873:Potenziell kostspielige Protokollierung vermeiden", Justification = "<Ausstehend>")]
-[ExcludeFromCodeCoverage(Justification = "ASP.NET Core request pipeline configuration – requires a running web host.")]
-internal sealed class PluginHost(IOptions<PluginOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
+internal sealed class PluginHost(IOptions<WebSecurityOptions> websecurityOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
         if (websecurityOptions.Value.IsCorsEnabled)
         {
-            logger.LogInformation("Cors is enabled. Configure further security options");
+            logger.LogInformation("Cors is enabled. ConfigureBuilder further security options");
             services.AddCors(cors =>
                 cors.AddDefaultPolicy(policy =>
                     policy
@@ -94,7 +94,7 @@ internal sealed class PluginHost(IOptions<PluginOptions> websecurityOptions, IOp
         // KnownNetworks und KnownProxies werden geleert, damit der Forwarded Header
         // unabhängig vom vorgelagerten Proxy akzeptiert wird.
 
-        logger.LogDebug("Configure Forwarded Headers");
+        logger.LogDebug("ConfigureBuilder Forwarded Headers");
         var fordwardedHeaderOptions = new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.All };
         fordwardedHeaderOptions.KnownIPNetworks.Clear();
         fordwardedHeaderOptions.KnownProxies.Clear();
@@ -103,7 +103,7 @@ internal sealed class PluginHost(IOptions<PluginOptions> websecurityOptions, IOp
 
     private void Build(IApplicationBuilder app)
     {
-        logger.LogDebug("Configure HSTS");
+        logger.LogDebug("ConfigureBuilder HSTS");
         app.UseHsts()
             .UseReferrerPolicy(_ => _.NoReferrer());
     }
@@ -112,7 +112,7 @@ internal sealed class PluginHost(IOptions<PluginOptions> websecurityOptions, IOp
     {
         string[] origins = GetOrigins();
 
-        logger.LogDebug("Configure Security Headers");
+        logger.LogDebug("ConfigureBuilder Security Headers");
         app.UseXXssProtection(options => options.EnabledWithBlockMode());
         app.UseXContentTypeOptions();
 

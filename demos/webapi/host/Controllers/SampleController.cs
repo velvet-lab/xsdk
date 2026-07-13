@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+using System.Security.Claims;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +50,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult> GetSampleAsync(CancellationToken token = default)
+    public async Task<ActionResult> GetSampleAsync()
     {
         try
         {
@@ -65,11 +67,10 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         }
     }
 
-
     [
         HttpGet("read"),
         MapToApiVersion(1),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_OnlyRead),
         EndpointName(nameof(GetOnlyReadAsync)),
         EndpointSummary("Loads data for readonly users"),
         EndpointDescription("Requires authentication"),
@@ -77,7 +78,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult> GetOnlyReadAsync(CancellationToken token = default)
+    public async Task<ActionResult> GetOnlyReadAsync()
     {
         try
         {
@@ -85,7 +86,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
 
             await Task.Yield();
 
-            foreach (var claim in this.HttpContext.User.Claims)
+            foreach (Claim claim in HttpContext.User.Claims)
             {
                 await Console.Out.WriteLineAsync(claim.ToString());
             }
@@ -102,7 +103,7 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
     [
         HttpPost("write"),
         MapToApiVersion(1),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_ReadAndWrite),
         EndpointName(nameof(GetReadAndWriteAsync)),
         EndpointSummary("Writes data"),
         EndpointDescription("Requires authentication"),
@@ -110,13 +111,13 @@ public sealed class SampleController(ILogger<SampleController> logger) : Control
         ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json"),
         Tags("Sample"),
     ]
-    public async Task<ActionResult> GetReadAndWriteAsync(CancellationToken token = default)
+    public async Task<ActionResult> GetReadAndWriteAsync()
     {
         try
         {
             logger.LogDebug("Demostrate Read and Write");
 
-            foreach (var claim in this.HttpContext.User.Claims)
+            foreach (Claim claim in HttpContext.User.Claims)
             {
                 await Console.Out.WriteLineAsync(claim.ToString());
             }

@@ -17,7 +17,8 @@
     <ItemGroup>
         <PackageReference Include="CloudNative.CloudEvents" />
         <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />        
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+        <PackageReference Include="Microsoft.OpenApi" />
     </ItemGroup>
 
     <ItemGroup>

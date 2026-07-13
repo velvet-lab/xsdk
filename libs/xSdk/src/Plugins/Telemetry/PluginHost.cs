@@ -16,20 +16,15 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using OpenTelemetry;
 using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using xSdk.Extensions.Logging;
+using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Telemetry;
-using xSdk.Hosting;
 
 namespace xSdk.Plugins.Telemetry;
 
-public sealed class PluginHost(IOptions<PluginOptions> telemetryOptions) : PluginHostBase
+internal sealed class PluginHost<TBuilder>(TBuilder builder) : PluginHostBase
+    where TBuilder : TelemetryBuilder
 {
     public override void ConfigureLogging(ILogBuilder builder)
     {
@@ -39,53 +34,6 @@ public sealed class PluginHost(IOptions<PluginOptions> telemetryOptions) : Plugi
 
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
-        PluginOptions telemetrySetup = telemetryOptions.Value;
-
-        // ConfigureResource on OpenTelemetryBuilder invokes the callback once per active signal
-        // (Tracing, Metrics, Logging). Pre-building the ResourceBuilder here ensures
-        // InvokeBuilders<ConfigureResources> is called exactly once.
-        var resourceBuilder = ResourceBuilder.CreateDefault();
-        InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureResources(resourceBuilder));
-
-        // Create an builder
-        OpenTelemetryBuilder telemetryBuilder = services
-            .AddOpenTelemetry();
-
-        // Configure Tracing
-        if (telemetrySetup.TracingEnabled)
-        {
-            telemetryBuilder.WithTracing(builder =>
-            {
-                builder.SetResourceBuilder(resourceBuilder);
-                // Call tracing configuration from possible other Startups
-                InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureTracing(builder));
-            });
-        }
-
-        // Configure Metrics
-        if (telemetrySetup.MetricsEnabled)
-        {
-            telemetryBuilder.WithMetrics(builder =>
-            {
-                builder.SetResourceBuilder(resourceBuilder);
-                // Call metrics configuration from possible other Startups
-                InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureMetrics(builder));
-            });
-        }
-
-        // Configure Logging
-        if (telemetrySetup.LoggingEnabled)
-        {
-            telemetryBuilder.WithLogging(
-                builder =>
-                {
-                    builder.SetResourceBuilder(resourceBuilder);
-                    // Call logging configuration from possible other Startups
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingProvider(builder));
-                },
-                options =>
-                    // Call logging configuration from possible other Startups
-                    InvokeBuilders<ITelemetryPluginBuilder>(plugin => plugin.ConfigureLoggingOptions(options)));
-        }
+        builder.Build(services);
     }
 }

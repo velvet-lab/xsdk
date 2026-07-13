@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
 namespace xSdk.Hosting;
 
-internal sealed class WebHostOptions : PluginOptionsBase
+internal sealed class WebHostOptions : OptionsBase
 {
     protected override void OnInitialize()
     {

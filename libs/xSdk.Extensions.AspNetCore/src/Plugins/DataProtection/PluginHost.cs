@@ -14,45 +14,45 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using xSdk.Extensions.DataProtection;
 using xSdk.Extensions.Options;
-using xSdk.Hosting;
+using xSdk.Extensions.Plugin;
 using xSdk.Tools;
 
 namespace xSdk.Plugins.DataProtection;
 
-[ExcludeFromCodeCoverage(Justification = "ASP.NET Core data-protection pipeline – requires a running host with filesystem/key-ring.")]
-internal sealed class PluginHost(IOptions<ApplicationOptions> applicationOptions, IOptions<PluginOptions> pluginOptions, ILogger<PluginHost> logger) : PluginHostBase
+internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<ApplicationOptions> applicationOptions, IOptions<Extensions.DataProtection.DataProtectionOptions> pluginOptions, ILogger<PluginHost<TBuilder>> logger) : PluginHostBase
+    where TBuilder : DataProtectionBuilder
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
-        logger.LogInformation("Configure DataProtection");
+        logger.LogInformation("ConfigureBuilder DataProtection");
 
         var dataprotectionOptions = pluginOptions.Value;
         var appOptions = applicationOptions.Value;
 
-        IDataProtectionBuilder? builder = null;
+        Microsoft.AspNetCore.DataProtection.IDataProtectionBuilder? dataProtectionBuilder = null;
         if (!string.IsNullOrEmpty(dataprotectionOptions.Discriminator))
-            builder = services.AddDataProtection(_ => _.ApplicationDiscriminator = dataprotectionOptions.Discriminator);
+            dataProtectionBuilder = services.AddDataProtection(_ => _.ApplicationDiscriminator = dataprotectionOptions.Discriminator);
         else
-            builder = services.AddDataProtection();
+            dataProtectionBuilder = services.AddDataProtection();
 
         if (!string.IsNullOrEmpty(appOptions.Name))
-            builder.SetApplicationName(appOptions.Name);
+            dataProtectionBuilder.SetApplicationName(appOptions.Name);
 
         if (!string.IsNullOrEmpty(dataprotectionOptions.KeyLifetime))
         {
             if (TimeSpanParser.TryParse(dataprotectionOptions.KeyLifetime, out TimeSpan result))
             {
-                builder.SetDefaultKeyLifetime(result);
+                dataProtectionBuilder.SetDefaultKeyLifetime(result);
             }
         }
 
-        InvokeBuilder<IDataProtectionPluginBuilder>(x => x.ConfigureDataProtection(builder));
+        builder.ConfigureDataProtectionAction(dataProtectionBuilder);
     }
 }

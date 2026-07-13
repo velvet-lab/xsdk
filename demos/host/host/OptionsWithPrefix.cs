@@ -48,13 +48,13 @@ public sealed class OptionsWithPrefix : VariableSetup
         public static class Prop1
         {
             public const string Name = "with-app-prefix-with-setup-prefix";
-            public const string Template = $"--with-app-prefix-with-setup-prefix <services>";
+            public const string Template = "--with-app-prefix-with-setup-prefix <services>";
         }
 
         public static class Prop2
         {
             public const string Name = "no-app-prefix-no-setup-prefix";
-            public const string Template = $"--no-app-prefix-no-setup-prefix <services>";
+            public const string Template = "--no-app-prefix-no-setup-prefix <services>";
         }
     }
 }

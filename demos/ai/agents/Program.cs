@@ -31,13 +31,13 @@ using xSdk.Plugins.WebSecurity;
 
 const string APP_NAME = "agent";
 const string APP_COMPANY = "xdemos";
-const string APP_PREFIX = "ai";
+const string APP_PREFIX = "agent";
 
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableAI<AgentsPluginBuilder>(OllamaConfiguration.Default)
-    .EnableTelemetry<TelemetryPluginBuilder>(options =>
+    .EnableAI<MyAIBuilder>()
+    .EnableTelemetry<AITelemetryBuilder>(options =>
     {
         options.LoggingEnabled = true;
         options.TracingEnabled = true;

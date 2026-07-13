@@ -15,28 +15,37 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Authentication;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableAuthentication(this IHostBuilder hostBuilder)
+    extension(IHostBuilder builder)
     {
-        hostBuilder
-            .RegisterPluginHostOptions<PluginOptions>()
-            .RegisterPluginHost<PluginHost>();
+        public IHostBuilder EnableAuthentication()
+            => builder.EnableAuthentication<AuthBuilder>(_ => { }, _ => { });
 
-        return hostBuilder;
-    }
+        public IHostBuilder EnableAuthentication(Action<AuthBuilder> configure)
+            => builder.EnableAuthentication<AuthBuilder>(configure, _ => { });
 
-    public static IHostBuilder EnableAuthentication<TPluginBuilder>(this IHostBuilder hostBuilder)
-        where TPluginBuilder : class, IAuthenticationPluginBuilder
-    {
-        hostBuilder
-            .EnableAuthentication()
-            .RegisterPluginBuilder<IAuthenticationPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableAuthentication(Action<AuthBuilder> configure, Action<AuthOptions> optionsConfigure)
+            => builder.EnableAuthentication<AuthBuilder>(configure, optionsConfigure);
 
-        return hostBuilder;
+        public IHostBuilder EnableAuthentication<TBuilder>()
+            where TBuilder : AuthBuilder
+            => builder.EnableAuthentication<TBuilder>(_ => { }, _ => { });
+
+        public IHostBuilder EnableAuthentication<TBuilder>(Action<AuthOptions> configure)
+            where TBuilder : AuthBuilder
+            => builder.EnableAuthentication<TBuilder>(_ => { }, configure);
+
+        private IHostBuilder EnableAuthentication<TBuilder>(Action<TBuilder> configure, Action<AuthOptions> optionsConfigure)
+            where TBuilder : AuthBuilder
+            => builder
+                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterPluginHostOptions<AuthOptions>(optionsConfigure)
+                .RegisterBuilder<TBuilder>(configure);
     }
 }

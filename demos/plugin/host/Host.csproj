@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\..\libs\xSdk\src\xSdk.csproj" />
         <ProjectReference Include="..\plugin\Plugin.csproj" />
     </ItemGroup>

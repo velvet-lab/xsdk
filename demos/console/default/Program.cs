@@ -30,7 +30,7 @@ IHost host = xSdk
         .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
 
         // Enable Commands with default configuration
-        .EnableDefaultConsole<ConsoleBuilder>()
+        .EnableDefaultConsole<MyConsoleBuilder>()
         .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

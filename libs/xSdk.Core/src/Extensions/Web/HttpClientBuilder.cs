@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Handlers;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
 
-[ExcludeFromCodeCoverage]
 public static class HttpClientBuilder
 {
     public static HttpClient CreateHttpClient(Uri? baseUrl)
