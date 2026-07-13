@@ -42,7 +42,7 @@ public sealed partial class EnvironmentOptions
     }
 
     public string ServiceFullName { get; private set; }
-        
+
     internal void InitializeService(ServiceDescription serviceDescription)
     {
         ServiceName = serviceDescription.ServiceName;

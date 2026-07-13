@@ -1,6 +1,5 @@
 using System.ClientModel;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging;
 using OpenAI;
 using xSdk.Extensions.Builder;
 using xSdk.Plugins.AI;
@@ -13,16 +12,16 @@ public sealed class ClientBuilder<TBuilder>(TBuilder builder) : ClientBuilder(bu
 {
 }
 
-public class ClientBuilder(AIBuilder builder) : BuilderBase    
+public class ClientBuilder(AIBuilder builder) : BuilderBase
 {
     private readonly Dictionary<string, IChatClient> _chatClients = new();
 
     public Action<ClientBuilder> ConfigureBuilderAction { get; internal set; }
-    internal string? Name { get; set; }    
+    internal string? Name { get; set; }
 
     internal string? ApiKey { get; set; }
 
-    internal string? Endpoint { get;  set; }    
+    internal string? Endpoint { get; set; }
 
     internal Action<OpenAIClientOptions>? OpenAiClientOptionsFactory { get; set; }
 
@@ -45,7 +44,7 @@ public class ClientBuilder(AIBuilder builder) : BuilderBase
                 _chatClients.AddOrNew(key, chatClient);
 
                 return chatClient;
-            }            
+            }
         }
         return default;
     }
@@ -81,7 +80,7 @@ public class ClientBuilder(AIBuilder builder) : BuilderBase
             }
         }
 
-        return chatClientBuilder            
+        return chatClientBuilder
             .Build();
     }
 }

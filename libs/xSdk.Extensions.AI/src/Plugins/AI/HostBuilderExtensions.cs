@@ -23,8 +23,8 @@ public static class HostBuilderExtensions
             where TBuilder : AIBuilder
             => builder.EnableAI<TBuilder>(_ => { }, configure);
 
-        public IHostBuilder EnableAI<TBuilder>(Action<TBuilder> configure, Action<AIOptions> optionsConfigure)               
-            where TBuilder : AIBuilder   
+        public IHostBuilder EnableAI<TBuilder>(Action<TBuilder> configure, Action<AIOptions> optionsConfigure)
+            where TBuilder : AIBuilder
         {
             return builder
                 .RegisterPluginHost<PluginHost<TBuilder>>()

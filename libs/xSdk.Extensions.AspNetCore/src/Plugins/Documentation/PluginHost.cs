@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,7 +52,7 @@ internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<Documentat
                     {
                         OpenApiInfo? apiInfo = default;
 
-                        apiInfo = builder.CreateApiInfoAction(description);                        
+                        apiInfo = builder.CreateApiInfoAction(description);
                         document.Info = apiInfo;
                         return Task.CompletedTask;
                     });

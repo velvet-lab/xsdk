@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using VaultSharp;
 using VaultSharp.V1.AuthMethods;

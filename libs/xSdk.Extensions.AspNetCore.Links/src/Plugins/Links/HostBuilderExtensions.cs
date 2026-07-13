@@ -17,7 +17,6 @@
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Links;
 using xSdk.Hosting;
-using xSdk.Plugins.Documentation;
 
 namespace xSdk.Plugins.Links;
 
@@ -38,7 +37,7 @@ public static class HostBuilderExtensions
         private IHostBuilder EnableLinks<TBuilder>(Action<TBuilder> configure)
             where TBuilder : LinksBuilder
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()                
+                .RegisterPluginHost<PluginHost<TBuilder>>()
                 .RegisterBuilder<TBuilder>(configure);
     }
 }

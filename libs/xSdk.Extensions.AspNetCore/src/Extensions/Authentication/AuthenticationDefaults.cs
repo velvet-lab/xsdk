@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using AspNetCore.Authentication.ApiKey;
 
 namespace xSdk.Extensions.Authentication;

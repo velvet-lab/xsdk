@@ -22,11 +22,11 @@ public abstract class BuilderBase : IBuilder
         where TValidator : AbstractValidator<TBuilder>, new()
         where TBuilder : BuilderBase
     {
-        TBuilder instance = (TBuilder) this;
-        var validator = new TValidator();        
-        
+        TBuilder instance = (TBuilder)this;
+        var validator = new TValidator();
+
         var result = validator.Validate(instance);
-        if(!result.IsValid)
+        if (!result.IsValid)
         {
             foreach (var error in result.Errors)
             {
@@ -36,5 +36,5 @@ public abstract class BuilderBase : IBuilder
         }
 
         return true;
-    }    
+    }
 }

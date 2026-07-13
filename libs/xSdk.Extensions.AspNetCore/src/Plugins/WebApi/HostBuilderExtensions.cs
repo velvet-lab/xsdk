@@ -17,7 +17,6 @@
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
-using xSdk.Plugins.Documentation;
 
 namespace xSdk.Plugins.WebApi;
 
@@ -34,7 +33,7 @@ public static class HostBuilderExtensions
         public IHostBuilder EnableWebApi<TBuilder>()
             where TBuilder : WebApiBuilder
             => builder.EnableWebApi<TBuilder>(_ => { });
-        
+
         private IHostBuilder EnableWebApi<TBuilder>(Action<TBuilder> configure)
             where TBuilder : WebApiBuilder
             => builder

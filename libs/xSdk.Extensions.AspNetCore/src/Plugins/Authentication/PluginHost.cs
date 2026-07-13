@@ -47,7 +47,7 @@ internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<AuthOption
             .AddPolicyScheme(AuthenticationDefaults.MulitAuth.Scheme, AuthenticationDefaults.MulitAuth.Scheme, EnableMultiAuth);
 
         // API Key Auth is always needed for the default Multi Auth Scheme
-        authBuilder.AddApiKeyAuth(apiKeyOptions.Value, environmentOptions.Value);        
+        authBuilder.AddApiKeyAuth(apiKeyOptions.Value, environmentOptions.Value);
         builder.ConfigureAuthenticationAction?.Invoke(authBuilder);
 
         // Add Client defined Policies

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using xSdk.Extensions.AI;
 using xSdk.Tools;
@@ -28,7 +24,7 @@ public static class AIBuilderExtensions
             toolBuilder.ConfigureBuilderAction = configure;
             toolBuilder.WithName(name);
             builder.ToolBuilders.AddOrNew(name, toolBuilder);
-            
+
             return builder;
         }
 

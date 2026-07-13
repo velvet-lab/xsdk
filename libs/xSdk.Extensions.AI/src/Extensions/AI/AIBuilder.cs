@@ -13,7 +13,7 @@ namespace xSdk.Plugins.AI;
 public class AIBuilder : BuilderBase
 {
     internal readonly Dictionary<string, ClientBuilder> ClientBuilders = new();
-    internal readonly Dictionary<string, AgentBuilder> AgentBuilders  = new();
+    internal readonly Dictionary<string, AgentBuilder> AgentBuilders = new();
     internal readonly Dictionary<string, ToolBuilder> ToolBuilders = new();
     internal readonly Dictionary<string, SkillBuilder> SkillBuilders = new();
 
@@ -24,7 +24,7 @@ public class AIBuilder : BuilderBase
     internal ILoggerFactory? LoggerFactory { get; set; }
 
     internal bool EnableLogging { get; set; }
-    
+
 
     internal void Build(IServiceCollection services)
     {
@@ -33,10 +33,10 @@ public class AIBuilder : BuilderBase
         if (IsValid<AIBuilder, AIBuilderValidator>())
         {
             // Build all agents that have been configured
-            foreach(var agentBuilder in AgentBuilders.Values)
+            foreach (var agentBuilder in AgentBuilders.Values)
             {
                 agentBuilder.Build(services);
-            }            
+            }
         }
     }
 

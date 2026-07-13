@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 using RestSharp.Authenticators;

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Mvc;
 
 namespace xSdk.Extensions.WebApi;
@@ -14,5 +11,5 @@ public static class WebApiBuilderExtensions
             builder.ConfigureMvcAction = configureMvcAction;
             return builder;
         }
-    }  
+    }
 }

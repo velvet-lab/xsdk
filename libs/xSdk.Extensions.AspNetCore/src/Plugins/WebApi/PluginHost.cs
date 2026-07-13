@@ -15,7 +15,6 @@
  */
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Asp.Versioning;
 using FluentValidation;

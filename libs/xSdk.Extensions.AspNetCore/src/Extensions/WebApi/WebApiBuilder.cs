@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi;
 using xSdk.Extensions.Builder;
-using xSdk.Extensions.Plugin;
 
 namespace xSdk.Extensions.WebApi;
 

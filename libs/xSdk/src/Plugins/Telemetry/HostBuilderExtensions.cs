@@ -15,7 +15,6 @@
  */
 
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 

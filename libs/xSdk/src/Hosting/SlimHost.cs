@@ -143,7 +143,7 @@ public class SlimHost
         where TBuilder : class, IBuilder
         => RegisterBuilder<TBuilder>(builder => { }, lifetime);
 
-    internal void RegisterBuilder<TBuilder>(Action < TBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Singleton)
+    internal void RegisterBuilder<TBuilder>(Action<TBuilder> configure, ServiceLifetime lifetime = ServiceLifetime.Singleton)
         where TBuilder : class, IBuilder
     {
         if (_isBuilded)

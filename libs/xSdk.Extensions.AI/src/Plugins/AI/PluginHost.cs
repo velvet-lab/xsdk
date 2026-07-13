@@ -34,7 +34,7 @@ internal partial class PluginHost<TBuilder>(TBuilder builder, IOptions<Environme
                 .AddOpenAIChatCompletions()
                 .AddOpenAIResponses()
                 .AddOpenAIConversations();
-        }  
+        }
     }
 
     public override void ConfigureEndpoint(IEndpointRouteBuilder endpointBuilder)

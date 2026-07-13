@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using xSdk.Extensions.Authentication;
-using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Authentication.Mocks;
 
@@ -31,5 +27,5 @@ internal class ApiKeyAuthenticationBuilderMock : AuthBuilder
     public override void ConfigureBuilder()
     {
         this.WithAuthentication(builder => builder.AddApiKeyRepository<TestApiKeyHandler>());
-    }    
+    }
 }

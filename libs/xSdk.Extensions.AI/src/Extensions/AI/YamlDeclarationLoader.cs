@@ -25,7 +25,7 @@ model:
     }
 
     public GptComponentMetadata? FromFile(string filePath)
-    {       
+    {
         string? basePath = aiOptions.Value.Path;
         if (environmentOptions is not null && string.IsNullOrEmpty(basePath))
         {
@@ -50,7 +50,7 @@ model:
     public static GptComponentMetadata? FromEmbeddedResource(Assembly assembly, string @namespace, string filePath)
     {
         EmbeddedResourceLoader resourceLoader = new EmbeddedResourceLoader(assembly, @namespace);
-        if(resourceLoader.TryReadResource(filePath, out string? content))
+        if (resourceLoader.TryReadResource(filePath, out string? content))
         {
             if (!string.IsNullOrEmpty(content))
             {
@@ -73,5 +73,5 @@ model:
         }
 
         return promptAgent;
-    }    
+    }
 }

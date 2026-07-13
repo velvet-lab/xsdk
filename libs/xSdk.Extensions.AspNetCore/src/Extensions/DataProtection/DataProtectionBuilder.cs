@@ -62,7 +62,7 @@ public class DataProtectionBuilder : BuilderBase
             {
                 Directory.CreateDirectory(keyFolder);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogWarning(ex, "KeyFolder '{keyFolder}' could not created. Create the Keyfolder in Users Home Profile.", keyFolder);
 

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Builder;
 using xSdk.Plugins.AI;
 
@@ -20,12 +19,12 @@ public class ToolBuilder(AIBuilder parent) : BuilderBase
     internal Delegate? InProcessDelegate { get; set; }
 
     internal AIFunctionFactoryOptions? InProcessOptions { get; set; }
-    
+
 
     internal AIFunction? BuildInProcess()
     {
         ConfigureBuilderAction?.Invoke(this);
-    
+
         if (InProcessDelegate is not null)
         {
             if (InProcessOptions is null)

@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xSdk.Extensions.Logging;
 using xSdk.Hosting;
 using xSdk.Plugins.Authentication;
 using xSdk.Plugins.WebApi;

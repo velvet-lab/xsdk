@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Options;
-
 namespace xSdk.Extensions.Telemetry;
 
 public class TelemetryOptionsTests

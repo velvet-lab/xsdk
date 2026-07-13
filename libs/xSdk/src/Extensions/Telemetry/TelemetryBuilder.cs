@@ -49,7 +49,7 @@ public class TelemetryBuilder : BuilderBase
             BuildMetrics();
         }
 
-        if(Options.LoggingEnabled)
+        if (Options.LoggingEnabled)
         {
             BuildLogging();
         }
@@ -63,7 +63,7 @@ public class TelemetryBuilder : BuilderBase
             // Call metrics configuration from possible other Startups
             ConfigureMetricsDelegate?.Invoke(metricsBuilder);
         });
-    }    
+    }
 
     private void BuildTracing()
     {

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.AI;
-
 namespace xSdk.Extensions.AI;
 
 public static class AgentBuilderExtensions
@@ -56,46 +51,46 @@ public static class AgentBuilderExtensions
 
 
 
-    //// ── Prompt ──
-    //public AgentBuilder WithPrompt(string prompt)
-    //{
-    //    // Store the prompt for later use
-    //    return this;
-    //}
+//// ── Prompt ──
+//public AgentBuilder WithPrompt(string prompt)
+//{
+//    // Store the prompt for later use
+//    return this;
+//}
 
-    //// ── Model Client ──
-    //public AgentBuilder WithModel<TClient>()
-    //    where TClient : IChatClient
-    //{
-    //    return this;
-    //}
+//// ── Model Client ──
+//public AgentBuilder WithModel<TClient>()
+//    where TClient : IChatClient
+//{
+//    return this;
+//}
 
-    //// ── Tools ──
-    //public ToolBuilder WithTool(string name)
-    //{
-    //    return new ToolBuilder(this, name);
-    //}
+//// ── Tools ──
+//public ToolBuilder WithTool(string name)
+//{
+//    return new ToolBuilder(this, name);
+//}
 
-    //// ── Transport: In-Process ──
-    //public AgentBuilder WithInProcess()
-    //{
-    //    return this;
-    //}
+//// ── Transport: In-Process ──
+//public AgentBuilder WithInProcess()
+//{
+//    return this;
+//}
 
-    //// ── Transport: Verteilt ──
-    //public AgentBuilder Distribute(string url)
-    //{
-    //    return this;
-    //}
+//// ── Transport: Verteilt ──
+//public AgentBuilder Distribute(string url)
+//{
+//    return this;
+//}
 
-    //// ── Endpoints ──
-    //public AgentBuilder ExposeOpenAiEndpoint(int port)
-    //{
+//// ── Endpoints ──
+//public AgentBuilder ExposeOpenAiEndpoint(int port)
+//{
 
-    //    return this;
-    //}
+//    return this;
+//}
 
-    //public AgentBuilder WithHealthChecks()
-    //{
-    //    return this;
-    //}
+//public AgentBuilder WithHealthChecks()
+//{
+//    return this;
+//}

@@ -37,7 +37,7 @@ public sealed class ApplicationOptions
 
     [Variable(
         name: Definitions.AppName.Name,
-        helpText: Definitions.AppName.HelpText,        
+        helpText: Definitions.AppName.HelpText,
         resourceNames: ["app.name"],
         hidden: true
     )]
@@ -53,7 +53,7 @@ public sealed class ApplicationOptions
 
     [Variable(
         name: Definitions.AppCompany.Name,
-        helpText: Definitions.AppCompany.HelpText,        
+        helpText: Definitions.AppCompany.HelpText,
         resourceNames: ["app.company"],
         hidden: true
     )]
@@ -64,7 +64,7 @@ public sealed class ApplicationOptions
 
     [Variable(
         name: Definitions.AppPrefix.Name,
-        helpText: Definitions.AppPrefix.HelpText,        
+        helpText: Definitions.AppPrefix.HelpText,
         resourceNames: ["app.prefix"],
         hidden: true
     )]

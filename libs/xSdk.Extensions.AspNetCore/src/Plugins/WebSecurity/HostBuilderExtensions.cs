@@ -17,8 +17,6 @@
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.WebSecurity;
 using xSdk.Hosting;
-using xSdk.Plugins.Documentation;
-using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.WebSecurity;
 
@@ -29,7 +27,7 @@ public static class HostBuilderExtensions
         public IHostBuilder EnableWebSecurity()
             => builder.EnableWebSecurity(_ => { });
 
-        public IHostBuilder EnableWebSecurity(Action<WebSecurityOptions> optionsConfigure)            
+        public IHostBuilder EnableWebSecurity(Action<WebSecurityOptions> optionsConfigure)
             => builder
                 .RegisterPluginHost<PluginHost>()
                 .RegisterPluginHostOptions<WebSecurityOptions>(optionsConfigure);

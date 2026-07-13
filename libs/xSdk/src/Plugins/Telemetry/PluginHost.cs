@@ -34,6 +34,6 @@ internal sealed class PluginHost<TBuilder>(TBuilder builder) : PluginHostBase
 
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
-        builder.Build(services);        
+        builder.Build(services);
     }
 }

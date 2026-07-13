@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using OpenAI;
 
 namespace xSdk.Extensions.AI;
@@ -23,7 +22,7 @@ public static class ClientBuilderExtensions
         {
             builder.Endpoint = endpoint;
             return builder;
-        }        
+        }
 
         public ClientBuilder UseOpenAIClient(Action<OpenAIClientOptions> configure)
         {

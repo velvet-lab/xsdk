@@ -1,12 +1,10 @@
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Hosting;
 using Microsoft.Agents.ObjectModel;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using xSdk.Extensions.Builder;
 using xSdk.Plugins.AI;
-using xSdk.Tools;
 
 namespace xSdk.Extensions.AI;
 
@@ -17,7 +15,7 @@ public sealed class AgentBuilder<TBuilder>(TBuilder builder, YamlDeclarationLoad
 
 public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) : BuilderBase
 {
-    private Dictionary<string, ToolBuilder> _toolBuilders = new();    
+    private Dictionary<string, ToolBuilder> _toolBuilders = new();
 
     internal string? Name { get; set; }
 
@@ -78,7 +76,7 @@ public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) :
 
         var agentFactory = new ChatClientPromptAgentFactory(chatClient, functions: [.. tools]);
         AIAgentBuilder rawAgentBuilder = agentFactory
-            .CreateAsync(metaData).GetAwaiter().GetResult()            
+            .CreateAsync(metaData).GetAwaiter().GetResult()
             .AsBuilder();
 
         if (builder.Options.IsTelemetryEnabled)
@@ -106,7 +104,7 @@ public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) :
 
         if (!string.IsNullOrEmpty(FilePath))
         {
-            metaData = yamlLoader.FromFile(FilePath);            
+            metaData = yamlLoader.FromFile(FilePath);
         }
 
         if (metaData is not null)
@@ -141,9 +139,9 @@ public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) :
 
     public IEnumerable<AIFunction> LoadTools()
     {
-        foreach(var toolName in Tools)
+        foreach (var toolName in Tools)
         {
-            if(builder.ToolBuilders.TryGetValue(toolName, out var toolBuilder))
+            if (builder.ToolBuilders.TryGetValue(toolName, out var toolBuilder))
             {
                 AIFunction? aiFunction = toolBuilder.BuildInProcess();
                 if (aiFunction is not null)
@@ -154,7 +152,7 @@ public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) :
             else
             {
                 throw new InvalidOperationException($"Tool builder for '{toolName}' not found.");
-            }            
+            }
         }
     }
 }

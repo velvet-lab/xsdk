@@ -17,12 +17,11 @@
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Documentation;
 using xSdk.Hosting;
-using xSdk.Plugins.DataProtection;
 
 namespace xSdk.Plugins.Documentation;
 
 public static class HostBuilderExtensions
-{   
+{
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableDocumentation()

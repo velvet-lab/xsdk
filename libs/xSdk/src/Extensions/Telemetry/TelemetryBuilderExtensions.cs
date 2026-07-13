@@ -20,7 +20,7 @@ public static class TelemetryBuilderExtensions
         }
 
         public TelemetryBuilder WithLogging(Action<LoggerProviderBuilder> configure)
-            => builder.WithLogging (configure, null);
+            => builder.WithLogging(configure, null);
 
         public TelemetryBuilder WithLogging(Action<LoggerProviderBuilder> configure, Action<OpenTelemetryLoggerOptions>? options)
         {
@@ -28,7 +28,7 @@ public static class TelemetryBuilderExtensions
                 .AsBuilder<TelemetryBuilder>();
 
             concreteBuilder.ConfigureLoggingDelegate = configure;
-            if(options is not null)
+            if (options is not null)
             {
                 concreteBuilder.ConfigureLoggingOptionsDelegate = options;
             }
@@ -40,7 +40,7 @@ public static class TelemetryBuilderExtensions
         {
             builder
                 .AsBuilder<TelemetryBuilder>()
-                .ConfigureMetricsDelegate = configure;            
+                .ConfigureMetricsDelegate = configure;
 
             return builder;
         }
