@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-namespace xSdk.Extensions.Plugin;
+using Microsoft.Extensions.DependencyInjection;
 
-public interface IPluginBuilder
+namespace xSdk.Extensions.Builder;
+
+public interface IBuilder
 {
-
+    void ConfigureBuilder();
 }
