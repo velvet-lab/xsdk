@@ -68,7 +68,7 @@ public class ApiKeyOptionsTests(WebHostTestFixture fixture) : IClassFixture<WebH
         IHost host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
-                .EnableAuthentication())
+                .EnableAuthentication(builder => { }))
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();

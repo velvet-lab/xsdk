@@ -42,7 +42,10 @@ internal class AgentBuilderValidator : AbstractValidator<AgentBuilder>
             RuleFor(x => x.FilePath)
                 .NotEmpty().WithMessage("Agent file path must not be empty when name, model, and instructions are not provided.")
                 .MaximumLength(200).WithMessage("Agent file path must not exceed 200 characters.");
-
         });
+
+        RuleFor(x => x.ClientName)
+            .NotEmpty().WithMessage("Agent client name must not be empty.")
+            .MaximumLength(100).WithMessage("Agent client name must not exceed 100 characters.");
     }
 }

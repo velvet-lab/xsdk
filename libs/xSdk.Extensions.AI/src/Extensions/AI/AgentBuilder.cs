@@ -28,6 +28,8 @@ public sealed class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLo
 {
     private readonly Dictionary<string, ToolBuilder> _toolBuilders = new();
 
+    internal Action<AgentBuilder>? ConfigureBuilderAction { get; set; }
+
     internal string? Name { get; set; }
 
     internal string? Description { get; set; }
@@ -40,8 +42,8 @@ public sealed class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLo
 
     internal string? FilePath { get; set; }
 
-    internal List<string> Tools { get; } = new();
-    public Action<AgentBuilder> ConfigureBuilderAction { get; internal set; }
+
+    internal List<string> Tools = new();
 
     internal void Build(IServiceCollection services)
     {
@@ -148,7 +150,7 @@ public sealed class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLo
     //    return default;
     //}
 
-    public IEnumerable<AIFunction> LoadTools()
+    internal IEnumerable<AIFunction> LoadTools()
     {
         foreach (var toolName in Tools)
         {

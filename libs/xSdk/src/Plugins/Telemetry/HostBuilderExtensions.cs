@@ -24,19 +24,10 @@ public static class HostBuilderExtensions
 {
     extension(IHostBuilder builder)
     {
-        public IHostBuilder EnableTelemetry()
-            => builder.EnableTelemetry(_ => { }, _ => { });
-
         public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure)
-            => builder.EnableTelemetry(configure, _ => { });
-
-        public IHostBuilder EnableTelemetry(Action<TelemetryOptions> optionsConfigure)
-            => builder.EnableTelemetry(_ => { }, optionsConfigure);
-
-        public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure, Action<TelemetryOptions> optionsConfigure)            
             => builder
                 .RegisterPluginHost<PluginHost>()
-                .RegisterPluginHostOptions<TelemetryOptions>(optionsConfigure)
+                .RegisterPluginHostOptions<TelemetryOptions>()
                 .RegisterBuilder<TelemetryBuilder>(configure);
     }
 }

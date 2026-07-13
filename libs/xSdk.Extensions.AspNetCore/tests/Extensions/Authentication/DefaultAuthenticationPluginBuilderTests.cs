@@ -33,7 +33,7 @@ public class DefaultAuthenticationPluginBuilderTests(WebHostTestFixture fixture)
         IHost host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
-                .EnableAuthentication())
+                .EnableAuthentication(builder => { }))
             .BuildHost();
 
         // IAuthenticationSchemeProvider is a singleton and resolvable from the root provider

@@ -45,10 +45,6 @@ public static class HostBuilderExtensions
         public IHostBuilder EnableReplConsole(Action<ReplConsoleBuilder> configure)
             => builder.EnableConsole<ReplConsoleBuilder>(configure, _ => _.DisableDefaultHelp = true);
 
-        public IHostBuilder EnableReplConsole(Action<ReplConsoleBuilder> configure, Action<ConsoleOptions> optionsConfigure)
-            => builder.EnableConsole<ReplConsoleBuilder>(configure, optionsConfigure);
-
-
 
         public IHostBuilder EnableDefaultConsole()
                 => builder.EnableConsole<ConsoleBuilder>(_ => { }, _ => { });
@@ -56,15 +52,12 @@ public static class HostBuilderExtensions
         public IHostBuilder EnableDefaultConsole(Action<ConsoleBuilder> configure)
             => builder.EnableConsole<ConsoleBuilder>(configure, _ => { });
 
-        public IHostBuilder EnableDefaultConsole(Action<ConsoleBuilder> configure, Action<ConsoleOptions> optionsConfigure)
-            => builder.EnableConsole<ConsoleBuilder>(configure, optionsConfigure);
-
 
         public IHostBuilder EnableConsole<TBuilder>(Action<ConsoleOptions> optionsConfigure)
             where TBuilder : ConsoleBuilder
             => builder.EnableConsole<TBuilder>(_ => { }, optionsConfigure);
 
-        public IHostBuilder EnableConsole<TBuilder>(Action<TBuilder> configure, Action<ConsoleOptions> optionsConfigure)
+        private IHostBuilder EnableConsole<TBuilder>(Action<TBuilder> configure, Action<ConsoleOptions> optionsConfigure)
             where TBuilder : ConsoleBuilder
             => builder
                 .RegisterPluginHost<PluginHost<TBuilder>>()

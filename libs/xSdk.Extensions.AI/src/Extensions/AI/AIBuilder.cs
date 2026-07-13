@@ -24,6 +24,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.AI;
 using xSdk.Extensions.Builder;
+using xSdk.Tools;
 
 namespace xSdk.Plugins.AI;
 
@@ -38,12 +39,13 @@ public sealed class AIBuilder : BuilderBase
 
     internal static AIBuilder Instance => _instance ?? throw new InvalidOperationException("AIBuilder instance has not been initialized.");
 
+    internal Dictionary<string, Action<ClientBuilder>> ClientBuilderActions = new();
+    internal Dictionary<string, Action<ToolBuilder>> ToolBuilderActions = new();
+    internal Dictionary<string, Action<AgentBuilder>> AgentBuilderActions = new();
+
     internal readonly Dictionary<string, ClientBuilder> ClientBuilders = new();
-
     internal readonly Dictionary<string, AgentBuilder> AgentBuilders = new();
-
     internal readonly Dictionary<string, ToolBuilder> ToolBuilders = new();
-
     internal readonly Dictionary<string, SkillBuilder> SkillBuilders = new();
 
     internal AIOptions Options => Services.GetRequiredService<IOptions<AIOptions>>().Value;
@@ -53,11 +55,16 @@ public sealed class AIBuilder : BuilderBase
     internal ILoggerFactory? LoggerFactory { get; set; }
 
     internal bool EnableLogging { get; set; }
+    
 
     internal void Build(IServiceCollection services)
     {
         if (IsValid<AIBuilder, AIBuilderValidator>())
         {
+            BuildAgents();
+            BuildClients();
+            BuildTools();
+
             // Build all agents that have been configured
             foreach (var agentBuilder in AgentBuilders.Values)
             {
@@ -76,6 +83,39 @@ public sealed class AIBuilder : BuilderBase
                 builder.MapOpenAIChatCompletions(hostedAgentBuilder);
                 builder.MapOpenAIResponses(hostedAgentBuilder);
             }
+        }
+    }
+
+    public void BuildClients()
+    {
+        foreach(var clientBuilderAction in ClientBuilderActions)
+        {
+            var clientBuilder = Services.GetRequiredService<ClientBuilder>();
+            clientBuilder.ConfigureBuilderAction = clientBuilderAction.Value;
+            clientBuilder.WithName(clientBuilderAction.Key);
+            ClientBuilders.AddOrNew(clientBuilderAction.Key, clientBuilder);
+        }
+    }
+
+    public void BuildTools()
+    {
+        foreach(var toolBuilderAction in ToolBuilderActions)
+        {
+            var toolBuilder = Services.GetRequiredService<ToolBuilder>();
+            toolBuilder.ConfigureBuilderAction = toolBuilderAction.Value;
+            toolBuilder.WithName(toolBuilderAction.Key);
+            ToolBuilders.AddOrNew(toolBuilderAction.Key, toolBuilder);
+        }
+    }
+
+    public void BuildAgents()
+    {
+        foreach(var agentBuilderAction in AgentBuilderActions)
+        {
+            var agentBuilder = Services.GetRequiredService<AgentBuilder>();
+            agentBuilder.ConfigureBuilderAction = agentBuilderAction.Value;
+            agentBuilder.WithName(agentBuilderAction.Key);
+            AgentBuilders.AddOrNew(agentBuilderAction.Key, agentBuilder);
         }
     }
 }

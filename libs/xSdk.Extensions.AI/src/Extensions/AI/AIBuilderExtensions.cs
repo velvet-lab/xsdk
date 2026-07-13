@@ -27,31 +27,19 @@ public static class AIBuilderExtensions
     {
         public AIBuilder AddClient(string name, Action<ClientBuilder> configure)
         {
-            var clientBuilder = builder.Services.GetRequiredService<ClientBuilder>();
-            clientBuilder.ConfigureBuilderAction = configure;
-            clientBuilder.WithName(name);
-            builder.ClientBuilders.AddOrNew(name, clientBuilder);
-
+            builder.ClientBuilderActions.AddOrNew(name, configure);
             return builder;
         }
 
         public AIBuilder AddTool(string name, Action<ToolBuilder> configure)
         {
-            var toolBuilder = builder.Services.GetRequiredService<ToolBuilder>();
-            toolBuilder.ConfigureBuilderAction = configure;
-            toolBuilder.WithName(name);
-            builder.ToolBuilders.AddOrNew(name, toolBuilder);
-
+            builder.ToolBuilderActions.AddOrNew(name, configure);
             return builder;
         }
 
         public AIBuilder AddAgent(string name, Action<AgentBuilder> configure)
         {
-            var agentBuilder = builder.Services.GetRequiredService<AgentBuilder>();
-            agentBuilder.ConfigureBuilderAction = configure;
-            agentBuilder.WithName(name);
-            builder.AgentBuilders.AddOrNew(name, agentBuilder);
-
+            builder.AgentBuilderActions.AddOrNew(name, configure);
             return builder;
         }
 

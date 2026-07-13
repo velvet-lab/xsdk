@@ -51,6 +51,12 @@ public static class AgentBuilderExtensions
             return builder;
         }
 
+        public AgentBuilder WithEmbeddedFile(string filePath)
+        {
+            builder.FilePath = filePath;
+            return builder;
+        }
+
         public AgentBuilder WithPrompt(string instructions)
         {
             builder.Instructions = instructions;
@@ -67,42 +73,11 @@ public static class AgentBuilderExtensions
 
 
 
-//// ── Prompt ──
-//public AgentBuilder WithPrompt(string prompt)
-//{
-//    // Store the prompt for later use
-//    return this;
-//}
 
-//// ── Model Client ──
-//public AgentBuilder WithModel<TClient>()
-//    where TClient : IChatClient
-//{
-//    return this;
-//}
-
-//// ── Tools ──
-//public ToolBuilder WithTool(string name)
-//{
-//    return new ToolBuilder(this, name);
-//}
-
-//// ── Transport: In-Process ──
-//public AgentBuilder WithInProcess()
-//{
-//    return this;
-//}
 
 //// ── Transport: Verteilt ──
 //public AgentBuilder Distribute(string url)
 //{
-//    return this;
-//}
-
-//// ── Endpoints ──
-//public AgentBuilder ExposeOpenAiEndpoint(int port)
-//{
-
 //    return this;
 //}
 

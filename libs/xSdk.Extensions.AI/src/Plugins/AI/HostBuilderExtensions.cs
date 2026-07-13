@@ -26,16 +26,9 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableAI(Action<AIBuilder> configure)
-            => builder.EnableAI(configure, _ => { });
-
-        public IHostBuilder EnableAI(Action<AIOptions> optionsConfigure)
-            => builder.EnableAI(_ => { }, optionsConfigure);
-
-        public IHostBuilder EnableAI(Action<AIBuilder> configure, Action<AIOptions> optionsConfigure)            
-        {
-            return builder
+            => builder
                 .RegisterPluginHost<PluginHost>()
-                .RegisterPluginHostOptions<AIOptions>(optionsConfigure)
+                .RegisterPluginHostOptions<AIOptions>()
                 .RegisterPluginServices(services =>
                 {
                     services
@@ -45,6 +38,5 @@ public static class HostBuilderExtensions
                 .RegisterBuilder<ClientBuilder>(ServiceLifetime.Transient)
                 .RegisterBuilder<AgentBuilder>(ServiceLifetime.Transient)
                 .RegisterBuilder<ToolBuilder>(ServiceLifetime.Transient);
-        }
     }
 }

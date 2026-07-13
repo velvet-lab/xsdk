@@ -37,12 +37,7 @@ IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
     .EnableAI(MyAIBuilder.ConfigureBuilder)
-    .EnableTelemetry(AITelemetryBuilder.ConfigureBuilder, options =>
-    {
-        options.LoggingEnabled = true;
-        options.TracingEnabled = true;
-        options.MetricsEnabled = true;
-    })
+    .EnableTelemetry(AITelemetryBuilder.ConfigureBuilder)
     .EnableWebSecurity()
     .EnableCompression()
     .Build();

@@ -29,7 +29,7 @@ namespace xSdk.Plugins.AI;
 
 internal sealed class PluginHost(AIBuilder builder, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
 {
-    public override int Order => 20;
+    public override int Order => 51;
 
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {

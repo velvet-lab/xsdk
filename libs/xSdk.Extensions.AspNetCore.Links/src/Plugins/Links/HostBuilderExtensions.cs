@@ -24,9 +24,6 @@ public static class HostBuilderExtensions
 {
     extension(IHostBuilder builder)
     {
-        public IHostBuilder EnableLinks()
-            => builder.EnableLinks(_ => { });
-
         public IHostBuilder EnableLinks(Action<LinksBuilder> configure)
             => builder
                 .RegisterPluginHost<PluginHost>()

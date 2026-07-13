@@ -27,7 +27,7 @@ public class LinksPluginTests(TestHostFixture fixture) : IClassFixture<TestHostF
     public void EnableLinks_CreatesLinksPlugin()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableLinks())
+            .ConfigureBuilder(builder => builder.EnableLinks(b => { }))
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();

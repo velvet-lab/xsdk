@@ -35,7 +35,7 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
         IHost host = fixture
             .ConfigureBuilder(builder => builder
                     .EnableWebApi()
-                    .EnableLinks())
+                    .EnableLinks(builder => { }))
             .BuildHost();
 
         return host.Services.GetRequiredService<ILinksService>();

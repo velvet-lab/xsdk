@@ -24,16 +24,10 @@ public static class HostBuilderExtensions
 {
     extension(IHostBuilder builder)
     {
-        public IHostBuilder EnableAuthentication()
-            => builder.EnableAuthentication(_ => { }, _ => { });
-
         public IHostBuilder EnableAuthentication(Action<AuthBuilder> configure)
-            => builder.EnableAuthentication(configure, _ => { });
-
-        public IHostBuilder EnableAuthentication(Action<AuthBuilder> configure, Action<AuthOptions> optionsConfigure)
             => builder
                 .RegisterPluginHost<PluginHost>()
-                .RegisterPluginHostOptions<AuthOptions>(optionsConfigure)
+                .RegisterPluginHostOptions<AuthOptions>()
                 .RegisterBuilder<AuthBuilder>(configure);
     }
 }
