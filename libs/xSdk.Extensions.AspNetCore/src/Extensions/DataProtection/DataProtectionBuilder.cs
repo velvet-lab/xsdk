@@ -24,17 +24,13 @@ using xSdk.Extensions.Logging;
 
 namespace xSdk.Extensions.DataProtection;
 
-public class DataProtectionBuilder : BuilderBase
+public sealed class DataProtectionBuilder : BuilderBase
 {
     private static ILogger Logger => field ??= LogManager.CreateLogger<DataProtectionBuilder>();
 
-    internal Action<IDataProtectionBuilder> ConfigureDataProtectionAction
-    {
-        get => field ?? (_ => ConfigureDataProtection(_));
-        set;
-    }
+    internal Action<IDataProtectionBuilder>? ConfigureDataProtectionAction { get => field ?? (_ => ConfigureDataProtection(_)); set; }
 
-    protected virtual void ConfigureDataProtection(IDataProtectionBuilder builder)
+    private void ConfigureDataProtection(IDataProtectionBuilder builder)
     {
         string keysLocation = GetKeyFolder();
         builder.PersistKeysToFileSystem(new DirectoryInfo(keysLocation));
@@ -44,7 +40,7 @@ public class DataProtectionBuilder : BuilderBase
     {
         Logger.LogInformation("Try to get Key Folder for Data Protection");
 
-        IFileSystemService fileSystemService = SlimServices.GetRequiredService<IFileSystemService>();
+        IFileSystemService fileSystemService = Services.GetRequiredService<IFileSystemService>();
 
         string? keyFolder;
         if (Debugger.IsAttached)

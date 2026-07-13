@@ -23,8 +23,7 @@ using xSdk.Extensions.Telemetry;
 
 namespace xSdk.Plugins.Telemetry;
 
-internal sealed class PluginHost<TBuilder>(TBuilder builder) : PluginHostBase
-    where TBuilder : TelemetryBuilder
+internal sealed class PluginHost(TelemetryBuilder builder) : PluginHostBase
 {
     public override void ConfigureLogging(ILogBuilder builder)
     {

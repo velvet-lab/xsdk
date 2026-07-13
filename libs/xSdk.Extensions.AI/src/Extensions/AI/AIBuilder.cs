@@ -27,21 +27,26 @@ using xSdk.Extensions.Builder;
 
 namespace xSdk.Plugins.AI;
 
-public class AIBuilder : BuilderBase
+public sealed class AIBuilder : BuilderBase
 {
     private static AIBuilder? _instance;
-
-    internal readonly Dictionary<string, ClientBuilder> ClientBuilders = new();
-    internal readonly Dictionary<string, AgentBuilder> AgentBuilders = new();
-    internal readonly Dictionary<string, ToolBuilder> ToolBuilders = new();
-    internal readonly Dictionary<string, SkillBuilder> SkillBuilders = new();
 
     public AIBuilder()
     {
         _instance = this;
     }
 
-    internal AIOptions Options => SlimServices.GetRequiredService<IOptions<AIOptions>>().Value;
+    internal static AIBuilder Instance => _instance ?? throw new InvalidOperationException("AIBuilder instance has not been initialized.");
+
+    internal readonly Dictionary<string, ClientBuilder> ClientBuilders = new();
+
+    internal readonly Dictionary<string, AgentBuilder> AgentBuilders = new();
+
+    internal readonly Dictionary<string, ToolBuilder> ToolBuilders = new();
+
+    internal readonly Dictionary<string, SkillBuilder> SkillBuilders = new();
+
+    internal AIOptions Options => Services.GetRequiredService<IOptions<AIOptions>>().Value;
 
     internal string? DiagnosticsSourceName { get; set; }
 
@@ -49,12 +54,8 @@ public class AIBuilder : BuilderBase
 
     internal bool EnableLogging { get; set; }
 
-    internal static AIBuilder Instance => _instance ?? throw new InvalidOperationException("AIBuilder instance has not been initialized.");
-
     internal void Build(IServiceCollection services)
     {
-        ConfigureBuilder();
-
         if (IsValid<AIBuilder, AIBuilderValidator>())
         {
             // Build all agents that have been configured
@@ -76,18 +77,5 @@ public class AIBuilder : BuilderBase
                 builder.MapOpenAIResponses(hostedAgentBuilder);
             }
         }
-    }
-
-    protected AIBuilder CreateBuilder()
-    {
-        return this;
-    }
-
-    internal TBuilder CreateBuilder<TBuilder>(Type type)
-        where TBuilder : class
-    {
-        Type genericType = type.MakeGenericType(new Type[] { this.GetType() });
-        TBuilder concreteBuilder = (SlimServices.GetRequiredService(genericType) as TBuilder)!;
-        return concreteBuilder;
     }
 }

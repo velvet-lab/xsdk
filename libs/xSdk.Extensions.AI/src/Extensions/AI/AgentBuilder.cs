@@ -24,12 +24,7 @@ using xSdk.Plugins.AI;
 
 namespace xSdk.Extensions.AI;
 
-public sealed class AgentBuilder<TBuilder>(TBuilder builder, YamlDeclarationLoader yamlLoader) : AgentBuilder(builder, yamlLoader)
-    where TBuilder : AIBuilder
-{
-}
-
-public class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) : BuilderBase
+public sealed class AgentBuilder(AIBuilder builder, YamlDeclarationLoader yamlLoader) : BuilderBase
 {
     private readonly Dictionary<string, ToolBuilder> _toolBuilders = new();
 

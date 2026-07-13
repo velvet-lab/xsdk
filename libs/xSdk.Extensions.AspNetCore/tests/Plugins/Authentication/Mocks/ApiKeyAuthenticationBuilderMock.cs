@@ -22,10 +22,10 @@ namespace xSdk.Plugins.Authentication.Mocks;
 /// A plugin builder mock that registers a TestApiKeyHandler via AddApiKeyRepository
 /// to exercise the AddApiKeyRepository extension method in integration tests.
 /// </summary>
-internal class ApiKeyAuthenticationBuilderMock : AuthBuilder
+internal static class ApiKeyAuthenticationBuilderMock
 {
-    public override void ConfigureBuilder()
+    public static void ConfigureBuilder(AuthBuilder builder)
     {
-        this.WithAuthentication(builder => builder.AddApiKeyRepository<TestApiKeyHandler>());
+        builder.WithAuthentication(b => b.AddApiKeyRepository<TestApiKeyHandler>());
     }
 }

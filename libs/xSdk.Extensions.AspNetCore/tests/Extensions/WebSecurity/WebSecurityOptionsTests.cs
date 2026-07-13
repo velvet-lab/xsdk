@@ -44,7 +44,7 @@ public class WebSecurityOptionsTests(WebHostTestFixture fixture) : IClassFixture
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        PluginHost? plugin = service.GetPlugin<PluginHost>();
+        xSdk.Plugins.WebSecurity.PluginHost? plugin = service.GetPlugin<xSdk.Plugins.WebSecurity.PluginHost>();
 
         Assert.NotNull(plugin);
     }

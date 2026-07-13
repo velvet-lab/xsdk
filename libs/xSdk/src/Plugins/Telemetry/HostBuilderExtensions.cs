@@ -25,27 +25,18 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableTelemetry()
-            => builder.EnableTelemetry<TelemetryBuilder>(_ => { }, _ => { });
+            => builder.EnableTelemetry(_ => { }, _ => { });
 
         public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure)
-            => builder.EnableTelemetry<TelemetryBuilder>(configure, _ => { });
+            => builder.EnableTelemetry(configure, _ => { });
 
-        public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure, Action<TelemetryOptions> optionsConfigure)
-            => builder.EnableTelemetry<TelemetryBuilder>(configure, optionsConfigure);
+        public IHostBuilder EnableTelemetry(Action<TelemetryOptions> optionsConfigure)
+            => builder.EnableTelemetry(_ => { }, optionsConfigure);
 
-        public IHostBuilder EnableTelemetry<TBuilder>()
-            where TBuilder : TelemetryBuilder
-            => builder.EnableTelemetry<TBuilder>(_ => { }, _ => { });
-
-        public IHostBuilder EnableTelemetry<TBuilder>(Action<TelemetryOptions> configure)
-            where TBuilder : TelemetryBuilder
-            => builder.EnableTelemetry<TBuilder>(_ => { }, configure);
-
-        private IHostBuilder EnableTelemetry<TBuilder>(Action<TBuilder> configure, Action<TelemetryOptions> optionsConfigure)
-            where TBuilder : TelemetryBuilder
+        public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure, Action<TelemetryOptions> optionsConfigure)            
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterPluginHost<PluginHost>()
                 .RegisterPluginHostOptions<TelemetryOptions>(optionsConfigure)
-                .RegisterBuilder<TBuilder>(configure);
+                .RegisterBuilder<TelemetryBuilder>(configure);
     }
 }

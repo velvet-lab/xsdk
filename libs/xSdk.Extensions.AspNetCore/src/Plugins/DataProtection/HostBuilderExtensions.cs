@@ -25,27 +25,15 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableDataProtection()
-            => builder.EnableDataProtection<DataProtectionBuilder>(_ => { }, _ => { });
+            => builder.EnableDataProtection(_ => { }, _ => { });
 
         public IHostBuilder EnableDataProtection(Action<DataProtectionBuilder> configure)
-            => builder.EnableDataProtection<DataProtectionBuilder>(configure, _ => { });
+            => builder.EnableDataProtection(configure, _ => { });
 
         public IHostBuilder EnableDataProtection(Action<DataProtectionBuilder> configure, Action<DataProtectionOptions> optionsConfigure)
-            => builder.EnableDataProtection<DataProtectionBuilder>(configure, optionsConfigure);
-
-        public IHostBuilder EnableDataProtection<TBuilder>()
-            where TBuilder : DataProtectionBuilder
-            => builder.EnableDataProtection<TBuilder>(_ => { }, _ => { });
-
-        public IHostBuilder EnableDataProtection<TBuilder>(Action<DataProtectionOptions> configure)
-            where TBuilder : DataProtectionBuilder
-            => builder.EnableDataProtection<TBuilder>(_ => { }, configure);
-
-        private IHostBuilder EnableDataProtection<TBuilder>(Action<TBuilder> configure, Action<DataProtectionOptions> optionsConfigure)
-            where TBuilder : DataProtectionBuilder
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()
-                .RegisterPluginHostOptions<DataProtectionOptions>(optionsConfigure)
-                .RegisterBuilder<TBuilder>(configure);
+                .RegisterPluginHost<PluginHost>()
+                .RegisterPluginHostOptions(optionsConfigure)
+                .RegisterBuilder(configure);
     }
 }

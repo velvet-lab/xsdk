@@ -24,14 +24,10 @@ public abstract class BuilderBase : IBuilder
 {
     private ILogger Logger { get => field ??= LogManager.CreateLogger<BuilderBase>(); }
 
-    public virtual void ConfigureBuilder()
-    {
-    }
-
-    protected internal IServiceProvider SlimServices
+    public IServiceProvider Services
     {
         get => field ?? throw new InvalidOperationException("SlimServices has not been initialized.");
-        set;
+        internal set;
     }
 
     protected bool IsValid<TBuilder, TValidator>()

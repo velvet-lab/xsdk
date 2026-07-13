@@ -18,13 +18,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace xSdk.Extensions.Commands;
 
-internal class ChatConsoleBuilder : ReplConsoleBuilder
+internal sealed class ChatConsoleBuilder : ReplConsoleBuilder
 {
-    public override void ConfigureBuilder()
+    protected override void Build(IServiceCollection? services)
     {
         this
             .AddDefaultCommands()
             .AddCommand<ChatCommand>(ChatCommand.Definitions.Name);
+
+        base.Build(services);
     }
 
     protected override IApplication BuildApplication(IServiceProvider provider)

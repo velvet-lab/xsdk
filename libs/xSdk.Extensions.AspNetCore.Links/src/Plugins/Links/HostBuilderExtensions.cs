@@ -25,19 +25,11 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableLinks()
-            => builder.EnableLinks<LinksBuilder>(_ => { });
+            => builder.EnableLinks(_ => { });
 
         public IHostBuilder EnableLinks(Action<LinksBuilder> configure)
-            => builder.EnableLinks<LinksBuilder>(configure);
-
-        public IHostBuilder EnableLinks<TBuilder>()
-            where TBuilder : LinksBuilder
-            => builder.EnableLinks<TBuilder>(_ => { });
-
-        private IHostBuilder EnableLinks<TBuilder>(Action<TBuilder> configure)
-            where TBuilder : LinksBuilder
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()
-                .RegisterBuilder<TBuilder>(configure);
+                .RegisterPluginHost<PluginHost>()
+                .RegisterBuilder(configure);
     }
 }

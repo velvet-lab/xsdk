@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
@@ -26,23 +27,24 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Demos.Builders;
 
-internal class MyTelemetryBuilder(IVariableService variableService, IOptions<EnvironmentOptions> environmentOptions) : TelemetryBuilder
+internal static class MyTelemetryBuilder
 {
     internal const string OtlpEndpoint = "http://localhost:4317";
 
-    public override void ConfigureBuilder()
+    internal static void ConfigureBuilder(TelemetryBuilder builder)
     {
-        this
+        IVariableService variableService = builder.Services.GetRequiredService<IVariableService>();
+        IOptions< EnvironmentOptions > environmentOptions = builder.Services.GetRequiredService<IOptions<EnvironmentOptions>>();
+
+        builder
             .WithLogging(ConfigureLogging, ConfigureLoggingOptions)
             .WithMetrics(ConfigureMetrics)
             .WithTracing(ConfigureTracing)
-            .WithResources(ConfigureResources);
+            .WithResources((builder) => ConfigureResources(builder, variableService, environmentOptions.Value));
     }
 
-    private void ConfigureResources(ResourceBuilder builder)
+    private static void ConfigureResources(ResourceBuilder builder, IVariableService variableService, EnvironmentOptions setup)
     {
-        EnvironmentOptions setup = environmentOptions.Value;
-
         builder
             .AddEnvironmentVariableDetector()
             .AddTelemetrySdk()

@@ -22,13 +22,13 @@ namespace xSdk.Extensions.Commands;
 
 public class ReplConsoleBuilder : ConsoleBuilder
 {
-    public virtual Action? CreateBannerAction { get => field ?? CreateBanner; set; }
+    public Action? CreateBannerAction { get => field ?? CreateBanner; set; }
 
-    public virtual Action<IList<Command>>? CreateHelpAction { get => field ?? CreateHelp; set; }
+    public Action<IList<Command>>? CreateHelpAction { get => field ?? CreateHelp; set; }
 
-    public virtual Action? CreateLastWillAction { get => field ?? CreateLastWill; set; }
+    public Action? CreateLastWillAction { get => field ?? CreateLastWill; set; }
 
-    public virtual Func<string>? CreateUserPromptAction { get => field ?? CreateUserPrompt; set; }
+    public Func<string>? CreateUserPromptAction { get => field ?? CreateUserPrompt; set; }
 
     protected override IApplication BuildApplication(IServiceProvider provider)
         => ActivatorUtilities.CreateInstance<ReplApplication>(provider);

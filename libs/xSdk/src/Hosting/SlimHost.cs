@@ -157,7 +157,7 @@ public class SlimHost
 
             builder
                 .AsBuilder<BuilderBase>()
-                .SlimServices = provider;
+                .Services = provider;
 
             configure(builder);
 

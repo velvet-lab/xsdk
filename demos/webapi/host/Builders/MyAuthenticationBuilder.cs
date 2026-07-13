@@ -20,15 +20,15 @@ using xSdk.Plugins.Authentication;
 
 namespace xSdk.Demos.Builders;
 
-internal class MyAuthenticationBuilder : AuthBuilder
+internal static class MyAuthenticationBuilder
 {
     // Global Constants for an easier handling
     public const string Policy_OnlyRead = "OnlyRead";
     public const string Policy_ReadAndWrite = "ReadAndWrite";
 
-    public override void ConfigureBuilder()
+    internal static void ConfigureBuilder(AuthBuilder builder)
     {
-        this
+        builder
             .WithAuthentication(ConfigureAuthentication)
             .WithAuthorization(ConfigureAuthorization);
     }

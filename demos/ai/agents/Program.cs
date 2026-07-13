@@ -36,8 +36,8 @@ const string APP_PREFIX = "agent";
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableAI<MyAIBuilder>()
-    .EnableTelemetry<AITelemetryBuilder>(options =>
+    .EnableAI(MyAIBuilder.ConfigureBuilder)
+    .EnableTelemetry(AITelemetryBuilder.ConfigureBuilder, options =>
     {
         options.LoggingEnabled = true;
         options.TracingEnabled = true;

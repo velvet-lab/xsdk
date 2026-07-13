@@ -25,27 +25,15 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableAuthentication()
-            => builder.EnableAuthentication<AuthBuilder>(_ => { }, _ => { });
+            => builder.EnableAuthentication(_ => { }, _ => { });
 
         public IHostBuilder EnableAuthentication(Action<AuthBuilder> configure)
-            => builder.EnableAuthentication<AuthBuilder>(configure, _ => { });
+            => builder.EnableAuthentication(configure, _ => { });
 
         public IHostBuilder EnableAuthentication(Action<AuthBuilder> configure, Action<AuthOptions> optionsConfigure)
-            => builder.EnableAuthentication<AuthBuilder>(configure, optionsConfigure);
-
-        public IHostBuilder EnableAuthentication<TBuilder>()
-            where TBuilder : AuthBuilder
-            => builder.EnableAuthentication<TBuilder>(_ => { }, _ => { });
-
-        public IHostBuilder EnableAuthentication<TBuilder>(Action<AuthOptions> configure)
-            where TBuilder : AuthBuilder
-            => builder.EnableAuthentication<TBuilder>(_ => { }, configure);
-
-        private IHostBuilder EnableAuthentication<TBuilder>(Action<TBuilder> configure, Action<AuthOptions> optionsConfigure)
-            where TBuilder : AuthBuilder
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterPluginHost<PluginHost>()
                 .RegisterPluginHostOptions<AuthOptions>(optionsConfigure)
-                .RegisterBuilder<TBuilder>(configure);
+                .RegisterBuilder<AuthBuilder>(configure);
     }
 }

@@ -21,16 +21,19 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Demos.Builders;
 
-internal class MyLinksBuilder : LinksBuilder
+internal static class MyLinksBuilder
 {
-    protected override void ConfigureLinks(LinksOptions options)
+    internal static void ConfigureLinks(LinksBuilder builder)
     {
-        options
-            .AddPolicy<SampleModel>(policy => policy
-                    .RequireRoutedLink("all", nameof(SampleController.GetSamplesHateOasAsync))
-                    .RequireRoutedLink("new", nameof(SampleController.SaveSampleHateOasAsync))
-                    .RequireRoutedLink("self", nameof(SampleController.GetSampleHateOasAsync), x => new { x.Id })
-                    .RequireRoutedLink("edit", nameof(SampleController.UpdateSampleHateOasAsync), x => new { x.Id })
-                    .RequireRoutedLink("delete", nameof(SampleController.DeleteSampleHateOasAsync), x => new { x.Id }));
+        builder.UseLinks(options =>
+        {
+            options
+                .AddPolicy<SampleModel>(policy => policy
+                        .RequireRoutedLink("all", nameof(SampleController.GetSamplesHateOasAsync))
+                        .RequireRoutedLink("new", nameof(SampleController.SaveSampleHateOasAsync))
+                        .RequireRoutedLink("self", nameof(SampleController.GetSampleHateOasAsync), x => new { x.Id })
+                        .RequireRoutedLink("edit", nameof(SampleController.UpdateSampleHateOasAsync), x => new { x.Id })
+                        .RequireRoutedLink("delete", nameof(SampleController.DeleteSampleHateOasAsync), x => new { x.Id }));
+        });
     }
 }

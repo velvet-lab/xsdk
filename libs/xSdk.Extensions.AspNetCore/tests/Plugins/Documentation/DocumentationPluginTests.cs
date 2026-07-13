@@ -28,15 +28,15 @@ public class DocumentationPluginTests(WebHostTestFixture fixture) : IClassFixtur
     private readonly IHost _host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
-                .EnableDocumentation<DocumentationPluginBuilderMock>())
+                .EnableDocumentation())
             .BuildHost();
 
     [Fact]
     public void CreatePlugin()
     {
-        PluginHost<DocumentationPluginBuilderMock>? pluginHost = _host.Services
+        PluginHost? pluginHost = _host.Services
             .GetRequiredService<IPluginService>()
-            .GetPlugin<xSdk.Plugins.Documentation.PluginHost<DocumentationPluginBuilderMock>>();
+            .GetPlugin<xSdk.Plugins.Documentation.PluginHost>();
 
         Assert.NotNull(pluginHost);
     }

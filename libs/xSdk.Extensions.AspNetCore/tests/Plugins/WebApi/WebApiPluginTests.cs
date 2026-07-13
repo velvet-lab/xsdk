@@ -32,7 +32,7 @@ public class WebApiPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHo
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();
-        PluginHost<WebApiBuilder>? plugin = service.GetPlugin<xSdk.Plugins.WebApi.PluginHost<WebApiBuilder>>();
+        xSdk.Plugins.WebApi.PluginHost? plugin = service.GetPlugin<xSdk.Plugins.WebApi.PluginHost>();
 
         Assert.NotNull(plugin);
     }

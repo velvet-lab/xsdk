@@ -25,7 +25,7 @@ using xSdk.Extensions.Logging;
 
 namespace xSdk.Extensions.Authentication;
 
-public class AuthBuilder : BuilderBase
+public sealed class AuthBuilder : BuilderBase
 {
     private static ILogger Logger => field ??= LogManager.CreateLogger<AuthBuilder>();
 

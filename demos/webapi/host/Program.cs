@@ -72,10 +72,10 @@ IHost host = xSdk.Hosting.WebHost
             });
     })
     .EnableWebSecurity()
-    .EnableAuthentication<MyAuthenticationBuilder>()
+    .EnableAuthentication(MyAuthenticationBuilder.ConfigureBuilder)
     .EnableCompression()
     .EnableDataProtection()
-    .EnableLinks<MyLinksBuilder>()
+    .EnableLinks(MyLinksBuilder.ConfigureLinks)
     .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

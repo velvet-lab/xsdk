@@ -33,8 +33,7 @@ using xSdk.Tools;
 
 namespace xSdk.Plugins.WebApi;
 
-internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection, ILogger<PluginHost<TBuilder>> logger) : WebPluginHost
-    where TBuilder : WebApiBuilder
+internal sealed class PluginHost(WebApiBuilder builder, IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection, ILogger<PluginHost> logger) : WebPluginHost
 {
     public override int Order => 50;
 

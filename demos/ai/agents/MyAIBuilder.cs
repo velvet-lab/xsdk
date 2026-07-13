@@ -23,16 +23,16 @@ using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;
 
-internal class MyAIBuilder() : AIBuilder
+internal class MyAIBuilder
 {
-    public override void ConfigureBuilder()
+    internal static void ConfigureBuilder(AIBuilder builder)
     {
         var openAiClient = OpenAIHelper.CreateClient();
         var endpoint = "http://192.168.189.32:8000/v1";
         var apiKey = "sk-none";
         var model = "Qwen/Qwen2.5-VL-7B-Instruct-AWQ";
 
-        CreateBuilder()
+        builder
             // Generic Configs
             .WithLogging(LogManager.Factory)
             // Create a client

@@ -19,11 +19,11 @@ using xSdk.Extensions.Documentation;
 
 namespace xSdk.Plugins.Documentation.Mocks;
 
-internal class DocumentationPluginBuilderMock : DocumentationBuilder
+internal static class DocumentationPluginBuilderMock
 {
-    public override void ConfigureBuilder()
+    public static void ConfigureBuilder(DocumentationBuilder builder)
     {
-        this.WithApiInfo(description =>
+        builder.WithApiInfo(description =>
         {
             return new OpenApiInfo
             {

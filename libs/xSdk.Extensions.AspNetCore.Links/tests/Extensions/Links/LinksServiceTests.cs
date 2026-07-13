@@ -19,7 +19,6 @@ using Microsoft.Extensions.Hosting;
 using xSdk.Data;
 using xSdk.Hosting;
 using xSdk.Plugins.Links;
-using xSdk.Plugins.Links.Mocks;
 using xSdk.Plugins.WebApi;
 
 namespace xSdk.Extensions.Links;
@@ -36,7 +35,7 @@ public class LinksServiceTests(TestHostFixture fixture) : IClassFixture<TestHost
         IHost host = fixture
             .ConfigureBuilder(builder => builder
                     .EnableWebApi()
-                    .EnableLinks<LinksPluginBuilderMock>())
+                    .EnableLinks())
             .BuildHost();
 
         return host.Services.GetRequiredService<ILinksService>();

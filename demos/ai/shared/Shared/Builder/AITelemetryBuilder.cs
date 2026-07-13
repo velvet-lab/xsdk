@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
@@ -26,22 +27,24 @@ using xSdk.Extensions.Variable;
 
 namespace xSdk.Demos.Builder;
 
-public class AITelemetryBuilder(IVariableService variableService, IOptions<EnvironmentOptions> environmentOptions) : TelemetryBuilder
+public static class AITelemetryBuilder
 {
     internal const string OtlpEndpoint = "http://192.168.189.31:4317";
 
-    public override void ConfigureBuilder()
+    public static void ConfigureBuilder(TelemetryBuilder builder)
     {
-        this.WithLogging(ConfigureLoggingProvider, ConfigureLoggingOptions)
+        var variableService = builder.Services.GetRequiredService<IVariableService>();
+        IOptions<EnvironmentOptions> environmentOptions = builder.Services.GetRequiredService<IOptions<EnvironmentOptions>>();
+
+        builder
+            .WithLogging(ConfigureLoggingProvider, ConfigureLoggingOptions)
             .WithMetrics(ConfigureMetrics)
             .WithTracing(ConfigureTracing)
-            .WithResources(ConfigureResources);
+            .WithResources((builder) => ConfigureResources(builder, variableService, environmentOptions.Value));
     }
 
-    private void ConfigureResources(ResourceBuilder builder)
+    private static void ConfigureResources(ResourceBuilder builder, IVariableService variableService, EnvironmentOptions setup)
     {
-        EnvironmentOptions setup = environmentOptions.Value;
-
         builder
             .AddEnvironmentVariableDetector()
             .AddTelemetrySdk()

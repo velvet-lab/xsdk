@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Builder;
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Commands;
 
-namespace xSdk.Demos;
+namespace xSdk.Extensions.Variable;
 
-internal class MyPluginBuilder : BuilderBase
+public static class ApplicationBuilderExtensions
 {
+    extension(ConsoleBuilder builder)
+    {
+        public ConsoleBuilder AddVariableCommands()
+        {
+            builder
+                .AddBranch("variable", "Helps to show current configured application variables")
+                .AddCommand<ListCommand>(ListCommand.Definitions.Name, ListCommand.Definitions.HelpText);
 
+            return builder;
+        }
+    }
 }

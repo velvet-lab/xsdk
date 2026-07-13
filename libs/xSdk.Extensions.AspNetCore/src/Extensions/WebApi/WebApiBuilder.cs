@@ -19,7 +19,7 @@ using xSdk.Extensions.Builder;
 
 namespace xSdk.Extensions.WebApi;
 
-public class WebApiBuilder : BuilderBase
+public sealed class WebApiBuilder : BuilderBase
 {
     internal Action<MvcOptions>? ConfigureMvcAction;
 }

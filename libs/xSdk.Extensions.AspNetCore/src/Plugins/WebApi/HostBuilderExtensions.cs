@@ -25,19 +25,11 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableWebApi()
-            => builder.EnableWebApi<WebApiBuilder>(_ => { });
+            => builder.EnableWebApi(_ => { });
 
         public IHostBuilder EnableWebApi(Action<WebApiBuilder> configure)
-            => builder.EnableWebApi<WebApiBuilder>(configure);
-
-        public IHostBuilder EnableWebApi<TBuilder>()
-            where TBuilder : WebApiBuilder
-            => builder.EnableWebApi<TBuilder>(_ => { });
-
-        private IHostBuilder EnableWebApi<TBuilder>(Action<TBuilder> configure)
-            where TBuilder : WebApiBuilder
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()
-                .RegisterBuilder<TBuilder>(configure);
+                .RegisterPluginHost<PluginHost>()
+                .RegisterBuilder(configure);
     }
 }

@@ -40,51 +40,31 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableReplConsole()
-                => builder.EnableReplConsole<ReplConsoleBuilder>(_ => { }, _ => _.DisableDefaultHelp = true);
+                => builder.EnableConsole<ReplConsoleBuilder>(_ => { }, _ => _.DisableDefaultHelp = true);
 
         public IHostBuilder EnableReplConsole(Action<ReplConsoleBuilder> configure)
-            => builder.EnableReplConsole<ReplConsoleBuilder>(configure, _ => _.DisableDefaultHelp = true);
+            => builder.EnableConsole<ReplConsoleBuilder>(configure, _ => _.DisableDefaultHelp = true);
 
         public IHostBuilder EnableReplConsole(Action<ReplConsoleBuilder> configure, Action<ConsoleOptions> optionsConfigure)
-            => builder.EnableReplConsole<ReplConsoleBuilder>(configure, optionsConfigure);
+            => builder.EnableConsole<ReplConsoleBuilder>(configure, optionsConfigure);
 
-        public IHostBuilder EnableReplConsole<TBuilder>()
-            where TBuilder : ReplConsoleBuilder
-            => builder
-                .EnableReplConsole<TBuilder>(_ => { }, _ => _.DisableDefaultHelp = true);
 
-        public IHostBuilder EnableReplConsole<TBuilder>(Action<TBuilder> configure, Action<ConsoleOptions> optionsConfigure)
-            where TBuilder : ReplConsoleBuilder
-            => builder
-                .EnableConsole<TBuilder>(configure, optionsConfigure);
 
         public IHostBuilder EnableDefaultConsole()
-                => builder.EnableDefaultConsole<ConsoleBuilder>(_ => { }, _ => { });
+                => builder.EnableConsole<ConsoleBuilder>(_ => { }, _ => { });
 
         public IHostBuilder EnableDefaultConsole(Action<ConsoleBuilder> configure)
-            => builder.EnableDefaultConsole<ConsoleBuilder>(configure, _ => { });
+            => builder.EnableConsole<ConsoleBuilder>(configure, _ => { });
 
         public IHostBuilder EnableDefaultConsole(Action<ConsoleBuilder> configure, Action<ConsoleOptions> optionsConfigure)
-            => builder.EnableDefaultConsole<ConsoleBuilder>(configure, optionsConfigure);
+            => builder.EnableConsole<ConsoleBuilder>(configure, optionsConfigure);
 
-        public IHostBuilder EnableDefaultConsole<TBuilder>()
+
+        public IHostBuilder EnableConsole<TBuilder>(Action<ConsoleOptions> optionsConfigure)
             where TBuilder : ConsoleBuilder
-            => builder.EnableDefaultConsole<TBuilder>(_ => { }, _ => { });
+            => builder.EnableConsole<TBuilder>(_ => { }, optionsConfigure);
 
-        public IHostBuilder EnableDefaultConsole<TBuilder>(Action<TBuilder> configure, Action<ConsoleOptions> optionsConfigure)
-            where TBuilder : ConsoleBuilder
-            => builder
-                .EnableConsole<TBuilder>(configure, optionsConfigure);
-
-        public IHostBuilder EnableConsole<TBuilder>()
-            where TBuilder : ConsoleBuilder
-            => builder.EnableConsole<TBuilder>(_ => { }, _ => { });
-
-        public IHostBuilder EnableConsole<TBuilder>(Action<ConsoleOptions> configure)
-            where TBuilder : ConsoleBuilder
-            => builder.EnableConsole<TBuilder>(_ => { }, configure);
-
-        private IHostBuilder EnableConsole<TBuilder>(Action<TBuilder> configure, Action<ConsoleOptions> optionsConfigure)
+        public IHostBuilder EnableConsole<TBuilder>(Action<TBuilder> configure, Action<ConsoleOptions> optionsConfigure)
             where TBuilder : ConsoleBuilder
             => builder
                 .RegisterPluginHost<PluginHost<TBuilder>>()

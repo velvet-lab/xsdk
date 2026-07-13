@@ -25,27 +25,15 @@ public static class HostBuilderExtensions
     extension(IHostBuilder builder)
     {
         public IHostBuilder EnableDocumentation()
-            => builder.EnableDocumentation<DocumentationBuilder>(_ => { }, _ => { });
+            => builder.EnableDocumentation(_ => { }, _ => { });
 
         public IHostBuilder EnableDocumentation(Action<DocumentationBuilder> configure)
-            => builder.EnableDocumentation<DocumentationBuilder>(configure, _ => { });
+            => builder.EnableDocumentation(configure, _ => { });
 
         public IHostBuilder EnableDocumentation(Action<DocumentationBuilder> configure, Action<DocumentationOptions> optionsConfigure)
-            => builder.EnableDocumentation<DocumentationBuilder>(configure, optionsConfigure);
-
-        public IHostBuilder EnableDocumentation<TBuilder>()
-            where TBuilder : DocumentationBuilder
-            => builder.EnableDocumentation<TBuilder>(_ => { }, _ => { });
-
-        public IHostBuilder EnableDocumentation<TBuilder>(Action<DocumentationOptions> configure)
-            where TBuilder : DocumentationBuilder
-            => builder.EnableDocumentation<TBuilder>(_ => { }, configure);
-
-        private IHostBuilder EnableDocumentation<TBuilder>(Action<TBuilder> configure, Action<DocumentationOptions> optionsConfigure)
-            where TBuilder : DocumentationBuilder
             => builder
-                .RegisterPluginHost<PluginHost<TBuilder>>()
-                .RegisterPluginHostOptions<DocumentationOptions>(optionsConfigure)
-                .RegisterBuilder<TBuilder>(configure);
+                .RegisterPluginHost<PluginHost>()
+                .RegisterPluginHostOptions(optionsConfigure)
+                .RegisterBuilder(configure);
     }
 }

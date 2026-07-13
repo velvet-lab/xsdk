@@ -22,11 +22,11 @@ using xSdk.Extensions.Builder;
 
 namespace xSdk.Extensions.Documentation;
 
-public class DocumentationBuilder : BuilderBase
+public sealed class DocumentationBuilder : BuilderBase
 {
-    internal DocumentationOptions Options => SlimServices.GetRequiredService<IOptions<DocumentationOptions>>().Value;
+    internal DocumentationOptions Options => Services.GetRequiredService<IOptions<DocumentationOptions>>().Value;
 
-    internal Func<ApiVersionDescription, OpenApiInfo> CreateApiInfoAction
+    internal Func<ApiVersionDescription, OpenApiInfo>? CreateApiInfoAction
     {
         get => field ?? (_ => CreateApiInfo(_));
         set;

@@ -61,11 +61,9 @@ public class ConsoleBuilder : BuilderBase
         return builder;
     }
 
-    internal void Build(IServiceCollection? services)
+    protected internal virtual void Build(IServiceCollection? services)
     {
         Guard.IsNotNull(services);
-
-        ConfigureBuilder();
 
         RootCommand = new RootCommand(Description ?? string.Empty);
         services.TryAddSingleton(RootCommand);

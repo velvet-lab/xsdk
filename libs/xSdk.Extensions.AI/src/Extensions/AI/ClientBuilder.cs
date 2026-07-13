@@ -23,12 +23,7 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.AI;
 
-public sealed class ClientBuilder<TBuilder>(TBuilder builder) : ClientBuilder(builder)
-    where TBuilder : AIBuilder
-{
-}
-
-public class ClientBuilder(AIBuilder builder) : BuilderBase
+public sealed class ClientBuilder(AIBuilder builder) : BuilderBase
 {
     private readonly Dictionary<string, IChatClient> _chatClients = new();
 

@@ -30,7 +30,12 @@ const string APP_PREFIX = "ah";
 
 var host = xSdk.Hosting.Host
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
-    .EnableTelemetry<MyTelemetryBuilder>()
+    .EnableTelemetry(MyTelemetryBuilder.ConfigureBuilder, options =>
+    {
+        options.LoggingEnabled = true;
+        options.TracingEnabled = true;
+        options.MetricsEnabled = true;
+    })
     .ConfigureServices(services => services.AddSingleton<LocalService>())
     // Ein eigener Host der benutzt werden soll
     .AddHost<MyHost>()

@@ -26,24 +26,22 @@ using xSdk.Extensions.Builder;
 
 namespace xSdk.Extensions.Telemetry;
 
-public class TelemetryBuilder : BuilderBase
+public sealed class TelemetryBuilder : BuilderBase
 {
     private OpenTelemetryBuilder? _telemetryBuilder;
     private ResourceBuilder? _resourceBuilder;
 
-    internal TelemetryOptions Options => SlimServices.GetService<IOptions<TelemetryOptions>>()?.Value ?? new TelemetryOptions();
+    internal TelemetryOptions Options => Services.GetService<IOptions<TelemetryOptions>>()?.Value ?? new TelemetryOptions();
 
-    internal Action<ResourceBuilder>? ResourceBuilderDelegate;
-    internal Action<MeterProviderBuilder>? ConfigureMetricsDelegate;
-    internal Action<TracerProviderBuilder>? ConfigureTracingDelegate;
-    internal Action<LoggerProviderBuilder>? ConfigureLoggingDelegate;
-    internal Action<OpenTelemetryLoggerOptions>? ConfigureLoggingOptionsDelegate;
+    internal Action<ResourceBuilder>? ResourceBuilderAction;
+    internal Action<MeterProviderBuilder>? ConfigureMetricsAction;
+    internal Action<TracerProviderBuilder>? ConfigureTracingAction;
+    internal Action<LoggerProviderBuilder>? ConfigureLoggingAction;
+    internal Action<OpenTelemetryLoggerOptions>? ConfigureLoggingOptionsAction;
 
     internal void Build(IServiceCollection? services)
     {
         Guard.IsNotNull(services);
-
-        ConfigureBuilder();
 
         // Create an builder
         _telemetryBuilder = services
@@ -53,7 +51,7 @@ public class TelemetryBuilder : BuilderBase
         // (Tracing, Metrics, Logging). Pre-building the ResourceBuilder here ensures
         // InvokeBuilders<ConfigureResources> is called exactly once.
         _resourceBuilder = ResourceBuilder.CreateDefault();
-        ResourceBuilderDelegate?.Invoke(_resourceBuilder);
+        ResourceBuilderAction?.Invoke(_resourceBuilder);
 
         if (Options.TracingEnabled)
         {
@@ -77,7 +75,7 @@ public class TelemetryBuilder : BuilderBase
         {
             metricsBuilder.SetResourceBuilder(_resourceBuilder ?? ResourceBuilder.CreateDefault());
             // Call metrics configuration from possible other Startups
-            ConfigureMetricsDelegate?.Invoke(metricsBuilder);
+            ConfigureMetricsAction?.Invoke(metricsBuilder);
         });
     }
 
@@ -88,7 +86,7 @@ public class TelemetryBuilder : BuilderBase
             tracingBuilder.SetResourceBuilder(_resourceBuilder ?? ResourceBuilder.CreateDefault());
 
             // Call tracing configuration from possible other Startups
-            ConfigureTracingDelegate?.Invoke(tracingBuilder);
+            ConfigureTracingAction?.Invoke(tracingBuilder);
         });
     }
 
@@ -97,8 +95,8 @@ public class TelemetryBuilder : BuilderBase
         _telemetryBuilder?.WithLogging(loggingBuilder =>
         {
             loggingBuilder.SetResourceBuilder(_resourceBuilder ?? ResourceBuilder.CreateDefault());
-            ConfigureLoggingDelegate?.Invoke(loggingBuilder);
+            ConfigureLoggingAction?.Invoke(loggingBuilder);
         },
-        options => ConfigureLoggingOptionsDelegate?.Invoke(options));
+        options => ConfigureLoggingOptionsAction?.Invoke(options));
     }
 }

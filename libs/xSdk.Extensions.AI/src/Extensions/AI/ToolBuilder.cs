@@ -20,11 +20,7 @@ using xSdk.Plugins.AI;
 
 namespace xSdk.Extensions.AI;
 
-public class ToolBuilder<TBuilder>(TBuilder parent) : ToolBuilder(parent)
-    where TBuilder : AIBuilder
-{ }
-
-public class ToolBuilder(AIBuilder parent) : BuilderBase
+public sealed class ToolBuilder(AIBuilder parent) : BuilderBase
 {
     public Action<ToolBuilder>? ConfigureBuilderAction { get; internal set; }
 

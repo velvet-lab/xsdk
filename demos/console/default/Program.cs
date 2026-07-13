@@ -17,7 +17,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using xSdk.Demos;
+using xSdk.Extensions.Commands;
 using xSdk.Extensions.Logging;
+using xSdk.Extensions.Variable;
 using xSdk.Hosting;
 using xSdk.Plugins.Commands;
 
@@ -30,7 +32,11 @@ IHost host = xSdk
         .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
 
         // Enable Commands with default configuration
-        .EnableDefaultConsole<MyConsoleBuilder>()
+        .EnableDefaultConsole(builder => builder
+                .WithDescription("Custom Command")
+                .AddDefaultCommands()
+                .AddVariableCommands()
+                .AddCommand<MyCommand>("my", "Hello command"))
         .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

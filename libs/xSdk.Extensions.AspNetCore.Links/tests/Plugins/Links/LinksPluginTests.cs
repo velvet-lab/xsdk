@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
 using xSdk.Hosting;
-using xSdk.Plugins.Links.Mocks;
 
 namespace xSdk.Plugins.Links;
 
@@ -28,7 +27,7 @@ public class LinksPluginTests(TestHostFixture fixture) : IClassFixture<TestHostF
     public void EnableLinks_CreatesLinksPlugin()
     {
         IHost host = fixture
-            .ConfigureBuilder(builder => builder.EnableLinks<LinksPluginBuilderMock>())
+            .ConfigureBuilder(builder => builder.EnableLinks())
             .BuildHost();
 
         IPluginService service = host.Services.GetRequiredService<IPluginService>();

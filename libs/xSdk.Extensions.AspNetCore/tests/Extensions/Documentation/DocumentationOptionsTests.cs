@@ -32,7 +32,7 @@ public class DocumentationOptionsTests(WebHostTestFixture fixture) : IClassFixtu
         IHost host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
-                .EnableDocumentation<DocumentationPluginBuilderMock>())
+                .EnableDocumentation())
             .BuildHost();
 
         DocumentationOptions? options = host.Services

@@ -26,8 +26,7 @@ using xSdk.Tools;
 
 namespace xSdk.Plugins.DataProtection;
 
-internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<ApplicationOptions> applicationOptions, IOptions<Extensions.DataProtection.DataProtectionOptions> pluginOptions, ILogger<PluginHost<TBuilder>> logger) : PluginHostBase
-    where TBuilder : DataProtectionBuilder
+internal sealed class PluginHost(DataProtectionBuilder builder, IOptions<ApplicationOptions> applicationOptions, IOptions<Extensions.DataProtection.DataProtectionOptions> pluginOptions, ILogger<PluginHost> logger) : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {

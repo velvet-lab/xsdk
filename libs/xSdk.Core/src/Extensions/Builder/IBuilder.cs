@@ -18,5 +18,5 @@ namespace xSdk.Extensions.Builder;
 
 public interface IBuilder
 {
-    void ConfigureBuilder();
+    IServiceProvider Services { get; }
 }

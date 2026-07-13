@@ -26,8 +26,7 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Documentation;
 
-internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<DocumentationOptions> options) : WebPluginHost
-    where TBuilder : DocumentationBuilder
+internal sealed class PluginHost(DocumentationBuilder builder, IOptions<DocumentationOptions> options) : WebPluginHost
 {
 
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)

@@ -21,8 +21,7 @@ using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Links;
 
-internal class PluginHost<TBuilder>(TBuilder builder) : PluginHostBase
-    where TBuilder : LinksBuilder
+internal class PluginHost(LinksBuilder builder) : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {

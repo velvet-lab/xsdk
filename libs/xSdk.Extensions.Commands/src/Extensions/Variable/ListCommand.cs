@@ -21,7 +21,7 @@ using Spectre.Console;
 using xSdk.Extensions.Commands;
 using xSdk.Extensions.Commands.Attributes;
 
-namespace xSdk.Extensions.Variable.Commands;
+namespace xSdk.Extensions.Variable;
 
 
 internal partial class ListCommand(IVariableService variableSvc, ILogger<ListCommand> logger) : CommandHandler

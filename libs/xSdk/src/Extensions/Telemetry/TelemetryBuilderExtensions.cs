@@ -30,7 +30,7 @@ public static class TelemetryBuilderExtensions
         {
             builder
                 .AsBuilder<TelemetryBuilder>()
-                .ResourceBuilderDelegate = configure;
+                .ResourceBuilderAction = configure;
 
             return builder;
         }
@@ -43,10 +43,10 @@ public static class TelemetryBuilderExtensions
             TelemetryBuilder concreteBuilder = builder
                 .AsBuilder<TelemetryBuilder>();
 
-            concreteBuilder.ConfigureLoggingDelegate = configure;
+            concreteBuilder.ConfigureLoggingAction = configure;
             if (options is not null)
             {
-                concreteBuilder.ConfigureLoggingOptionsDelegate = options;
+                concreteBuilder.ConfigureLoggingOptionsAction = options;
             }
 
             return builder;
@@ -56,7 +56,7 @@ public static class TelemetryBuilderExtensions
         {
             builder
                 .AsBuilder<TelemetryBuilder>()
-                .ConfigureMetricsDelegate = configure;
+                .ConfigureMetricsAction = configure;
 
             return builder;
         }
@@ -65,7 +65,7 @@ public static class TelemetryBuilderExtensions
         {
             builder
                 .AsBuilder<TelemetryBuilder>()
-                .ConfigureTracingDelegate = configure;
+                .ConfigureTracingAction = configure;
 
             return builder;
         }

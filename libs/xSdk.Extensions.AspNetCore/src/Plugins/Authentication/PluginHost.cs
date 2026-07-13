@@ -29,13 +29,10 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
-internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<AuthOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost<TBuilder>> logger) : WebPluginHost
-    where TBuilder : AuthBuilder
+internal sealed class PluginHost(AuthBuilder builder, IOptions<AuthOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        builder.ConfigureBuilder();
-
         AuthenticationBuilder authBuilder = services
             // Add Auth
             .AddAuthentication(_ =>
