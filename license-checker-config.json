@@ -44,7 +44,7 @@
   "licenseFormats": {
     "cs": {
       "prepend": "/*",
-      "append": " */",
+      "append": " */\n",
       "eachLine": {
           "prepend": " * "
       }
