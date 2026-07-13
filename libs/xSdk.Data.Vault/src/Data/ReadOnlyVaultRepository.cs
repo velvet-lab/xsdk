@@ -25,7 +25,6 @@ using xSdk.Tools;
 
 namespace xSdk.Data;
 
-[ExcludeFromCodeCoverage(Justification = "Requires a live HashiCorp Vault instance – integration-only.")]
 internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepository
 {
     private static ILogger Logger => field ??= LogManager.CreateLogger<ReadOnlyVaultRepository>();
