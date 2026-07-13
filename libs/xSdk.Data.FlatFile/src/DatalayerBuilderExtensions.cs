@@ -18,8 +18,12 @@ namespace xSdk.Data;
 
 public static class DatalayerBuilderExtensions
 {
-    public static IDatabaseBuilder UseFlatFile(this IDatalayerBuilder builder, Action<FlatFileDatabaseOptions> configure) =>
-        builder.UseDatabase<FlatFileDatabase, FlatFileDatabaseOptions>(null, configure);
-    public static IDatabaseBuilder UseFlatFile(this IDatalayerBuilder builder, string? name, Action<FlatFileDatabaseOptions> configure) =>
-        builder.UseDatabase<FlatFileDatabase, FlatFileDatabaseOptions>(name, configure);
+    extension(IDatalayerBuilder builder)
+    {
+        public IDatabaseBuilder UseFlatFile(Action<FlatFileDatabaseOptions> configure) =>
+            builder.UseDatabase<FlatFileDatabase, FlatFileDatabaseOptions>(null, configure);
+
+        public IDatabaseBuilder UseFlatFile(string? name, Action<FlatFileDatabaseOptions> configure) =>
+            builder.UseDatabase<FlatFileDatabase, FlatFileDatabaseOptions>(name, configure);
+    }
 }

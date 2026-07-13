@@ -17,11 +17,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Links;
-using xSdk.Hosting;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Links;
 
-internal class PluginHost : PluginHostBase
+internal class PluginHost<TBuilder>(TBuilder builder) : PluginHostBase
+    where TBuilder : LinksBuilder
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
     {
@@ -29,7 +30,7 @@ internal class PluginHost : PluginHostBase
             .AddLinksService(() =>
             {
                 var options = new LinksOptions();
-                InvokeBuilder<ILinksPluginBuilder>(builder => builder.ConfigureLinks(options));
+                builder.ConfigureLinksAction(options);
 
                 return options;
             });

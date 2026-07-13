@@ -66,7 +66,7 @@ jobs:
       # code and needs all dependencies to be in place to provide accurate results.
       - name: Restore DotNet dependencies
         shell: pwsh
-        run: just dotnet::restore xsdk.sln
+        run: just dotnet::restore xsdk.slnx
 
       - name: Sonar scan
         env:
@@ -106,6 +106,6 @@ jobs:
           }
 
           dotnet dotnet-sonarscanner @beginArgs
-          just dotnet::sonar-build xsdk.sln
+          just dotnet::sonar-build xsdk.slnx
           dotnet dotnet-coverage collect
           dotnet dotnet-sonarscanner end /d:sonar.token="$env:SONAR_TOKEN"

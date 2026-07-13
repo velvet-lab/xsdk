@@ -66,7 +66,7 @@ jobs:
       - name: Publish
         shell: pwsh
         run: |
-          just dotnet::publish xsdk.sln
+          just dotnet::publish xsdk.slnx
 
           dotnet nuget push "dist/nuget/*.nupkg" `
             --api-key "${{steps.nuget-token.outputs.NUGET_API_KEY}}" `

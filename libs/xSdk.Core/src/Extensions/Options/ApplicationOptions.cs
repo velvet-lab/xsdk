@@ -38,7 +38,6 @@ public sealed class ApplicationOptions
     [Variable(
         name: Definitions.AppName.Name,
         helpText: Definitions.AppName.HelpText,
-        defaultValue: Definitions.AppName.DefaultValue,
         resourceNames: ["app.name"],
         hidden: true
     )]
@@ -55,7 +54,6 @@ public sealed class ApplicationOptions
     [Variable(
         name: Definitions.AppCompany.Name,
         helpText: Definitions.AppCompany.HelpText,
-        defaultValue: Definitions.AppCompany.DefaultValue,
         resourceNames: ["app.company"],
         hidden: true
     )]
@@ -67,7 +65,6 @@ public sealed class ApplicationOptions
     [Variable(
         name: Definitions.AppPrefix.Name,
         helpText: Definitions.AppPrefix.HelpText,
-        defaultValue: Definitions.AppPrefix.DefaultValue,
         resourceNames: ["app.prefix"],
         hidden: true
     )]
@@ -81,7 +78,6 @@ public sealed class ApplicationOptions
         {
             public const string Name = nameof(AppName);
             public const string HelpText = "Short name of the application";
-            public const string DefaultValue = "xsdk";
         }
 
         public static class AppDescription
@@ -94,14 +90,12 @@ public sealed class ApplicationOptions
         {
             public const string Name = nameof(AppCompany);
             public const string HelpText = "Company name of the application";
-            public const string DefaultValue = "xcom";
         }
 
         public static class AppPrefix
         {
             public const string Name = nameof(AppPrefix);
             public const string HelpText = "Prefix for the application";
-            public const string DefaultValue = "XSDK";
         }
 
         public static class AppVersion

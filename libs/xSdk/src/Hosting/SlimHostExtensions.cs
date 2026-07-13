@@ -15,6 +15,7 @@
  */
 
 using xSdk.Extensions.Options;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
 

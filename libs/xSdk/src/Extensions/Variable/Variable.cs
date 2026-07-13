@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Tools;
 
@@ -25,14 +26,14 @@ public class Variable : IVariable
 
     private readonly string _name;
 
-    protected Variable(string name, Type valueType)
+    protected Variable(string name, Type valueType, ApplicationOptions? options)
     {
         _name = name;
         ArgumentNullException.ThrowIfNull(valueType);
 
         ValueType = valueType;
 
-        _applicationPrefix = "none";// SlimHost.Instance.AppPrefix;
+        _applicationPrefix = options?.Prefix ?? "xsdk";
     }
 
     /// <summary>
@@ -75,22 +76,22 @@ public class Variable : IVariable
 
     protected internal string KeyForCommandline => CreateKey(true, false).Trim().ToLowerInvariant();
 
-    public static Variable Create(string name, Type type) => Create(name, type, default);
+    public static Variable Create(string name, Type type, ApplicationOptions? options) => Create(name, type, options, default);
 
-    public static Variable Create(string name, Type type, Action<Variable>? configure)
+    public static Variable Create(string name, Type type, ApplicationOptions? options, Action<Variable>? configure)
     {
-        var result = new Variable(name, type);
+        var result = new Variable(name, type, options);
 
         configure?.Invoke(result);
 
         return result;
     }
 
-    public static Variable<TType> Create<TType>(string name) => Create<TType>(name, default);
+    public static Variable<TType> Create<TType>(string name, ApplicationOptions? options) => Create<TType>(name, options, default);
 
-    public static Variable<TType> Create<TType>(string name, Action<Variable<TType>>? configure)
+    public static Variable<TType> Create<TType>(string name, ApplicationOptions? options, Action<Variable<TType>>? configure)
     {
-        var result = new Variable<TType>(name);
+        var result = new Variable<TType>(name, options);
 
         configure?.Invoke(result);
 
@@ -210,8 +211,8 @@ public class Variable : IVariable
 
 public sealed partial class Variable<TType> : Variable
 {
-    internal Variable(string name)
-        : base(name, typeof(TType)) { }
+    internal Variable(string name, ApplicationOptions? options)
+        : base(name, typeof(TType), options) { }
 
     public TType? DefaultValue { get; private set; }
 

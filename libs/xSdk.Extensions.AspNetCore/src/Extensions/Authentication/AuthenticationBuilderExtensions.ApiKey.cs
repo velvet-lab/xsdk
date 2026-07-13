@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using AspNetCore.Authentication.ApiKey;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -26,10 +25,9 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Plugins.Authentication;
 
-[ExcludeFromCodeCoverage(Justification = "ApiKey authentication wiring – requires a running web host with authentication middleware.")]
 public static partial class AuthenticationBuilderExtensions
 {
-    internal static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, PluginOptions apiKeyOptions, EnvironmentOptions environmentOptions)
+    internal static AuthenticationBuilder AddApiKeyAuth(this AuthenticationBuilder builder, AuthOptions apiKeyOptions, EnvironmentOptions environmentOptions)
     {
         // Add ApiKeyName Auth
         builder
@@ -42,21 +40,21 @@ public static partial class AuthenticationBuilderExtensions
         return builder;
     }
 
-    private static void ActivateInHeader(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, PluginOptions apiKeySetup)
+    private static void ActivateInHeader(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, AuthOptions apiKeySetup)
     {
         options.KeyName = AuthenticationDefaults.ApiKeyAuth.InHeader.Header;
 
         EnableApiKeyAuth(options, environmentOptions, apiKeySetup);
     }
 
-    private static void ActivateInAuthorizationHeader(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, PluginOptions apiKeySetup)
+    private static void ActivateInAuthorizationHeader(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, AuthOptions apiKeySetup)
     {
         options.KeyName = AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Header;
 
         EnableApiKeyAuth(options, environmentOptions, apiKeySetup);
     }
 
-    private static void EnableApiKeyAuth(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, PluginOptions apiKeySetup)
+    private static void EnableApiKeyAuth(AspNetCore.Authentication.ApiKey.ApiKeyOptions options, EnvironmentOptions environmentOptions, AuthOptions apiKeySetup)
     {
         options.Realm = apiKeySetup.Realm;
 

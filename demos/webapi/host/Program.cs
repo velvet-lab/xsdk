@@ -18,7 +18,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi;
 using xSdk.Demos.Builders;
+using xSdk.Extensions.Documentation;
 using xSdk.Extensions.Logging;
 using xSdk.Plugins.Authentication;
 using xSdk.Plugins.Compression;
@@ -38,12 +40,42 @@ const string APP_PREFIX = "webapi";
 IHost host = xSdk.Hosting.WebHost
     .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
     .EnableWebApi()
-    .EnableDocumentation<DocumentationPluginBuilder>()
+    .EnableDocumentation(builder =>
+    {
+        builder
+            .WithApiInfo(description =>
+            {
+                var info = new OpenApiInfo
+                {
+                    Title = "Sample API",
+                    Version = description.ApiVersion.ToString(),
+                    Description = "Sample API Documentation.",
+                    License = new OpenApiLicense { Name = "MIT" },
+                };
+
+                if (description.GroupName == "v2")
+                {
+                    info.Title = "Sample API Test";
+                }
+
+                if (description.GroupName == "v3")
+                {
+                    info.Title = "Sample API with HATEOAS Links";
+                }
+
+                if (description.IsDeprecated)
+                {
+                    info.Description += " [This API version has been deprecated]";
+                }
+
+                return info;
+            });
+    })
     .EnableWebSecurity()
-    .EnableAuthentication<AuthenticationPluginBuilder>()
+    .EnableAuthentication<MyAuthenticationBuilder>()
     .EnableCompression()
     .EnableDataProtection()
-    .EnableLinks<LinksPluginBuilder>()
+    .EnableLinks<MyLinksBuilder>()
     .Build();
 
 ILogger logger = LogManager.GetCurrentClassLogger();

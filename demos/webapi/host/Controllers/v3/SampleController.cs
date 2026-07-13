@@ -67,7 +67,7 @@ public sealed class SampleController(ILinksService linksService, ILogger<SampleC
 
     [
         HttpGet("hateoas", Name = nameof(GetSamplesHateOasAsync)),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_OnlyRead),
         MapToApiVersion(3),
         EndpointName(nameof(GetSamplesHateOasAsync)),
         EndpointSummary("Sends all samples model with hateoas links back"),
@@ -99,7 +99,7 @@ public sealed class SampleController(ILinksService linksService, ILogger<SampleC
 
     [
         HttpGet("hateoas/{id}", Name = nameof(GetSampleHateOasAsync)),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_OnlyRead),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_OnlyRead),
         MapToApiVersion(3),
         EndpointName(nameof(GetSampleHateOasAsync)),
                 EndpointSummary("Sends a sample model with hateoas links back"),
@@ -129,7 +129,7 @@ public sealed class SampleController(ILinksService linksService, ILogger<SampleC
 
     [
         HttpPost("hateoas", Name = nameof(SaveSampleHateOasAsync)),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_ReadAndWrite),
         MapToApiVersion(3),
         EndpointName(nameof(SaveSampleHateOasAsync)),
         EndpointSummary("Saves a sample model"),
@@ -160,7 +160,7 @@ public sealed class SampleController(ILinksService linksService, ILogger<SampleC
 
     [
         HttpPut("hateoas/{id}", Name = nameof(UpdateSampleHateOasAsync)),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_ReadAndWrite),
         MapToApiVersion(3),
         EndpointName(nameof(UpdateSampleHateOasAsync)),
         EndpointSummary("Updates a sample model"),
@@ -196,7 +196,7 @@ public sealed class SampleController(ILinksService linksService, ILogger<SampleC
 
     [
         HttpDelete("hateoas/{id}", Name = nameof(DeleteSampleHateOasAsync)),
-        Authorize(Policy = AuthenticationPluginBuilder.Policy_ReadAndWrite),
+        Authorize(Policy = MyAuthenticationBuilder.Policy_ReadAndWrite),
         MapToApiVersion(3),
         EndpointName(nameof(DeleteSampleHateOasAsync)),
         EndpointSummary("Removes a sample model"),

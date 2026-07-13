@@ -93,21 +93,18 @@ public class ApplicationOptionsTests
     public void Definitions_AppName_HasExpectedValues()
     {
         Assert.Equal("app-name", ApplicationOptions.Definitions.AppName.Name);
-        Assert.Equal("xsdk", ApplicationOptions.Definitions.AppName.DefaultValue);
     }
 
     [Fact]
     public void Definitions_AppCompany_HasExpectedValues()
     {
         Assert.Equal("app-company", ApplicationOptions.Definitions.AppCompany.Name);
-        Assert.Equal("xcom", ApplicationOptions.Definitions.AppCompany.DefaultValue);
     }
 
     [Fact]
     public void Definitions_AppPrefix_HasExpectedValues()
     {
         Assert.Equal("app-prefix", ApplicationOptions.Definitions.AppPrefix.Name);
-        Assert.Equal("XSDK", ApplicationOptions.Definitions.AppPrefix.DefaultValue);
     }
 
     [Fact]
@@ -197,9 +194,9 @@ public class ApplicationOptionsExtensionsTests
         IServiceProvider provider = services.BuildServiceProvider();
         ApplicationOptions registered = provider.GetRequiredService<IOptions<ApplicationOptions>>().Value;
 
-        Assert.Equal(ApplicationOptions.Definitions.AppName.DefaultValue, registered.Name);
-        Assert.Equal(ApplicationOptions.Definitions.AppCompany.DefaultValue, registered.Company);
-        Assert.Equal(ApplicationOptions.Definitions.AppPrefix.DefaultValue, registered.Prefix);
+        Assert.Null(registered.Name);
+        Assert.Null(registered.Company);
+        Assert.Null(registered.Prefix);
     }
 
     [Fact]

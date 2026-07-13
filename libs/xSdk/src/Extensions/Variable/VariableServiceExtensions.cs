@@ -15,6 +15,7 @@
  */
 
 using System.Reflection;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Attributes;
 using xSdk.Tools;
 
@@ -22,119 +23,124 @@ namespace xSdk.Extensions.Variable;
 
 public static class VariableServiceExtensions
 {
-    public static void ParseForVariables(this IVariableService variableService, object implementation)
+    extension(IVariableService variableService)
     {
-        // Remarks: Dont activate Logging, because its produces a StackOverFlow
-        MethodInfo? createMethod = typeof(Variable).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, [typeof(string)]);
-        if (createMethod != null)
+        public void ParseForVariables(object implementation)
         {
-            // Read all properties of the Implementation
-            Type setupType = implementation.GetType();
+            ApplicationOptions? appOptions = (variableService as VariableService)?.ApplicationOptions;
 
-            string? mainPrefix = null;
-
-            VariablePrefixAttribute? prefixAttribute = setupType.GetAttribute<VariablePrefixAttribute>();
-            if (prefixAttribute != null)
+            // Remarks: Dont activate Logging, because its produces a StackOverFlow
+            MethodInfo? createMethod = typeof(Variable).GetMethod("Create", BindingFlags.Static | BindingFlags.Public, [typeof(string), typeof(ApplicationOptions)]);
+            if (createMethod != null)
             {
-                mainPrefix = prefixAttribute.Prefix;
-            }
+                // Read all properties of the Implementation
+                Type setupType = implementation.GetType();
 
-            foreach (PropertyInfo property in setupType.GetProperties())
-            {
-                VariableAttribute? attr = property.GetAttribute<VariableAttribute>();
-                if (attr != null)
+                string? mainPrefix = null;
+
+                VariablePrefixAttribute? prefixAttribute = setupType.GetAttribute<VariablePrefixAttribute>();
+                if (prefixAttribute != null)
                 {
-                    object? defaultValue = attr.DefaultValue;
-                    object? currentValue = null;
-                    try
-                    {
-                        currentValue = property.GetValue(implementation);
-                    }
-                    catch
-                    {
-                        // Nothing to tell
-                    }
+                    mainPrefix = prefixAttribute.Prefix;
+                }
 
-                    if (IsDefaultValueGreater(property.PropertyType, currentValue, defaultValue))
+                foreach (PropertyInfo property in setupType.GetProperties())
+                {
+                    VariableAttribute? attr = property.GetAttribute<VariableAttribute>();
+                    if (attr != null)
                     {
-                        currentValue = null;
-                    }
-
-                    // Set Default Value
-                    if (currentValue == null && defaultValue != null && !TypeConverter.IsEmpty(defaultValue, property.PropertyType))
-                    {
-                        defaultValue = TypeConverter.ConvertTo(defaultValue, property.PropertyType);
-                    }
-
-                    // Create Variable
-                    MethodInfo genericCreateMethod = createMethod.MakeGenericMethod(property.PropertyType);
-                    if (genericCreateMethod != null)
-                    {
-                        string name = property.Name;
-                        if (!string.IsNullOrEmpty(attr.Name))
+                        object? defaultValue = attr.DefaultValue;
+                        object? currentValue = null;
+                        try
                         {
-                            name = attr.Name;
+                            currentValue = property.GetValue(implementation);
+                        }
+                        catch
+                        {
+                            // Nothing to tell
                         }
 
-                        if (genericCreateMethod.Invoke(null, [name.ToLower()]) is Variable variable)
+                        if (IsDefaultValueGreater(property.PropertyType, currentValue, defaultValue))
                         {
-                            if (!string.IsNullOrEmpty(mainPrefix))
+                            currentValue = null;
+                        }
+
+                        // Set Default Value
+                        if (currentValue == null && defaultValue != null && !TypeConverter.IsEmpty(defaultValue, property.PropertyType))
+                        {
+                            defaultValue = TypeConverter.ConvertTo(defaultValue, property.PropertyType);
+                        }
+
+                        // Create Variable
+                        MethodInfo genericCreateMethod = createMethod.MakeGenericMethod(property.PropertyType);
+                        if (genericCreateMethod != null)
+                        {
+                            string name = property.Name;
+                            if (!string.IsNullOrEmpty(attr.Name))
                             {
-                                variable.SetPrefix(mainPrefix);
+                                name = attr.Name;
                             }
 
-                            if (!string.IsNullOrEmpty(attr.Prefix))
+                            if (genericCreateMethod.Invoke(null, [name.ToLower(), appOptions]) is Variable variable)
                             {
-                                variable.SetPrefix(attr.Prefix);
-                            }
-
-                            if (defaultValue != null)
-                            {
-                                variable.SetDefaultValue(defaultValue);
-                            }
-
-                            if (!string.IsNullOrEmpty(attr.HelpText))
-                            {
-                                variable.SetHelpText(attr.HelpText);
-                            }
-
-                            if (!string.IsNullOrEmpty(attr.Template))
-                            {
-                                variable.SetTemplate(attr.Template);
-                            }
-
-                            if (attr.Protect)
-                            {
-                                variable.Protect();
-                            }
-
-                            if (attr.Hidden)
-                            {
-                                variable.Hide();
-                            }
-
-                            if (attr.NoPrefix)
-                            {
-                                variable.DisablePrefix();
-                            }
-
-                            variable.SetAttribute(attr);
-                            variable.SetTelemetryResourceValueDelegate(() => property.GetValue(implementation));
-
-                            ((VariableService)variableService).AddVariableFromSetupInitialize(variable);
-
-                            // Try to read Environment for the correct Value
-                            MethodInfo? readMethod = typeof(VariableService).GetMethod("ReadVariableValueInternal", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(bool), typeof(bool)]);
-                            if (readMethod != null)
-                            {
-                                MethodInfo genericReadMethod = readMethod.MakeGenericMethod(property.PropertyType);
-                                if (genericReadMethod != null)
+                                if (!string.IsNullOrEmpty(mainPrefix))
                                 {
-                                    object? environmentValue = genericReadMethod.Invoke(variableService, [name, false, false]);
-                                    if (environmentValue != null && !TypeConverter.IsEmpty(environmentValue, property.PropertyType) && !variable.IsProtected)
+                                    variable.SetPrefix(mainPrefix);
+                                }
+
+                                if (!string.IsNullOrEmpty(attr.Prefix))
+                                {
+                                    variable.SetPrefix(attr.Prefix);
+                                }
+
+                                if (defaultValue != null)
+                                {
+                                    variable.SetDefaultValue(defaultValue);
+                                }
+
+                                if (!string.IsNullOrEmpty(attr.HelpText))
+                                {
+                                    variable.SetHelpText(attr.HelpText);
+                                }
+
+                                if (!string.IsNullOrEmpty(attr.Template))
+                                {
+                                    variable.SetTemplate(attr.Template);
+                                }
+
+                                if (attr.Protect)
+                                {
+                                    variable.Protect();
+                                }
+
+                                if (attr.Hidden)
+                                {
+                                    variable.Hide();
+                                }
+
+                                if (attr.NoPrefix)
+                                {
+                                    variable.DisablePrefix();
+                                }
+
+                                variable.SetAttribute(attr);
+                                variable.SetTelemetryResourceValueDelegate(() => property.GetValue(implementation));
+
+                                ((VariableService)variableService).AddVariableFromSetupInitialize(variable);
+
+                                // Try to read Environment for the correct Value
+                                MethodInfo? readMethod = typeof(VariableService).GetMethod("ReadVariableValueInternal", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(bool), typeof(bool)]);
+                                if (readMethod != null)
+                                {
+                                    MethodInfo genericReadMethod = readMethod.MakeGenericMethod(property.PropertyType);
+                                    if (genericReadMethod != null)
                                     {
-                                        // Set the readed Value
-                                        property.SetValue(implementation, environmentValue);
+                                        object? environmentValue = genericReadMethod.Invoke(variableService, [name, false, false]);
+                                        if (environmentValue != null && !TypeConverter.IsEmpty(environmentValue, property.PropertyType) && !variable.IsProtected)
+                                        {
+                                            // Set the readed Value
+                                            property.SetValue(implementation, environmentValue);
+                                        }
                                     }
                                 }
                             }

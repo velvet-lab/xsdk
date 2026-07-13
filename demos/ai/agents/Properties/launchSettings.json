@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Agents": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ENABLE_INSTRUMENTATION": "true",
+        "AGENT__AI__ENABLE_DEVUI": "true",
+        "AGENT__AI__EXPOSE_OPENAI_ENDPOINTS": "true"
+      }
+    }
+  }
+}

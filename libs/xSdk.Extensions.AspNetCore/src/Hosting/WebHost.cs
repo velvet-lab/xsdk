@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -24,7 +23,6 @@ using xSdk.Extensions.Options;
 
 namespace xSdk.Hosting;
 
-[ExcludeFromCodeCoverage(Justification = "Web host infrastructure – requires full ASP.NET Core runtime to exercise.")]
 public static partial class WebHost
 {
     private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(WebHost));
@@ -54,13 +52,13 @@ public static partial class WebHost
                 .UseEnvironment(stage.ToString())
                 // Enabled detailed Errors if in Development Mode
                 .UseSetting(WebHostDefaults.DetailedErrorsKey, (stage == Stage.Development).ToString())
-                // Configure App Configuration with Context
+                // ConfigureBuilder App Configuration with Context
                 .ConfigureAppConfiguration((context, configBuilder) =>
                 {
                     context.EnrichEnvironment(environmentSetup);
                     slimHost.ConfigureWebPluginHost(x => x.ConfigureAppConfiguration(context, configBuilder));
                 })
-                // Configure Services with Context
+                // ConfigureBuilder Services with Context
                 .ConfigureServices((context, services) =>
                 {
                     services
@@ -75,7 +73,7 @@ public static partial class WebHost
                     context.EnrichEnvironment(environmentSetup);
                     ConfigureApplicationWithContext(context, app, slimHost);
                 })
-                // Configure Kestrel
+                // ConfigureBuilder Kestrel
                 .UseKestrel(ConfigureKestrel);
 
             if (stage == Stage.Development)

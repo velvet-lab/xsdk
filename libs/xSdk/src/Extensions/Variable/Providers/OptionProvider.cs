@@ -30,9 +30,9 @@ internal class OptionProvider(IConfiguration configuration, ApplicationOptions o
 
     protected override object? ReadVariable(IVariable variable)
     {
-        if (configuration != null && variable != null && options != null && !string.IsNullOrEmpty(options.Prefix))
+        if (configuration != null && variable != null && options != null && !string.IsNullOrEmpty(options.Name))
         {
-            var mainSection = configuration.GetSection(options.Prefix.ToLower());
+            var mainSection = configuration.GetSection(options.Name.ToLower());
             if (mainSection != null)
             {
                 var sectionName = variable.Name;

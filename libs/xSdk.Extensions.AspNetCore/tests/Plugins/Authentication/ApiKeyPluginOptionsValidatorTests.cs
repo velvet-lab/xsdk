@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+using FluentValidation;
 using FluentValidation.Results;
-using xSdk.Plugins.Authentication;
+using xSdk.Extensions.Authentication;
 
-namespace xSdk.Extensions.Authentication;
+namespace xSdk.Plugins.Authentication;
 
 public class ApiKeyPluginOptionsValidatorTests
 {
@@ -26,8 +27,8 @@ public class ApiKeyPluginOptionsValidatorTests
     {
         // The VariableSetup returns the default value when no value is set,
         // so default options are always valid.
-        var options = new PluginOptions();
-        var validator = new PluginOptionsValidator();
+        var options = new AuthOptions();
+        var validator = new AuthOptionsValidator();
 
         ValidationResult result = validator.Validate(options);
 
@@ -37,8 +38,8 @@ public class ApiKeyPluginOptionsValidatorTests
     [Fact]
     public void Validate_WithExplicitRealm_PassesValidation()
     {
-        var options = new PluginOptions { Realm = "My Custom Realm" };
-        var validator = new PluginOptionsValidator();
+        var options = new AuthOptions { Realm = "My Custom Realm" };
+        var validator = new AuthOptionsValidator();
 
         ValidationResult result = validator.Validate(options);
 
@@ -49,10 +50,10 @@ public class ApiKeyPluginOptionsValidatorTests
     public void Validate_RuleFor_Realm_ErrorCode_MatchesDefinition()
     {
         // Verify that the validator uses the correct error code for the Realm property.
-        // When the rule fires, it uses ApiKeyPluginOptions.Definitions.Realm.Name.
-        var validator = new PluginOptionsValidator();
-        var descriptor = validator.CreateDescriptor();
-        var rules = descriptor.GetRulesForMember(nameof(PluginOptions.Realm));
+        // When the rule fires, it uses AuthOptions.Definitions.Realm.Name.
+        var validator = new AuthOptionsValidator();
+        IValidatorDescriptor descriptor = validator.CreateDescriptor();
+        IEnumerable<IValidationRule> rules = descriptor.GetRulesForMember(nameof(AuthOptions.Realm));
 
         Assert.NotNull(rules);
         Assert.NotEmpty(rules);
@@ -63,8 +64,8 @@ public class ApiKeyPluginOptionsValidatorTests
     {
         // VariableSetup stores whitespace as-is (unlike empty string which falls back to default).
         // FluentValidation's NotEmpty() treats whitespace as empty → validation fails.
-        var options = new PluginOptions { Realm = "   " };
-        var validator = new PluginOptionsValidator();
+        var options = new AuthOptions { Realm = "   " };
+        var validator = new AuthOptionsValidator();
 
         ValidationResult result = validator.Validate(options);
 

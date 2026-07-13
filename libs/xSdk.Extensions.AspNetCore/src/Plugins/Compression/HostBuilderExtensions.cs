@@ -21,8 +21,11 @@ namespace xSdk.Plugins.Compression;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableCompression(this IHostBuilder hostBuilder)
+    extension(IHostBuilder hostBuilder)
     {
-        return hostBuilder.RegisterPluginHost<PluginHost>();
+        public IHostBuilder EnableCompression()
+        {
+            return hostBuilder.RegisterPluginHost<PluginHost>();
+        }
     }
 }

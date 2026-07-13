@@ -17,7 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using xSdk.Hosting;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Demos;
 

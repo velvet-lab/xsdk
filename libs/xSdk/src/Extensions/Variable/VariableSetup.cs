@@ -31,21 +31,6 @@ public class VariableSetup : IVariableSetup
         }
     }
 
-    private IVariableService? GetVariableService()
-    {
-        if (_variableService == null)
-        {
-            var variableService = new VariableService(null, null);
-            _variableService = variableService;
-
-            variableService.ParseForVariables(this);
-
-            OnInitialize();
-        }
-
-        return _variableService;
-    }
-
     protected virtual void OnInitialize()
     {
     }
@@ -55,13 +40,12 @@ public class VariableSetup : IVariableSetup
 
     protected TValue? ReadValue<TValue>(string name, bool shouldThrowIfNotFound)
     {
-        IVariableService? variableService = GetVariableService();
-        if (variableService != null)
+        if (_variableService != null)
         {
-            IVariable? variable = variableService.LoadVariable(name);
+            IVariable? variable = _variableService.LoadVariable(name);
             if (variable != null)
             {
-                return variableService.ReadVariableValue<TValue>(variable.Name, shouldThrowIfNotFound);
+                return _variableService.ReadVariableValue<TValue>(variable.Name, shouldThrowIfNotFound);
             }
         }
 
@@ -70,13 +54,12 @@ public class VariableSetup : IVariableSetup
 
     protected void SetValue<TValue>(string name, TValue value)
     {
-        IVariableService? variableService = GetVariableService();
-        if (variableService != null)
+        if (_variableService != null)
         {
-            IVariable? variable = variableService.LoadVariable(name);
+            IVariable? variable = _variableService.LoadVariable(name);
             if (variable != null)
             {
-                variableService.SetVariable(variable.Name, value);
+                _variableService.SetVariable(variable.Name, value);
             }
         }
     }

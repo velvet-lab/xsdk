@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using VaultSharp;
@@ -25,7 +24,6 @@ using xSdk.Tools;
 
 namespace xSdk.Data;
 
-[ExcludeFromCodeCoverage(Justification = "Requires a live HashiCorp Vault instance – integration-only.")]
 internal partial class ReadOnlyVaultRepository : Repository, IReadOnlyVaultRepository
 {
     private static ILogger Logger => field ??= LogManager.CreateLogger<ReadOnlyVaultRepository>();

@@ -18,12 +18,15 @@ namespace xSdk.Data;
 
 public static class DatabaseBuilderExtensions
 {
-    public static IDatabaseBuilder MapRepository<TImplementation>(this IDatabaseBuilder builder)
-        where TImplementation : class, IRepository
-        => builder.ConfigureRepository<TImplementation>();
+    extension(IDatabaseBuilder builder)
+    {
+        public IDatabaseBuilder MapRepository<TImplementation>()
+            where TImplementation : class, IRepository
+            => builder.ConfigureRepository<TImplementation>();
 
-    public static IDatabaseBuilder MapRepository<TInterface, TImplementation>(this IDatabaseBuilder builder)
-        where TInterface : class
-        where TImplementation : class, IRepository, TInterface
-        => builder.ConfigureRepository<TInterface, TImplementation>();
+        public IDatabaseBuilder MapRepository<TInterface, TImplementation>()
+            where TInterface : class
+            where TImplementation : class, IRepository, TInterface
+            => builder.ConfigureRepository<TInterface, TImplementation>();
+    }
 }

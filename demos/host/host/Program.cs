@@ -21,20 +21,18 @@ using xSdk.Demos;
 using xSdk.Demos.Hosting;
 using xSdk.Extensions.Logging;
 using xSdk.Extensions.Options;
+using xSdk.Hosting;
 
 const string APP_NAME = "host";
 const string APP_COMPANY = "demos";
 const string APP_PREFIX = "ho";
 
-var host = xSdk
-    .Hosting.Host.CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+var host = xSdk.Hosting.Host
+    .CreateBuilder(args, APP_NAME, APP_COMPANY, APP_PREFIX)
+    // Ein eigener Host der benutzt werden soll
+    .AddHost<MyCustomHost>()
     .ConfigureServices((_, services) =>
     {
-        services
-            // Service um Informationen abzurufen
-            // Ein eigener Host der benutzt werden soll
-            .AddHostedService<MyCustomHost>();
-
         // Register Options with Variable Service
         services
             .RegisterOptions<OptionsWithoutPrefix>()

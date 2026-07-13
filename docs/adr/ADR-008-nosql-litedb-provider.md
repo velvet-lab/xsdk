@@ -10,7 +10,7 @@ Accepted
 
 ## Promotion Note (2026-05-27)
 
-`xSdk.Data.NoSql` has been promoted from `think-tank/libs/xSdk.Data.NoSql/` to the production `libs/xSdk.Data.NoSql/` folder. The package is now part of the standard `xsdk.sln` build and will be released as a NuGet package on the next release cycle.
+`xSdk.Data.NoSql` has been promoted from `think-tank/libs/xSdk.Data.NoSql/` to the production `libs/xSdk.Data.NoSql/` folder. The package is now part of the standard `xsdk.slnx` build and will be released as a NuGet package on the next release cycle.
 
 ## Context
 

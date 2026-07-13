@@ -26,18 +26,22 @@ namespace xSdk.Hosting;
 [ExcludeFromCodeCoverage]
 public static class HostExtensions
 {
-    public static int RunConsole(this IHost host, string[] args) => host.RunConsoleAsync(args).GetAwaiter().GetResult();
-
-    public static async Task<int> RunConsoleAsync(this IHost host, string[] args)
+    extension(IHost host)
     {
-        Guard.IsNotNull(host);
+        public int RunConsole(string[] args)
+            => host.RunConsoleAsync(args).GetAwaiter().GetResult();
 
-        await host.StartAsync();
+        public async Task<int> RunConsoleAsync(string[] args)
+        {
+            Guard.IsNotNull(host);
 
-        System.Console.Clear();
-        AnsiConsole.Clear();
+            await host.StartAsync();
 
-        var app = host.Services.GetRequiredService<IApplication>();
-        return await app.RunAsync(args);
+            System.Console.Clear();
+            AnsiConsole.Clear();
+
+            IApplication app = host.Services.GetRequiredService<IApplication>();
+            return await app.RunAsync(args);
+        }
     }
 }

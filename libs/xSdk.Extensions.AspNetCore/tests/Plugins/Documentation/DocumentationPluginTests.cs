@@ -23,25 +23,20 @@ using xSdk.Plugins.WebApi;
 
 namespace xSdk.Plugins.Documentation;
 
-public class DocumentationPluginTests : IClassFixture<WebHostTestFixture>
+public class DocumentationPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHostTestFixture>
 {
-    private readonly IHost _host;
-
-    public DocumentationPluginTests(WebHostTestFixture fixture)
-    {
-        _host = fixture
+    private readonly IHost _host = fixture
             .ConfigureBuilder(builder => builder
                 .EnableWebApi()
                 .EnableDocumentation<DocumentationPluginBuilderMock>())
             .BuildHost();
-    }
 
     [Fact]
     public void CreatePlugin()
     {
-        PluginHost? pluginHost = _host.Services
+        PluginHost<DocumentationPluginBuilderMock>? pluginHost = _host.Services
             .GetRequiredService<IPluginService>()
-            .GetPlugin<PluginHost>();
+            .GetPlugin<xSdk.Plugins.Documentation.PluginHost<DocumentationPluginBuilderMock>>();
 
         Assert.NotNull(pluginHost);
     }

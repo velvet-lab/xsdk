@@ -173,7 +173,7 @@ public class TestHostFixture : IDisposable
 
         Initialize();
 
-        // Configure the host builder with any additional delegates
+        // ConfigureBuilder the host builder with any additional delegates
         foreach (Action<IHostBuilder> configure in _builderDelegates)
         {
             configure?.Invoke(builder);
