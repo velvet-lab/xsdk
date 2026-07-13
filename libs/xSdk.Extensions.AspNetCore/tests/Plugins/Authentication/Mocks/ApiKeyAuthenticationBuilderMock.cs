@@ -17,6 +17,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using xSdk.Extensions.Authentication;
 using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Authentication.Mocks;
@@ -25,17 +26,10 @@ namespace xSdk.Plugins.Authentication.Mocks;
 /// A plugin builder mock that registers a TestApiKeyHandler via AddApiKeyRepository
 /// to exercise the AddApiKeyRepository extension method in integration tests.
 /// </summary>
-internal class ApiKeyAuthenticationBuilderMock : PluginBuilder, IAuthenticationPluginBuilder
+internal class ApiKeyAuthenticationBuilderMock : AuthBuilder
 {
-    public void ConfigureAuthentication(AuthenticationBuilder builder)
+    public override void ConfigureBuilder()
     {
-        builder.AddApiKeyRepository<TestApiKeyHandler>();
-    }
-
-    public void ConfigureAuthorization(AuthorizationOptions options) { }
-
-    public void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme)
-    {
-        scheme = null;
-    }
+        this.WithAuthentication(builder => builder.AddApiKeyRepository<TestApiKeyHandler>());
+    }    
 }
