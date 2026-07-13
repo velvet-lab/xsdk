@@ -244,5 +244,4 @@ public class VariableTests()
 
         Assert.Equal("--path <path>", variable.Template);
     }
-
 }
