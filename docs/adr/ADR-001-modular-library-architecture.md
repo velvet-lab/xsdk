@@ -1,3 +1,13 @@
+#---
+title: "ADR-001: Modular Library Architecture"
+status: "Accepted"
+date: "2026-03-17"
+authors: "velvet-lab/xsdk contributors"
+tags: ["architecture", "decision"]
+supersedes: ""
+superseded_by: ""
+---
+
 # ADR-001: Modular Library Architecture
 
 ## Status

@@ -1,3 +1,13 @@
+#---
+title: "ADR-003: Plugin-Based Extensibility Model"
+status: "Superseded"
+date: "2026-03-17"
+authors: "velvet-lab/xsdk contributors"
+tags: ["architecture", "decision"]
+supersedes: ""
+superseded_by: "ADR-027"
+---
+
 # ADR-003: Plugin-Based Extensibility Model
 
 ## Status

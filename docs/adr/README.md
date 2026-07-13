@@ -17,13 +17,13 @@ Each ADR follows this structure:
 | ADR                                                       | Title                                                            | Status                         |
 |-----------------------------------------------------------|------------------------------------------------------------------|--------------------------------|
 | [ADR-001](ADR-001-modular-library-architecture.md)        | Modular Library Architecture                                     | Accepted                       |
-| [ADR-002](ADR-002-slim-host-singleton.md)                 | SlimHost as Central Singleton Facade                             | Accepted                       |
-| [ADR-003](ADR-003-plugin-extensibility-model.md)          | Plugin-Based Extensibility Model                                 | Accepted                       |
+| [ADR-002](ADR-002-slim-host-singleton.md)                 | SlimHost as Central Singleton Facade                             | Superseded by ADR-026          |
+| [ADR-003](ADR-003-plugin-extensibility-model.md)          | Plugin-Based Extensibility Model                                 | Superseded by ADR-027          |
 | [ADR-004](ADR-004-variable-setup-configuration-system.md) | Variable/Setup System for Configuration                          | Accepted                       |
-| [ADR-005](ADR-005-repository-pattern-with-factory.md)     | Repository Pattern with Factory-Based Initialization             | Accepted                       |
-| [ADR-006](ADR-006-provider-agnostic-data-layer.md)        | Provider-Agnostic Data Layer Abstraction                         | Accepted                       |
+| [ADR-005](ADR-005-repository-pattern-with-factory.md)     | Repository Pattern with Factory-Based Initialization             | Superseded by ADR-037          |
+| [ADR-006](ADR-006-provider-agnostic-data-layer.md)        | Provider-Agnostic Data Layer Abstraction                         | Superseded by ADR-037          |
 | [ADR-007](ADR-007-entity-framework-data-provider.md)      | Entity Framework Core as Relational Data Provider                | Accepted                       |
-| [ADR-008](ADR-008-nosql-litedb-provider.md)               | LiteDB (LiteDB.Async) as Embedded NoSQL Provider                 | Accepted                       |
+| [ADR-008](ADR-008-nosql-litedb-provider.md)               | LiteDB (LiteDB.Async) as Embedded NoSQL Provider                 | Accepted (think-tank)          |
 | [ADR-009](ADR-009-flatfile-jsonstore-provider.md)         | JsonFlatFileDataStore as Flat-File Provider                      | Accepted                       |
 | [ADR-010](ADR-010-vault-secret-management.md)             | HashiCorp Vault as Secret Management Provider                    | Accepted                       |
 | [ADR-011](ADR-011-mongodb-via-efcore.md)                  | MongoDB Access via EF Core Provider                              | Accepted                       |
@@ -48,3 +48,30 @@ Each ADR follows this structure:
 | [ADR-030](ADR-030-ai-agents-extension.md)                 | AI Agents Integration as Host Extension                          | Accepted                       |
 | [ADR-031](ADR-031-microsoft-testing-platform.md)          | Microsoft Testing Platform for .NET Test Execution               | Accepted                       |
 | [ADR-032](ADR-032-plugin-host-lifecycle-extension.md)     | Plugin Host Lifecycle Extension                                  | Accepted                       |
+| [ADR-033](ADR-033-logging-architecture.md)                | Logging Architecture and Best Practices                          | Accepted                       |
+| [ADR-034](ADR-034-microsoft-agents-ai-integration.md)     | Microsoft Agents AI Framework Integration                        | Superseded by ADR-030          |
+| [ADR-035](ADR-035-ai-agent-framework-implementation.md)   | AI Agent Framework Implementation in xSDK                        | Superseded by ADR-030          |
+| [ADR-036](ADR-036-telemetry-in-ai-applications.md)        | Telemetry in AI Applications                                     | Accepted                       |
+| [ADR-037](ADR-037-xsdk-data-foundation-layer.md)          | xSdk.Data Foundation Layer                                       | Accepted                       |
+| [ADR-038](ADR-038-transaction-strategy-heterogeneous-providers.md) | Transaction Strategy for Heterogeneous Data Providers   | Accepted                       |
+| [ADR-039](ADR-039-hateoas-link-storage-additionaldata.md) | HATEOAS Link Storage in Model AdditionalData                     | Accepted                       |
+| [ADR-040](ADR-040-cloudevents-schema-naming-conventions.md) | CloudEvents Schema and Naming Conventions                      | Accepted                       |
+
+## Statistics
+
+- **Total ADRs:** 40
+- **Accepted:** 32
+- **Superseded:** 8 (ADR-002, ADR-003, ADR-005, ADR-006, ADR-013, ADR-034, ADR-035)
+- **Active (non-superseded):** 32
+
+## Recently Updated (2026-07-13)
+
+### New ADRs
+- **ADR-037:** xSdk.Data Foundation Layer (consolidates ADR-005 and ADR-006)
+- **ADR-038:** Transaction Strategy for Heterogeneous Data Providers
+- **ADR-039:** HATEOAS Link Storage in Model AdditionalData
+- **ADR-040:** CloudEvents Schema and Naming Conventions
+
+### Consolidations
+- **ADR-005 and ADR-006** → superseded by **ADR-037** (xSdk.Data Foundation Layer)
+- **ADR-034 and ADR-035** → superseded by **ADR-030** (AI Agents Integration)

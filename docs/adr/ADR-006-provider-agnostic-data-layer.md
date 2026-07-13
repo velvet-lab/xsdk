@@ -1,8 +1,20 @@
+---
+title: "ADR-006: Provider-Agnostic Data Layer Abstraction"
+status: "Superseded"
+date: "2026-03-17"
+authors: "velvet-lab/xsdk contributors"
+tags: ["architecture", "data", "abstraction"]
+supersedes: ""
+superseded_by: "ADR-037"
+---
+
 # ADR-006: Provider-Agnostic Data Layer Abstraction
 
 ## Status
 
-Accepted
+**Superseded by [ADR-037](ADR-037-xsdk-data-foundation-layer.md)** (2026-07-13)
+
+This ADR defined the provider-agnostic abstractions. These concepts are now consolidated in ADR-037, which documents the complete xSdk.Data foundation layer.
 
 ## Date
 
@@ -102,3 +114,7 @@ IDatabaseSetup
 
 - The `IDatabase.Open<TConnection>()` method requires callers to know the concrete connection type (e.g., `DbContext`, `LiteDatabaseAsync`) — a small provider leak through the abstraction.
 - The connection cache in `Database` uses a mutable static `ConcurrentDictionary`; the comment in the code acknowledges it is "not really threadsafe" for the `_wait4Connection` pattern and requires future improvement.
+
+## Updates
+
+**2026-07-13**: [ADR-028](ADR-028-database-handler-objectpool.md) introduces `IDatabaseHandler` and `ObjectPool<TDatabase>` to address connection pooling and lifecycle management. The ConcurrentDictionary-based cache is replaced by the ObjectPool pattern. Keyed services (.NET 8+) replace the manual `InternalDatabaseSetup` matching. Core abstractions (IEntity, IDatabase, IConnectionBuilder) remain unchanged.

@@ -1,3 +1,13 @@
+#---
+title: "ADR-004: Variable/Setup System for Configuration"
+status: "Accepted"
+date: "2026-05-31"
+authors: "velvet-lab/xsdk contributors"
+tags: ["architecture", "decision"]
+supersedes: ""
+superseded_by: ""
+---
+
 # ADR-004: Variable/Setup System for Configuration
 
 ## Status

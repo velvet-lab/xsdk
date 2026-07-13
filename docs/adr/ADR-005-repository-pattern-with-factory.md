@@ -1,8 +1,20 @@
+---
+title: "ADR-005: Repository Pattern with Factory-Based Initialization"
+status: "Superseded"
+date: "2026-03-17"
+authors: "velvet-lab/xsdk contributors"
+tags: ["architecture", "decision"]
+supersedes: ""
+superseded_by: "ADR-037"
+---
+
 # ADR-005: Repository Pattern with Factory-Based Initialization
 
 ## Status
 
-Accepted
+**Superseded by [ADR-037](ADR-037-xsdk-data-foundation-layer.md)** (2026-07-13)
+
+This ADR described the repository pattern and factory initialization. These concepts are now consolidated in ADR-037, which provides a comprehensive view of the xSdk.Data foundation layer including keyed services and ObjectPool integration.
 
 ## Date
 
@@ -92,3 +104,7 @@ IRepository
 - The two-step initialization (DI resolves the repo, then `Configure(database)` is called) is non-standard and bypasses constructor injection for the database — internal state mutation after construction.
 - `DatalayerFactory.CreateRepository` creates a new `IServiceScope` but requires the caller to manage its lifetime; not disposing it leaks scoped services.
 - `services.BuildServiceProvider()` is called inside `AddDatalayer(...)` to pre-build the factory; this is an anti-pattern in ASP.NET Core and can cause the container to be built twice.
+
+## Updates
+
+**2026-07-13**: This ADR describes the original factory pattern. [ADR-028](ADR-028-database-handler-objectpool.md) introduces `IDatabaseHandler` with `ObjectPool<TDatabase>` and keyed services, which supersedes the `InternalDatabaseSetup` metadata-record matching and addresses connection pooling. The core factory pattern remains valid, but connection management is now delegated to the handler.

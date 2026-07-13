@@ -1,16 +1,18 @@
 ---
 title: "ADR-034: Microsoft Agents AI Framework Integration"
-status: "Proposed"
+status: "Superseded"
 date: "2026-07-02"
 authors: "GitHub Copilot"
 tags: ["architecture", "decision", "ai", "microsoft-agents"]
 supersedes: ""
-superseded_by: ""
+superseded_by: "ADR-030"
 ---
 
 ## Status
 
-**Proposed**
+**Superseded by [ADR-030](ADR-030-ai-agents-extension.md)** (2026-07-13)
+
+This ADR proposed Microsoft Agents AI integration, which has been implemented and documented in ADR-030.
 
 ## Context
 

@@ -1,3 +1,13 @@
+#---
+title: "ADR-002: SlimHost as Central Singleton Facade"
+status: "Superseded"
+date: "2026-03-17"
+authors: "velvet-lab/xsdk contributors"
+tags: ["architecture", "decision"]
+supersedes: ""
+superseded_by: "ADR-026"
+---
+
 # ADR-002: SlimHost as Central Singleton Facade
 
 ## Status

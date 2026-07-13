@@ -1,16 +1,18 @@
 ---
 title: "ADR-035: AI Agent Framework Implementation in xSDK"
-status: "Proposed"
+status: "Superseded"
 date: "2026-07-02"
 authors: "GitHub Copilot"
 tags: ["architecture", "decision", "ai", "agent-framework"]
 supersedes: ""
-superseded_by: ""
+superseded_by: "ADR-030"
 ---
 
 ## Status
 
-**Proposed**
+**Superseded by [ADR-030](ADR-030-ai-agents-extension.md)** (2026-07-13)
+
+This ADR proposed an extended AI agent framework. The implementation has been realized in xSdk.Extensions.AI as documented in ADR-030.
 
 ## Context
 

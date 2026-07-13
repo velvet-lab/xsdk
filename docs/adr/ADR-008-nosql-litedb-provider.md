@@ -8,9 +8,11 @@ Accepted
 
 2026-03-17
 
-## Promotion Note (2026-05-27)
+## Implementation Status (2026-07-13)
 
-`xSdk.Data.NoSql` has been promoted from `think-tank/libs/xSdk.Data.NoSql/` to the production `libs/xSdk.Data.NoSql/` folder. The package is now part of the standard `xsdk.slnx` build and will be released as a NuGet package on the next release cycle.
+`xSdk.Data.NoSql` currently resides in `think-tank/libs/xSdk.Data.NoSql/` and is under evaluation for promotion to the production `libs/` folder. The implementation is functional and used in demos, but has not yet been promoted to the main build for NuGet release.
+
+**Note**: Previous promotion note (2026-05-27) was premature. The library remains in the think-tank until performance, thread-safety, and transaction semantics are finalized.
 
 ## Context
 

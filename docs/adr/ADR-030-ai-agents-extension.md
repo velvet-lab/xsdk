@@ -4,7 +4,7 @@ status: "Accepted"
 date: "2026-05-27"
 authors: "xSdk Team"
 tags: ["architecture", "ai", "agents", "mcp", "openai", "plugin"]
-supersedes: ""
+supersedes: "ADR-034, ADR-035"
 superseded_by: ""
 ---
 
@@ -13,6 +13,10 @@ superseded_by: ""
 ## Status
 
 Accepted
+
+**Supersedes:** [ADR-034](ADR-034-microsoft-agents-ai-integration.md) and [ADR-035](ADR-035-ai-agent-framework-implementation.md)
+
+This ADR documents the implemented AI agents integration in `xSdk.Extensions.AI`. The proposals in ADR-034 (Microsoft Agents AI Framework Integration) and ADR-035 (AI Agent Framework Implementation) have been realized in this implementation.
 
 ## Date
 
@@ -42,58 +46,59 @@ The `Microsoft.Agents.AI` SDK (version 1.6.x) and `ModelContextProtocol.AspNetCo
 
 ### Package and Project
 
-| Property         | Value                                                                                                                                                                                     |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Library          | `libs/xSdk.Extensions.Agents/`                                                                                                                                                            |
-| Package name     | `xSdk.Extensions.AI.Agents`                                                                                                                                                               |
-| Target framework | `net10.0`                                                                                                                                                                                 |
-| Dependencies     | `Microsoft.Agents.AI`, `Microsoft.Agents.AI.DevUI`, `Microsoft.Agents.AI.Hosting.OpenAI`, `Microsoft.Agents.AI.OpenAI`, `ModelContextProtocol.AspNetCore`, `Microsoft.AspNetCore.OpenApi` |
+| Property         | Value                                                                                                                                                                                |
+|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Library          | `libs/xSdk.Extensions.AI/`                                                                                                                                                           |
+| Package name     | `xSdk.Extensions.AI`                                                                                                                                                                 |
+| Target framework | `net10.0`                                                                                                                                                                            |
+| Dependencies     | `Microsoft.Agents.AI`, `Microsoft.Agents.AI.Declarative`, `Microsoft.Agents.AI.Workflows`, `xSdk.Extensions.AspNetCore`, `xSdk.Extensions.Commands`                                 |
+
+**Implementation Note (2026-07-13)**: The originally planned `xSdk.Extensions.AI.Agents` package has been consolidated into `xSdk.Extensions.AI`. The implementation uses a generic `PluginHost<TBuilder>` pattern instead of a dedicated `AgentsPluginHost` class.
 
 ### Core Types
 
-| Type                         | Namespace                   | Responsibility                                                                                                                              |
-|------------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| `AgentsPluginHost`           | `xSdk.Plugins.AI.Agents`    | `WebPluginHost`; wires `IChatClient`, OpenAI responses, conversations, DevUI, and MCP endpoint                                              |
-| `IAgentsPluginBuilder`       | `xSdk.Extensions.AI.Agents` | Extensibility interface; consuming code implements `CreateChatClient()`                                                                     |
-| `DefaultAgentsPluginBuilder` | `xSdk.Plugins.AI.Agents`    | Internal default; throws `NotImplementedException` — forces consumers to supply a real builder                                              |
-| `AgentsPluginOptions`        | `xSdk.Extensions.AI.Agents` | `PluginOptions` subclass; holds `Endpoint` and `ApiKey` via the Variable system ([ADR-004](ADR-004-variable-setup-configuration-system.md)) |
-| `IAgentService`              | `xSdk.Extensions.AI.Agents` | Placeholder interface for higher-level agent orchestration (not yet implemented)                                                            |
-| `HostBuilderExtensions`      | `xSdk.Plugins.AI.Agents`    | `EnableAgents<TPluginBuilder>(configureOptions)` extension on `IHostBuilder`                                                                |
+| Type                    | Namespace             | Responsibility                                                                                                 |
+|-------------------------|-----------------------|----------------------------------------------------------------------------------------------------------------|
+| `PluginHost<TBuilder>`  | `xSdk.Plugins.AI`     | Generic `WebPluginHost`; wires AI clients, OpenAI responses, conversations, DevUI, and MCP endpoint            |
+| `AIBuilder`             | `xSdk.Extensions.AI`  | Extensibility builder; consumers can extend or use directly                                                    |
+| `AIOptions`             | `xSdk.Extensions.AI`  | `PluginOptions` subclass; holds `ExposeOpenAIEndpoints`, `IsDevUiEnabled` and other AI-specific configuration |
+| `HostBuilderExtensions` | `xSdk.Plugins.AI`     | `EnableAI<TBuilder>(configure, optionsConfigure)` extension on `IHostBuilder`                                  |
 
 ### Activation Pattern
 
 ```csharp
-hostBuilder.EnableAgents<MyOpenAiPluginBuilder>(options =>
+hostBuilder.EnableAI<AIBuilder>(builder =>
 {
-    options.Endpoint = "https://api.openai.com/v1";
-    // ApiKey is read from environment via Variable system
+    builder.AddClient("MyClient", client => { /* configure */ });
+}, options =>
+{
+    options.ExposeOpenAIEndpoints = true;
+    options.IsDevUiEnabled = true;
 });
 ```
 
-`EnableAgents<TPluginBuilder>` internally calls:
-1. `RegisterPluginHost<AgentsPluginHost>()` — installs the plugin host into the DI pipeline.
-2. `RegisterPluginHostOptions<AgentsPluginOptions>(configureOptions)` — binds options via Variable system.
-3. `RegisterPluginBuilder<IAgentsPluginBuilder, TPluginBuilder>()` — registers the consumer's concrete builder.
+`EnableAI<TBuilder>` internally calls:
+1. `RegisterPluginHost<PluginHost<TBuilder>>()` — installs the plugin host into the DI pipeline.
+2. `RegisterPluginHostOptions<AIOptions>(optionsConfigure)` — binds options.
+3. `RegisterBuilder<TBuilder>(configure)` — registers the AI builder with configuration.
+4. Registers additional builders: `ClientBuilder<TBuilder>`, `AgentBuilder<TBuilder>`, `ToolBuilder<TBuilder>`.
 
-### Plugin Host Lifecycle (`AgentsPluginHost`)
+### Plugin Host Lifecycle (`PluginHost<TBuilder>`)
 
 ```csharp
-internal class AgentsPluginHost(...) : WebPluginHost
+internal partial class PluginHost<TBuilder> : WebPluginHost
+    where TBuilder : AIBuilder
 {
-    public override void ConfigureServices(IServiceCollection services)
+    public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
-        // Resolves IAgentsPluginBuilder and calls CreateChatClient()
-        // Registers IChatClient, OpenAI responses, conversations, DevUI
+        // Builder.Build(services) initializes AI clients
+        // Conditionally registers DevUI, OpenAI responses, and conversations
     }
 
-    public override void Configure(WebHostBuilderContext context, IApplicationBuilder app)
+    public override void ConfigureEndpoint(IEndpointRouteBuilder endpointBuilder)
     {
-        // No middleware needed at this time
-    }
-
-    public override void ConfigureEndpoint(IEndpointRouteBuilder builder)
-    {
-        builder.MapDevUI(); // DevUI endpoint for development
+        // MapDevUI() in development environments
+        // MapOpenAIConversations() and MapOpenAIResponses()
     }
 }
 ```
@@ -106,25 +111,32 @@ internal class AgentsPluginHost(...) : WebPluginHost
 
 - The `ApiKey` option uses the Variable system and must be supplied via environment variable — **never hardcoded**.
 - `MapDevUI()` should be gated to non-production environments. Consuming applications are responsible for applying appropriate authorization middleware before calling `EnableAgents`.
-- `AgentsPluginHost` logs an error (rather than throwing) when `IAgentsPluginBuilder` cannot be resolved, ensuring startup does not crash but the misconfiguration is visible in logs.
+- AI client configuration (endpoints, keys) should be supplied via options and environment variables — **never hardcoded**.
+- `MapDevUI()` is gated to development environments via `AIOptions.IsDevUiEnabled` and `Stage.Development` check.
+- Consuming applications are responsible for applying appropriate authorization middleware before calling `EnableAI`.
+- `PluginHost<TBuilder>` logs configuration steps for observability.
 
 ## Consequences
 
 ### Positive
 
 - **POS-001**: AI capabilities are opt-in, consistent with all other plugin hosts.
-- **POS-002**: Provider neutrality — the concrete `IChatClient` is injected by the consumer; the plugin host has no compile-time dependency on a specific AI provider.
-- **POS-003**: `AgentsPluginOptions` integrates with the Variable system, enabling unified CLI/env-var configuration.
-- **POS-004**: `Microsoft.Extensions.AI` abstraction (`IChatClient`) makes future provider swaps (e.g., Azure OpenAI → local model) a one-line change in `IAgentsPluginBuilder.CreateChatClient()`.
+- **POS-002**: Provider neutrality — the concrete AI client implementation is configured via `AIBuilder`.
+- **POS-003**: `AIOptions` integrates with the plugin options system, enabling unified configuration.
+- **POS-004**: `Microsoft.Agents.AI` abstraction makes future provider swaps possible via builder extension.
+- **POS-005**: Generic `PluginHost<TBuilder>` pattern allows consumers to extend `AIBuilder` for custom scenarios.
 
 ### Negative
 
-- **NEG-001**: `IAgentService` interface is currently a stub — higher-level agent orchestration patterns are not yet defined.
-- **NEG-002**: `DefaultAgentsPluginBuilder.CreateChatClient()` throws `NotImplementedException`; consumers who call `EnableAgents` without providing a real builder will fail at runtime (not at compile time).
-- **NEG-003**: MCP and DevUI endpoints are included unconditionally at build time; environment-gating is the consumer's responsibility.
+- **NEG-001**: Higher-level agent orchestration patterns are not yet fully defined beyond basic client/tool registration.
+- **NEG-002**: The builder pattern requires understanding of the generic constraint `where TBuilder : AIBuilder`.
+- **NEG-003**: Package references use standard dependency management via `Directory.Packages.props`.
+- **IMP-002**: The library depends on `xSdk.Extensions.AspNetCore` (for `WebPluginHost`) and `xSdk.Extensions.Commands` (for CLI integration).
+- **IMP-003**: The implementation consolidates AI functionality into a single package (`xSdk.Extensions.AI`) rather than the originally planned separate `xSdk.Extensions.AI.Agents` package.
 
-## Implementation Notes
+## Updates
 
+**2026-07-13**: Updated to reflect actual implementation in `libs/xSdk.Extensions.AI/`. The originally planned `AgentsPluginHost` and `IAgentsPluginBuilder` were replaced with a generic `PluginHost<TBuilder>` pattern using `AIBuilder`. Package name is `xSdk.Extensions.AI` (not `xSdk.Extensions.AI.Agents`). Extension method is `EnableAI` (not `EnableAgents`)
 - **IMP-001**: `PrivateAssets="contentfiles;analyzers;build;compile"` on all `Microsoft.Agents.*` and `ModelContextProtocol.AspNetCore` references prevents these heavy packages from flowing transitively to consumers.
 - **IMP-002**: The library depends on `xSdk.Extensions.AspNetCore` (for `WebPluginHost`) and `xSdk.Extensions.Telemetry` (for telemetry correlation), following the standard layering.
 - **IMP-003**: Once `IAgentService` is implemented, a dedicated ADR amendment or follow-up ADR should document the agent orchestration pattern.
