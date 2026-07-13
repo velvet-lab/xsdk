@@ -1,0 +1,88 @@
+using CommunityToolkit.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using OpenTelemetry;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using xSdk.Extensions.Builder;
+
+namespace xSdk.Extensions.Telemetry;
+
+public class TelemetryBuilder : BuilderBase
+{
+    private OpenTelemetryBuilder? _telemetryBuilder;
+    private ResourceBuilder? _resourceBuilder;
+
+    internal TelemetryOptions Options => SlimServices.GetService<IOptions<TelemetryOptions>>()?.Value ?? new TelemetryOptions();
+
+    internal Action<ResourceBuilder>? ResourceBuilderDelegate;
+    internal Action<MeterProviderBuilder>? ConfigureMetricsDelegate;
+    internal Action<TracerProviderBuilder>? ConfigureTracingDelegate;
+    internal Action<LoggerProviderBuilder>? ConfigureLoggingDelegate;
+    internal Action<OpenTelemetryLoggerOptions>? ConfigureLoggingOptionsDelegate;
+
+    internal void Build(IServiceCollection? services)
+    {
+        Guard.IsNotNull(services);
+
+        ConfigureBuilder();
+
+        // Create an builder
+        _telemetryBuilder = services
+            .AddOpenTelemetry();
+
+        // ConfigureResource on OpenTelemetryBuilder invokes the callback once per active signal
+        // (Tracing, Metrics, Logging). Pre-building the ResourceBuilder here ensures
+        // InvokeBuilders<ConfigureResources> is called exactly once.
+        _resourceBuilder = ResourceBuilder.CreateDefault();
+        ResourceBuilderDelegate?.Invoke(_resourceBuilder);
+
+        if (Options.TracingEnabled)
+        {
+            BuildTracing();
+        }
+
+        if (Options.MetricsEnabled)
+        {
+            BuildMetrics();
+        }
+
+        if(Options.LoggingEnabled)
+        {
+            BuildLogging();
+        }
+    }
+
+    private void BuildMetrics()
+    {
+        _telemetryBuilder?.WithMetrics(metricsBuilder =>
+        {
+            metricsBuilder.SetResourceBuilder(_resourceBuilder ?? ResourceBuilder.CreateDefault());
+            // Call metrics configuration from possible other Startups
+            ConfigureMetricsDelegate?.Invoke(metricsBuilder);
+        });
+    }    
+
+    private void BuildTracing()
+    {
+        _telemetryBuilder?.WithTracing(tracingBuilder =>
+        {
+            tracingBuilder.SetResourceBuilder(_resourceBuilder ?? ResourceBuilder.CreateDefault());
+
+            // Call tracing configuration from possible other Startups
+            ConfigureTracingDelegate?.Invoke(tracingBuilder);
+        });
+    }
+
+    private void BuildLogging()
+    {
+        _telemetryBuilder?.WithLogging(loggingBuilder =>
+        {
+            loggingBuilder.SetResourceBuilder(_resourceBuilder ?? ResourceBuilder.CreateDefault());
+            ConfigureLoggingDelegate?.Invoke(loggingBuilder);
+        },
+        options => ConfigureLoggingOptionsDelegate?.Invoke(options));
+    }
+}

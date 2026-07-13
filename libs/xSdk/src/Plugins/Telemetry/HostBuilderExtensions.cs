@@ -15,6 +15,7 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Plugin;
 using xSdk.Extensions.Telemetry;
 using xSdk.Hosting;
 
@@ -22,14 +23,30 @@ namespace xSdk.Plugins.Telemetry;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : class, ITelemetryPluginBuilder
-        => builder.EnableTelemetry<TPluginBuilder>(options => { });
+    extension(IHostBuilder builder)
+    {
+        public IHostBuilder EnableTelemetry()
+            => builder.EnableTelemetry<TelemetryBuilder>(_ => { }, _ => { });
 
-    public static IHostBuilder EnableTelemetry<TPluginBuilder>(this IHostBuilder builder, Action<PluginOptions> configureOptions)
-        where TPluginBuilder : class, ITelemetryPluginBuilder
-        => builder
-            .RegisterPluginHost<PluginHost>()
-            .RegisterPluginHostOptions(configureOptions)
-            .RegisterPluginBuilder<ITelemetryPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure)
+            => builder.EnableTelemetry<TelemetryBuilder>(configure, _ => { });
+
+        public IHostBuilder EnableTelemetry(Action<TelemetryBuilder> configure, Action<TelemetryOptions> optionsConfigure)
+            => builder.EnableTelemetry<TelemetryBuilder>(configure, optionsConfigure);
+
+        public IHostBuilder EnableTelemetry<TBuilder>()
+            where TBuilder : TelemetryBuilder
+            => builder.EnableTelemetry<TBuilder>(_ => { }, _ => { });
+
+        public IHostBuilder EnableTelemetry<TBuilder>(Action<TelemetryOptions> configure)
+            where TBuilder : TelemetryBuilder
+            => builder.EnableTelemetry<TBuilder>(_ => { }, configure);
+
+        private IHostBuilder EnableTelemetry<TBuilder>(Action<TBuilder> configure, Action<TelemetryOptions> optionsConfigure)
+            where TBuilder : TelemetryBuilder
+            => builder
+                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterPluginHostOptions<TelemetryOptions>(optionsConfigure)
+                .RegisterBuilder<TBuilder>(configure);
+    }
 }

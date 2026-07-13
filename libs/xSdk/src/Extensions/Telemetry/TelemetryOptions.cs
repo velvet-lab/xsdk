@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugins.Telemetry;
+namespace xSdk.Extensions.Telemetry;
 
-public sealed class PluginOptions : PluginOptionsBase
+[VariablePrefix("telemetry")]
+public sealed class TelemetryOptions : OptionsBase
 {
     [Variable(
         name: Definitions.LoggingEnabled.Name,
@@ -58,21 +59,21 @@ public sealed class PluginOptions : PluginOptionsBase
     {
         public static class LoggingEnabled
         {
-            public const string Name = nameof(LoggingEnabled);
+            public const string Name = "enable_logging";
             public const string Template = "--enable-logging";
             public const string HelpText = "Enables logging telemetry.";
         }
 
         public static class TracingEnabled
         {
-            public const string Name = nameof(TracingEnabled);
+            public const string Name = "enable_tracing";
             public const string Template = "--enable-tracing";
             public const string HelpText = "Enables tracing telemetry.";
         }
 
         public static class MetricsEnabled
         {
-            public const string Name = nameof(MetricsEnabled);
+            public const string Name = "enable_metrics";
             public const string Template = "--enable-metrics";
             public const string HelpText = "Enables metrics telemetry.";
         }
