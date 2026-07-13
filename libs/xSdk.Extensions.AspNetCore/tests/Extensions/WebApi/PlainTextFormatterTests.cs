@@ -15,9 +15,9 @@
  */
 
 using Microsoft.AspNetCore.Mvc.Formatters;
-using xSdk.Extensions.WebApi;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace xSdk.Plugins.WebApi;
+namespace xSdk.Extensions.WebApi;
 
 public class PlainTextFormatterTests
 {
@@ -34,7 +34,7 @@ public class PlainTextFormatterTests
     {
         var formatter = new PlainTextFormatter();
 
-        var result = formatter.CanRead(CreateContext(typeof(string)));
+        bool result = formatter.CanRead(CreateContext(typeof(string)));
 
         Assert.True(result);
     }
@@ -54,7 +54,7 @@ public class PlainTextFormatterTests
         httpContext.Request.ContentType = "text/plain";
 
         var modelMetadataProvider = new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider();
-        var modelMetadata = modelMetadataProvider.GetMetadataForType(modelType);
+        ModelMetadata modelMetadata = modelMetadataProvider.GetMetadataForType(modelType);
 
         return new InputFormatterContext(
             httpContext,

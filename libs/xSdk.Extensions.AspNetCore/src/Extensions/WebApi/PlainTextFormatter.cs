@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace xSdk.Extensions.WebApi;
 
-[ExcludeFromCodeCoverage(Justification = "MVC TextInputFormatter – requires a running web host with MVC pipeline.")]
 internal class PlainTextFormatter : TextInputFormatter
 {
     public PlainTextFormatter()

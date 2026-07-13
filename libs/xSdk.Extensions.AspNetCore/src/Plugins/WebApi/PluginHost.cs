@@ -16,6 +16,7 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Asp.Versioning;
 using FluentValidation;
 using Hellang.Middleware.ProblemDetails;
@@ -26,15 +27,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xSdk.Extensions.Options;
+using xSdk.Extensions.Plugin;
 using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
-using xSdk.Shared;
 using xSdk.Tools;
 
 namespace xSdk.Plugins.WebApi;
 
-[ExcludeFromCodeCoverage(Justification = "ASP.NET Core MVC/WebApi pipeline configuration – requires a running web host.")]
-internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection, ILogger<WebApiPluginHost> logger) : WebPluginHost
+internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<EnvironmentOptions> environmentOptions, IPluginHostCollection pluginHostCollection, ILogger<PluginHost<TBuilder>> logger) : WebPluginHost
+    where TBuilder : WebApiBuilder
 {
     public override int Order => 50;
 
@@ -46,43 +47,42 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
             .AddHttpContextAccessor()
             .AddProblemDetails(_ =>
             {
-                logger.LogDebug("Configure Problem Details");
-                var currentStage = environmentOptions.Value.Stage;
+                logger.LogDebug("ConfigureBuilder Problem Details");
+                Stage currentStage = environmentOptions.Value.Stage;
 
                 _.IncludeExceptionDetails = (ctx, ex) =>
                 {
                     if (Debugger.IsAttached || currentStage == Stage.Development || currentStage == Stage.Integration)
+                    {
                         return true;
+                    }
 
                     return false;
                 };
-                _.ShouldLogUnhandledException = (ctx, ex, details) =>
-                {
-                    return true;
-                };
+                _.ShouldLogUnhandledException = (ctx, ex, details) => true;
             })
             // Add Routing
             .AddRouting(_ =>
             {
-                logger.LogDebug("Configure Routing");
+                logger.LogDebug("ConfigureBuilder Routing");
                 _.LowercaseUrls = true;
                 _.LowercaseQueryStrings = true;
                 _.SuppressCheckForUnhandledSecurityMetadata = false;
             });
 
-        var mvcBuilder = services
+        IMvcBuilder mvcBuilder = services
             .AddControllers(_ =>
             {
-                logger.LogDebug("Configure Mvc");
+                logger.LogDebug("ConfigureBuilder Mvc");
                 _.InputFormatters.Add(new PlainTextFormatter());
                 _.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
-                InvokeBuilders<IWebApiPluginBuilder>(plugin => plugin.ConfigureMvc(_));
+                builder.ConfigureMvcAction?.Invoke(_);
 
             })
             .AddJsonOptions(_ =>
             {
-                logger.LogDebug("Configure Json");
+                logger.LogDebug("ConfigureBuilder Json");
                 _.JsonSerializerOptions.ConfigureSerializerOptions();
             });
 
@@ -121,13 +121,13 @@ internal sealed class WebApiPluginHost(IOptions<EnvironmentOptions> environmentO
         logger.LogDebug("Enabled Endpoints for API Explorer");
         services.AddEndpointsApiExplorer();
 
-        var assemblies = AssemblyCollector.Collect(pluginHostCollection);
+        List<Assembly> assemblies = AssemblyCollector.Collect(pluginHostCollection);
 
         logger.LogDebug("Add Fluent Validation");
         services.AddValidatorsFromAssemblies(assemblies);
 
         logger.LogDebug("Add Application Parts");
-        foreach (var assembly in assemblies)
+        foreach (Assembly assembly in assemblies)
         {
             mvcBuilder.AddApplicationPart(assembly);
         }

@@ -17,6 +17,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using xSdk.Extensions.Plugin;
+using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
 
 namespace xSdk.Plugins.WebApi;
@@ -30,8 +31,8 @@ public class WebApiPluginTests(WebHostTestFixture fixture) : IClassFixture<WebHo
             .ConfigureBuilder(builder => builder.EnableWebApi())
             .BuildHost();
 
-        var service = host.Services.GetRequiredService<IPluginService>();
-        var plugin = service.GetPlugin<WebApiPluginHost>();
+        IPluginService service = host.Services.GetRequiredService<IPluginService>();
+        PluginHost<WebApiBuilder>? plugin = service.GetPlugin<xSdk.Plugins.WebApi.PluginHost<WebApiBuilder>>();
 
         Assert.NotNull(plugin);
     }

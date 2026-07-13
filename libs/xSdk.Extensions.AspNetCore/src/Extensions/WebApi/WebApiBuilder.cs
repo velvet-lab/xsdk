@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
+using Asp.Versioning.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi;
+using xSdk.Extensions.Builder;
 using xSdk.Extensions.Plugin;
 
-namespace xSdk.Plugins.WebApi;
+namespace xSdk.Extensions.WebApi;
 
-public interface IWebApiPluginBuilder : IPluginBuilder
+public class WebApiBuilder : BuilderBase
 {
-    void ConfigureMvc(MvcOptions options);
+    internal Action<MvcOptions>? ConfigureMvcAction;
 }

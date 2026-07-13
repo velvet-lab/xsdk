@@ -24,7 +24,6 @@ using xSdk.Tools;
 
 namespace xSdk.Extensions.Web;
 
-[ExcludeFromCodeCoverage(Justification = "HTTP client factory – requires live network endpoints to exercise.")]
 public static class RestClientBuilder
 {
     private static ILogger Logger => field ??= LogManager.CreateLogger(typeof(RestClientBuilder));

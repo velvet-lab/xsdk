@@ -15,22 +15,30 @@
  */
 
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.WebApi;
 using xSdk.Hosting;
+using xSdk.Plugins.Documentation;
 
 namespace xSdk.Plugins.WebApi;
 
 public static class HostBuilderExtensions
 {
-    public static IHostBuilder EnableWebApi(this IHostBuilder builder)
-        => builder.EnableWebApi<DefaultWebApiPluginBuilder>();
-
-    public static IHostBuilder EnableWebApi<TPluginBuilder>(this IHostBuilder builder)
-        where TPluginBuilder : class, IWebApiPluginBuilder
+    extension(IHostBuilder builder)
     {
-        builder
-            .RegisterPluginHost<WebApiPluginHost>()
-            .RegisterPluginBuilder<IWebApiPluginBuilder, TPluginBuilder>();
+        public IHostBuilder EnableWebApi()
+            => builder.EnableWebApi<WebApiBuilder>(_ => { });
 
-        return builder;
+        public IHostBuilder EnableWebApi(Action<WebApiBuilder> configure)
+            => builder.EnableWebApi<WebApiBuilder>(configure);
+
+        public IHostBuilder EnableWebApi<TBuilder>()
+            where TBuilder : WebApiBuilder
+            => builder.EnableWebApi<TBuilder>(_ => { });
+        
+        private IHostBuilder EnableWebApi<TBuilder>(Action<TBuilder> configure)
+            where TBuilder : WebApiBuilder
+            => builder
+                .RegisterPluginHost<PluginHost<TBuilder>>()
+                .RegisterBuilder<TBuilder>(configure);
     }
 }
