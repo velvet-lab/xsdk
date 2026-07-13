@@ -13,3 +13,10 @@ update:
     @just {{module_name}}::info "Updating repository '{{repo_name}}'..."
     @pnpm update
     @just {{module_name}}::success "Repository '{{repo_name}}' updated successfully."
+
+# Repariert und bereinigt die lokale Git-Datenbank bei Fehlern (z.B. 'object not found')
+[no-cd]
+repair-git:
+    @just {{module_name}}::info "Cleanup and repair git database..."
+    git fsck --full
+    git gc --prune=now

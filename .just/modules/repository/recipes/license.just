@@ -1,10 +1,10 @@
-# Validate license headers in all files according to the configuration in .licenserc.json
+# Validate license headers in all files according to the configuration in .licenserc.yaml
 [no-cd]
 check-license: _setup-license-tool
     @just {{module_name}}::info "Checking license headers in repository '{{repo_name}}'..."
     {{bin_dir}}/license-eye.exe header check
 
-# Corrects and updates file headers according to the configuration in .licenserc.json
+# Corrects and updates file headers according to the configuration in .licenserc.yaml
 [no-cd]
 apply-license: _setup-license-tool
     @just {{module_name}}::info "Fixing license headers in repository '{{repo_name}}'..."

@@ -1,0 +1,36 @@
+header:
+  license:
+    spdx-id: Apache-2.0
+    copyright-owner: Roland Breitschaft
+    copyright-year: 2026
+    software-name: xsdk
+  paths:
+    - 'libs/**'
+    - 'demos/**'
+    - 'think-tank/**'
+  paths-ignore:
+    - '.bin'
+    - '.config'
+    - '.github'
+    - '.just'
+    - '.sonarlint'
+    - '.vs'
+    - '.vscode'
+    - 'docs'
+    - 'megalinter-reports'
+    - 'node_modules'
+    - 'scripts'
+    - 'services'
+    - '**/obj'
+    - '**/bin'
+    - '**/*.json'
+    - '**/*.yml'
+    - '**/*.yaml'
+    - '**/*.md'
+    - '**/*.slnx'
+    - '**/*.txt'
+    - '**/*.xml'
+    - '**/*.csproj'
+    - '**/*.props'
+    - '**/*.targets'
+  comment: on-failure

@@ -41,6 +41,11 @@ clean:
     @just dotnet::clean xsdk.slnx
     @just repository::clean
 
+# Repair local Git database in case of errors (e.g., 'object not found')
+[group('maintenance')]
+repair:
+    @just repository::repair-git
+
 # Build whole solution
 [group('development')]
 build:
