@@ -16,15 +16,15 @@
 
 using FluentValidation;
 
-namespace xSdk.Plugins.Authentication;
+namespace xSdk.Extensions.Authentication;
 
-public sealed class PluginOptionsValidator : AbstractValidator<PluginOptions>
+public sealed class AuthOptionsValidator : AbstractValidator<AuthOptions>
 {
-    public PluginOptionsValidator()
+    public AuthOptionsValidator()
     {
         RuleFor(x => x.Realm)
             .NotEmpty()
             .WithMessage("Authentication realm is missing")
-            .WithErrorCode(PluginOptions.Definitions.Realm.Name);
+            .WithErrorCode(AuthOptions.Definitions.Realm.Name);
     }
 }

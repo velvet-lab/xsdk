@@ -20,7 +20,6 @@ using xSdk.Security;
 
 namespace xSdk.Extensions.Authentication;
 
-[ExcludeFromCodeCoverage]
 public static class Authenticator
 {
     public static HttpBasicAuthenticator GetAuthenticator<TCredentials>()

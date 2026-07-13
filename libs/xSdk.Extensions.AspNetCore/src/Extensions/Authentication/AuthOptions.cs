@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-using xSdk.Extensions.Plugin;
+using xSdk.Extensions.Options;
 using xSdk.Extensions.Variable;
 using xSdk.Extensions.Variable.Attributes;
 
-namespace xSdk.Plugins.Authentication;
+namespace xSdk.Extensions.Authentication;
 
-[VariablePrefix("auth_apikey")]
-public class PluginOptions : PluginOptionsBase
+[VariablePrefix("auth")]
+public class AuthOptions : OptionsBase
 {
     [Variable(
         name: Definitions.Realm.Name,

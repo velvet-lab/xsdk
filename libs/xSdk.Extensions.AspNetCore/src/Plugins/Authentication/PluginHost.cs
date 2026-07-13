@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -30,11 +29,13 @@ using xSdk.Hosting;
 
 namespace xSdk.Plugins.Authentication;
 
-[ExcludeFromCodeCoverage(Justification = "ASP.NET Core authentication pipeline – requires a running web host.")]
-internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost> logger) : WebPluginHost
+internal sealed class PluginHost<TBuilder>(TBuilder builder, IOptions<AuthOptions> apiKeyOptions, IOptions<EnvironmentOptions> environmentOptions, ILogger<PluginHost<TBuilder>> logger) : WebPluginHost
+    where TBuilder : AuthBuilder
 {
     public override void ConfigureServices(WebHostBuilderContext context, IServiceCollection services)
     {
+        builder.ConfigureBuilder();
+
         AuthenticationBuilder authBuilder = services
             // Add Auth
             .AddAuthentication(_ =>
@@ -46,8 +47,8 @@ internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions
             .AddPolicyScheme(AuthenticationDefaults.MulitAuth.Scheme, AuthenticationDefaults.MulitAuth.Scheme, EnableMultiAuth);
 
         // API Key Auth is always needed for the default Multi Auth Scheme
-        authBuilder.AddApiKeyAuth(apiKeyOptions.Value, environmentOptions.Value);
-        InvokeBuilders<IAuthenticationPluginBuilder>(x => x.ConfigureAuthentication(authBuilder));
+        authBuilder.AddApiKeyAuth(apiKeyOptions.Value, environmentOptions.Value);        
+        builder.ConfigureAuthenticationAction?.Invoke(authBuilder);
 
         // Add Client defined Policies
         services.AddAuthorization(_ =>
@@ -61,7 +62,7 @@ internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions
             //    .RequireAuthenticatedUser()
             //    .Build();
 
-            InvokeBuilders<IAuthenticationPluginBuilder>(x => x.ConfigureAuthorization(_));
+            builder.ConfigureAuthorizationAction?.Invoke(_);
         });
     }
 
@@ -76,8 +77,7 @@ internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions
         logger.LogTrace("Try to find the correct authentication for incomming request");
         options.ForwardDefaultSelector = context =>
         {
-            string? scheme = null;
-            TryRetrieveAuthenticationScheme(context, out scheme);
+            TryRetrieveAuthenticationScheme(context, out string? scheme);
             if (!string.IsNullOrEmpty(scheme))
             {
                 logger.LogTrace("Found the correct authentication for incomming request: {scheme}", scheme);
@@ -85,13 +85,10 @@ internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions
             }
 
             string? authorizationHeader = context.Request.Headers[HeaderNames.Authorization];
-            if (!string.IsNullOrEmpty(authorizationHeader))
+            if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith(AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Header))
             {
-                if (authorizationHeader.StartsWith(AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Header))
-                {
-                    logger.LogTrace("API Key Auth is requested");
-                    return AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Scheme;
-                }
+                logger.LogTrace("API Key Auth is requested");
+                return AuthenticationDefaults.ApiKeyAuth.InAuthorizationHeader.Scheme;
             }
 
             // Default Api Auth Scheme
@@ -102,9 +99,7 @@ internal sealed class PluginHost(IOptions<PluginOptions> apiKeyOptions, IOptions
 
     private void TryRetrieveAuthenticationScheme(HttpContext context, out string? scheme)
     {
-        string? result = null;
-        InvokeBuilders<IAuthenticationPluginBuilder>(x => x.TryRetrieveAuthenticationScheme(context, out result));
-
+        string? result = builder.SelectAuthenticationSchemeAction?.Invoke(context);
         scheme = result;
     }
 }
