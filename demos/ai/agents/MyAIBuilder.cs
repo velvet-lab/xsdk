@@ -7,7 +7,7 @@ using xSdk.Plugins.AI;
 
 namespace xSdk.Demos;
 
-internal class AgentsPluginBuilder() : AIBuilder
+internal class MyAIBuilder() : AIBuilder
 {
     public override void ConfigureBuilder()
     {
