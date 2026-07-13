@@ -19,11 +19,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using xSdk.Hosting;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Plugins.Compression;
 
-[ExcludeFromCodeCoverage(Justification = "ASP.NET Core response compression configuration – requires a running web host.")]
 internal sealed class PluginHost : PluginHostBase
 {
     public override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
