@@ -21,10 +21,10 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using xSdk.Extensions.Plugin;
 
 namespace xSdk.Hosting;
 
-[ExcludeFromCodeCoverage(Justification = "Abstract base with empty virtual methods – only instantiated via ASP.NET Core web host pipeline.")]
 public abstract class WebPluginHost : PluginHostBase, IWebPluginHost
 {
     protected override bool IsWebPluginHost => true;
