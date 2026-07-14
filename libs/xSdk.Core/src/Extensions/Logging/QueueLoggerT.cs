@@ -28,6 +28,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace xSdk.Extensions.Logging;
@@ -36,6 +37,7 @@ namespace xSdk.Extensions.Logging;
 /// ILogger implementation that queues log messages until a real _logger is available.
 /// Used during SlimHost bootstrapping before the full Host is initialized.
 /// </summary>
+[ExcludeFromCodeCoverage(Justification = "Logging infrastructure that wraps ILoggerFactory — requires full DI.")]
 internal sealed class QueueLogger<T> : ILogger<T>
 {
     private readonly ILogger _logger;

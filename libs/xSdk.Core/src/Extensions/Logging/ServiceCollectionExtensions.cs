@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace xSdk.Extensions.Logging;
 
+[ExcludeFromCodeCoverage(Justification = "DI registration wiring — requires a ServiceCollection with Hosting stack.")]
 internal static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)

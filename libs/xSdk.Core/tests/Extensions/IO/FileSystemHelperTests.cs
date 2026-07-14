@@ -121,4 +121,64 @@ public class FileSystemHelperTests
 
         Assert.NotNull(result);
     }
+
+    [Fact]
+    public void IsDirectoryWritable_ExistingTempDir_ReturnsTrue()
+    {
+        string tempDir = Path.GetTempPath();
+
+        bool result = FileSystemHelper.IsDirectoryWritable(tempDir);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsDirectoryWritable_NonExistingDir_ReturnsFalse()
+    {
+        string fakePath = Path.Combine(Path.GetTempPath(), "nonexistent-" + Guid.NewGuid());
+
+        bool result = FileSystemHelper.IsDirectoryWritable(fakePath);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void IsDirectoryWritable_DirectoryInfo_ExistingDir_ReturnsTrue()
+    {
+        var dir = new DirectoryInfo(Path.GetTempPath());
+
+        bool result = FileSystemHelper.IsDirectoryWritable(dir);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsDirectoryReadable_ExistingDir_ReturnsTrue()
+    {
+        string tempDir = Path.GetTempPath();
+
+        bool result = FileSystemHelper.IsDirectoryReadable(tempDir);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsDirectoryReadable_NonExistingDir_ReturnsFalse()
+    {
+        string fakePath = Path.Combine(Path.GetTempPath(), "nonexistent-" + Guid.NewGuid());
+
+        bool result = FileSystemHelper.IsDirectoryReadable(fakePath);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void IsDirectoryReadable_DirectoryInfo_ExistingDir_ReturnsTrue()
+    {
+        var dir = new DirectoryInfo(Path.GetTempPath());
+
+        bool result = FileSystemHelper.IsDirectoryReadable(dir);
+
+        Assert.True(result);
+    }
 }

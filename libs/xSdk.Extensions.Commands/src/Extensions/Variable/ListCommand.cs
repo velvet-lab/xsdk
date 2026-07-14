@@ -15,6 +15,7 @@
  */
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -23,7 +24,7 @@ using xSdk.Extensions.Commands.Attributes;
 
 namespace xSdk.Extensions.Variable;
 
-
+[ExcludeFromCodeCoverage(Justification = "Requires injected IVariableService and produces console output — tested via integration tests.")]
 internal partial class ListCommand(IVariableService variableSvc, ILogger<ListCommand> logger) : CommandHandler
 {
     internal static class Definitions

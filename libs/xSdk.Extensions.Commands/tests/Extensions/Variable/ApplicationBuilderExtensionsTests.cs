@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-using System.Diagnostics.CodeAnalysis;
-using Spectre.Console;
+using xSdk.Extensions.Commands;
 
-namespace xSdk.Extensions.Commands;
+namespace xSdk.Extensions.Variable;
 
-[ExcludeFromCodeCoverage(Justification = "Calls System.Console.Clear() and Spectre.Console.Clear() — requires live console.")]
-public sealed class ClearCommand : CommandHandler
+public class ApplicationBuilderExtensionsTests
 {
-    public static class Definitions
+    [Fact]
+    public void AddVariableCommands_ReturnsBuilderForChaining()
     {
-        public const string Name = "clear";
-        public const string HelpText = "Clears the console output";
-    }
+        var builder = new ConsoleBuilder();
 
-    public override int Execute()
-    {
-        System.Console.Clear();
-        AnsiConsole.Clear();
-        return 0;
+        var returned = builder.AddVariableCommands();
+
+        Assert.Same(builder, returned);
     }
 }

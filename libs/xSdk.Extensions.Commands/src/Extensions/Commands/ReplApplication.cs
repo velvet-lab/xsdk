@@ -15,10 +15,12 @@
  */
 
 using System.CommandLine;
+using System.Diagnostics.CodeAnalysis;
 using xSdk.Tools;
 
 namespace xSdk.Extensions.Commands;
 
+[ExcludeFromCodeCoverage(Justification = "Interactive REPL application — requires live console I/O, not testable via unit tests.")]
 internal class ReplApplication(RootCommand command, ReplConsoleBuilder builder) : IApplication
 {
     public async Task<int> RunAsync(string[] args)

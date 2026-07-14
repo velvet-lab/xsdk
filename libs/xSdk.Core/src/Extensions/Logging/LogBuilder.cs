@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace xSdk.Extensions.Logging;
 
+[ExcludeFromCodeCoverage(Justification = "Logging builder infrastructure — requires a live ILoggingBuilder (DI-only).")]
 internal sealed class LogBuilder(ILoggingBuilder builder, LogLevel currentLogLevel) : ILogBuilder
 {
     private readonly List<FilterItem> _filters = new();

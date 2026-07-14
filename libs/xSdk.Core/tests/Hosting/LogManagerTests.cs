@@ -72,4 +72,20 @@ public class LogManagerTests
         Assert.NotNull(logger1);
         Assert.NotNull(logger2);
     }
+
+    [Fact]
+    public void CreateLogger_WithConcreteType_ReturnsNonNullLogger()
+    {
+        ILogger logger = LogManager.CreateLogger(typeof(LogManagerTests));
+
+        Assert.NotNull(logger);
+    }
+
+    [Fact]
+    public void Factory_IsNotNull()
+    {
+        ILoggerFactory factory = LogManager.Factory;
+
+        Assert.NotNull(factory);
+    }
 }

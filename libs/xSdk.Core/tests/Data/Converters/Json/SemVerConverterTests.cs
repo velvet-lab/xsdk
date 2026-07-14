@@ -37,4 +37,42 @@ public class SemVerConverterTests
         Assert.Equal("1.2.3", sem.Version);
         Assert.Equal("~1.2.3", sem.Range);
     }
+
+    [Fact]
+    public void Read_PlainVersionString_ReturnsSemVer()
+    {
+        // A non-base64 plain version string like "2.0.0"
+        var json = "\"2.0.0\"";
+        var bytes = Encoding.UTF8.GetBytes(json);
+        var reader = new Utf8JsonReader(bytes);
+        reader.Read();
+
+        var conv = new SemVerConverter();
+        var sem = conv.Read(ref reader, typeof(SemVer), new JsonSerializerOptions());
+
+        Assert.Equal("2.0.0", sem.Version);
+    }
+
+    [Fact]
+    public void Read_NullJsonValue_ThrowsSdkException()
+    {
+        // JSON null string value → reader.GetString() returns null → SdkException
+        var json = "null";
+        var bytes = Encoding.UTF8.GetBytes(json);
+        var reader = new Utf8JsonReader(bytes);
+        reader.Read();
+
+        var conv = new SemVerConverter();
+        SdkException? caught = null;
+        try
+        {
+            conv.Read(ref reader, typeof(SemVer), new JsonSerializerOptions());
+        }
+        catch (SdkException ex)
+        {
+            caught = ex;
+        }
+
+        Assert.NotNull(caught);
+    }
 }

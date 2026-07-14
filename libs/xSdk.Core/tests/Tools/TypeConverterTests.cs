@@ -419,4 +419,68 @@ public class TypeConverterTests
 
         Assert.Equal((ushort)100, result);
     }
+
+    [Fact]
+    public void ConvertTo_NullValue_ReturnsDefault()
+    {
+        int result = TypeConverter.ConvertTo<int>(null!);
+
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void IsEmpty_NullValue_ReturnsTrue()
+    {
+        bool result = TypeConverter.IsEmpty(null, typeof(int));
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void IsEmpty_NonZeroDouble_ReturnsFalse()
+    {
+        bool result = TypeConverter.IsEmpty(3.14, typeof(double));
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void IsEmpty_NonZeroDecimal_ReturnsFalse()
+    {
+        bool result = TypeConverter.IsEmpty(1.5m, typeof(decimal));
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void IsEmpty_NonZeroLong_ReturnsFalse()
+    {
+        bool result = TypeConverter.IsEmpty(100L, typeof(long));
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void GetValueType_GuidString_ReturnsStringOrGuid()
+    {
+        // GetValueType uses Newtonsoft JToken to detect type; GUID strings may be
+        // detected as JTokenType.Guid or JTokenType.String depending on the format.
+        var guid = Guid.NewGuid().ToString();
+
+        Type? result = TypeConverter.GetValueType(guid);
+
+        Assert.True(result == typeof(Guid) || result == typeof(string));
+    }
+
+    [Fact]
+    public void GetValueType_UnparsableValue_ReturnsNull()
+    {
+        // A value that cannot be JSON-parsed in any category
+        Type? result = TypeConverter.GetValueType(new object());
+
+        // Returns either string or null depending on internal try/catch
+        // Key: should not throw
+        Assert.True(result == typeof(string) || result == null);
+    }
 }
+

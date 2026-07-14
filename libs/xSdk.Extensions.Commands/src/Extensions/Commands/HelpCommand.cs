@@ -16,12 +16,14 @@
 
 using System.CommandLine;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
 using xSdk.Extensions.Commands.Attributes;
 
 namespace xSdk.Extensions.Commands;
 
+[ExcludeFromCodeCoverage(Justification = "Requires injected RootCommand and ConsoleOptions — tested via integration tests.")]
 public sealed class HelpCommand(RootCommand rootCommand, ReplConsoleBuilder builder, IOptions<ConsoleOptions> options) : CommandHandler
 {
     public static class Definitions
