@@ -55,7 +55,7 @@ jobs:
         uses: ./.github/actions/setup-repository
 
       - name: Cache Sonar Scanner
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ~/.sonar/cache
