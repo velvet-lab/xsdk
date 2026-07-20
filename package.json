@@ -28,6 +28,6 @@
     "license-check-and-add": "^4.0.5",
     "mega-linter-runner": "^9.6.0",
     "prettier": "^3.9.5",
-    "semantic-release": "^25.0.7"
+    "semantic-release": "^25.0.8"
   }
 }
