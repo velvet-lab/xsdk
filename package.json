@@ -27,7 +27,7 @@
     "conventional-changelog-conventionalcommits": "^10.2.1",
     "license-check-and-add": "^4.0.5",
     "mega-linter-runner": "^9.6.0",
-    "prettier": "^3.9.5",
+    "prettier": "^3.9.6",
     "semantic-release": "^25.0.7"
   }
 }
