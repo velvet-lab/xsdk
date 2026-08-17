@@ -12,6 +12,8 @@
     <!--External dependencies-->
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="OpenTelemetry" />
         <ProjectReference Include="..\..\xSdk.Core\src\xSdk.Core.csproj" />
     </ItemGroup>
 
