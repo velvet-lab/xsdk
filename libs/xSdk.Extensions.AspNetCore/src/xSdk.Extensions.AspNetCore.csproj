@@ -15,6 +15,7 @@
 
     <!--External dependencies-->
     <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc" />
         <PackageReference Include="CloudNative.CloudEvents" />
         <PackageReference Include="CloudNative.CloudEvents.SystemTextJson" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
