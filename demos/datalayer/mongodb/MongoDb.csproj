@@ -11,6 +11,7 @@
         <PackageReference Include="MongoDB.EntityFrameworkCore" />
         <PackageReference Include="SharpCompress" />
         <PackageReference Include="Spectre.Console" />
+        <PackageReference Include="Testcontainers" />
         <PackageReference Include="Testcontainers.MongoDb" />
     </ItemGroup>
 
